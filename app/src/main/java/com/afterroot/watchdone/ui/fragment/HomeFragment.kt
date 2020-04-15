@@ -13,13 +13,24 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.database
+package com.afterroot.watchdone.ui.fragment
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import com.afterroot.base.model.MyDatabaseModel
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
-@Database(entities = [MyDatabaseModel::class], version = 1)
-abstract class MyDatabase : RoomDatabase() {
-    //TODO
+import androidx.fragment.app.Fragment
+
+import com.afterroot.watchdone.R
+
+class HomeFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setHasOptionsMenu(true)
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 }

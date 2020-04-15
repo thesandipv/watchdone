@@ -13,26 +13,31 @@
  * limitations under the License.
  */
 
-package com.afterroot.base
+package com.afterroot.watchdone.di
 
-import androidx.multidex.MultiDexApplication
-import com.afterroot.base.di.appModule
-import com.afterroot.base.di.firebaseModule
+import com.afterroot.watchdone.Settings
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
-class MyApplication : MultiDexApplication() {
-    override fun onCreate() {
-        super.onCreate()
-        init()
+val firebaseModule = module {
+    single {
+        Firebase.firestore.apply {
+            firestoreSettings =
+                FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).build()
+        }
     }
 
-    private fun init() {
-        startKoin {
-            androidLogger()
-            androidContext(this@MyApplication)
-            modules(listOf(firebaseModule, appModule))
-        }
+    single {
+        FirebaseStorage.getInstance()
+    }
+}
+
+val appModule = module {
+    single {
+        Settings(androidContext())
     }
 }

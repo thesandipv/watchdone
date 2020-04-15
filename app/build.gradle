@@ -33,7 +33,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.afterroot.base"
+        applicationId "com.afterroot.watchdone"
         minSdkVersion project.ext.minimumSdkVersion
         targetSdkVersion 29
         versionCode project.ext.minimumSdkVersion * 10000000 + project.ext.major * 10000 + project.ext.minor * 100 + project.ext.patch
@@ -52,7 +52,7 @@ android {
 
         manifestPlaceholders = [
                 hostName  : "afterroot.web.app",
-                pathPrefix: "/apps/{app-name}" /*TODO change host name and pathPrefix*/
+                pathPrefix: "/apps/watchdone"
         ]
     }
 

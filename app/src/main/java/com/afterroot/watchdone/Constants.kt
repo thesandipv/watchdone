@@ -13,19 +13,11 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.utils
+package com.afterroot.watchdone
 
-import android.content.Context
-import android.content.pm.PackageManager
-import androidx.core.content.PermissionChecker
-
-class PermissionChecker(private val mContext: Context) {
-
-    fun lacksPermissions(permissions: Array<String>): Boolean {
-        return permissions.any { lacksPermission(it) == PackageManager.PERMISSION_DENIED }
-    }
-
-    private fun lacksPermission(permission: String): Int {
-        return PermissionChecker.checkSelfPermission(mContext, permission)
-    }
+object Constants {
+    const val PREF_KEY_FIRST_INSTALL = "first_install_2"
+    const val RC_LOGIN = 42
+    const val RC_PERMISSION = 256
+    const val RC_STORAGE_ACCESS = 12
 }

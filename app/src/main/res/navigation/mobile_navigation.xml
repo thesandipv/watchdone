@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.afterroot.base.ui.fragment.HomeFragment"
+        android:name="com.afterroot.watchdone.ui.fragment.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 </navigation>

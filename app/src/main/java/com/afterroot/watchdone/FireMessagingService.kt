@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.base
+package com.afterroot.watchdone
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -26,9 +26,9 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.afterroot.base.database.DatabaseFields
-import com.afterroot.base.ui.MainActivity
-import com.afterroot.base.utils.FirebaseUtils
+import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.ui.MainActivity
+import com.afterroot.watchdone.utils.FirebaseUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.model
+package com.afterroot.watchdone.model
 
 import android.provider.BaseColumns
 import androidx.room.ColumnInfo

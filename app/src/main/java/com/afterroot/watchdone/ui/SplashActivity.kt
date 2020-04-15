@@ -13,15 +13,15 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.ui
+package com.afterroot.watchdone.ui
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afterroot.base.Constants.RC_LOGIN
-import com.afterroot.base.R
+import com.afterroot.watchdone.Constants.RC_LOGIN
+import com.afterroot.watchdone.R
 import com.afterroot.core.extensions.isNetworkAvailable
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth

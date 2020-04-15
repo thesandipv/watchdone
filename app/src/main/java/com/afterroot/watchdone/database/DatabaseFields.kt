@@ -13,9 +13,13 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.database
+package com.afterroot.watchdone.database
 
-interface DeleteListener {
-    fun onDeleteSuccess()
-    fun onDeleteFailed()
+object DatabaseFields {
+    //table 'users'
+    const val COLLECTION_USERS = "users"
+    const val FIELD_NAME = "name"
+    const val FIELD_EMAIL = "email"
+    const val FIELD_UID = "uid"
+    const val FIELD_FCM_ID = "fcmId"
 }
