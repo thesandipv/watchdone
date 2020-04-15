@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.utils
+package com.afterroot.watchdone.utils
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth

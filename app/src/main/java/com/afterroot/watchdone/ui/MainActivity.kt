@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.ui
+package com.afterroot.watchdone.ui
 
 import android.Manifest
 import android.content.Intent
@@ -29,14 +29,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.afterroot.base.BuildConfig
-import com.afterroot.base.Constants.RC_PERMISSION
-import com.afterroot.base.R
-import com.afterroot.base.Settings
-import com.afterroot.base.database.DatabaseFields
-import com.afterroot.base.model.User
-import com.afterroot.base.utils.FirebaseUtils
-import com.afterroot.base.utils.PermissionChecker
+import com.afterroot.watchdone.BuildConfig
+import com.afterroot.watchdone.Constants.RC_PERMISSION
+import com.afterroot.watchdone.R
+import com.afterroot.watchdone.Settings
+import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.model.User
+import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.core.extensions.animateProperty
 import com.afterroot.core.extensions.visible
 import com.google.android.gms.ads.MobileAds

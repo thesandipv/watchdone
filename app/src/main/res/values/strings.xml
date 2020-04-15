@@ -14,9 +14,9 @@
   -->
 
 <resources>
-    <string name="app_name">Base</string> <!--TODO Set App Name-->
-    <string name="ad_banner_unit_id" translatable="false">TODO</string> <!--TODO add banner ad id-->
-    <string name="admob_app_id" translatable="false">TODO</string> <!--TODO add admob app id-->
+    <string name="app_name">WatchDone</string>
+    <string name="ad_banner_unit_id" translatable="false">ca-app-pub-6628325093439880/1366582369</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-6628325093439880~2908563040</string>
     <string name="dialog_msg_no_network">No Network Available. Please check connection and try again.</string>
     <string name="dialog_title_no_network">No Network</string>
     <string name="fcm_channel_default">Updates</string>

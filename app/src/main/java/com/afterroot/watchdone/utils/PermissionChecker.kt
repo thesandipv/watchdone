@@ -13,16 +13,19 @@
  * limitations under the License.
  */
 
-package com.afterroot.base.model
+package com.afterroot.watchdone.utils
 
-import java.io.Serializable
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.content.PermissionChecker
 
-//Collection 'users'
-data class User(
-    var name: String?,
-    var email: String?,
-    var uid: String,
-    var fcmId: String
-) : Serializable {
-    constructor() : this("", "", "", "")
+class PermissionChecker(private val mContext: Context) {
+
+    fun lacksPermissions(permissions: Array<String>): Boolean {
+        return permissions.any { lacksPermission(it) == PackageManager.PERMISSION_DENIED }
+    }
+
+    private fun lacksPermission(permission: String): Int {
+        return PermissionChecker.checkSelfPermission(mContext, permission)
+    }
 }
