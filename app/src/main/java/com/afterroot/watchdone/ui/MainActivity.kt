@@ -29,6 +29,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.afterroot.core.extensions.animateProperty
+import com.afterroot.core.extensions.visible
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
@@ -37,8 +39,6 @@ import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.model.User
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
-import com.afterroot.core.extensions.animateProperty
-import com.afterroot.core.extensions.visible
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         if (FirebaseAuth.getInstance().currentUser == null) { //If not logged in, go to login.
             startActivity(Intent(this, SplashActivity::class.java))
+            finish()
         } else initialize()
     }
 
@@ -115,7 +116,6 @@ class MainActivity : AppCompatActivity() {
         //Add user in db if not available
         addUserInfoInDB()
     }
-
 
     private fun addUserInfoInDB() {
         try {
@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadFragments() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
-            showNavigation()
+            hideNavigation()
             when (destination.id) {
                 R.id.navigation_home -> {
                     //TODO
