@@ -29,7 +29,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimarySurface"
+            style="@style/Widget.MyTheme.Toolbar"
             app:layout_scrollFlags="scroll|enterAlways"
             app:title="@string/app_name" />
 

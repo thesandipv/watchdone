@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="watchdone.app" target="1.8" />
+      <module name="watchdone.tmdbapi" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
