@@ -45,6 +45,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
+import com.afterroot.tmdbapi.TmdbApi
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
@@ -99,6 +100,20 @@ class MainActivity : AppCompatActivity() {
             settings.isFirstInstalled = false
         }
 
+        if (settings.baseUrl == null) {
+            settings.baseUrl = get<TmdbApi>().configuration?.secureBaseUrl
+        }
+        if (settings.posterSizes == null) {
+            val set = mutableSetOf<String>()
+            try {
+                get<TmdbApi>().configuration?.posterSizes?.map {
+                   set.add(it)
+                }
+            } catch (e: Exception) {
+            } finally {
+                settings.posterSizes = set
+            }
+        }
         //Initialize AdMob SDK
         MobileAds.initialize(this, getString(R.string.admob_app_id))
 
@@ -141,7 +156,6 @@ class MainActivity : AppCompatActivity() {
                             } else if (getUserTask.result!![DatabaseFields.FIELD_FCM_ID] != tokenTask.result?.token!!) {
                                 userRef.update(DatabaseFields.FIELD_FCM_ID, tokenTask.result?.token!!)
                             }
-
                         } else Log.e(TAG, "Unknown Error", getUserTask.exception)
                     }
                 })

@@ -15,11 +15,13 @@
 
 package com.afterroot.watchdone.di
 
+import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Settings
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.afterroot.tmdbapi.TmdbApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -39,5 +41,9 @@ val firebaseModule = module {
 val appModule = module {
     single {
         Settings(androidContext())
+    }
+
+    single {
+        TmdbApi(BuildConfig.TMDB_API)
     }
 }

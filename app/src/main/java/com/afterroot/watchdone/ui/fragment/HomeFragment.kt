@@ -18,6 +18,7 @@ package com.afterroot.watchdone.ui.fragment
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,15 +26,24 @@ import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.adapter.DelegateAdapter
+import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.afterroot.tmdbapi.TmdbApi
+import kotlinx.android.synthetic.main.content_add_watched.*
 import kotlinx.android.synthetic.main.content_add_watched.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.list_dialog.*
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
+import org.koin.android.ext.android.getKoin
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -61,8 +71,33 @@ class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
                 positiveButton(text = "Add") {
                     lifecycleScope.launch {
                         //TODO Add Task
+                        showSelectDialog(input_title.text.toString())
                     }
                 }
+            }
+        }
+    }
+
+    private fun showSelectDialog(title: String) {
+        val movies = get<TmdbApi>().search.searchMovie(title)
+        Log.d(TAG, "showSelectDialog: ${movies.results}")
+        MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
+            title(text = "Add Watched")
+            customView(R.layout.list_dialog)
+            dialogCustomView = getCustomView().apply {
+                val adapter = DelegateAdapter(object : ItemSelectedCallback {
+                    override fun onClick(position: Int, view: View?) {
+                    }
+                }, getKoin())
+                list.apply {
+                    val lm = GridLayoutManager(requireContext(), 3)
+                    layoutManager = lm
+                    addItemDecoration(DividerItemDecoration(this.context, lm.orientation))
+                }
+                adapter.add(movies.results)
+                list.adapter = adapter
+                list.scheduleLayoutAnimation()
+
             }
         }
     }
