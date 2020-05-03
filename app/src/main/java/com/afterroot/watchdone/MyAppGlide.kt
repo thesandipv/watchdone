@@ -13,20 +13,10 @@
  * limitations under the License.
  */
 
-package com.afterroot.tmdbapi
+package com.afterroot.watchdone
 
-import org.junit.Test
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 
-import org.junit.Assert.*
-
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
-}
+@GlideModule
+class MyAppGlide : AppGlideModule()

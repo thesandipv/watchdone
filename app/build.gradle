@@ -127,6 +127,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$roomKtxVersion"
     implementation "androidx.vectordrawable:vectordrawable:$vectordrawableVersion"
     implementation "com.android.billingclient:billing:$billingVersion"
+    implementation project(path: ':tmdbapi')
     kapt "androidx.room:room-compiler:$roomKtxVersion"
 
     implementation "com.afollestad.material-dialogs:input:$materialDialogsVersion"
@@ -166,7 +167,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.5.0'
-
-    implementation 'info.movito:themoviedbapi:1.10'
+    implementation 'com.squareup.okhttp3:okhttp:4.6.0'
 }

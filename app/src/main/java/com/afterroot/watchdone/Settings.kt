@@ -36,8 +36,18 @@ class Settings(context: Context) {
         putBoolean(key, value)
     }
 
+    private fun putStringSet(key: String, value: MutableSet<String>?) = preferences.edit(true) {
+        putStringSet(key, value)
+    }
+
     //Template
     var isFirstInstalled
         get() = preferences.getBoolean(Constants.PREF_KEY_FIRST_INSTALL, true)
         set(value) = putBoolean(Constants.PREF_KEY_FIRST_INSTALL, value)
+    var baseUrl
+        get() = preferences.getString(Constants.PREF_KEY_BASE_IMAGE_URL, null)
+        set(value) = putString(Constants.PREF_KEY_BASE_IMAGE_URL, value)
+    var posterSizes
+        get() = preferences.getStringSet(Constants.PREF_KEY_POSTER_SIZES, null)
+        set(value) = putStringSet(Constants.PREF_KEY_POSTER_SIZES, value)
 }
