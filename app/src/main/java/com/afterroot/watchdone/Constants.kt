@@ -20,4 +20,6 @@ object Constants {
     const val RC_LOGIN = 42
     const val RC_PERMISSION = 256
     const val RC_STORAGE_ACCESS = 12
+    const val PREF_KEY_BASE_IMAGE_URL = "base_url"
+    const val PREF_KEY_POSTER_SIZES = "poster_sizes"
 }
