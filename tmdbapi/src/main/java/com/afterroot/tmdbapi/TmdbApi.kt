@@ -9,6 +9,7 @@ import com.afterroot.tmdbapi.tools.RequestCountLimitException
 import com.afterroot.tmdbapi.tools.RequestMethod
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import java.io.IOException
 
 /**
@@ -16,7 +17,7 @@ import java.io.IOException
  *
  * This is for version 3 of the API as specified here: http://help.themoviedb.org/kb/api/about-3
  *
- * @author Sandip Vaghela
+ * @author Holger Brandl, Sandip Vaghela
  */
 class TmdbApi @JvmOverloads constructor(
     /**
@@ -56,18 +57,15 @@ class TmdbApi @JvmOverloads constructor(
         }
     }
 
-    internal class GetResponse(val method: String = RequestMethod.GET) : AsyncTask<String, Void, String>() {
+    internal class GetResponse(val method: String = RequestMethod.GET, private val requestBody: RequestBody? = null) :
+        AsyncTask<String, Void, String>() {
         override fun doInBackground(vararg params: String): String {
             val request = Request.Builder()
-                .url(params[0]).method(method, null)
+                .url(params[0]).method(method, requestBody)
                 .build()
 
             OkHttpClient().newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                for ((name, value) in response.headers) {
-                    println("$name: $value")
-                }
 
                 return response.body!!.string()
             }
