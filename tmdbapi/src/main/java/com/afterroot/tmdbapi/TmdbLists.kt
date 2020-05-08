@@ -31,11 +31,10 @@ class TmdbLists(tmdbApi: TmdbApi?) : AbstractTmdbApi(tmdbApi!!) {
     fun createList(sessionToken: SessionToken?, name: String?, description: String?): String {
         val apiUrl = ApiUrl(TMDB_METHOD_LIST)
         apiUrl.addParam(TmdbAccount.PARAM_SESSION, sessionToken!!)
-        val body = HashMap<String, String?>()
+        val body = HashMap<String, String>()
         body["name"] = StringUtils.trimToEmpty(name)
         body["description"] = StringUtils.trimToEmpty(description)
-        val jsonBody =
-            Utils.convertToJson(jsonMapper, body)
+        val jsonBody = Utils.convertToJson(jsonMapper, body)
         return mapJsonResult(apiUrl, MovieListCreationStatus::class.java, jsonBody).listId
     }
 
