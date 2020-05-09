@@ -87,10 +87,10 @@ object Utils {
             return null
         }
         val configuration = tmdb.configuration
-        if (!configuration!!.isValidSize(requiredSize)) {
+        if (!configuration.isValidSize(requiredSize)) {
             throw MovieDbException("Invalid size: $requiredSize")
         }
-        val sb = StringBuilder(configuration.baseUrl!!)
+        val sb = StringBuilder(configuration.baseUrl)
         sb.append(requiredSize)
         sb.append(imagePath)
         return try {
