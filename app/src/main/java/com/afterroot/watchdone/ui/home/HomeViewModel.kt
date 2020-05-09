@@ -13,10 +13,8 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.api
+package com.afterroot.watchdone.ui.home
 
-import okhttp3.OkHttpClient
+import androidx.lifecycle.ViewModel
 
-private val client = OkHttpClient()
-
-
+class HomeViewModel : ViewModel()

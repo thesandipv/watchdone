@@ -27,16 +27,18 @@
         app:layout_constraintDimensionRatio="9:16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/poster"
-        tools:text="Movie Title" />
+        tools:text="@tools:sample/lorem" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/year"
@@ -49,6 +51,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintVertical_bias="1.0"
-        tools:text="Year" />
+        tools:text="@tools:sample/date/ddmmyy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

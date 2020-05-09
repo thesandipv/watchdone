@@ -37,5 +37,9 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_home">WatchDone</string>
     <string name="url_play_store_developer" translatable="false">https://play.google.com/store/apps/dev?id=5302118761742285445</string>
-    <string name="url_privacy_policy" translatable="false">https://afterroot.co/privacy-policy.html</string>
+    <string name="url_privacy_policy" translatable="false">https://afterroot.web.app/privacy-policy</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="made_with_love">Made with ❤ In India.</string>
+    <string name="key_version" translatable="false">version</string>
+    <string name="pref_title_privacy_policy">Privacy Policy</string>
 </resources>

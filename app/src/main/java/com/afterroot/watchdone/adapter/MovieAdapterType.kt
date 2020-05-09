@@ -20,11 +20,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.core.extensions.inflate
+import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.Settings
-import com.afterroot.tmdbapi.model.MovieDb
-import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import kotlinx.android.synthetic.main.list_item_movie.view.*
 import org.koin.core.Koin
 
