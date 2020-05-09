@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.fragment
+package com.afterroot.watchdone.ui.home
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -25,25 +25,28 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.afterroot.tmdbapi.TmdbApi
+import com.afterroot.watchdone.api.Auth
 import kotlinx.android.synthetic.main.content_add_watched.*
 import kotlinx.android.synthetic.main.content_add_watched.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.list_dialog.*
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.doAsync
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
+import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -52,8 +55,10 @@ import java.util.Locale
 
 class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     lateinit var dialogCustomView: View
+    private lateinit var homeViewModel: HomeViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -92,7 +97,6 @@ class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
                 list.apply {
                     val lm = GridLayoutManager(requireContext(), 3)
                     layoutManager = lm
-                    addItemDecoration(DividerItemDecoration(this.context, lm.orientation))
                 }
                 adapter.add(movies.results)
                 list.adapter = adapter

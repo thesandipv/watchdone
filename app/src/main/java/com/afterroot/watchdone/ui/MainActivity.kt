@@ -31,6 +31,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.afterroot.core.extensions.animateProperty
 import com.afterroot.core.extensions.visible
+import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
@@ -45,7 +46,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
-import com.afterroot.tmdbapi.TmdbApi
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
@@ -70,9 +70,7 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home
-            )
+            setOf(R.id.navigation_home, R.id.navigation_settings)
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         nav_view.setupWithNavController(navController)
@@ -107,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             val set = mutableSetOf<String>()
             try {
                 get<TmdbApi>().configuration?.posterSizes?.map {
-                   set.add(it)
+                    set.add(it)
                 }
             } catch (e: Exception) {
             } finally {
