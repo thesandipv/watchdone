@@ -30,7 +30,7 @@ class TmdbApi @JvmOverloads constructor(
      */
     private var autoRetry: Boolean = true
 ) {
-    var configuration: TmdbConfiguration? = null
+    var configuration: TmdbConfiguration
 
     /**
      * Uses the instance's api key to request information from api.tmdb.org.

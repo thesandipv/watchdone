@@ -4,12 +4,12 @@ import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class TmdbConfiguration(
-    @JsonProperty("base_url") var baseUrl: String? = null,
-    @JsonProperty("secure_base_url") var secureBaseUrl: String? = null,
-    @JsonProperty("poster_sizes") var posterSizes: List<String>? = null,
-    @JsonProperty("backdrop_sizes") var backdropSizes: List<String>? = null,
-    @JsonProperty("profile_sizes") var profileSizes: List<String>? = null,
-    @JsonProperty("logo_sizes") var logoSizes: List<String>? = null
+    @JsonProperty("base_url") var baseUrl: String,
+    @JsonProperty("secure_base_url") var secureBaseUrl: String,
+    @JsonProperty("poster_sizes") var posterSizes: List<String>,
+    @JsonProperty("backdrop_sizes") var backdropSizes: List<String>,
+    @JsonProperty("profile_sizes") var profileSizes: List<String>,
+    @JsonProperty("logo_sizes") var logoSizes: List<String>
 ) : AbstractJsonMapping() {
 
     /**
@@ -30,36 +30,36 @@ data class TmdbConfiguration(
      *
      * @param posterSize
      */
-    fun isValidPosterSize(posterSize: String): Boolean = if (posterSize.isBlank() || posterSizes!!.isEmpty()) {
+    fun isValidPosterSize(posterSize: String): Boolean = if (posterSize.isBlank() || posterSizes.isEmpty()) {
         false
-    } else posterSizes!!.contains(posterSize)
+    } else posterSizes.contains(posterSize)
 
     /**
      * Check that the backdrop size is valid
      *
      * @param backdropSize
      */
-    fun isValidBackdropSize(backdropSize: String): Boolean = if (backdropSize.isBlank() || backdropSizes!!.isEmpty()) {
+    fun isValidBackdropSize(backdropSize: String): Boolean = if (backdropSize.isBlank() || backdropSizes.isEmpty()) {
         false
-    } else backdropSizes!!.contains(backdropSize)
+    } else backdropSizes.contains(backdropSize)
 
     /**
      * Check that the profile size is valid
      *
      * @param profileSize
      */
-    fun isValidProfileSize(profileSize: String): Boolean = if (profileSize.isBlank() || profileSizes!!.isEmpty()) {
+    fun isValidProfileSize(profileSize: String): Boolean = if (profileSize.isBlank() || profileSizes.isEmpty()) {
         false
-    } else profileSizes!!.contains(profileSize)
+    } else profileSizes.contains(profileSize)
 
     /**
      * Check that the logo size is valid
      *
      * @param logoSize
      */
-    fun isValidLogoSize(logoSize: String): Boolean = if (logoSize.isBlank() || logoSizes!!.isEmpty()) {
+    fun isValidLogoSize(logoSize: String): Boolean = if (logoSize.isBlank() || logoSizes.isEmpty()) {
         false
-    } else logoSizes!!.contains(logoSize)
+    } else logoSizes.contains(logoSize)
 
     /**
      * Check to see if the size is valid for any of the images types
