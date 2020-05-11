@@ -26,10 +26,10 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/toSettings"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/navigation_settings" />
     </fragment>
     <fragment
-        android:id="@+id/settingsFragment"
+        android:id="@+id/navigation_settings"
         android:name="com.afterroot.watchdone.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
 </navigation>

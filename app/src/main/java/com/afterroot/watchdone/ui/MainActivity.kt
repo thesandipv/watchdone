@@ -21,16 +21,15 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.afterroot.core.extensions.animateProperty
-import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -70,10 +69,9 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.navigation_home, R.id.navigation_settings)
+            setOf(R.id.navigation_home)
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        nav_view.setupWithNavController(navController)
     }
 
     override fun onStart() {
@@ -143,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                     userRef.get().addOnCompleteListener { getUserTask ->
                         if (getUserTask.isSuccessful) {
                             if (!getUserTask.result!!.exists()) {
-                                container.snackbar("User not available. Creating User..").anchorView = nav_view
+                                container.snackbar("User not available. Creating User..").anchorView = toolbar
                                 val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
                                 userRef.set(user).addOnCompleteListener { setUserTask ->
                                     if (!setUserTask.isSuccessful) Log.e(
@@ -183,7 +181,7 @@ class MainActivity : AppCompatActivity() {
                         getString(R.string.text_action_grant)
                     ) {
                         checkPermissions()
-                    }.anchorView = nav_view
+                    }.anchorView = toolbar
                 } else {
                     loadFragments()
                 }
@@ -191,37 +189,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideNavigation() {
-        if (nav_view.isVisible) {
-            nav_view.run {
-                animateProperty("translationY", 0f, nav_view.height.toFloat(), 200)
-                visible(false)
-            }
-        }
-    }
-
-    private fun showNavigation() {
-        if (!nav_view.isVisible) {
-            nav_view.run {
-                animateProperty("translationY", nav_view.height.toFloat(), 0f, 200)
-                visible(true)
-            }
-        }
-    }
-
     private fun loadFragments() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
-            hideNavigation()
             when (destination.id) {
                 R.id.navigation_home -> {
                     //TODO
+                    fab.show()
                 }
+
+                R.id.navigation_settings -> fab.hide()
             }
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment)) || super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.bottom_nav_menu, menu)
+        return true
     }
 
     companion object {
