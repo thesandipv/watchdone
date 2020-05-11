@@ -99,12 +99,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (settings.baseUrl == null) {
-            settings.baseUrl = get<TmdbApi>().configuration?.secureBaseUrl
+            settings.baseUrl = get<TmdbApi>().configuration.secureBaseUrl
         }
         if (settings.posterSizes == null) {
             val set = mutableSetOf<String>()
             try {
-                get<TmdbApi>().configuration?.posterSizes?.map {
+                get<TmdbApi>().configuration.posterSizes.map {
                     set.add(it)
                 }
             } catch (e: Exception) {

@@ -24,7 +24,8 @@ import com.afterroot.tmdbapi.model.MovieDb
 import org.koin.core.Koin
 import java.util.ArrayList
 
-class DelegateAdapter(callbacks: ItemSelectedCallback , koin: Koin) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DelegateAdapter(callbacks: ItemSelectedCallback<MovieDb>, koin: Koin) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mList = ArrayList<MovieDb?>()
     private var delegateAdapters = SparseArrayCompat<AdapterType>()
 
