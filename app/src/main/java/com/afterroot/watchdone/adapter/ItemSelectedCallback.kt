@@ -18,7 +18,8 @@ package com.afterroot.watchdone.adapter
 
 import android.view.View
 
-interface ItemSelectedCallback {
-    fun onClick(position: Int, view: View? = null)
+interface ItemSelectedCallback<T> {
+    fun onClick(position: Int, view: View? = null) {}
+    fun onClick(position: Int, view: View? = null, item: T) {}
     fun onLongClick(position: Int) {}
 }
