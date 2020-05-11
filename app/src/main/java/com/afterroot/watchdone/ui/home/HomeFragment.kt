@@ -16,13 +16,11 @@
 package com.afterroot.watchdone.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
@@ -32,9 +30,11 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_add_watched.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.list_dialog.*
@@ -48,25 +48,20 @@ import org.koin.android.ext.android.getKoin
 
 class HomeFragment : Fragment() {
     lateinit var dialogCustomView: View
-    private lateinit var homeViewModel: HomeViewModel
+    private val homeViewModel: HomeViewModel by viewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onResume() {
         super.onResume()
-        button_action_add_watched.setOnClickListener {
+        requireActivity().fab.setOnClickListener {
             MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                title(text = "Add Watched")
                 customView(R.layout.content_add_watched)
                 dialogCustomView = getCustomView()
                 positiveButton(text = "Add") {
-                    lifecycleScope.launch {
-                        //TODO Add Task
-                        showSelectDialog(input_title.text.toString())
-                    }
+                    showSelectDialog(input_title.text.toString())
                 }
             }
         }
@@ -74,28 +69,31 @@ class HomeFragment : Fragment() {
 
     private fun showSelectDialog(title: String) = GlobalScope.launch(Dispatchers.Main) {
         progress_bar.visible(true)
-        val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
-        progress_bar.visible(false)
-        Log.d(TAG, "showSelectDialog: ${movies.results}")
-        MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
-            title(text = "Add Watched")
-            customView(R.layout.list_dialog)
-            dialogCustomView = getCustomView().apply {
-                val adapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
-                    override fun onClick(position: Int, view: View?, item: MovieDb) {
-                        super.onClick(position, view, item)
-                        requireContext().toast(item.title.toString())
+        try {
+            val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
+            progress_bar.visible(false)
+            MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
+                customView(R.layout.list_dialog)
+                dialogCustomView = getCustomView().apply {
+                    val adapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
+                        override fun onClick(position: Int, view: View?, item: MovieDb) {
+                            super.onClick(position, view, item)
+                            requireContext().toast(item.title.toString())
+                        }
+                    }, getKoin())
+                    list.apply {
+                        val lm = GridLayoutManager(requireContext(), 2)
+                        layoutManager = lm
                     }
-                }, getKoin())
-                list.apply {
-                    val lm = GridLayoutManager(requireContext(), 2)
-                    layoutManager = lm
-                }
-                adapter.add(movies.results)
-                list.adapter = adapter
-                list.scheduleLayoutAnimation()
+                    adapter.add(movies.results)
+                    list.adapter = adapter
+                    list.scheduleLayoutAnimation()
 
+                }
             }
+        } catch (mde: MovieDbException) {
+            mde.printStackTrace()
+            progress_bar.visible(false)
         }
     }
 
