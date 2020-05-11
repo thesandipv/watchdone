@@ -28,7 +28,7 @@ import com.afterroot.watchdone.Settings
 import kotlinx.android.synthetic.main.list_item_movie.view.*
 import org.koin.core.Koin
 
-class MovieAdapterType(val callbacks: ItemSelectedCallback, koin: Koin) : AdapterType {
+class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin) : AdapterType {
     val settings = koin.get<Settings>()
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder = MovieVH(parent)
 
@@ -49,7 +49,7 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback, koin: Koin) : Adapte
             with(super.itemView) {
                 tag = item
                 setOnClickListener {
-                    callbacks.onClick(adapterPosition, itemView)
+                    callbacks.onClick(adapterPosition, itemView, item)
                 }
                 setOnLongClickListener {
                     callbacks.onLongClick(adapterPosition)

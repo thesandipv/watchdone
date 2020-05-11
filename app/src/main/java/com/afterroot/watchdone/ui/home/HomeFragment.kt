@@ -34,19 +34,21 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afterroot.tmdbapi.TmdbApi
+import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.afterroot.watchdone.api.Auth
 import kotlinx.android.synthetic.main.content_add_watched.*
 import kotlinx.android.synthetic.main.content_add_watched.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.list_dialog.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.doAsync
+import kotlinx.coroutines.withContext
+import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
-import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -83,15 +85,17 @@ class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
         }
     }
 
-    private fun showSelectDialog(title: String) {
-        val movies = get<TmdbApi>().search.searchMovie(title)
+    private fun showSelectDialog(title: String) = GlobalScope.launch(Dispatchers.Main) {
+        val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
         Log.d(TAG, "showSelectDialog: ${movies.results}")
         MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
             title(text = "Add Watched")
             customView(R.layout.list_dialog)
             dialogCustomView = getCustomView().apply {
-                val adapter = DelegateAdapter(object : ItemSelectedCallback {
-                    override fun onClick(position: Int, view: View?) {
+                val adapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
+                    override fun onClick(position: Int, view: View?, item: MovieDb) {
+                        super.onClick(position, view, item)
+                        requireContext().toast(item.title.toString())
                     }
                 }, getKoin())
                 list.apply {
