@@ -15,15 +15,11 @@
 
 package com.afterroot.watchdone.ui.home
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -33,13 +29,13 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import kotlinx.android.synthetic.main.content_add_watched.*
-import kotlinx.android.synthetic.main.content_add_watched.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.list_dialog.*
 import kotlinx.coroutines.Dispatchers
@@ -49,13 +45,8 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.GregorianCalendar
-import java.util.Locale
 
-class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+class HomeFragment : Fragment() {
     lateinit var dialogCustomView: View
     private lateinit var homeViewModel: HomeViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,11 +61,7 @@ class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
             MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT)).show {
                 title(text = "Add Watched")
                 customView(R.layout.content_add_watched)
-                dialogCustomView = getCustomView().apply {
-                    text_input_date.setOnClickListener {
-                        showDatePicker()
-                    }
-                }
+                dialogCustomView = getCustomView()
                 positiveButton(text = "Add") {
                     lifecycleScope.launch {
                         //TODO Add Task
@@ -86,7 +73,9 @@ class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
     }
 
     private fun showSelectDialog(title: String) = GlobalScope.launch(Dispatchers.Main) {
+        progress_bar.visible(true)
         val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
+        progress_bar.visible(false)
         Log.d(TAG, "showSelectDialog: ${movies.results}")
         MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
             title(text = "Add Watched")
@@ -99,7 +88,7 @@ class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
                     }
                 }, getKoin())
                 list.apply {
-                    val lm = GridLayoutManager(requireContext(), 3)
+                    val lm = GridLayoutManager(requireContext(), 2)
                     layoutManager = lm
                 }
                 adapter.add(movies.results)
@@ -108,46 +97,6 @@ class HomeFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
 
             }
         }
-    }
-
-    private lateinit var cal: Calendar
-    private var day: Int? = 0
-    private var hourOfDay: Int? = 0
-    private var millis: Long = 0
-    private var minute: Int? = 0
-    private var month: Int? = 0
-    private var pickedDate: GregorianCalendar? = null
-    private var year: Int? = 0
-
-    private fun showDatePicker() {
-        cal = Calendar.getInstance()
-        day = cal.get(Calendar.DAY_OF_MONTH)
-        hourOfDay = cal.get(Calendar.HOUR_OF_DAY)
-        minute = cal.get(Calendar.MINUTE)
-        month = cal.get(Calendar.MONTH)
-        year = cal.get(Calendar.YEAR)
-        val datePicker = DatePickerDialog(requireContext(), this, year!!, month!!, day!!)
-        datePicker.show()
-    }
-
-    private fun showTimePicker() {
-        val picker = TimePickerDialog(this.context, this, hourOfDay!!, minute!!, false)
-        picker.show()
-    }
-
-    override fun onDateSet(p0: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        this.year = year
-        this.month = monthOfYear
-        this.day = dayOfMonth
-        showTimePicker()
-    }
-
-    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-        pickedDate = GregorianCalendar(year!!, month!!, day!!, hourOfDay, minute)
-        millis = pickedDate!!.timeInMillis
-
-        val formatter = SimpleDateFormat(getString(R.string.date_time_format), Locale.US)
-        dialogCustomView.text_input_date.text = formatter.format(Date(millis))
     }
 
     companion object {
