@@ -31,15 +31,4 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_action_add_watched"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_add_watched"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:targetApi="o" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+ </androidx.constraintlayout.widget.ConstraintLayout>
