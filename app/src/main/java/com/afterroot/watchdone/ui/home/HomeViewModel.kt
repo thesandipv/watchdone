@@ -15,6 +15,29 @@
 
 package com.afterroot.watchdone.ui.home
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 
-class HomeViewModel : ViewModel()
+class HomeViewModel : ViewModel() {
+    var groupSnapshot: MutableLiveData<ViewModelState> = MutableLiveData()
+
+    fun getWatchlistSnapshot(userId: String, db: FirebaseFirestore): LiveData<ViewModelState> {
+        if (groupSnapshot.value == null) {
+            groupSnapshot.postValue(ViewModelState.Loading)
+            db.collection("users").document(userId).collection("watchdone")
+                .addSnapshotListener { querySnapshot, _ ->
+                    if (querySnapshot != null) {
+                        groupSnapshot.postValue(ViewModelState.Loaded(querySnapshot))
+                    }
+                }
+        }
+        return groupSnapshot
+    }
+}
+
+sealed class ViewModelState {
+    object Loading : ViewModelState()
+    data class Loaded<T>(val data: T) : ViewModelState()
+}
