@@ -45,7 +45,7 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin)
         fun bind(item: MovieDb) {
             titleView.text = item.title
             yearView.text = item.releaseDate
-            GlideApp.with(posterView.context).load(baseUrl + "w342" + item.posterPath).error(R.drawable.ic_broken_image).into(posterView)
+            GlideApp.with(posterView.context).load(baseUrl + "w342" + item.posterPath).into(posterView)
             with(super.itemView) {
                 tag = item
                 setOnClickListener {
