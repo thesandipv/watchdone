@@ -36,6 +36,10 @@ val firebaseModule = module {
     single {
         FirebaseStorage.getInstance()
     }
+
+    single {
+        FirebaseAuth.getInstance()
+    }
 }
 
 val appModule = module {

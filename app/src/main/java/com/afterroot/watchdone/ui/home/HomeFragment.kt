@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
@@ -34,6 +35,9 @@ import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_add_watched.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -65,6 +69,29 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+
+        val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
+            override fun onClick(position: Int, view: View?, item: MovieDb) {
+                super.onClick(position, view, item)
+                requireContext().toast(item.title.toString())
+            }
+        }, getKoin())
+        list.apply {
+            val lm = GridLayoutManager(requireContext(), 2)
+            layoutManager = lm
+        }
+        list.adapter = homeScreenAdapter
+        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, get())
+            .observe(this.viewLifecycleOwner, Observer {
+                if (it is ViewModelState.Loading) {
+                    progress_bar.visible(true)
+                } else if (it is ViewModelState.Loaded<*>) {
+                    progress_bar.visible(false)
+                    val listData = it.data as QuerySnapshot
+                    homeScreenAdapter.add(listData.toObjects(MovieDb::class.java))
+                    list.scheduleLayoutAnimation()
+                }
+            })
     }
 
     private fun showSelectDialog(title: String) = GlobalScope.launch(Dispatchers.Main) {
@@ -75,18 +102,23 @@ class HomeFragment : Fragment() {
             MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
                 customView(R.layout.list_dialog)
                 dialogCustomView = getCustomView().apply {
-                    val adapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
+                    val searchResultsAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
                         override fun onClick(position: Int, view: View?, item: MovieDb) {
                             super.onClick(position, view, item)
                             requireContext().toast(item.title.toString())
+                            get<FirebaseFirestore>().collection("users")
+                                .document(get<FirebaseAuth>().currentUser?.uid.toString()).collection("watchdone").document()
+                                .set(item).addOnCompleteListener {
+                                    requireContext().toast(it.result.toString())
+                                }
                         }
                     }, getKoin())
                     list.apply {
                         val lm = GridLayoutManager(requireContext(), 2)
                         layoutManager = lm
                     }
-                    adapter.add(movies.results)
-                    list.adapter = adapter
+                    searchResultsAdapter.add(movies.results)
+                    list.adapter = searchResultsAdapter
                     list.scheduleLayoutAnimation()
 
                 }
