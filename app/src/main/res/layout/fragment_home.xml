@@ -19,12 +19,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/list_dialog"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutAnimation="@anim/layout_anim_fall_down"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="10"
+        tools:listitem="@layout/list_item_movie" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
