@@ -52,7 +52,7 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin)
                     callbacks.onClick(adapterPosition, itemView, item)
                 }
                 setOnLongClickListener {
-                    callbacks.onLongClick(adapterPosition)
+                    callbacks.onLongClick(adapterPosition, item)
                     return@setOnLongClickListener true
                 }
             }
