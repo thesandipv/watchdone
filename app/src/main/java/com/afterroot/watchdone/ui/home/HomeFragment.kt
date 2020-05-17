@@ -23,35 +23,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import com.afollestad.materialdialogs.LayoutMode
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi.model.MovieDb
-import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.afterroot.watchdone.ui.SearchListDialogFragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_add_watched.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.list_dialog.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 
 class HomeFragment : Fragment() {
-    lateinit var dialogCustomView: View
     private val homeViewModel: HomeViewModel by viewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -61,18 +47,16 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         requireActivity().fab.setOnClickListener {
-            MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                customView(R.layout.content_add_watched)
-                dialogCustomView = getCustomView()
-                positiveButton(text = "Add") {
-                    showSelectDialog(input_title.text.toString())
-                }
-            }
+            SearchListDialogFragment().show(parentFragmentManager, null)
         }
 
         val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
                 super.onClick(position, view, item)
+            }
+
+            override fun onLongClick(position: Int, item: MovieDb) {
+                super.onLongClick(position, item)
                 requireContext().toast(item.title.toString())
             }
         }, getKoin())
@@ -92,41 +76,6 @@ class HomeFragment : Fragment() {
                     list.scheduleLayoutAnimation()
                 }
             })
-    }
-
-    private fun showSelectDialog(title: String) = GlobalScope.launch(Dispatchers.Main) {
-        progress_bar.visible(true)
-        try {
-            val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
-            progress_bar.visible(false)
-            MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
-                customView(R.layout.list_dialog)
-                dialogCustomView = getCustomView().apply {
-                    val searchResultsAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
-                        override fun onClick(position: Int, view: View?, item: MovieDb) {
-                            super.onClick(position, view, item)
-                            requireContext().toast(item.title.toString())
-                            get<FirebaseFirestore>().collection("users")
-                                .document(get<FirebaseAuth>().currentUser?.uid.toString()).collection("watchdone").document()
-                                .set(item).addOnCompleteListener {
-                                    requireContext().toast(it.result.toString())
-                                }
-                        }
-                    }, getKoin())
-                    list.apply {
-                        val lm = GridLayoutManager(requireContext(), 2)
-                        layoutManager = lm
-                    }
-                    searchResultsAdapter.add(movies.results)
-                    list.adapter = searchResultsAdapter
-                    list.scheduleLayoutAnimation()
-
-                }
-            }
-        } catch (mde: MovieDbException) {
-            mde.printStackTrace()
-            progress_bar.visible(false)
-        }
     }
 
     companion object {
