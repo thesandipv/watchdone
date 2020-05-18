@@ -27,9 +27,16 @@
         <action
             android:id="@+id/toSettings"
             app:destination="@id/navigation_settings" />
+        <action
+            android:id="@+id/action_navigation_home_to_searchFragment"
+            app:destination="@id/navigation_search" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.afterroot.watchdone.ui.settings.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="@string/title_activity_settings" />
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.afterroot.watchdone.ui.search.SearchFragment"
+        android:label="@string/title_search" />
 </navigation>
