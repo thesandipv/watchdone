@@ -85,7 +85,7 @@ class SearchFragment : Fragment() {
                         .set(item).addOnCompleteListener {
                             view?.snackbar("Added")
                         }
-                    findNavController().popBackStack(R.id.navigation_home, true)
+                    findNavController().navigateUp()
                 }
 
                 override fun onLongClick(position: Int, item: MovieDb) {
