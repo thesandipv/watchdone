@@ -198,6 +198,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_settings -> fab.hide()
+                R.id.navigation_search -> fab.hide()
             }
         }
     }
