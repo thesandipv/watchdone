@@ -132,6 +132,9 @@ class TmdbApi @JvmOverloads constructor(
     val find: TmdbFind
         get() = TmdbFind(this)
 
+    val trending: TmdbTrending
+        get() = TmdbTrending(this)
+
     init {
         try {
             configuration = TmdbConfig(this).config.tmdbConfiguration
