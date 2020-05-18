@@ -60,6 +60,7 @@ class SearchFragment : Fragment() {
             }
             return@setOnKeyListener false
         }
+        loadTrending()
     }
 
     override fun onDestroy() {
@@ -74,6 +75,43 @@ class SearchFragment : Fragment() {
         list.visible(false, AutoTransition())
         try {
             val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
+            progress_bar.visible(false, AutoTransition())
+            list.visible(true, AutoTransition())
+            val searchResultsAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
+                override fun onClick(position: Int, view: View?, item: MovieDb) {
+                    super.onClick(position, view, item)
+                    view?.snackbar("Adding")
+                    get<FirebaseFirestore>().collection("users")
+                        .document(get<FirebaseAuth>().currentUser?.uid.toString()).collection("watchdone").document()
+                        .set(item).addOnCompleteListener {
+                            view?.snackbar("Added")
+                        }
+                    findNavController().navigateUp()
+                }
+
+                override fun onLongClick(position: Int, item: MovieDb) {
+                    super.onLongClick(position, item)
+                    requireContext().toast(item.title.toString())
+                }
+            }, getKoin())
+            list.apply {
+                val lm = GridLayoutManager(requireContext(), 2)
+                layoutManager = lm
+            }
+            searchResultsAdapter.add(movies.results)
+            list.adapter = searchResultsAdapter
+            list.scheduleLayoutAnimation()
+        } catch (mde: MovieDbException) {
+            mde.printStackTrace()
+            progress_bar.visible(false)
+        }
+    }
+
+    private fun loadTrending() = lifecycleScope.launch(Dispatchers.Main) {
+        progress_bar.visible(true, AutoTransition())
+        list.visible(false, AutoTransition())
+        try {
+            val movies = withContext(Dispatchers.Default) { get<TmdbApi>().trending.getMovies() }
             progress_bar.visible(false, AutoTransition())
             list.visible(true, AutoTransition())
             val searchResultsAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
