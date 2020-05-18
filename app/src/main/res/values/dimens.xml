@@ -20,7 +20,9 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="card_radius">16dp</dimen>
     <dimen name="padding_normal">8dp</dimen>
+    <dimen name="padding_normal_half">8dp</dimen>
     <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="bottom_height_search">64dp</dimen>
     <dimen name="margin_ref_to_fab">88dp</dimen>
     <dimen name="list_item_spacing">16dp</dimen>
     <dimen name="list_item_spacing_half">8dp</dimen>

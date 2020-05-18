@@ -191,6 +191,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadFragments() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
+            toolbar.apply {
+                performShow()
+                hideOnScroll = true
+            }
             when (destination.id) {
                 R.id.navigation_home -> {
                     //TODO
@@ -198,7 +202,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_settings -> fab.hide()
-                R.id.navigation_search -> fab.hide()
+                R.id.navigation_search -> {
+                    fab.hide()
+                    toolbar.hideOnScroll = false
+                }
             }
         }
     }
