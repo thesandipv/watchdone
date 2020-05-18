@@ -22,13 +22,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.afterroot.watchdone.ui.SearchListDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,10 +44,10 @@ class HomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         requireActivity().fab.setOnClickListener {
-            SearchListDialogFragment().show(parentFragmentManager, null)
+            findNavController().navigate(R.id.navigation_search)
         }
 
         val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
                     progress_bar.visible(false)
                     val listData = it.data as QuerySnapshot
                     homeScreenAdapter.add(listData.toObjects(MovieDb::class.java))
-                    list.scheduleLayoutAnimation()
+                    // list.scheduleLayoutAnimation()
                 }
             })
     }

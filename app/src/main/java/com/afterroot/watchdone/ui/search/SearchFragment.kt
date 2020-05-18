@@ -13,16 +13,18 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui
+package com.afterroot.watchdone.ui.search
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi.model.MovieDb
@@ -30,10 +32,9 @@ import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_search_list_dialog.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -43,10 +44,11 @@ import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 
-class SearchListDialogFragment : BottomSheetDialogFragment() {
+class SearchFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_search_list_dialog, container, false)
+        setHasOptionsMenu(false)
+        return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
     var searchTask: Job? = null
@@ -60,19 +62,20 @@ class SearchListDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
+    override fun onDestroy() {
+        super.onDestroy()
         searchTask?.apply {
             if (!isCompleted) cancel()
         }
     }
 
     private fun showSearchResults(title: String) = lifecycleScope.launch(Dispatchers.Main) {
-        progress_bar.visible(true)
+        progress_bar.visible(true, AutoTransition())
+        list.visible(false, AutoTransition())
         try {
             val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
-            progress_bar.visible(false)
-            list.visible(true)
+            progress_bar.visible(false, AutoTransition())
+            list.visible(true, AutoTransition())
             val searchResultsAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
                 override fun onClick(position: Int, view: View?, item: MovieDb) {
                     super.onClick(position, view, item)
@@ -82,7 +85,7 @@ class SearchListDialogFragment : BottomSheetDialogFragment() {
                         .set(item).addOnCompleteListener {
                             view?.snackbar("Added")
                         }
-                    dismiss()
+                    findNavController().popBackStack(R.id.navigation_home, true)
                 }
 
                 override fun onLongClick(position: Int, item: MovieDb) {
