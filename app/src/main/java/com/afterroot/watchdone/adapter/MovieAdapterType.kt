@@ -41,10 +41,12 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin)
         private val titleView: AppCompatTextView = itemView.title
         private val yearView: AppCompatTextView = itemView.year
         private val posterView: AppCompatImageView = itemView.poster
+        private val rating = itemView.rating
         private val baseUrl = settings.baseUrl
         fun bind(item: MovieDb) {
             titleView.text = item.title
             yearView.text = item.releaseDate
+            rating.text = item.voteAverage.toString()
             GlideApp.with(posterView.context).load(baseUrl + "w342" + item.posterPath).into(posterView)
             with(super.itemView) {
                 tag = item
