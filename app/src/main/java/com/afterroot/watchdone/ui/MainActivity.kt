@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.ui
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -23,13 +24,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Interpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.onNavDestinationSelected
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -53,7 +53,6 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val settings: Settings by inject()
 
@@ -61,17 +60,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.navigation_home)
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onStart() {
@@ -191,31 +179,60 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadFragments() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
+            val drawerToggle = DrawerArrowDrawable(this)
             toolbar.apply {
                 performShow()
                 hideOnScroll = true
+                navigationIcon = drawerToggle
+                setNavigationOnClickListener {
+                    findNavController(R.id.nav_host_fragment).navigateUp()
+                }
             }
             when (destination.id) {
                 R.id.navigation_home -> {
                     //TODO
                     fab.show()
+                    drawerToggle.apply {
+                        if (progress == 1f) progress(1f, 0f)
+                    }
+                    toolbar.setNavigationOnClickListener {
+                        BottomNavDrawerFragment().apply {
+                            show(supportFragmentManager, this.tag)
+                        }
+                    }
                 }
 
-                R.id.navigation_settings -> fab.hide()
+                R.id.navigation_settings -> {
+                    fab.hide()
+                    drawerToggle.progress(0f, 1f)
+                }
                 R.id.navigation_search -> {
                     fab.hide()
                     toolbar.hideOnScroll = false
+                    drawerToggle.progress(0f, 1f)
                 }
             }
         }
     }
 
+    private fun DrawerArrowDrawable.progress(
+        from: Float,
+        to: Float,
+        interpolator: Interpolator = AccelerateDecelerateInterpolator()
+    ) {
+        ObjectAnimator.ofFloat(this, "progress", from, to).apply {
+            this.interpolator = interpolator
+            this.duration = 400
+            start()
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
-        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
+        return findNavController(R.id.nav_host_fragment).navigateUp()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment)) || super.onOptionsItemSelected(item)
+        return false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
