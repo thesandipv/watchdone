@@ -43,5 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:hideOnScroll="true" />
+        app:fabAlignmentMode="center"
+        app:fabCradleRoundedCornerRadius="@dimen/fab_cradle_radius"
+        app:hideOnScroll="true"
+        app:layout_scrollFlags="scroll|enterAlways" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
