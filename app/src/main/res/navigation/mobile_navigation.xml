@@ -26,10 +26,18 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/toSettings"
-            app:destination="@id/navigation_settings" />
+            app:destination="@id/navigation_settings"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_navigation_home_to_searchFragment"
-            app:destination="@id/navigation_search" />
+            android:id="@+id/toSearch"
+            app:destination="@id/navigation_search"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -38,5 +46,6 @@
     <fragment
         android:id="@+id/navigation_search"
         android:name="com.afterroot.watchdone.ui.search.SearchFragment"
-        android:label="@string/title_search" />
+        android:label="@string/title_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>

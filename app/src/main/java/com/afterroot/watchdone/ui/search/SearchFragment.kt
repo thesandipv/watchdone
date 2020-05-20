@@ -51,7 +51,7 @@ class SearchFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
-    var searchTask: Job? = null
+    private var searchTask: Job? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         input_search.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -71,7 +71,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    var searchResultsAdapter: DelegateAdapter? = null
+    private var searchResultsAdapter: DelegateAdapter? = null
     private fun initAdapter() {
         val itemSelectedCallback = object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
