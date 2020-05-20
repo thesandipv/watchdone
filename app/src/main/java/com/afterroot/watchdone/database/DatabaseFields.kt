@@ -18,6 +18,7 @@ package com.afterroot.watchdone.database
 object DatabaseFields {
     //table 'users'
     const val COLLECTION_USERS = "users"
+    const val COLLECTION_WATCHDONE = "watchdone"
     const val FIELD_NAME = "name"
     const val FIELD_EMAIL = "email"
     const val FIELD_UID = "uid"
