@@ -41,4 +41,6 @@
     <color name="grey">#424242</color>
 
     <color name="ic_launcher_background">#FFFFFF</color>
+
+    <color name="color_divider">#80000000</color>
 </resources>

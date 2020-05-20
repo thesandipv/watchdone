@@ -47,4 +47,9 @@
     <string name="url_play_store_developer" translatable="false">https://play.google.com/store/apps/dev?id=5302118761742285445</string>
     <string name="url_privacy_policy" translatable="false">https://afterroot.web.app/privacy-policy</string>
     <string name="action_sign_out">Sign Out</string>
+    <string name="msg_profile_updated">Profile Updated</string>
+    <string name="msg_no_changes">No Changes to Save</string>
+    <string name="input_hint_name">Name</string>
+    <string name="input_hint_email">Email</string>
+    <string name="title_edit_profile">Edit Profile</string>
 </resources>

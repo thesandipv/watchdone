@@ -22,13 +22,12 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.utils.getGravtarUrl
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_bottom.*
 import kotlinx.android.synthetic.main.nav_header.view.*
-import org.apache.commons.codec.digest.DigestUtils
 import org.koin.android.ext.android.get
-import java.util.Locale
 
 class BottomNavDrawerFragment : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,8 +52,11 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                 button_sign_out.setOnClickListener {
                     get<FirebaseAuth>().signOut()
                 }
-                val emailMd5 = DigestUtils.md5Hex(user?.email?.toLowerCase(Locale.getDefault()))
-                GlideApp.with(requireContext()).load("https://www.gravatar.com/avatar/$emailMd5").circleCrop().into(avatar)
+                GlideApp.with(requireContext()).load(getGravtarUrl(user?.email.toString())).circleCrop().into(avatar)
+                setOnClickListener {
+                    findNavController().navigate(R.id.toEditProfile)
+                    dismiss()
+                }
             }
         }
     }
