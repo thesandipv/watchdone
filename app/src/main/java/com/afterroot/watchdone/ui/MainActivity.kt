@@ -199,10 +199,9 @@ class MainActivity : AppCompatActivity() {
             }
             when (destination.id) {
                 R.id.navigation_home -> {
-                    //TODO
                     fab.show()
                     drawerToggle.apply {
-                        if (progress == 1f) progress(1f, 0f)
+                        if (progress == 1f) progress(1f, 0f) //As hamburger
                     }
                     toolbar.setNavigationOnClickListener {
                         BottomNavDrawerFragment().apply {
@@ -213,15 +212,20 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_settings -> {
                     fab.hide()
-                    drawerToggle.progress(0f, 1f)
+                    drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_search -> {
                     fab.hide()
                     toolbar.hideOnScroll = false
-                    drawerToggle.progress(0f, 1f)
+                    drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_edit_profile -> {
-                    drawerToggle.progress(0f, 1f)
+                    fab.show()
+                    drawerToggle.progress(0f, 1f) //As back arrow
+                }
+                R.id.navigation_movie_info -> {
+                    fab.hide()
+                    drawerToggle.progress(0f, 1f) //As back arrow
                 }
             }
         }

@@ -20,7 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -40,7 +40,7 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 
 class HomeFragment : Fragment() {
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_home, container, false)
@@ -64,6 +64,8 @@ class HomeFragment : Fragment() {
         val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
                 super.onClick(position, view, item)
+                homeViewModel.selectMovie(item)
+                findNavController().navigate(R.id.toMovieInfo)
             }
 
             override fun onLongClick(position: Int, item: MovieDb) {

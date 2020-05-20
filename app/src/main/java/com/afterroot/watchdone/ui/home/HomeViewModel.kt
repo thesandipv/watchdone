@@ -18,22 +18,32 @@ package com.afterroot.watchdone.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.watchdone.database.DatabaseFields
 import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeViewModel : ViewModel() {
-    var groupSnapshot: MutableLiveData<ViewModelState> = MutableLiveData()
+    private var watchlistSnapshot: MutableLiveData<ViewModelState> = MutableLiveData()
+    val selected = MutableLiveData<MovieDb>()
 
     fun getWatchlistSnapshot(userId: String, db: FirebaseFirestore): LiveData<ViewModelState> {
-        if (groupSnapshot.value == null) {
-            groupSnapshot.postValue(ViewModelState.Loading)
-            db.collection("users").document(userId).collection("watchdone")
+        if (watchlistSnapshot.value == null) {
+            watchlistSnapshot.postValue(ViewModelState.Loading)
+            db.collection(DatabaseFields.COLLECTION_USERS).document(userId).collection(DatabaseFields.COLLECTION_WATCHDONE)
                 .addSnapshotListener { querySnapshot, _ ->
                     if (querySnapshot != null) {
-                        groupSnapshot.postValue(ViewModelState.Loaded(querySnapshot))
+                        watchlistSnapshot.postValue(ViewModelState.Loaded(querySnapshot))
                     }
                 }
         }
-        return groupSnapshot
+        return watchlistSnapshot
+    }
+
+    /**
+     * For sending data to other fragment
+     */
+    fun selectMovie(movie: MovieDb) {
+        selected.value = movie
     }
 }
 

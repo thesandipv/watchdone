@@ -45,6 +45,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/toMovieInfo"
+            app:destination="@id/navigation_movie_info"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -54,10 +61,23 @@
         android:id="@+id/navigation_search"
         android:name="com.afterroot.watchdone.ui.search.SearchFragment"
         android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/searchToMovieInfo"
+            app:destination="@id/navigation_movie_info"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_edit_profile"
         android:name="com.afterroot.watchdone.ui.profile.EditProfileFragment"
         android:label="@string/title_edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/navigation_movie_info"
+        android:name="com.afterroot.watchdone.ui.home.MovieInfoFragment"
+        android:label="MovieInfoFragment"
+        tools:layout="@layout/fragment_movie_info" />
 </navigation>
