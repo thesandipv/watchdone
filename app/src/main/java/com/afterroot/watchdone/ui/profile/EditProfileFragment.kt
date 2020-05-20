@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 Sandip Vaghela
+ * Copyright (C) 2020 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,16 +27,15 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.watchdone.utils.getGravtarUrl
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
-import org.apache.commons.codec.digest.DigestUtils
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
-import java.util.Locale
 
 class EditProfileFragment : Fragment() {
 
@@ -56,29 +55,32 @@ class EditProfileFragment : Fragment() {
                 input_profile_name.setText(user.displayName)
                 input_email.setText(user.email)
                 input_email.isEnabled = false
-                requireActivity().fab.apply {
-                    setOnClickListener {
-                        val newName = this@with.input_profile_name.text.toString().trim()
-                        if (user.displayName != newName) {
-                            val request = UserProfileChangeRequest.Builder()
-                                .setDisplayName(newName)
-                                .build()
-                            user.updateProfile(request).addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    requireContext().toast(getString(R.string.msg_profile_updated))
-                                    db.collection(DatabaseFields.COLLECTION_USERS)
-                                        .document(user.uid)
-                                        .update(DatabaseFields.FIELD_NAME, newName)
+                requireActivity().apply {
+                    fab.apply {
+                        setOnClickListener {
+                            val newName = this@with.input_profile_name.text.toString().trim()
+                            if (user.displayName != newName) {
+                                val request = UserProfileChangeRequest.Builder()
+                                    .setDisplayName(newName)
+                                    .build()
+                                user.updateProfile(request).addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        requireContext().toast(getString(R.string.msg_profile_updated))
+                                        db.collection(DatabaseFields.COLLECTION_USERS)
+                                            .document(user.uid)
+                                            .update(DatabaseFields.FIELD_NAME, newName)
+                                    }
                                 }
-                            }
-                        } else requireContext().toast(getString(R.string.msg_no_changes))
+                            } else requireContext().toast(getString(R.string.msg_no_changes))
+                        }
+                        setImageDrawable(requireContext().getDrawableExt(R.drawable.ic_save, R.color.color_on_secondary))
                     }
-                    setImageDrawable(requireContext().getDrawableExt(R.drawable.ic_save, R.color.color_on_secondary))
+                    toolbar.apply {
+                        fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
+                        fabAnimationMode = BottomAppBar.FAB_ANIMATION_MODE_SLIDE
+                    }
+                    GlideApp.with(requireContext()).load(getGravtarUrl(user.email.toString())).circleCrop().into(avatar)
                 }
-                requireActivity().toolbar.fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
-                requireActivity().toolbar.fabAnimationMode = BottomAppBar.FAB_ANIMATION_MODE_SLIDE
-                val emailMd5 = DigestUtils.md5Hex(user.email?.toLowerCase(Locale.getDefault()))
-                GlideApp.with(requireContext()).load("https://www.gravatar.com/avatar/$emailMd5").circleCrop().into(avatar)
             }
         } else {
             startActivity(Intent(this.context, SplashActivity::class.java))

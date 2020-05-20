@@ -20,13 +20,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afterroot.core.extensions.isNetworkAvailable
 import com.afterroot.watchdone.Constants.RC_LOGIN
 import com.afterroot.watchdone.R
-import com.afterroot.core.extensions.isNetworkAvailable
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.toast
+import org.koin.android.ext.android.get
 
 class SplashActivity : AppCompatActivity() {
 
@@ -35,7 +36,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val auth = FirebaseAuth.getInstance()
+        val auth: FirebaseAuth = get()
         if (auth.currentUser == null && this.isNetworkAvailable()) {
             tryLogin()
         } else if (auth.currentUser == null && !this.isNetworkAvailable()) {
