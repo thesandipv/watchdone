@@ -42,7 +42,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
         navigation_view.apply {
             setNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.navigation_settings -> findNavController().navigate(R.id.navigation_settings)
+                    R.id.navigation_settings -> findNavController().navigate(R.id.toSettings)
                 }
                 dismiss()
                 true

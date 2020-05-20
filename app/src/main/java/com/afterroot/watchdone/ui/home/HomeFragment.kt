@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().fab.setOnClickListener {
-            findNavController().navigate(R.id.navigation_search)
+            findNavController().navigate(R.id.toSearch)
         }
 
         val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {

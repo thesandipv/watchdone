@@ -40,7 +40,7 @@
             app:layout_constraintVertical_bias="0.0"
             tools:context=".ui.search.SearchFragment"
             tools:listitem="@layout/list_item_movie"
-            tools:visibility="invisible" />
+            tools:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
