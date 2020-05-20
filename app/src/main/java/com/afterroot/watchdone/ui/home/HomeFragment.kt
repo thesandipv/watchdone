@@ -24,11 +24,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,8 +48,17 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().fab.setOnClickListener {
-            findNavController().navigate(R.id.toSearch)
+        requireActivity().apply {
+            fab.apply {
+                setOnClickListener {
+                    findNavController().navigate(R.id.toSearch)
+                }
+                setImageDrawable(requireContext().getDrawableExt(R.drawable.ic_add))
+            }
+            toolbar.apply {
+                fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
+                fabAnimationMode = BottomAppBar.FAB_ANIMATION_MODE_SLIDE
+            }
         }
 
         val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
