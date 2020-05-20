@@ -217,6 +217,9 @@ class MainActivity : AppCompatActivity() {
                     toolbar.hideOnScroll = false
                     drawerToggle.progress(0f, 1f)
                 }
+                R.id.navigation_edit_profile -> {
+                    drawerToggle.progress(0f, 1f)
+                }
             }
         }
     }
