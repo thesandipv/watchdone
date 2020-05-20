@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             //Greater than Lollipop
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                    checkPermissions()
+                    checkPermissions() //Load Fragments after checking permissions
                 }
             }
         } else {
@@ -123,6 +123,9 @@ class MainActivity : AppCompatActivity() {
         addUserInfoInDB()
     }
 
+    /**
+     * Add user info in FireStore Database
+     */
     private fun addUserInfoInDB() {
         try {
             val curUser = FirebaseUtils.auth!!.currentUser
@@ -157,9 +160,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkPermissions() {
         val permissionChecker = PermissionChecker(this)
-        if (permissionChecker.lacksPermissions(manifestPermissions)) {
+        if (permissionChecker.lacksPermissions(manifestPermissions)) { //missing permissions
             ActivityCompat.requestPermissions(this, manifestPermissions, RC_PERMISSION)
-        } else {
+        } else { //no missing permissions
             loadFragments()
         }
     }
@@ -224,6 +227,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Extension function for animating progress of DrawerArrowDrawable
+     * @param from start progress
+     * @param to end progress
+     * @param interpolator interpolator for Animation. Default is AccelerateDecelerateInterpolator
+     */
     private fun DrawerArrowDrawable.progress(
         from: Float,
         to: Float,
@@ -245,7 +254,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.bottom_nav_menu, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
