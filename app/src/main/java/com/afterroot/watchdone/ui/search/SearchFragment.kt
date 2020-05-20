@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,19 +33,18 @@ import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.afterroot.watchdone.ui.home.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 
 class SearchFragment : Fragment() {
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(false)
@@ -76,13 +76,8 @@ class SearchFragment : Fragment() {
         val itemSelectedCallback = object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
                 super.onClick(position, view, item)
-                view?.snackbar("Adding")
-                get<FirebaseFirestore>().collection("users")
-                    .document(get<FirebaseAuth>().currentUser?.uid.toString()).collection("watchdone").document()
-                    .set(item).addOnCompleteListener {
-                        view?.snackbar("Added")
-                    }
-                findNavController().navigateUp()
+                homeViewModel.selectMovie(item)
+                findNavController().navigate(R.id.searchToMovieInfo)
             }
 
             override fun onLongClick(position: Int, item: MovieDb) {
