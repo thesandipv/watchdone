@@ -178,4 +178,6 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
+
+    implementation 'commons-codec:commons-codec:20041127.091804'
 }
