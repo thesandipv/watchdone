@@ -33,6 +33,7 @@ class DelegateAdapter(callbacks: ItemSelectedCallback<MovieDb>, koin: Koin) :
         with(delegateAdapters) {
             put(Types.MOVIE, MovieAdapterType(callbacks, koin))
         }
+        stateRestorationPolicy = StateRestorationPolicy.PREVENT
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -49,6 +50,7 @@ class DelegateAdapter(callbacks: ItemSelectedCallback<MovieDb>, koin: Koin) :
         removeAll()
         mList.addAll(value)
         notifyItemRangeInserted(0, mList.size)
+        stateRestorationPolicy = StateRestorationPolicy.ALLOW
     }
 
     private fun removeAll() {
