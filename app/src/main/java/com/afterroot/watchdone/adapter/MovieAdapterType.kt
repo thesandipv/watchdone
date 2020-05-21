@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.inflate
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
@@ -47,14 +48,16 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin)
             titleView.text = item.title
             yearView.text = item.releaseDate
             rating.text = item.voteAverage.toString()
-            GlideApp.with(posterView.context).load(baseUrl + "w342" + item.posterPath).into(posterView)
+            if (item.posterPath != null) {
+                GlideApp.with(posterView.context).load(baseUrl + "w342" + item.posterPath).into(posterView)
+            } else GlideApp.with(posterView.context).load(posterView.context.getDrawableExt(R.drawable.ic_broken_image)).into(posterView)
             with(super.itemView) {
                 tag = item
                 setOnClickListener {
-                    callbacks.onClick(adapterPosition, itemView, item)
+                    callbacks.onClick(bindingAdapterPosition, itemView, item)
                 }
                 setOnLongClickListener {
-                    callbacks.onLongClick(adapterPosition, item)
+                    callbacks.onLongClick(bindingAdapterPosition, item)
                     return@setOnLongClickListener true
                 }
             }
