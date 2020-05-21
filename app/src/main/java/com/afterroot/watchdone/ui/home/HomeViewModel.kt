@@ -17,13 +17,21 @@ package com.afterroot.watchdone.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.watchdone.database.DatabaseFields
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.core.Koin
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(val savedState: SavedStateHandle) : ViewModel() {
     private var watchlistSnapshot: MutableLiveData<ViewModelState> = MutableLiveData()
+    private var trendingMovies: MutableLiveData<MovieResultsPage> = MutableLiveData()
     val selected = MutableLiveData<MovieDb>()
 
     fun getWatchlistSnapshot(userId: String, db: FirebaseFirestore): LiveData<ViewModelState> {
@@ -37,6 +45,15 @@ class HomeViewModel : ViewModel() {
                 }
         }
         return watchlistSnapshot
+    }
+
+    fun getTrendingMovies(koin: Koin, isReload: Boolean = false): LiveData<MovieResultsPage> {
+        if (trendingMovies.value == null || isReload) {
+            viewModelScope.launch(Dispatchers.Default) {
+                trendingMovies.postValue(koin.get<TmdbApi>().trending.getMovies())
+            }
+        }
+        return trendingMovies
     }
 
     /**

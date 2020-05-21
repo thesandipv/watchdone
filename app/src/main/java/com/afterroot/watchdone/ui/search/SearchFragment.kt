@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -112,11 +113,12 @@ class SearchFragment : Fragment() {
         progress_bar.visible(true, AutoTransition())
         list.visible(false, AutoTransition())
         try {
-            val movies = withContext(Dispatchers.Default) { get<TmdbApi>().trending.getMovies() }
-            progress_bar.visible(false, AutoTransition())
-            list.visible(true, AutoTransition())
-            searchResultsAdapter?.add(movies.results)
-            list.scheduleLayoutAnimation()
+            homeViewModel.getTrendingMovies(getKoin()).observe(viewLifecycleOwner, Observer {
+                progress_bar.visible(false, AutoTransition())
+                list.visible(true, AutoTransition())
+                searchResultsAdapter?.add(it.results)
+                list.scheduleLayoutAnimation()
+            })
         } catch (mde: MovieDbException) {
             mde.printStackTrace()
             progress_bar.visible(false)
