@@ -19,15 +19,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.afterroot.tmdbapi.TmdbApi
+import androidx.lifecycle.liveData
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.tmdbapi2.TMDbRepository
 import com.afterroot.watchdone.database.DatabaseFields
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.koin.core.Koin
 
 class HomeViewModel(val savedState: SavedStateHandle) : ViewModel() {
     private var watchlistSnapshot: MutableLiveData<ViewModelState> = MutableLiveData()
@@ -47,11 +44,11 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel() {
         return watchlistSnapshot
     }
 
-    fun getTrendingMovies(koin: Koin, isReload: Boolean = false): LiveData<MovieResultsPage> {
+    fun getTrendingMovies(repo: TMDbRepository, isReload: Boolean = false): LiveData<MovieResultsPage> {
         if (trendingMovies.value == null || isReload) {
-            viewModelScope.launch(Dispatchers.Default) {
-                trendingMovies.postValue(koin.get<TmdbApi>().trending.getMovies())
-            }
+            trendingMovies = liveData {
+                emit(repo.getTrendingMovies())
+            } as MutableLiveData<MovieResultsPage>
         }
         return trendingMovies
     }

@@ -16,6 +16,10 @@
 package com.afterroot.watchdone.di
 
 import com.afterroot.tmdbapi.TmdbApi
+import com.afterroot.tmdbapi2.Constants.TMDB_BASE_URL
+import com.afterroot.tmdbapi2.TMDbInterceptor
+import com.afterroot.tmdbapi2.TMDbRepository
+import com.afterroot.tmdbapi2.api.MoviesApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
@@ -23,8 +27,12 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 val firebaseModule = module {
     single {
@@ -52,3 +60,27 @@ val appModule = module {
         TmdbApi(BuildConfig.TMDB_API)
     }
 }
+
+val apiModule = module {
+    factory { provideOkHttpClient() }
+    factory { provideMoviesApi(get()) }
+    single { provideRetrofit(get()) }
+    factory { TMDbRepository(get()) }
+}
+
+fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    return Retrofit.Builder()
+        .baseUrl(TMDB_BASE_URL)
+        .addConverterFactory(JacksonConverterFactory.create())
+        .client(okHttpClient)
+        .build()
+}
+
+fun provideOkHttpClient() = OkHttpClient().newBuilder()
+    .addInterceptor(TMDbInterceptor(BuildConfig.TMDB_API))
+    .addInterceptor(HttpLoggingInterceptor().apply {
+        level =
+            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+    }).build()
+
+fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi::class.java)

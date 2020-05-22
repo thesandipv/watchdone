@@ -16,6 +16,7 @@
 package com.afterroot.watchdone
 
 import androidx.multidex.MultiDexApplication
+import com.afterroot.watchdone.di.apiModule
 import com.afterroot.watchdone.di.appModule
 import com.afterroot.watchdone.di.firebaseModule
 import org.koin.android.ext.koin.androidContext
@@ -32,7 +33,7 @@ class MyApplication : MultiDexApplication() {
         startKoin {
             androidLogger()
             androidContext(this@MyApplication)
-            modules(listOf(firebaseModule, appModule))
+            modules(listOf(firebaseModule, appModule, apiModule))
         }
     }
 }
