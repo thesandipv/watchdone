@@ -59,6 +59,9 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     implementation 'com.google.guava:guava:29.0-jre'
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
 
     implementation 'commons-codec:commons-codec:20041127.091804'
     implementation 'org.apache.commons:commons-lang3:3.10'
