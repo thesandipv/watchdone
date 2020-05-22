@@ -21,5 +21,5 @@ import retrofit2.http.Path
 
 interface MoviesApi {
     @GET("3/trending/movie/{by}")
-    suspend fun getTrendingMovies(@Path("by") by: String): MovieResultsPage
+    suspend fun getMoviesTrendingInSearch(@Path("by") by: String): MovieResultsPage
 }
