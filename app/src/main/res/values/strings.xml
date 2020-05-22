@@ -14,6 +14,7 @@
   -->
 
 <resources>
+    <string name="action_sign_out">Sign Out</string>
     <string name="ad_banner_unit_id" translatable="false">ca-app-pub-6628325093439880/1366582369</string>
     <string name="admob_app_id" translatable="false">ca-app-pub-6628325093439880~2908563040</string>
     <string name="app_name">WatchDone</string>
@@ -24,11 +25,16 @@
     <string name="dialog_title_no_network">No Network</string>
     <string name="fcm_channel_default">Updates</string>
     <string name="fcm_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="input_hint_email">Email</string>
+    <string name="input_hint_name">Name</string>
     <string name="input_title">Title</string>
     <string name="key_version" translatable="false">version</string>
     <string name="made_with_love">Made with ❤ In India.</string>
     <string name="msg_grant_app_permissions">Please Grant Permissions</string>
     <string name="msg_login_failed">Login Failed</string>
+    <string name="msg_no_changes">No Changes to Save</string>
+    <string name="msg_profile_updated">Profile Updated</string>
+    <string name="pref_title_image_size">Image Size</string>
     <string name="pref_title_privacy_policy">Privacy Policy</string>
     <string name="select_date">Select Date/Time</string>
     <string name="text_action_exit">Exit</string>
@@ -40,16 +46,11 @@
     <string name="title_activity_compose">WatchDone</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_edit_profile">Edit Profile</string>
     <string name="title_home">WatchDone</string>
     <string name="title_search">Search</string>
     <string name="title_search_results">Search Results for %s</string>
     <string name="title_settings">Settings</string>
     <string name="url_play_store_developer" translatable="false">https://play.google.com/store/apps/dev?id=5302118761742285445</string>
     <string name="url_privacy_policy" translatable="false">https://afterroot.web.app/privacy-policy</string>
-    <string name="action_sign_out">Sign Out</string>
-    <string name="msg_profile_updated">Profile Updated</string>
-    <string name="msg_no_changes">No Changes to Save</string>
-    <string name="input_hint_name">Name</string>
-    <string name="input_hint_email">Email</string>
-    <string name="title_edit_profile">Edit Profile</string>
 </resources>

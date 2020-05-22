@@ -15,6 +15,21 @@
 
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="App Settings">
+        <ListPreference
+            android:defaultValue="@string/theme_device_default"
+            android:entries="@array/theme_mode"
+            android:entryValues="@array/theme_mode"
+            android:key="app_theme"
+            android:title="App Theme"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="TMDb Settings">
+        <ListPreference
+            android:key="image_size"
+            android:title="@string/pref_title_image_size"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
     <PreferenceCategory app:title="About">
         <Preference
             app:icon="@mipmap/ic_launcher"

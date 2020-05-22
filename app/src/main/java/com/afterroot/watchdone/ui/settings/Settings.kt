@@ -21,10 +21,9 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.afterroot.watchdone.Constants
 
-class Settings(context: Context) {
+class Settings(val context: Context) {
 
     private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val mContext = context
     private fun putString(key: String, value: String?) = preferences.edit(true) {
         putString(key, value)
     }
@@ -48,7 +47,10 @@ class Settings(context: Context) {
     var baseUrl
         get() = preferences.getString(Constants.PREF_KEY_BASE_IMAGE_URL, null)
         set(value) = putString(Constants.PREF_KEY_BASE_IMAGE_URL, value)
-    var posterSizes
+    var posterSizes: MutableSet<String>?
         get() = preferences.getStringSet(Constants.PREF_KEY_POSTER_SIZES, null)
         set(value) = putStringSet(Constants.PREF_KEY_POSTER_SIZES, value)
+    var imageSize: String?
+        get() = preferences.getString(Constants.PREF_KEY_IMAGE_SIZE, "w342")
+        set(value) = putString(Constants.PREF_KEY_IMAGE_SIZE, value)
 }

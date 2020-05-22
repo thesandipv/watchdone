@@ -16,10 +16,12 @@
 package com.afterroot.watchdone
 
 object Constants {
+    const val PREF_KEY_BASE_IMAGE_URL = "base_url"
     const val PREF_KEY_FIRST_INSTALL = "first_install_2"
+    const val PREF_KEY_IMAGE_SIZE = "image_size"
+    const val PREF_KEY_POSTER_SIZES = "poster_sizes"
+    const val PREF_KEY_THEME = "app_theme"
     const val RC_LOGIN = 42
     const val RC_PERMISSION = 256
     const val RC_STORAGE_ACCESS = 12
-    const val PREF_KEY_BASE_IMAGE_URL = "base_url"
-    const val PREF_KEY_POSTER_SIZES = "poster_sizes"
 }

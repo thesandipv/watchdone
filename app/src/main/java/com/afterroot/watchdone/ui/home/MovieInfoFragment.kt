@@ -25,8 +25,8 @@ import androidx.lifecycle.Observer
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -51,7 +51,8 @@ class MovieInfoFragment : Fragment() {
                 if (state is ViewModelState.Loaded<*>) {
                     val snapshot = (state.data as QuerySnapshot).toObjects(MovieDb::class.java)
                     homeViewModel.selected.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
-                        GlideApp.with(this).load(settings.baseUrl + "w342" + movieDb.posterPath).into(movie_poster)
+                        GlideApp.with(this).load(settings.baseUrl + settings.imageSize + movieDb.posterPath)
+                            .into(movie_poster)
                         movie_title.text = movieDb.title
                         movie_overview.text = movieDb.overview
                         action_add_wlist.apply {
