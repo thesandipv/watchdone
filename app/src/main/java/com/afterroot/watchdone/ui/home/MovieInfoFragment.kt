@@ -25,7 +25,7 @@ import androidx.lifecycle.Observer
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.Settings
+import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.database.DatabaseFields
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

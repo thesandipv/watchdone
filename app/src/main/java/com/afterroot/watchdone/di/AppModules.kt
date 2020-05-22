@@ -15,13 +15,14 @@
 
 package com.afterroot.watchdone.di
 
+import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.Settings
+import com.afterroot.watchdone.ui.settings.Settings
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.afterroot.tmdbapi.TmdbApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
