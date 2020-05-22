@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
-import com.afterroot.tmdbapi2.TMDbRepository
+import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.database.DatabaseFields
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -44,10 +44,10 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel() {
         return watchlistSnapshot
     }
 
-    fun getTrendingMovies(repo: TMDbRepository, isReload: Boolean = false): LiveData<MovieResultsPage> {
+    fun getTrendingMovies(repo: MoviesRepository, isReload: Boolean = false): LiveData<MovieResultsPage> {
         if (trendingMovies.value == null || isReload) {
             trendingMovies = liveData {
-                emit(repo.getTrendingMovies())
+                emit(repo.getMoviesTrendingInSearch())
             } as MutableLiveData<MovieResultsPage>
         }
         return trendingMovies

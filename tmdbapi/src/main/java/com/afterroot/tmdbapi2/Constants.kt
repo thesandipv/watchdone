@@ -17,4 +17,6 @@ package com.afterroot.tmdbapi2
 
 object Constants {
     const val TMDB_BASE_URL = "https://api.themoviedb.org/"
+    const val PARAM_KEY = "api_key"
+    const val PARAM_LANGUAGE = "language"
 }
