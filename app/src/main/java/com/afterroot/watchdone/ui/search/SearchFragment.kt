@@ -113,7 +113,7 @@ class SearchFragment : Fragment() {
         progress_bar.visible(true, AutoTransition())
         list.visible(false, AutoTransition())
         try {
-            homeViewModel.getTrendingMovies(getKoin()).observe(viewLifecycleOwner, Observer {
+            homeViewModel.getTrendingMovies(get()).observe(viewLifecycleOwner, Observer {
                 progress_bar.visible(false, AutoTransition())
                 list.visible(true, AutoTransition())
                 searchResultsAdapter?.add(it.results)

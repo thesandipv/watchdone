@@ -31,7 +31,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.fragment_movie_info.*
-import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
@@ -61,9 +60,7 @@ class MovieInfoFragment : Fragment() {
                                 get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
                                     .document(get<FirebaseAuth>().currentUser?.uid.toString())
                                     .collection(DatabaseFields.COLLECTION_WATCHDONE).document()
-                                    .set(movieDb).addOnCompleteListener {
-                                        requireContext().toast("Added to Watchlist")
-                                    }
+                                    .set(movieDb)
                             }
                         }
                         action_mark_watched.setOnClickListener {
