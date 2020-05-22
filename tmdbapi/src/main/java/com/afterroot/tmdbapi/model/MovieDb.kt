@@ -1,7 +1,5 @@
 package com.afterroot.tmdbapi.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.afterroot.tmdbapi.TmdbMovies.ReleaseInfoResults
 import com.afterroot.tmdbapi.Types
 import com.afterroot.tmdbapi.model.core.IdElement
@@ -10,6 +8,8 @@ import com.afterroot.tmdbapi.model.core.ResultsPage
 import com.afterroot.tmdbapi.model.keywords.Keyword
 import com.afterroot.tmdbapi.model.people.PersonCast
 import com.afterroot.tmdbapi.model.people.PersonCrew
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 class MovieDb : IdElement(), Multi {
@@ -42,6 +42,9 @@ class MovieDb : IdElement(), Multi {
 
     @JsonProperty("genres")
     var genres: List<Genre>? = null
+
+    @JsonProperty("genre_ids")
+    var genreIds: List<Int>? = null
 
     @JsonProperty("homepage")
     var homepage: String? = null
