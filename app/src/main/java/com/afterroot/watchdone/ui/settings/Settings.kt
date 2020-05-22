@@ -13,12 +13,13 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone
+package com.afterroot.watchdone.ui.settings
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.afterroot.watchdone.Constants
 
 class Settings(context: Context) {
 

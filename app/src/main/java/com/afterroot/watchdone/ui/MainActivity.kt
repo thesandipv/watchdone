@@ -34,9 +34,9 @@ import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.Settings
 import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.model.User
+import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.google.android.gms.ads.MobileAds
