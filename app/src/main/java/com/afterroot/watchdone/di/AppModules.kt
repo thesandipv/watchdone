@@ -18,8 +18,8 @@ package com.afterroot.watchdone.di
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi2.Constants.TMDB_BASE_URL
 import com.afterroot.tmdbapi2.TMDbInterceptor
-import com.afterroot.tmdbapi2.TMDbRepository
 import com.afterroot.tmdbapi2.api.MoviesApi
+import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
@@ -65,7 +65,7 @@ val apiModule = module {
     factory { provideOkHttpClient() }
     factory { provideMoviesApi(get()) }
     single { provideRetrofit(get()) }
-    factory { TMDbRepository(get()) }
+    factory { MoviesRepository(get()) }
 }
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {

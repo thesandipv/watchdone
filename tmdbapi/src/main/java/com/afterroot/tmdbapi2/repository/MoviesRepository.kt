@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-package com.afterroot.tmdbapi2
+package com.afterroot.tmdbapi2.repository
 
 import com.afterroot.tmdbapi.TmdbTrending
 import com.afterroot.tmdbapi2.api.MoviesApi
 
-class TMDbRepository(val api: MoviesApi) {
-    suspend fun getTrendingMovies(by: String = TmdbTrending.BY_DAY) = api.getTrendingMovies(by)
+class MoviesRepository(val api: MoviesApi) {
+    suspend fun getMoviesTrendingInSearch(by: String = TmdbTrending.BY_DAY) = api.getMoviesTrendingInSearch(by)
 }
