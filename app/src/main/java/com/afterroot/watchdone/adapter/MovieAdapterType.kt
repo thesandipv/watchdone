@@ -25,7 +25,7 @@ import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.Settings
+import com.afterroot.watchdone.ui.settings.Settings
 import kotlinx.android.synthetic.main.list_item_movie.view.*
 import org.koin.core.Koin
 
