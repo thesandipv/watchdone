@@ -43,14 +43,15 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin)
         private val yearView: AppCompatTextView = itemView.year
         private val posterView: AppCompatImageView = itemView.poster
         private val rating = itemView.rating
-        private val baseUrl = settings.baseUrl
         fun bind(item: MovieDb) {
             titleView.text = item.title
             yearView.text = item.releaseDate
             rating.text = item.voteAverage.toString()
             if (item.posterPath != null) {
-                GlideApp.with(posterView.context).load(baseUrl + "w342" + item.posterPath).into(posterView)
-            } else GlideApp.with(posterView.context).load(posterView.context.getDrawableExt(R.drawable.ic_broken_image)).into(posterView)
+                GlideApp.with(posterView.context).load(settings.baseUrl + settings.imageSize + item.posterPath)
+                    .into(posterView)
+            } else GlideApp.with(posterView.context).load(posterView.context.getDrawableExt(R.drawable.ic_broken_image))
+                .into(posterView)
             with(super.itemView) {
                 tag = item
                 setOnClickListener {

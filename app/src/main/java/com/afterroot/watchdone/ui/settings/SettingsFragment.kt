@@ -16,11 +16,34 @@
 package com.afterroot.watchdone.ui.settings
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.R
+import org.koin.android.ext.android.inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
+    private val settings: Settings by inject()
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_settings, rootKey)
+        findPreference<ListPreference>(Constants.PREF_KEY_IMAGE_SIZE)?.apply {
+            with(settings.posterSizes?.toTypedArray()) {
+                entries = this
+                entryValues = this
+            }
+        }
+        findPreference<ListPreference>(Constants.PREF_KEY_THEME)?.setOnPreferenceChangeListener { _, newValue ->
+            AppCompatDelegate.setDefaultNightMode(
+                when (newValue) {
+                    getString(R.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    getString(R.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                    getString(R.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
+                    getString(R.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+            )
+            return@setOnPreferenceChangeListener true
+        }
     }
 }
