@@ -72,7 +72,7 @@
                 android:layout_marginRight="8dp"
                 android:drawableStart="@drawable/ic_add"
                 android:drawableLeft="@drawable/ic_add"
-                android:text="Add to Watchlist"
+                android:text="@string/text_add_to_watchlist"
                 app:layout_constraintEnd_toStartOf="@+id/action_mark_watched"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/movie_overview" />
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:text="Mark as Watched"
+                android:text="@string/text_mark_as_watched"
                 app:layout_constraintBottom_toBottomOf="@+id/action_add_wlist"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/action_add_wlist"

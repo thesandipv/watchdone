@@ -97,3 +97,4 @@ output.json
 
 # My List
 /gradle.properties
+/keystore.properties

@@ -15,6 +15,7 @@
 
 package com.afterroot.watchdone.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -25,10 +26,12 @@ import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.database.DatabaseFields
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 
 class HomeViewModel(val savedState: SavedStateHandle) : ViewModel() {
     private var watchlistSnapshot: MutableLiveData<ViewModelState> = MutableLiveData()
     private var trendingMovies: MutableLiveData<MovieResultsPage> = MutableLiveData()
+    val error: MutableLiveData<String?> = MutableLiveData()
     val selected = MutableLiveData<MovieDb>()
 
     fun getWatchlistSnapshot(userId: String, db: FirebaseFirestore): LiveData<ViewModelState> {
@@ -46,8 +49,13 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel() {
 
     fun getTrendingMovies(repo: MoviesRepository, isReload: Boolean = false): LiveData<MovieResultsPage> {
         if (trendingMovies.value == null || isReload) {
-            trendingMovies = liveData {
-                emit(repo.getMoviesTrendingInSearch())
+            trendingMovies = liveData(Dispatchers.IO) {
+                try {
+                    emit(repo.getMoviesTrendingInSearch())
+                } catch (e: Exception) {
+                    error.postValue(e.message)
+                    Log.e("TMDbApi", "getTrendingMovies: ${e.message}")
+                }
             } as MutableLiveData<MovieResultsPage>
         }
         return trendingMovies
