@@ -6,8 +6,6 @@ ext {
     commonsIoVersion = '1.3.2'
     constraintlayoutVersion = '2.0.0-beta6'
     coreKtxVersion = '1.3.0-rc01'
-    composeVersion = "0.1.0-dev09"
-    composeUIVersion = "0.1.0-dev09"
     coreVersion = '0.1.1'
     crashlyticsVersion = '2.10.1'
     firebaseAdsVersion = '19.1.0'
@@ -25,23 +23,23 @@ ext {
     glideVersion = '4.11.0'
     googleMaterialVersion = '1.2.0-alpha06'
     gsonVersion = '2.8.6'
+    jacksonVersion = '2.11.0'
     koinVersion = '2.0.1'
     kotlinxCoroutinesVersion = '1.3.5'
     legacySupportV13Version = '1.0.0'
     legacySupportV4Version = '1.0.0'
-    lifecycleVersion = '2.2.0'
+    lifecycleVersion = '2.3.0-alpha03'
     materialDialogsVersion = '3.1.0'
     multidexVersion = '2.0.1'
     navigationVersion = '2.2.2'
+    okHttpVersion = '4.7.2'
     pagingVersion = '2.1.2'
     preferenceVersion = '1.1.1'
     recyclerviewVersion = '1.2.0-alpha03'
+    retrofitVersion = '2.9.0'
     roomKtxVersion = '2.2.5'
     transitionVersion = '1.3.1'
     vectordrawableVersion = '1.1.0'
-    okHttpVersion = '4.7.1'
-    jacksonVersion = '2.11.0'
-    retrofitVersion = '2.8.2'
 }
 
 /*
