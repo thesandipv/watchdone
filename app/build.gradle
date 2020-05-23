@@ -57,6 +57,7 @@ android {
                 pathPrefix: "/apps/watchdone"
         ]
         buildConfigField "String", "TMDB_API", tmdbApi
+        android.buildFeatures.dataBinding = true
     }
 
     buildTypes {
@@ -118,7 +119,7 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v13:$legacySupportV13Version"
     implementation "androidx.legacy:legacy-support-v4:$legacySupportV4Version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"
