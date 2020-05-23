@@ -17,7 +17,8 @@ import java.io.IOException
  *
  * This is for version 3 of the API as specified here: http://help.themoviedb.org/kb/api/about-3
  *
- * @author Holger Brandl, Sandip Vaghela
+ * @author Holger Brandl
+ * @author Sandip Vaghela
  */
 class TmdbApi @JvmOverloads constructor(
     /**

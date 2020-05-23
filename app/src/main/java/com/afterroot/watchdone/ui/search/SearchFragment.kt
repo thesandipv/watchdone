@@ -61,6 +61,7 @@ class SearchFragment : Fragment() {
             }
             return@setOnKeyListener false
         }
+        setErrorObserver()
         initAdapter()
         loadTrending()
     }
@@ -123,5 +124,18 @@ class SearchFragment : Fragment() {
             mde.printStackTrace()
             progress_bar.visible(false)
         }
+    }
+
+    private fun setErrorObserver() {
+        homeViewModel.error.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                progress_bar.visible(false, AutoTransition())
+                requireContext().toast(it)
+            }
+        })
+    }
+
+    companion object {
+        private const val TAG = "SearchFragment"
     }
 }

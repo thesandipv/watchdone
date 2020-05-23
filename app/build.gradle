@@ -30,7 +30,19 @@ ext {
     minimumSdkVersion = 16
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
+    signingConfigs {
+        signing {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
@@ -57,6 +69,7 @@ android {
                 pathPrefix: "/apps/watchdone"
         ]
         buildConfigField "String", "TMDB_API", tmdbApi
+        signingConfig signingConfigs.signing
         android.buildFeatures.dataBinding = true
     }
 
