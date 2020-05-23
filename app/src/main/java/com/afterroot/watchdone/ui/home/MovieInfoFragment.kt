@@ -24,22 +24,23 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.GlideApp
-import com.afterroot.watchdone.R
 import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.android.synthetic.main.fragment_movie_info.*
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class MovieInfoFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val settings: Settings by inject()
+    lateinit var binding: FragmentMovieInfoBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_movie_info, container, false)
+        binding = FragmentMovieInfoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,21 +51,23 @@ class MovieInfoFragment : Fragment() {
                 if (state is ViewModelState.Loaded<*>) {
                     val snapshot = (state.data as QuerySnapshot).toObjects(MovieDb::class.java)
                     homeViewModel.selected.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
-                        GlideApp.with(this).load(settings.baseUrl + settings.imageSize + movieDb.posterPath)
-                            .into(movie_poster)
-                        movie_title.text = movieDb.title
-                        movie_overview.text = movieDb.overview
-                        action_add_wlist.apply {
-                            isEnabled = !snapshot.contains(movieDb)
-                            setOnClickListener {
-                                get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
-                                    .document(get<FirebaseAuth>().currentUser?.uid.toString())
-                                    .collection(DatabaseFields.COLLECTION_WATCHDONE).document()
-                                    .set(movieDb)
+                        binding.apply {
+                            moviedb = movieDb
+                            GlideApp.with(requireContext())
+                                .load(settings.baseUrl + settings.imageSize + movieDb.posterPath)
+                                .into(moviePoster)
+                            actionAddWlist.apply {
+                                isEnabled = !snapshot.contains(movieDb)
+                                setOnClickListener {
+                                    get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
+                                        .document(get<FirebaseAuth>().currentUser?.uid.toString())
+                                        .collection(DatabaseFields.COLLECTION_WATCHDONE).document()
+                                        .set(movieDb)
+                                }
                             }
-                        }
-                        action_mark_watched.setOnClickListener {
+                            actionMarkWatched.setOnClickListener {
 
+                            }
                         }
                     })
                 }
