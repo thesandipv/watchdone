@@ -105,6 +105,7 @@ android {
 
 dependencies {
     implementation "com.afterroot.core:core:$coreVersion"
+    implementation project(path: ':tmdbapi')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.anko:anko-commons:$ankoCommonsVersion"
@@ -120,7 +121,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha02"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"
     implementation "androidx.multidex:multidex:$multidexVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
@@ -130,7 +131,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$roomKtxVersion"
     implementation "androidx.vectordrawable:vectordrawable:$vectordrawableVersion"
     implementation "com.android.billingclient:billing:$billingVersion"
-    implementation project(path: ':tmdbapi')
     kapt "androidx.room:room-compiler:$roomKtxVersion"
 
     implementation "com.afollestad.material-dialogs:input:$materialDialogsVersion"
@@ -147,7 +147,6 @@ dependencies {
 
     //implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation "com.google.android.material:material:$googleMaterialVersion"
-    implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.google.firebase:firebase-ads:$firebaseAdsVersion"
     implementation "com.google.firebase:firebase-auth:$firebaseAuthVersion"
     implementation "com.google.firebase:firebase-config:$firebaseConfigVersion"
@@ -169,17 +168,4 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
-
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
-
-    implementation "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-
-    implementation "com.google.code.gson:gson:$gsonVersion"
-
-    implementation 'commons-codec:commons-codec:20041127.091804'
 }
