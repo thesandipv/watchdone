@@ -83,10 +83,9 @@ fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
 }
 
 fun provideOkHttpClient() = OkHttpClient().newBuilder()
-    .addInterceptor(TMDbInterceptor(BuildConfig.TMDB_API))
+    .addInterceptor(TMDbInterceptor(BuildConfig.TMDB_API, v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN))
     .addInterceptor(HttpLoggingInterceptor().apply {
-        level =
-            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
     }).build()
 
 fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi::class.java)

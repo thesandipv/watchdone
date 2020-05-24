@@ -27,15 +27,11 @@ class AuthRepository(val authApi: AuthApi) {
      * This is the first step in getting permission from a user to read and write data
      * on their behalf. You can read more about this system by clicking link in see also
      * @see <a href="https://developers.themoviedb.org/4/auth/user-authorization-1">User Authorization</a>
-     * @param apiAccessToken TMDb API v4 access token
      * @param requestBodyToken Optional body to post with request containing redirect parameter
      * @see <a href="https://developers.themoviedb.org/4/auth/create-request-token">API Reference</a>
      */
-    suspend fun createRequestToken(
-        apiAccessToken: String,
-        requestBodyToken: RequestBodyToken = RequestBodyToken()
-    ): ResponseRequestToken {
-        return authApi.createRequestToken(apiAccessToken, requestBodyToken)
+    suspend fun createRequestToken(requestBodyToken: RequestBodyToken = RequestBodyToken()): ResponseRequestToken {
+        return authApi.createRequestToken(requestBodyToken)
     }
 
     companion object {
