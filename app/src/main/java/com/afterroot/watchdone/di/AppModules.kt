@@ -18,7 +18,9 @@ package com.afterroot.watchdone.di
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi2.Constants.TMDB_BASE_URL
 import com.afterroot.tmdbapi2.TMDbInterceptor
+import com.afterroot.tmdbapi2.api.AuthApi
 import com.afterroot.tmdbapi2.api.MoviesApi
+import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.ui.settings.Settings
@@ -63,9 +65,13 @@ val appModule = module {
 
 val apiModule = module {
     factory { provideOkHttpClient() }
-    factory { provideMoviesApi(get()) }
     single { provideRetrofit(get()) }
+
+    factory { provideMoviesApi(get()) }
     factory { MoviesRepository(get()) }
+
+    factory { provideAuthProvider(get()) }
+    factory { AuthRepository(get()) }
 }
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
@@ -84,3 +90,4 @@ fun provideOkHttpClient() = OkHttpClient().newBuilder()
     }).build()
 
 fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi::class.java)
+fun provideAuthProvider(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)

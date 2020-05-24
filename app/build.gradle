@@ -69,6 +69,7 @@ android {
                 pathPrefix: "/apps/watchdone"
         ]
         buildConfigField "String", "TMDB_API", tmdbApi
+        buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbBearerToken
         signingConfig signingConfigs.signing
         android.buildFeatures.dataBinding = true
     }
