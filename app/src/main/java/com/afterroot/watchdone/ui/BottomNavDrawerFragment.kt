@@ -19,17 +19,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.ui.home.HomeViewModel
 import com.afterroot.watchdone.utils.getGravtarUrl
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_bottom.*
 import kotlinx.android.synthetic.main.nav_header.view.*
+import org.jetbrains.anko.browse
+import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 
 class BottomNavDrawerFragment : BottomSheetDialogFragment() {
+    private val homeViewModel: HomeViewModel by viewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_bottom, container, false)
     }
@@ -41,9 +50,33 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
         navigation_view.apply {
             setNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.navigation_settings -> findNavController().navigate(R.id.toSettings)
+                    R.id.navigation_settings -> {
+                        findNavController().navigate(R.id.toSettings)
+                        dismiss()
+                    }
+                    R.id.tmdb_login -> {
+                        val dialog = MaterialDialog(requireContext()).show {
+                            customView(R.layout.loading_dialog)
+                        }
+                        homeViewModel.getResponseRequestToken().observe(viewLifecycleOwner, Observer { response ->
+                            if (response.success) {
+                                try {
+                                    requireContext().browse(AuthRepository.getAuthVerifyUrl(response))
+                                    dialog.dismiss()
+                                    dismiss()
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    dialog.dismiss()
+                                    dismiss()
+                                }
+                            } else {
+                                requireContext().toast(response.statusMessage)
+                                dialog.dismiss()
+                                dismiss()
+                            }
+                        })
+                    }
                 }
-                dismiss()
                 true
             }
             getHeaderView(0).apply {
