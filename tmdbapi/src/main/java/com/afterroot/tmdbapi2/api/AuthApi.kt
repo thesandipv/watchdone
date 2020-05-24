@@ -15,10 +15,23 @@
 
 package com.afterroot.tmdbapi2.api
 
+import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.model.RequestToken
+import com.afterroot.tmdbapi2.model.ResponseRequestToken
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
+import retrofit2.http.POST
 
 interface AuthApi {
     @GET("3/authentication/token/new")
     suspend fun getRequestToken(): RequestToken
+
+    @Headers("Content-Type: application/json;charset=utf-8")
+    @POST("4/auth/request_token")
+    suspend fun createRequestToken(
+        @Header("Authorization") apiAccessToken: String,
+        @Body requestBodyToken: RequestBodyToken
+    ): ResponseRequestToken
 }
