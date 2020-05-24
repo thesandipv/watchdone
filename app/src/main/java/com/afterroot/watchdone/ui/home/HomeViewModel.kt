@@ -26,7 +26,6 @@ import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.database.DatabaseFields
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -75,10 +74,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {
         emit(
-            get<AuthRepository>().createRequestToken(
-                BuildConfig.TMDB_BEARER_TOKEN,
-                RequestBodyToken("https://afterroot.web.app/apps/watchdone")
-            )
+            get<AuthRepository>().createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone"))
         )
     }
 }
