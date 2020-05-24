@@ -25,14 +25,13 @@ import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afterroot.tmdbapi2.repository.AuthRepository
-import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.databinding.NavHeaderBinding
 import com.afterroot.watchdone.ui.home.HomeViewModel
 import com.afterroot.watchdone.utils.getGravtarUrl
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_bottom.*
-import kotlinx.android.synthetic.main.nav_header.view.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
@@ -80,16 +79,18 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                 true
             }
             getHeaderView(0).apply {
-                nav_header_name.text = user?.displayName
-                nav_header_email.text = user?.email
-                button_sign_out.setOnClickListener {
-                    get<FirebaseAuth>().signOut()
+                NavHeaderBinding.bind(this).apply {
+                    this.user = user
+                    avatarUrl = getGravtarUrl(user?.email.toString())
+                    buttonSignOut.setOnClickListener {
+                        get<FirebaseAuth>().signOut()
+                    }
+                    root.setOnClickListener {
+                        findNavController().navigate(R.id.toEditProfile)
+                        dismiss()
+                    }
                 }
-                GlideApp.with(requireContext()).load(getGravtarUrl(user?.email.toString())).circleCrop().into(avatar)
-                setOnClickListener {
-                    findNavController().navigate(R.id.toEditProfile)
-                    dismiss()
-                }
+
             }
         }
     }
