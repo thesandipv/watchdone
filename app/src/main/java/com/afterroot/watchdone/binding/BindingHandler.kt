@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.database
+package com.afterroot.watchdone.binding
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import com.afterroot.watchdone.model.MyDatabaseModel
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
+import com.afterroot.watchdone.GlideApp
 
-@Database(entities = [MyDatabaseModel::class], version = 1)
-abstract class MyDatabase : RoomDatabase() {
-    //TODO
+@BindingAdapter("avatar")
+fun ImageView.setAvatar(imageUrl: String?) {
+    GlideApp.with(context).load(imageUrl).circleCrop().into(this)
 }
