@@ -24,11 +24,11 @@ import java.util.Locale
 class TMDbInterceptor(val key: String, val language: String = Locale.ENGLISH.toString()) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val req = chain.request()
-        val url = req.url.newBuilder()
-            .addQueryParameter(Constants.PARAM_KEY, key)
-            .addQueryParameter(Constants.PARAM_LANGUAGE, language)
-            .build()
-        val request = req.newBuilder().url(url).build()
+        val url = req.url.newBuilder().addQueryParameter(Constants.PARAM_LANGUAGE, language)
+        if (req.header("Authorization") == null) {
+            url.addQueryParameter(Constants.PARAM_KEY, key)
+        }
+        val request = req.newBuilder().url(url.build()).build()
         return chain.proceed(request)
     }
 }
