@@ -30,20 +30,22 @@ import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 
 class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
+    lateinit var binding: FragmentHomeBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,17 +75,17 @@ class HomeFragment : Fragment() {
                 requireContext().toast(item.title.toString())
             }
         }, getKoin())
-        list.apply {
+        binding.list.apply {
             val lm = GridLayoutManager(requireContext(), 2)
             layoutManager = lm
+            adapter = homeScreenAdapter
         }
-        list.adapter = homeScreenAdapter
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, get())
             .observe(this.viewLifecycleOwner, Observer {
                 if (it is ViewModelState.Loading) {
-                    progress_bar.visible(true)
+                    binding.progressBar.visible(true)
                 } else if (it is ViewModelState.Loaded<*>) {
-                    progress_bar.visible(false)
+                    binding.progressBar.visible(false)
                     val listData = it.data as QuerySnapshot
                     homeScreenAdapter.add(listData.toObjects(MovieDb::class.java))
                     // list.scheduleLayoutAnimation()
