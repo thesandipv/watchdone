@@ -18,8 +18,9 @@ package com.afterroot.watchdone.binding
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.afterroot.watchdone.GlideApp
+import com.afterroot.watchdone.utils.getGravtarUrl
 
 @BindingAdapter("avatar")
-fun ImageView.setAvatar(imageUrl: String?) {
-    GlideApp.with(context).load(imageUrl).circleCrop().into(this)
+fun ImageView.setAvatar(email: String?) {
+    GlideApp.with(context).load(getGravtarUrl(email.toString())).circleCrop().into(this)
 }
