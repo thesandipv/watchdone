@@ -52,6 +52,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_discover"
+            app:destination="@id/navigation_discover" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -80,4 +83,9 @@
         android:name="com.afterroot.watchdone.ui.home.MovieInfoFragment"
         android:label="MovieInfoFragment"
         tools:layout="@layout/fragment_movie_info" />
+    <fragment
+        android:id="@+id/navigation_discover"
+        android:name="com.afterroot.watchdone.ui.home.DiscoverFragment"
+        android:label="DiscoverFragment"
+        tools:layout="@layout/fragment_discover" />
 </navigation>

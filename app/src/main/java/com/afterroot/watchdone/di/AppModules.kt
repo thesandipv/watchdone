@@ -19,8 +19,10 @@ import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi2.Constants.TMDB_BASE_URL
 import com.afterroot.tmdbapi2.TMDbInterceptor
 import com.afterroot.tmdbapi2.api.AuthApi
+import com.afterroot.tmdbapi2.api.DiscoverApi
 import com.afterroot.tmdbapi2.api.MoviesApi
 import com.afterroot.tmdbapi2.repository.AuthRepository
+import com.afterroot.tmdbapi2.repository.DiscoverRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.ui.settings.Settings
@@ -70,8 +72,11 @@ val apiModule = module {
     factory { provideMoviesApi(get()) }
     factory { MoviesRepository(get()) }
 
-    factory { provideAuthProvider(get()) }
+    factory { provideAuthApi(get()) }
     factory { AuthRepository(get()) }
+
+    factory { provideDiscoverApi(get()) }
+    factory { DiscoverRepository(get()) }
 }
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
@@ -89,4 +94,5 @@ fun provideOkHttpClient() = OkHttpClient().newBuilder()
     }).build()
 
 fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi::class.java)
-fun provideAuthProvider(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+fun provideDiscoverApi(retrofit: Retrofit): DiscoverApi = retrofit.create(DiscoverApi::class.java)

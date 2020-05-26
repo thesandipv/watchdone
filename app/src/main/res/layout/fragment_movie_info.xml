@@ -46,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:contentScrim="?attr/colorSurface"
+                app:expandedTitleGravity="top"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 app:title="@{moviedb.title, default=Title}"
                 app:toolbarId="@+id/toolbar_movie_info">
@@ -60,6 +61,13 @@
                     app:movieDb="@{moviedb}"
                     app:settings="@{settings}"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    app:genres="@{moviedb}"
+                    app:layout_collapseMode="none" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar_movie_info"

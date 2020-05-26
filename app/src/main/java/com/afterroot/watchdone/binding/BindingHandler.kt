@@ -21,6 +21,8 @@ import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getGravtarUrl
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
 @BindingAdapter("avatar")
 fun ImageView.setAvatar(email: String?) {
@@ -30,4 +32,21 @@ fun ImageView.setAvatar(email: String?) {
 @BindingAdapter("movieDb", "settings")
 fun ImageView.setPoster(movieDb: MovieDb, settings: Settings) {
     GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movieDb.posterPath).into(this)
+}
+
+@BindingAdapter("genres")
+fun ChipGroup.setGenres(movieDb: MovieDb) {
+    if (movieDb.genres == null) {
+        movieDb.genreIds?.forEach { genre ->
+            val chip = Chip(context)
+            chip.text = genre.toString()
+            addView(chip)
+        }
+    } else {
+        movieDb.genres?.forEach { genre ->
+            val chip = Chip(context)
+            chip.text = genre.name
+            addView(chip)
+        }
+    }
 }
