@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
+import androidx.navigation.ui.onNavDestinationSelected
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -254,7 +255,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return false
+        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment)) || super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
