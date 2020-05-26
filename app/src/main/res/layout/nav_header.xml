@@ -26,10 +26,6 @@
         <variable
             name="handler"
             type="com.afterroot.watchdone.binding.BindingHandlerKt" />
-
-        <variable
-            name="avatarUrl"
-            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,7 +93,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:contentDescription="@string/contentDesc"
-            app:avatar="@{avatarUrl}"
+            app:avatar="@{user.email}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
