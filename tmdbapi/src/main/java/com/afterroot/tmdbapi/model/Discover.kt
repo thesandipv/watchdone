@@ -1,56 +1,28 @@
-package com.afterroot.tmdbapi.model;
+package com.afterroot.tmdbapi.model
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
-import com.afterroot.tmdbapi.AbstractTmdbApi;
-import com.afterroot.tmdbapi.model.core.IdElement;
-import com.afterroot.tmdbapi.model.keywords.Keyword;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.afterroot.tmdbapi.AbstractTmdbApi
+import com.afterroot.tmdbapi.model.keywords.Keyword
+import org.apache.commons.lang3.StringUtils
+import java.util.HashMap
 
 /**
  * Generate a discover object for use in the MovieDbApi
- * <p/>
+ *
+ *
  * This allows you to just add the search components you are concerned with
  *
  * @author stuart.boston
+ * @author Sandip Vaghela
  */
-public class Discover {
-
-    private final Map<String, String> params = new HashMap<String, String>();
-    private static final String PARAM_PRIMARY_RELEASE_YEAR = "primary_release_year";
-    private static final String PARAM_VOTE_COUNT_GTE = "vote_count.gte";
-    private static final String PARAM_VOTE_AVERAGE_GTE = "vote_average.gte";
-
-    private static final String PARAM_WITH_GENRES = "with_genres";
-    private static final String PARAM_WITH_KEYWORKDS = "with_keywords";
-
-    private static final String PARAM_RELEASE_DATE_GTE = "release_date.gte";
-    private static final String PARAM_RELEASE_DATE_LTE = "release_date.lte";
-    private static final String PARAM_CERTIFICATION_COUNTRY = "certification_country";
-    private static final String PARAM_CERTIFICATION_LTE = "certification.lte";
-    private static final String PARAM_WITH_COMPANIES = "with_companies";
-    private static final String PARAM_SORT_BY = "sort_by";
-    private static final int YEAR_MIN = 1900;
-    private static final int YEAR_MAX = 2100;
-
-
+class Discover {
     /**
      * Get the parameters
-     * <p/>
+     *
      * This will be used to construct the URL in the API
      *
-     * @return
+     * @return [Map] of Parameters
      */
-    public Map<String, String> getParams() {
-        return params;
-    }
-
+    val params: MutableMap<String, String> = HashMap()
 
     /**
      * Minimum value is 1 if included.
@@ -58,13 +30,12 @@ public class Discover {
      * @param page
      * @return
      */
-    public Discover page(Integer page) {
+    fun page(page: Int?): Discover {
         if (page != null && page > 0) {
-            params.put(AbstractTmdbApi.PARAM_PAGE, String.valueOf(page));
+            params[AbstractTmdbApi.PARAM_PAGE] = page.toString()
         }
-        return this;
+        return this
     }
-
 
     /**
      * ISO 639-1 code
@@ -72,40 +43,48 @@ public class Discover {
      * @param language
      * @return
      */
-    public Discover language(String language) {
+    fun language(language: String): Discover {
         if (StringUtils.isNotBlank(language)) {
-            params.put(AbstractTmdbApi.PARAM_LANGUAGE, language);
+            params[AbstractTmdbApi.PARAM_LANGUAGE] = language
         }
-        return this;
+        return this
     }
-
 
     /**
-     * Available options are <br> vote_average.desc<br> vote_average.asc<br> release_date.desc<br> release_date.asc<br>
-     * popularity.desc<br> popularity.asc
+     * Available options are
+     * [SORT_BY_ORIGINAL_TITLE_ASC],
+     * [SORT_BY_ORIGINAL_TITLE_DSC],
+     * [SORT_BY_POP_ASC],
+     * [SORT_BY_POP_DES],
+     * [SORT_BY_PRIMARY_RELEASE_DATE_ASC],
+     * [SORT_BY_PRIMARY_RELEASE_DATE_DES],
+     * [SORT_BY_REL_ASC],
+     * [SORT_BY_REL_DES],
+     * [SORT_BY_REV_ASC],
+     * [SORT_BY_REV_DES],
+     * [SORT_BY_VOTE_AVG_ASC],
+     * [SORT_BY_VOTE_AVG_DES],
+     * [SORT_BY_VOTE_COUNT_ASC],
+     * [SORT_BY_VOTE_COUNT_DES]
      *
-     * @param sortBy
-     * @return
+     * @param sortBy Default [SORT_BY_POP_DES]
+     * @return [Discover] Object with this parameter
      */
-    public Discover sortBy(String sortBy) {
-        if (StringUtils.isNotBlank(sortBy)) {
-            params.put(PARAM_SORT_BY, sortBy);
-        }
-        return this;
+    fun sortBy(sortBy: String = SORT_BY_POP_DES): Discover {
+        params[PARAM_SORT_BY] = sortBy
+        return this
     }
-
 
     /**
      * Toggle the inclusion of adult titles
      *
      * @param includeAdult
-     * @return
+     * @return [Discover] Object with this parameter
      */
-    public Discover includeAdult(boolean includeAdult) {
-        params.put(AbstractTmdbApi.PARAM_ADULT, String.valueOf(includeAdult));
-        return this;
+    fun includeAdult(includeAdult: Boolean): Discover {
+        params[AbstractTmdbApi.PARAM_ADULT] = includeAdult.toString()
+        return this
     }
-
 
     /**
      * Filter the results release dates to matches that include this value.
@@ -113,13 +92,12 @@ public class Discover {
      * @param year
      * @return
      */
-    public Discover year(int year) {
+    fun year(year: Int): Discover {
         if (checkYear(year)) {
-            params.put(AbstractTmdbApi.PARAM_YEAR, String.valueOf(year));
+            params[AbstractTmdbApi.PARAM_YEAR] = year.toString()
         }
-        return this;
+        return this
     }
-
 
     /**
      * Filter the results so that only the primary release date year has this value
@@ -127,13 +105,12 @@ public class Discover {
      * @param primaryReleaseYear
      * @return
      */
-    public Discover primaryReleaseYear(int primaryReleaseYear) {
+    fun primaryReleaseYear(primaryReleaseYear: Int): Discover {
         if (checkYear(primaryReleaseYear)) {
-            params.put(PARAM_PRIMARY_RELEASE_YEAR, String.valueOf(primaryReleaseYear));
+            params[PARAM_PRIMARY_RELEASE_YEAR] = primaryReleaseYear.toString()
         }
-        return this;
+        return this
     }
-
 
     /**
      * Only include movies that are equal to, or have a vote count higher than this value
@@ -141,13 +118,12 @@ public class Discover {
      * @param voteCountGte
      * @return
      */
-    public Discover voteCountGte(int voteCountGte) {
+    fun voteCountGte(voteCountGte: Int): Discover {
         if (voteCountGte > 0) {
-            params.put(PARAM_VOTE_COUNT_GTE, String.valueOf(voteCountGte));
+            params[PARAM_VOTE_COUNT_GTE] = voteCountGte.toString()
         }
-        return this;
+        return this
     }
-
 
     /**
      * Only include movies that are equal to, or have a higher average rating than this value
@@ -155,154 +131,177 @@ public class Discover {
      * @param voteAverageGte
      * @return
      */
-    public Discover voteAverageGte(float voteAverageGte) {
+    fun voteAverageGte(voteAverageGte: Float): Discover {
         if (voteAverageGte > 0) {
-            params.put(PARAM_VOTE_AVERAGE_GTE, String.valueOf(voteAverageGte));
+            params[PARAM_VOTE_AVERAGE_GTE] = voteAverageGte.toString()
         }
-        return this;
+        return this
     }
-
 
     /**
      * Only include movies with the specified genres.
-     * <p/>
+     *
+     *
      * Expected value is an integer (the id of a genre).
-     * <p/>
+     *
+     *
      * Multiple values can be specified.
-     * <p/>
+     *
+     *
      * Comma separated indicates an 'AND' query, while a pipe (|) separated value indicates an 'OR'
      *
      * @param withGenres
      * @return
      */
-    @Deprecated
-    public Discover withGenres(String withGenres) {
+    @Deprecated("")
+    fun withGenres(withGenres: String): Discover {
         if (StringUtils.isNotBlank(withGenres)) {
-            params.put(PARAM_WITH_GENRES, withGenres);
+            params[PARAM_WITH_GENRES] = withGenres
         }
-        return this;
+        return this
     }
-
 
     /**
      * Only include movies with the specified keywords.
-     * <p/>
+     *
+     *
      * Expected value is an integer (the id of a keyword). Multiple values can be specified. Comma separated indicates an 'AND' query, while a pipe (|) separated value indicates an 'OR'.
-     * <p/>
+     *
+     *
      * Multiple values can be specified.
      *
      * @param keywords
      * @return
      */
-    public Discover withKeywords(List<Keyword> keywords, boolean orQuery) {
-        String query = Joiner.on(orQuery ? "|" : ",").join(Iterables.transform(keywords, toID));
-        assert StringUtils.isNotBlank(query);
-
-        params.put(PARAM_WITH_KEYWORKDS, query);
-
-        return this;
+    fun withKeywords(keywords: List<Keyword>?, orQuery: Boolean): Discover {
+        params[PARAM_WITH_KEYWORDS] = keywords?.joinToString(if (orQuery) "|" else ",") {
+            it.id.toString()
+        }.toString()
+        return this
     }
-
-
-    Function<IdElement, Integer> toID = new Function<IdElement, Integer>() {
-        @Override
-        public Integer apply(IdElement input) {
-            return input.getId();
-        }
-    };
-
 
     /**
      * The minimum release to include.
-     * <p/>
      * Expected format is YYYY-MM-DD.
      *
      * @param releaseDateGte
      * @return
      */
-    public Discover releaseDateGte(String releaseDateGte) {
+    fun releaseDateGte(releaseDateGte: String): Discover {
         if (StringUtils.isNotBlank(releaseDateGte)) {
-            params.put(PARAM_RELEASE_DATE_GTE, releaseDateGte);
+            params[PARAM_RELEASE_DATE_GTE] = releaseDateGte
         }
-        return this;
+        return this
     }
-
 
     /**
      * The maximum release to include.
-     * <p/>
+     *
+     *
      * Expected format is YYYY-MM-DD.
      *
      * @param releaseDateLte
      * @return
      */
-    public Discover releaseDateLte(String releaseDateLte) {
+    fun releaseDateLte(releaseDateLte: String): Discover {
         if (StringUtils.isNotBlank(releaseDateLte)) {
-            params.put(PARAM_RELEASE_DATE_LTE, releaseDateLte);
+            params[PARAM_RELEASE_DATE_LTE] = releaseDateLte
         }
-        return this;
+        return this
     }
-
 
     /**
      * Only include movies with certifications for a specific country.
-     * <p/>
+     *
+     *
      * When this value is specified, 'certificationLte' is required.
-     * <p/>
+     *
+     *
      * A ISO 3166-1 is expected
      *
      * @param certificationCountry
      * @return
      */
-    public Discover certificationCountry(String certificationCountry) {
+    fun certificationCountry(certificationCountry: String): Discover {
         if (StringUtils.isNotBlank(certificationCountry)) {
-            params.put(PARAM_CERTIFICATION_COUNTRY, certificationCountry);
+            params[PARAM_CERTIFICATION_COUNTRY] = certificationCountry
         }
-        return this;
+        return this
     }
-
 
     /**
      * Only include movies with this certification and lower.
-     * <p/>
+     *
+     *
      * Expected value is a valid certification for the specified 'certificationCountry'.
      *
      * @param certificationLte
      * @return
      */
-    public Discover certificationLte(String certificationLte) {
+    fun certificationLte(certificationLte: String): Discover {
         if (StringUtils.isNotBlank(certificationLte)) {
-            params.put(PARAM_CERTIFICATION_LTE, certificationLte);
+            params[PARAM_CERTIFICATION_LTE] = certificationLte
         }
-        return this;
+        return this
     }
-
 
     /**
      * Filter movies to include a specific company.
-     * <p/>
+     *
+     *
      * Expected value is an integer (the id of a company).
-     * <p/>
+     *
+     *
      * They can be comma separated to indicate an 'AND' query
      *
      * @param withCompanies
      * @return
      */
-    public Discover withCompanies(String withCompanies) {
+    fun withCompanies(withCompanies: String): Discover {
         if (StringUtils.isNotBlank(withCompanies)) {
-            params.put(PARAM_WITH_COMPANIES, withCompanies);
+            params[PARAM_WITH_COMPANIES] = withCompanies
         }
-        return this;
+        return this
     }
-
 
     /**
      * check the year is between the min and max
      *
-     * @param year
-     * @return
+     * @param year year to check
+     * @return 'true' if [year] in range otherwise 'false'
      */
-    private boolean checkYear(int year) {
-        return (year >= YEAR_MIN && year <= YEAR_MAX);
+    private fun checkYear(year: Int): Boolean {
+        return year in YEAR_MIN..YEAR_MAX
+    }
+
+    companion object {
+        private const val PARAM_PRIMARY_RELEASE_YEAR = "primary_release_year"
+        private const val PARAM_VOTE_COUNT_GTE = "vote_count.gte"
+        private const val PARAM_VOTE_AVERAGE_GTE = "vote_average.gte"
+        private const val PARAM_WITH_GENRES = "with_genres"
+        private const val PARAM_WITH_KEYWORDS = "with_keywords"
+        private const val PARAM_RELEASE_DATE_GTE = "release_date.gte"
+        private const val PARAM_RELEASE_DATE_LTE = "release_date.lte"
+        private const val PARAM_CERTIFICATION_COUNTRY = "certification_country"
+        private const val PARAM_CERTIFICATION_LTE = "certification.lte"
+        private const val PARAM_WITH_COMPANIES = "with_companies"
+        private const val PARAM_SORT_BY = "sort_by"
+        private const val YEAR_MIN = 1900
+        private const val YEAR_MAX = 2100
+
+        const val SORT_BY_ORIGINAL_TITLE_ASC = "original_title.asc"
+        const val SORT_BY_ORIGINAL_TITLE_DSC = "original_title.desc"
+        const val SORT_BY_POP_ASC = "popularity.asc"
+        const val SORT_BY_POP_DES = "popularity.desc"
+        const val SORT_BY_PRIMARY_RELEASE_DATE_ASC = "primary_release_date.asc"
+        const val SORT_BY_PRIMARY_RELEASE_DATE_DES = "primary_release_date.desc"
+        const val SORT_BY_REL_ASC = "release_date.asc"
+        const val SORT_BY_REL_DES = "release_date.desc"
+        const val SORT_BY_REV_ASC = "revenue.asc"
+        const val SORT_BY_REV_DES = "revenue.desc"
+        const val SORT_BY_VOTE_AVG_ASC = "vote_average.asc"
+        const val SORT_BY_VOTE_AVG_DES = "vote_average.desc"
+        const val SORT_BY_VOTE_COUNT_ASC = "vote_count.asc"
+        const val SORT_BY_VOTE_COUNT_DES = "vote_count.desc"
     }
 }
