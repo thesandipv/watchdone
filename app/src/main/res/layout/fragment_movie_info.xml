@@ -19,6 +19,10 @@
 
     <data>
 
+        <import type="java.util.List" />
+
+        <import type="com.afterroot.tmdbapi2.model.Genre" />
+
         <variable
             name="moviedb"
             type="com.afterroot.tmdbapi.model.MovieDb" />
@@ -30,6 +34,10 @@
         <variable
             name="posterUrl"
             type="String" />
+
+        <variable
+            name="genres"
+            type="List&lt;Genre>" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -66,7 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    app:genres="@{moviedb}"
+                    app:genres="@{genres}"
                     app:layout_collapseMode="none" />
 
                 <androidx.appcompat.widget.Toolbar

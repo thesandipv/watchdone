@@ -17,6 +17,7 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -63,6 +64,9 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
     implementation 'com.google.guava:guava:29.0-jre'
+
+    implementation "androidx.room:room-runtime:$roomKtxVersion"
+    kapt "androidx.room:room-compiler:$roomKtxVersion"
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

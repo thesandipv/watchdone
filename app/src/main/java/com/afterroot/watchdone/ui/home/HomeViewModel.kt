@@ -21,14 +21,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
+import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.database.MyDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.get
 
@@ -76,6 +80,11 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
         emit(
             get<AuthRepository>().createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone"))
         )
+    }
+
+    fun addGenres() = viewModelScope.launch {
+        val genres = get<GenresRepository>().getMoviesGenres().genres
+        get<MyDatabase>().genreDao().add(genres)
     }
 }
 
