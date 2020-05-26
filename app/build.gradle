@@ -139,6 +139,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"
     implementation "androidx.multidex:multidex:$multidexVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
     implementation "androidx.preference:preference:$preferenceVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
