@@ -17,10 +17,17 @@ package com.afterroot.watchdone.binding
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.GlideApp
+import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getGravtarUrl
 
 @BindingAdapter("avatar")
 fun ImageView.setAvatar(email: String?) {
     GlideApp.with(context).load(getGravtarUrl(email.toString())).circleCrop().into(this)
+}
+
+@BindingAdapter("movieDb", "settings")
+fun ImageView.setPoster(movieDb: MovieDb, settings: Settings) {
+    GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movieDb.posterPath).into(this)
 }
