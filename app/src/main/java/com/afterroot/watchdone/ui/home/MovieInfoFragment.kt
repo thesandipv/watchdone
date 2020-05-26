@@ -24,6 +24,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
@@ -36,6 +37,7 @@ class MovieInfoFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val settings: Settings by inject()
     lateinit var binding: FragmentMovieInfoBinding
+    private val myDatabase: MyDatabase by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMovieInfoBinding.inflate(inflater, container, false)
@@ -52,6 +54,11 @@ class MovieInfoFragment : Fragment() {
                     homeViewModel.selected.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
                         binding.apply {
                             moviedb = movieDb
+                            movieDb.genreIds?.let {
+                                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, Observer { roomGenres ->
+                                    genres = roomGenres
+                                })
+                            }
                             settings = this@MovieInfoFragment.settings
                             actionAddWlist.apply {
                                 isEnabled = !snapshot.contains(movieDb)

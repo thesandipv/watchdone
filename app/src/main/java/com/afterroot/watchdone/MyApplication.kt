@@ -19,6 +19,7 @@ import androidx.multidex.MultiDexApplication
 import com.afterroot.watchdone.di.apiModule
 import com.afterroot.watchdone.di.appModule
 import com.afterroot.watchdone.di.firebaseModule
+import com.afterroot.watchdone.di.roomModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -33,7 +34,7 @@ class MyApplication : MultiDexApplication() {
         startKoin {
             androidLogger()
             androidContext(this@MyApplication)
-            modules(listOf(firebaseModule, appModule, apiModule))
+            modules(listOf(firebaseModule, appModule, apiModule, roomModule))
         }
     }
 }
