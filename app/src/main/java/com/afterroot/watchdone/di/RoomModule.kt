@@ -13,27 +13,16 @@
  * limitations under the License.
  */
 
-package com.afterroot.tmdbapi2.model
+package com.afterroot.watchdone.di
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
-import com.fasterxml.jackson.annotation.JsonProperty
+import androidx.room.Room
+import com.afterroot.watchdone.database.MyDatabase
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
-data class Genres(
-    @JsonProperty("genres")
-    val genres: List<Genre> = listOf()
-) : AbstractJsonMapping()
-
-@Entity(tableName = Genre.TABLE_NAME)
-data class Genre(
-    @JsonProperty("id")
-    @PrimaryKey
-    val id: Int = 0,
-    @JsonProperty("name")
-    val name: String = ""
-) : AbstractJsonMapping() {
-    companion object {
-        const val TABLE_NAME = "genres"
-    }
+val roomModule = module {
+    single { Room.databaseBuilder(androidContext(), MyDatabase::class.java, "watchdone-db").build() }
+    single { provideGenreDao(get()) }
 }
+
+fun provideGenreDao(database: MyDatabase) = database.genreDao()

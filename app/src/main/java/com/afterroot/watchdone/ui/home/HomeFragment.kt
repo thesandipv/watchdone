@@ -93,6 +93,12 @@ class HomeFragment : Fragment() {
             })
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        homeViewModel.addGenres() //TODO Run only when genres not available in Local Database
+    }
+
     companion object {
         private const val TAG = "HomeFragment"
     }

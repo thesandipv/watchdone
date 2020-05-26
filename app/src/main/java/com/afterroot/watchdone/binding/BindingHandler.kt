@@ -18,6 +18,7 @@ package com.afterroot.watchdone.binding
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi2.model.Genre
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getGravtarUrl
@@ -35,18 +36,10 @@ fun ImageView.setPoster(movieDb: MovieDb, settings: Settings) {
 }
 
 @BindingAdapter("genres")
-fun ChipGroup.setGenres(movieDb: MovieDb) {
-    if (movieDb.genres == null) {
-        movieDb.genreIds?.forEach { genre ->
-            val chip = Chip(context)
-            chip.text = genre.toString()
-            addView(chip)
-        }
-    } else {
-        movieDb.genres?.forEach { genre ->
-            val chip = Chip(context)
-            chip.text = genre.name
-            addView(chip)
-        }
+fun ChipGroup.setGenres(genres: List<Genre>?) {
+    genres?.forEach { genre ->
+        val chip = Chip(context)
+        chip.text = genre.name
+        addView(chip)
     }
 }

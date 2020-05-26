@@ -2,48 +2,39 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "47ea9b38aadf0b6c71d0fb31f9d4788b",
+    "identityHash": "78c419d4dc940bbbdbfadbe3f67eaa3e",
     "entities": [
       {
-        "tableName": "table-name",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `column_name` TEXT NOT NULL)",
+        "tableName": "genres",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "column_name",
-            "columnName": "column_name",
+            "fieldPath": "name",
+            "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
-        "indices": [
-          {
-            "name": "index_table-name__id",
-            "unique": false,
-            "columnNames": [
-              "_id"
-            ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_table-name__id` ON `${TABLE_NAME}` (`_id`)"
-          }
-        ],
+        "indices": [],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '47ea9b38aadf0b6c71d0fb31f9d4788b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '78c419d4dc940bbbdbfadbe3f67eaa3e')"
     ]
   }
 }
