@@ -16,7 +16,7 @@
 <resources>
 
     <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary" />
+    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface" />
 
     <style name="SeekBarButtonStyle">
         <item name="android:tint">@color/color_primary</item>

@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.afterroot.tmdbapi.model.MovieDb
-import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
@@ -53,9 +52,7 @@ class MovieInfoFragment : Fragment() {
                     homeViewModel.selected.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
                         binding.apply {
                             moviedb = movieDb
-                            GlideApp.with(requireContext())
-                                .load(settings.baseUrl + settings.imageSize + movieDb.posterPath)
-                                .into(moviePoster)
+                            settings = this@MovieInfoFragment.settings
                             actionAddWlist.apply {
                                 isEnabled = !snapshot.contains(movieDb)
                                 setOnClickListener {
