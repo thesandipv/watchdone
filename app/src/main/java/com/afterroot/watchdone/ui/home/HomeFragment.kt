@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
             }
             toolbar.apply {
                 fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
-                fabAnimationMode = BottomAppBar.FAB_ANIMATION_MODE_SLIDE
             }
         }
 
@@ -80,7 +79,7 @@ class HomeFragment : Fragment() {
             layoutManager = lm
             adapter = homeScreenAdapter
         }
-        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, get())
+        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(this.viewLifecycleOwner, Observer {
                 if (it is ViewModelState.Loading) {
                     binding.progressBar.visible(true)

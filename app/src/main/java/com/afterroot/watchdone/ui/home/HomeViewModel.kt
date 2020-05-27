@@ -35,22 +35,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.get
+import org.koin.core.inject
 
 class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinComponent {
-    private var watchlistSnapshot: MutableLiveData<ViewModelState> = MutableLiveData()
-    private var trendingMovies: MutableLiveData<MovieResultsPage> = MutableLiveData()
-    val error: MutableLiveData<String?> = MutableLiveData()
-    val selected = MutableLiveData<MovieDb>()
+    private val db: FirebaseFirestore by inject()
+    private var trendingMovies = MutableLiveData<MovieResultsPage>()
+    private var watchlistSnapshot = MutableLiveData<ViewModelState>()
+    val error = MutableLiveData<String?>()
+    val selectedMovie = MutableLiveData<MovieDb>()
 
-    fun getWatchlistSnapshot(userId: String, db: FirebaseFirestore): LiveData<ViewModelState> {
-        if (watchlistSnapshot.value == null) {
-            watchlistSnapshot.postValue(ViewModelState.Loading)
-            db.collection(DatabaseFields.COLLECTION_USERS).document(userId).collection(DatabaseFields.COLLECTION_WATCHDONE)
-                .addSnapshotListener { querySnapshot, _ ->
-                    if (querySnapshot != null) {
-                        watchlistSnapshot.postValue(ViewModelState.Loaded(querySnapshot))
+    fun getWatchlistSnapshot(userId: String): LiveData<ViewModelState> {
+        watchlistSnapshot.apply {
+            if (value == null) {
+                value = ViewModelState.Loading
+                db.collection(DatabaseFields.COLLECTION_USERS).document(userId)
+                    .collection(DatabaseFields.COLLECTION_WATCHDONE)
+                    .addSnapshotListener { querySnapshot, _ ->
+                        querySnapshot.let { value = ViewModelState.Loaded(it) }
                     }
-                }
+            }
         }
         return watchlistSnapshot
     }
@@ -61,7 +64,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
                 try {
                     emit(get<MoviesRepository>().getMoviesTrendingInSearch())
                 } catch (e: Exception) {
-                    error.postValue(e.message)
+                    error.value = e.message
                     Log.e("TMDbApi", "getTrendingMovies: ${e.message}")
                 }
             } as MutableLiveData<MovieResultsPage>
@@ -73,7 +76,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
      * For sending data to other fragment
      */
     fun selectMovie(movie: MovieDb) {
-        selected.value = movie
+        selectedMovie.value = movie
     }
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {
@@ -86,9 +89,4 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
         val genres = get<GenresRepository>().getMoviesGenres().genres
         get<MyDatabase>().genreDao().add(genres)
     }
-}
-
-sealed class ViewModelState {
-    object Loading : ViewModelState()
-    data class Loaded<T>(val data: T) : ViewModelState()
 }

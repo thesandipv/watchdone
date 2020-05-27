@@ -47,11 +47,11 @@ class MovieInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, get())
+        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
                 if (state is ViewModelState.Loaded<*>) {
                     val snapshot = (state.data as QuerySnapshot).toObjects(MovieDb::class.java)
-                    homeViewModel.selected.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
+                    homeViewModel.selectedMovie.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
                         binding.apply {
                             moviedb = movieDb
                             movieDb.genreIds?.let {

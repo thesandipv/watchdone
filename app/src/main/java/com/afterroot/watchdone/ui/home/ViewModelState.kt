@@ -13,15 +13,9 @@
  * limitations under the License.
  */
 
-package com.afterroot.tmdbapi2.api
+package com.afterroot.watchdone.ui.home
 
-import com.afterroot.tmdbapi2.model.Genres
-import retrofit2.http.GET
-
-interface GenresApi {
-    @GET("3/genre/movie/list")
-    suspend fun getMoviesGenres(): Genres
-
-    @GET("3/genre/tv/list")
-    suspend fun getTvGenres(): Genres
+sealed class ViewModelState {
+    object Loading : ViewModelState()
+    data class Loaded<T>(val data: T) : ViewModelState()
 }
