@@ -19,14 +19,13 @@
             <solid android:color="@color/color_surface" />
         </shape>
     </item>
-    <!--<item android:gravity="center">
+    <item android:gravity="center">
         <bitmap
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="148dp"
+            android:layout_height="148dp"
             android:gravity="center"
-            android:src="TODO Add App Icon"
-            android:tint="@color/color_on_surface" />
-    </item>-->
+            android:src="@drawable/launch_icon" />
+    </item>
     <item
         android:bottom="80dp"
         android:gravity="bottom|center">

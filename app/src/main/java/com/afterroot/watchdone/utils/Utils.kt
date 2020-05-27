@@ -15,8 +15,23 @@
 
 package com.afterroot.watchdone.utils
 
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 
 fun getGravtarUrl(email: String) =
     "https://www.gravatar.com/avatar/${DigestUtils.md5Hex(email.toLowerCase(Locale.getDefault()))}"
+
+fun Context.showKeyboard(view: View) {
+    if (view.requestFocus()) {
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
