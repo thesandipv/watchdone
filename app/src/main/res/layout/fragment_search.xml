@@ -54,6 +54,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_search"
             tools:visibility="visible" />
+
+        <!--TODO Add No Result found info-->
     </FrameLayout>
 
 
@@ -64,8 +66,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:paddingLeft="@dimen/padding_normal"
-        android:paddingRight="@dimen/padding_normal"
         android:paddingTop="@dimen/padding_normal_half"
+        android:paddingRight="@dimen/padding_normal"
         android:paddingBottom="@dimen/bottom_height_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
