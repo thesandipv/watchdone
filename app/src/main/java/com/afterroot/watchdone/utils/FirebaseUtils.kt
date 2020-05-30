@@ -18,12 +18,14 @@ package com.afterroot.watchdone.utils
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import org.koin.core.KoinComponent
+import org.koin.core.get
 
-object FirebaseUtils {
+object FirebaseUtils : KoinComponent {
     var auth: FirebaseAuth? = null
         get() {
             Log.d("FirebaseUtils", "FirebaseUtils.auth: initializing Auth")
-            return field ?: FirebaseAuth.getInstance()
+            return field ?: get<FirebaseAuth>()
         }
 
     val firebaseUser: FirebaseUser? = null
