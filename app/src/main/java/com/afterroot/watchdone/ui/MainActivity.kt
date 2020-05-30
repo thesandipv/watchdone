@@ -29,8 +29,10 @@ import android.view.animation.Interpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
+import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -42,6 +44,7 @@ import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -56,6 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val settings: Settings by inject()
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,26 +192,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadFragments() {
-        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
-            val drawerToggle = DrawerArrowDrawable(this)
+        val drawerToggle = DrawerArrowDrawable(this)
+        navController = findNavController(R.id.nav_host_fragment)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             toolbar.apply {
                 performShow()
                 hideOnScroll = true
                 navigationIcon = drawerToggle
                 setNavigationOnClickListener {
-                    findNavController(R.id.nav_host_fragment).navigateUp()
+                    navController.navigateUp()
                 }
             }
             when (destination.id) {
                 R.id.navigation_home -> {
-                    fab.show()
+                    fab.apply {
+                        show()
+                        setOnClickListener { navController.navigate(R.id.toSearch) }
+                        setImageDrawable(context.getDrawableExt(R.drawable.ic_add))
+                    }
                     drawerToggle.apply {
                         if (progress == 1f) progress(1f, 0f) //As hamburger
                     }
-                    toolbar.setNavigationOnClickListener {
-                        BottomNavDrawerFragment().apply {
-                            show(supportFragmentManager, this.tag)
+                    toolbar.apply {
+                        setNavigationOnClickListener {
+                            BottomNavDrawerFragment().apply {
+                                show(supportFragmentManager, this.tag)
+                            }
                         }
+                        fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
                     }
                 }
 
@@ -251,11 +263,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return findNavController(R.id.nav_host_fragment).navigateUp()
+        return navController.navigateUp()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment)) || super.onOptionsItemSelected(item)
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
