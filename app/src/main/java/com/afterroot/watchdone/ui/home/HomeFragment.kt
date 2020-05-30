@@ -24,17 +24,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
@@ -48,19 +45,8 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireActivity().apply {
-            fab.apply {
-                setOnClickListener {
-                    findNavController().navigate(R.id.toSearch)
-                }
-                setImageDrawable(requireContext().getDrawableExt(R.drawable.ic_add))
-            }
-            toolbar.apply {
-                fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
-            }
-        }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
@@ -90,12 +76,8 @@ class HomeFragment : Fragment() {
                     // list.scheduleLayoutAnimation()
                 }
             })
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        homeViewModel.addGenres() //TODO Run only when genres not available in Local Database
+        homeViewModel.addGenres(viewLifecycleOwner)
     }
 
     companion object {
