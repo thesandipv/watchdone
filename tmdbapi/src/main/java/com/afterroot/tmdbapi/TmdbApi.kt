@@ -109,9 +109,6 @@ class TmdbApi @JvmOverloads constructor(
     val changes: TmdbChanges
         get() = TmdbChanges(this)
 
-    val discover: TmdbDiscover
-        get() = TmdbDiscover(this)
-
     val jobs: List<JobDepartment>
         get() = TmdbJobs(this).jobs
 

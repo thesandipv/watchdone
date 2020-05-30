@@ -4,7 +4,10 @@ import com.afterroot.tmdbapi.model.Discover;
 import com.afterroot.tmdbapi.model.core.MovieResultsPage;
 import com.afterroot.tmdbapi.tools.ApiUrl;
 
-
+/**
+ * Use {@link com.afterroot.tmdbapi2.api.DiscoverApi} instead
+ */
+@Deprecated
 public class TmdbDiscover extends AbstractTmdbApi {
 
 
