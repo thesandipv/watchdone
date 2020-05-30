@@ -16,8 +16,10 @@
 package com.afterroot.watchdone.ui.home
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -85,8 +87,15 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
         )
     }
 
-    fun addGenres() = viewModelScope.launch {
-        val genres = get<GenresRepository>().getMoviesGenres().genres
-        get<MyDatabase>().genreDao().add(genres)
+    fun addGenres(owner: LifecycleOwner) {
+        get<MyDatabase>().genreDao().apply {
+            getGenres().observe(owner, Observer {
+                if (it.isNullOrEmpty()) {
+                    viewModelScope.launch {
+                        this@apply.add(get<GenresRepository>().getMoviesGenres().genres)
+                    }
+                }
+            })
+        }
     }
 }
