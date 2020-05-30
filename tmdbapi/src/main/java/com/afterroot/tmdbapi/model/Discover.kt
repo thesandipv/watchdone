@@ -153,7 +153,6 @@ class Discover {
      * @param withGenres
      * @return
      */
-    @Deprecated("")
     fun withGenres(withGenres: String): Discover {
         if (StringUtils.isNotBlank(withGenres)) {
             params[PARAM_WITH_GENRES] = withGenres
