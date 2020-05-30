@@ -77,7 +77,6 @@ class EditProfileFragment : Fragment() {
                     }
                     toolbar.apply {
                         fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
-                        fabAnimationMode = BottomAppBar.FAB_ANIMATION_MODE_SLIDE
                     }
                     GlideApp.with(requireContext()).load(getGravtarUrl(user.email.toString())).circleCrop().into(avatar)
                 }
