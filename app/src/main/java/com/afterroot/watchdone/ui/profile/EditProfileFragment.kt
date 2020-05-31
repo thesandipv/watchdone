@@ -27,7 +27,7 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
-import com.afterroot.watchdone.utils.getGravtarUrl
+import com.afterroot.watchdone.utils.getGravatarUrl
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -78,7 +78,7 @@ class EditProfileFragment : Fragment() {
                     toolbar.apply {
                         fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
                     }
-                    GlideApp.with(requireContext()).load(getGravtarUrl(user.email.toString())).circleCrop().into(avatar)
+                    GlideApp.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(avatar)
                 }
             }
         } else {

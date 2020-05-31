@@ -21,7 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 
-fun getGravtarUrl(email: String) =
+fun getGravatarUrl(email: String) =
     "https://www.gravatar.com/avatar/${DigestUtils.md5Hex(email.toLowerCase(Locale.getDefault()))}"
 
 fun Context.showKeyboard(view: View) {
