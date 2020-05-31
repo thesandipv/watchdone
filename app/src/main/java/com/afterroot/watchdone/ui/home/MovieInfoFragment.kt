@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.watchdone.R
 import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
@@ -50,7 +52,8 @@ class MovieInfoFragment : Fragment() {
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
                 if (state is ViewModelState.Loaded<*>) {
-                    val snapshot = (state.data as QuerySnapshot).toObjects(MovieDb::class.java)
+                    val snapshot = state.data as QuerySnapshot
+                    val moviesList = snapshot.toObjects(MovieDb::class.java)
                     homeViewModel.selectedMovie.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
                         binding.apply {
                             moviedb = movieDb
@@ -60,13 +63,25 @@ class MovieInfoFragment : Fragment() {
                                 })
                             }
                             settings = this@MovieInfoFragment.settings
+                            val isInWatchlist = moviesList.contains(movieDb)
                             actionAddWlist.apply {
-                                isEnabled = !snapshot.contains(movieDb)
-                                setOnClickListener {
-                                    get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
-                                        .document(get<FirebaseAuth>().currentUser?.uid.toString())
-                                        .collection(DatabaseFields.COLLECTION_WATCHDONE).document()
-                                        .set(movieDb)
+                                text =
+                                    if (!isInWatchlist) getString(R.string.text_add_to_watchlist)
+                                    else getString(R.string.text_remove_from_watchlist)
+                                if (!isInWatchlist) {
+                                    setOnClickListener {
+                                        get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
+                                            .document(get<FirebaseAuth>().currentUser?.uid.toString())
+                                            .collection(DatabaseFields.COLLECTION_WATCHDONE)
+                                            .document(DatabaseFields.COLLECTION_WATCHLIST)
+                                            .collection(DatabaseFields.COLLECTION_ITEMS)
+                                            .document()
+                                            .set(movieDb)
+                                    }
+                                } else {
+                                    setOnClickListener {
+                                        Log.d(TAG, "idOfMovie: ${snapshot.documents[moviesList.indexOf(movieDb)].id}")
+                                    }
                                 }
                             }
                             actionMarkWatched.setOnClickListener {
