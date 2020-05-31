@@ -21,13 +21,13 @@ import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.model.Genre
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.ui.settings.Settings
-import com.afterroot.watchdone.utils.getGravtarUrl
+import com.afterroot.watchdone.utils.getGravatarUrl
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
 @BindingAdapter("avatar")
 fun ImageView.setAvatar(email: String?) {
-    GlideApp.with(context).load(getGravtarUrl(email.toString())).circleCrop().into(this)
+    GlideApp.with(context).load(getGravatarUrl(email.toString())).circleCrop().into(this)
 }
 
 @BindingAdapter("movieDb", "settings")
