@@ -158,8 +158,8 @@ class MovieDb : IdElement(), Multi {
         return Multi.MediaType.MOVIE
     }
 
-    fun getYear(): String {
-        return releaseDate!!.substring(0, 4)
+    fun getYear(): String? {
+        return releaseDate?.substring(0, 4)
     }
 
     companion object {
