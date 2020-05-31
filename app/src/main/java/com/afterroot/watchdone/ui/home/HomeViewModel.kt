@@ -52,6 +52,8 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
                 value = ViewModelState.Loading
                 db.collection(DatabaseFields.COLLECTION_USERS).document(userId)
                     .collection(DatabaseFields.COLLECTION_WATCHDONE)
+                    .document(DatabaseFields.COLLECTION_WATCHLIST)
+                    .collection(DatabaseFields.COLLECTION_ITEMS)
                     .addSnapshotListener { querySnapshot, _ ->
                         querySnapshot.let { value = ViewModelState.Loaded(it) }
                     }

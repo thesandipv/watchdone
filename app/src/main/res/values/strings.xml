@@ -41,6 +41,7 @@
     <string name="text_action_exit">Exit</string>
     <string name="text_action_grant">Grant</string>
     <string name="text_add_to_watchlist">Add to Watchlist</string>
+    <string name="text_remove_from_watchlist">Remove from Watchlist</string>
     <string name="text_discover">Discover</string>
     <string name="text_login_to_tmdb">Login to TMDb</string>
     <string name="text_mark_as_watched">Mark as Watched</string>
