@@ -20,4 +20,6 @@ import com.afterroot.tmdbapi2.api.MoviesApi
 
 class MoviesRepository(val api: MoviesApi) {
     suspend fun getMoviesTrendingInSearch(by: String = TmdbTrending.BY_DAY) = api.getMoviesTrendingInSearch(by)
+
+    suspend fun getMovieInfo(movieId: Int) = api.getMovieInfo(movieId)
 }
