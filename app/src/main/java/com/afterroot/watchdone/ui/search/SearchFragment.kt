@@ -96,40 +96,40 @@ class SearchFragment : Fragment() {
     }
 
     private fun showSearchResults(title: String) = lifecycleScope.launch(Dispatchers.Main) {
-        progress_bar.visible(true, AutoTransition())
+        progress_bar_search.visible(true, AutoTransition())
         list.visible(false, AutoTransition())
         try {
             val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
-            progress_bar.visible(false, AutoTransition())
+            progress_bar_search.visible(false, AutoTransition())
             list.visible(true, AutoTransition())
             searchResultsAdapter?.add(movies.results)
             list.scheduleLayoutAnimation()
         } catch (mde: MovieDbException) {
             mde.printStackTrace()
-            progress_bar.visible(false)
+            progress_bar_search.visible(false)
         }
     }
 
     private fun loadTrending() = lifecycleScope.launch(Dispatchers.Main) {
-        progress_bar.visible(true, AutoTransition())
+        progress_bar_search.visible(true, AutoTransition())
         list.visible(false, AutoTransition())
         try {
             homeViewModel.getTrendingMovies().observe(viewLifecycleOwner, Observer {
-                progress_bar.visible(false, AutoTransition())
+                progress_bar_search.visible(false, AutoTransition())
                 list.visible(true, AutoTransition())
                 searchResultsAdapter?.add(it.results)
                 list.scheduleLayoutAnimation()
             })
         } catch (mde: MovieDbException) {
             mde.printStackTrace()
-            progress_bar.visible(false)
+            progress_bar_search.visible(false)
         }
     }
 
     private fun setErrorObserver() {
         homeViewModel.error.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                progress_bar.visible(false, AutoTransition())
+                progress_bar_search.visible(false, AutoTransition())
                 requireContext().toast(it)
             }
         })
