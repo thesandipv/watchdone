@@ -68,9 +68,9 @@ class HomeFragment : Fragment() {
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(this.viewLifecycleOwner, Observer {
                 if (it is ViewModelState.Loading) {
-                    binding.progressBar.visible(true)
+                    binding.progressBarHome.visible(true)
                 } else if (it is ViewModelState.Loaded<*>) {
-                    binding.progressBar.visible(false)
+                    binding.progressBarHome.visible(false)
                     val listData = it.data as QuerySnapshot
                     homeScreenAdapter.add(listData.toObjects(MovieDb::class.java))
                     // list.scheduleLayoutAnimation()
