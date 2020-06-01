@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:drawableStart="@drawable/ic_add"
@@ -110,7 +110,7 @@
                     android:text="@string/text_add_to_watchlist"
                     app:layout_constraintEnd_toStartOf="@+id/action_mark_watched"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/progress_movie_info" />
 
                 <Button
                     android:id="@+id/action_mark_watched"
@@ -138,6 +138,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/action_add_wlist"
                     tools:text="@tools:sample/lorem/random[5]" />
+
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                    android:id="@+id/progress_movie_info"
+                    style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:mpb_progressStyle="horizontal"
+                    app:mpb_useIntrinsicPadding="false" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
