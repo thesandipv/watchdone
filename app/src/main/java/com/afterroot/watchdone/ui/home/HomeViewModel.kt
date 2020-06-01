@@ -33,6 +33,7 @@ import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.database.MyDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
@@ -54,6 +55,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
                     .collection(DatabaseFields.COLLECTION_WATCHDONE)
                     .document(DatabaseFields.COLLECTION_WATCHLIST)
                     .collection(DatabaseFields.COLLECTION_ITEMS)
+                    .orderBy(DatabaseFields.FIELD_RELEASE_DATE, Query.Direction.DESCENDING)
                     .addSnapshotListener { querySnapshot, _ ->
                         querySnapshot.let { value = ViewModelState.Loaded(it) }
                     }
