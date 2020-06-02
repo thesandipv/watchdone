@@ -23,7 +23,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.transition.AutoTransition
+import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.database.MyDatabase
@@ -32,6 +36,8 @@ import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
@@ -53,44 +59,79 @@ class MovieInfoFragment : Fragment() {
             .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
                 if (state is ViewModelState.Loaded<*>) {
                     val snapshot = state.data as QuerySnapshot
-                    val moviesList = snapshot.toObjects(MovieDb::class.java)
                     homeViewModel.selectedMovie.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
-                        binding.apply {
-                            moviedb = movieDb
-                            movieDb.genreIds?.let {
-                                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, Observer { roomGenres ->
-                                    genres = roomGenres
-                                })
-                            }
-                            settings = this@MovieInfoFragment.settings
-                            val isInWatchlist = moviesList.contains(movieDb)
-                            actionAddWlist.apply {
-                                text =
-                                    if (!isInWatchlist) getString(R.string.text_add_to_watchlist)
-                                    else getString(R.string.text_remove_from_watchlist)
-                                if (!isInWatchlist) {
-                                    setOnClickListener {
-                                        get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
-                                            .document(get<FirebaseAuth>().currentUser?.uid.toString())
-                                            .collection(DatabaseFields.COLLECTION_WATCHDONE)
-                                            .document(DatabaseFields.COLLECTION_WATCHLIST)
-                                            .collection(DatabaseFields.COLLECTION_ITEMS)
-                                            .document()
-                                            .set(movieDb)
-                                    }
-                                } else {
-                                    setOnClickListener {
-                                        Log.d(TAG, "idOfMovie: ${snapshot.documents[moviesList.indexOf(movieDb)].id}")
-                                    }
-                                }
-                            }
-                            actionMarkWatched.setOnClickListener {
-
-                            }
-                        }
+                        updateUI(movieDb, snapshot)
                     })
                 }
             })
+    }
+
+    private fun updateUI(movieDb: MovieDb, snapshot: QuerySnapshot) {
+        val watchlistItemReference = get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
+            .document(get<FirebaseAuth>().currentUser?.uid.toString())
+            .collection(DatabaseFields.COLLECTION_WATCHDONE)
+            .document(DatabaseFields.COLLECTION_WATCHLIST)
+            .collection(DatabaseFields.COLLECTION_ITEMS)
+        val moviesList = snapshot.toObjects(MovieDb::class.java)
+        val selectedMovieDocId = snapshot.documents[moviesList.indexOf(movieDb)].id
+        Log.d(TAG, "idOfMovie: $selectedMovieDocId")
+        binding.apply {
+            settings = this@MovieInfoFragment.settings
+            moviedb = movieDb
+            updateGenres(movieDb)
+            val isInWatchlist = moviesList.contains(movieDb)
+            if (isInWatchlist) {
+                progressMovieInfo.visible(true, AutoTransition())
+                lifecycleScope.launch {
+                    val movieDbNew = get<MoviesRepository>().getMovieInfo(movieDb.id)
+                    if (movieDbNew !== movieDb) {
+                        Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
+                        val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
+                        selectedMovieDocRef.set(movieDbNew, SetOptions.merge()).addOnSuccessListener {
+                            Log.d(TAG, "updateUI: DB updated with latest data")
+                            progressMovieInfo.visible(false, AutoTransition())
+                        }
+                        moviedb = movieDbNew
+                        updateGenres(movieDbNew)
+                    } else {
+                        Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
+                    }
+                }
+            }
+            actionAddWlist.apply {
+                text =
+                    if (!isInWatchlist) getString(R.string.text_add_to_watchlist)
+                    else getString(R.string.text_remove_from_watchlist)
+                if (!isInWatchlist) {
+                    setOnClickListener {
+                        watchlistItemReference.add(movieDb)
+                    }
+                } else {
+                    setOnClickListener {
+
+                    }
+                }
+            }
+            actionMarkWatched.setOnClickListener {
+
+            }
+        }
+    }
+
+    private fun updateGenres(movieDb: MovieDb) {
+        Log.d(TAG, "updateGenres: Updating Genres")
+        if (movieDb.genres == null) {
+            Log.d(TAG, "updateGenres: Map of Genres not available. Get data from GenresId")
+            movieDb.genreIds?.let {
+                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, Observer { roomGenres ->
+                    binding.genres = roomGenres
+                    Log.d(TAG, "updateGenres: Genres set from Local Database")
+                })
+            }
+        } else {
+            binding.genres = movieDb.genres
+            Log.d(TAG, "updateGenres: Genres set from MovieDb Object")
+        }
     }
 
     companion object {
