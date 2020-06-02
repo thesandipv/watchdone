@@ -21,7 +21,7 @@ ext {
     firebaseUiStorageVersion = '4.3.1'
     fragmentKtxVersion = '1.2.4'
     glideVersion = '4.11.0'
-    googleMaterialVersion = '1.2.0-alpha06'
+    googleMaterialVersion = '1.2.0-beta01'
     gsonVersion = '2.8.6'
     jacksonVersion = '2.11.0'
     koinVersion = '2.0.1'
