@@ -37,6 +37,7 @@ fun ImageView.setPoster(movieDb: MovieDb, settings: Settings) {
 
 @BindingAdapter("genres")
 fun ChipGroup.setGenres(genres: List<Genre>?) {
+    removeAllViews()
     genres?.forEach { genre ->
         val chip = Chip(context)
         chip.text = genre.name
