@@ -73,14 +73,14 @@ class MovieInfoFragment : Fragment() {
             .document(DatabaseFields.COLLECTION_WATCHLIST)
             .collection(DatabaseFields.COLLECTION_ITEMS)
         val moviesList = snapshot.toObjects(MovieDb::class.java)
-        val selectedMovieDocId = snapshot.documents[moviesList.indexOf(movieDb)].id
-        Log.d(TAG, "idOfMovie: $selectedMovieDocId")
         binding.apply {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
             val isInWatchlist = moviesList.contains(movieDb)
             if (isInWatchlist) {
+                val selectedMovieDocId = snapshot.documents[moviesList.indexOf(movieDb)].id
+                Log.d(TAG, "updateUI: idOfMovie - $selectedMovieDocId")
                 progressMovieInfo.visible(true, AutoTransition())
                 lifecycleScope.launch {
                     val movieDbNew = get<MoviesRepository>().getMovieInfo(movieDb.id)
@@ -115,6 +115,7 @@ class MovieInfoFragment : Fragment() {
             actionMarkWatched.setOnClickListener {
 
             }
+            progressMovieInfo.visible(false, AutoTransition())
         }
     }
 
