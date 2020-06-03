@@ -22,8 +22,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
+import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.NavHeaderBinding
@@ -53,9 +52,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         dismiss()
                     }
                     R.id.tmdb_login -> {
-                        val dialog = MaterialDialog(requireContext()).show {
-                            customView(R.layout.loading_dialog)
-                        }
+                        val dialog = requireContext().showStaticProgressDialog("Loading...")
                         homeViewModel.getResponseRequestToken().observe(viewLifecycleOwner, Observer { response ->
                             if (response.success) {
                                 try {

@@ -16,7 +16,6 @@
 package com.afterroot.watchdone.ui
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -24,8 +23,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.Interpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.core.app.ActivityCompat
@@ -33,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.afterroot.core.extensions.getDrawableExt
+import com.afterroot.core.extensions.progress
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -241,24 +239,6 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
             }
-        }
-    }
-
-    /**
-     * Extension function for animating progress of DrawerArrowDrawable
-     * @param from start progress
-     * @param to end progress
-     * @param interpolator interpolator for Animation. Default is AccelerateDecelerateInterpolator
-     */
-    private fun DrawerArrowDrawable.progress(
-        from: Float,
-        to: Float,
-        interpolator: Interpolator = AccelerateDecelerateInterpolator()
-    ) {
-        ObjectAnimator.ofFloat(this, "progress", from, to).apply {
-            this.interpolator = interpolator
-            this.duration = 400
-            start()
         }
     }
 

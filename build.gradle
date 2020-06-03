@@ -6,7 +6,7 @@ ext {
     commonsIoVersion = '1.3.2'
     constraintlayoutVersion = '2.0.0-beta6'
     coreKtxVersion = '1.4.0-alpha01'
-    coreVersion = '0.1.1'
+    coreVersion = '0.2.0'
     crashlyticsVersion = '2.10.1'
     firebaseAdsVersion = '19.1.0'
     firebaseAuthVersion = '19.3.1'
