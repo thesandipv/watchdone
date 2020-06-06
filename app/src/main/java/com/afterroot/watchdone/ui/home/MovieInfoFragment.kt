@@ -72,50 +72,52 @@ class MovieInfoFragment : Fragment() {
             .collection(DatabaseFields.COLLECTION_WATCHDONE)
             .document(DatabaseFields.COLLECTION_WATCHLIST)
             .collection(DatabaseFields.COLLECTION_ITEMS)
-        val moviesList = snapshot.toObjects(MovieDb::class.java)
         binding.apply {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
-            val isInWatchlist = moviesList.contains(movieDb)
-            if (isInWatchlist) {
-                val selectedMovieDocId = snapshot.documents[moviesList.indexOf(movieDb)].id
-                Log.d(TAG, "updateUI: idOfMovie - $selectedMovieDocId")
-                progressMovieInfo.visible(true, AutoTransition())
-                lifecycleScope.launch {
-                    val movieDbNew = get<MoviesRepository>().getMovieInfo(movieDb.id)
-                    if (movieDbNew !== movieDb) {
-                        Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
-                        val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
-                        selectedMovieDocRef.set(movieDbNew, SetOptions.merge()).addOnSuccessListener {
-                            Log.d(TAG, "updateUI: DB updated with latest data")
+            watchlistItemReference.whereEqualTo("id", movieDb.id).get().addOnSuccessListener {
+                val isInWatchlist = it.documents.size > 0
+                if (isInWatchlist) {
+                    val movieDbfromDB = it.documents[0].toObject(MovieDb::class.java) as MovieDb
+                    val selectedMovieDocId = it.documents[0].id
+                    Log.d(TAG, "updateUI: idOfMovie - $selectedMovieDocId")
+                    progressMovieInfo.visible(true, AutoTransition())
+                    lifecycleScope.launch {
+                        val movieDbNew = get<MoviesRepository>().getMovieInfo(movieDb.id)
+                        if (movieDbNew != movieDbfromDB) {
+                            Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
+                            val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
+                            selectedMovieDocRef.set(movieDbNew, SetOptions.merge()).addOnSuccessListener {
+                                Log.d(TAG, "updateUI: DB updated with latest data")
+                                progressMovieInfo.visible(false, AutoTransition())
+                            }
+                            moviedb = movieDbNew
+                            updateGenres(movieDbNew)
+                        } else {
                             progressMovieInfo.visible(false, AutoTransition())
+                            Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
                         }
-                        moviedb = movieDbNew
-                        updateGenres(movieDbNew)
+                    }
+                } else progressMovieInfo.visible(false, AutoTransition())
+                actionAddWlist.apply {
+                    text =
+                        if (!isInWatchlist) getString(R.string.text_add_to_watchlist)
+                        else getString(R.string.text_remove_from_watchlist)
+                    if (!isInWatchlist) {
+                        setOnClickListener {
+                            watchlistItemReference.add(movieDb)
+                        }
                     } else {
-                        Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
+                        setOnClickListener {
+
+                        }
                     }
                 }
-            }
-            actionAddWlist.apply {
-                text =
-                    if (!isInWatchlist) getString(R.string.text_add_to_watchlist)
-                    else getString(R.string.text_remove_from_watchlist)
-                if (!isInWatchlist) {
-                    setOnClickListener {
-                        watchlistItemReference.add(movieDb)
-                    }
-                } else {
-                    setOnClickListener {
+                actionMarkWatched.setOnClickListener {
 
-                    }
                 }
             }
-            actionMarkWatched.setOnClickListener {
-
-            }
-            progressMovieInfo.visible(false, AutoTransition())
         }
     }
 
@@ -139,3 +141,6 @@ class MovieInfoFragment : Fragment() {
         private const val TAG = "MovieInfoFragment"
     }
 }
+
+
+
