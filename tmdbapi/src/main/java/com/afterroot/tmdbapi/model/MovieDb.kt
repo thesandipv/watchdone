@@ -8,11 +8,12 @@ import com.afterroot.tmdbapi.model.core.ResultsPage
 import com.afterroot.tmdbapi.model.keywords.Keyword
 import com.afterroot.tmdbapi.model.people.PersonCast
 import com.afterroot.tmdbapi.model.people.PersonCrew
+import com.afterroot.tmdbapi2.model.Genre
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
-class MovieDb : IdElement(), Multi {
+class MovieDbOld : IdElement(), Multi {
     @JsonProperty("title")
     var title: String? = null
 
@@ -52,7 +53,6 @@ class MovieDb : IdElement(), Multi {
     @JsonProperty("overview")
     var overview: String? = null
 
-    // todo still there??
     @JsonProperty("imdb_id")
     var imdbID: String? = null
 
@@ -128,11 +128,9 @@ class MovieDb : IdElement(), Multi {
         return if (alternativeTitles != null) alternativeTitles!!.titles else null
     }
 
-    val cast: List<PersonCast>?
-        get() = if (credits != null) credits!!.getCast() else null
+    fun getCast(): List<PersonCast>? = credits?.getCast()
 
-    val crew: List<PersonCrew>?
-        get() = if (credits != null) credits!!.getCrew() else null
+    fun getCrew(): List<PersonCrew>? = credits?.getCrew()
 
     fun getImages(vararg artworkTypes: ArtworkType?): List<Artwork>? {
         return if (images != null) images!!.getAll(*artworkTypes) else null
@@ -154,8 +152,119 @@ class MovieDb : IdElement(), Multi {
         return "$title - $releaseDate"
     }
 
-    override fun getMediaType(): Multi.MediaType {
-        return Multi.MediaType.MOVIE
+    override val mediaType: Multi.MediaType?
+        get() = Multi.MediaType.MOVIE
+
+    fun getYear(): String? {
+        return releaseDate?.substring(0, 4)
+    }
+
+    companion object {
+        fun type(): Int {
+            return Types.MOVIE
+        }
+    }
+}
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
+data class MovieDb(
+    @JsonProperty("adult") val adult: Boolean? = null,
+    @JsonProperty("backdrop_path") val backdropPath: String? = null,
+    @JsonProperty("belongs_to_collection") val belongsToCollection: Collection? = null,
+    @JsonProperty("budget") val budget: Int? = null,
+    @JsonProperty("genres")
+    val genres: List<Genre>? = null,
+    @JsonProperty("genre_ids")
+    val genreIds: List<Int>? = null,
+    @JsonProperty("homepage")
+    val homepage: String? = null,
+    @JsonProperty("imdb_id")
+    val imdbId: String? = null,
+    @JsonProperty("original_language")
+    val originalLanguage: String? = null,
+    @JsonProperty("original_title")
+    val originalTitle: String? = null,
+    @JsonProperty("overview")
+    val overview: String? = null,
+    @JsonProperty("popularity")
+    val popularity: Double? = null,
+    @JsonProperty("poster_path")
+    val posterPath: String? = null,
+    @JsonProperty("production_companies")
+    val productionCompanies: List<ProductionCompany>? = null,
+    @JsonProperty("production_countries")
+    val productionCountries: List<ProductionCountry>? = null,
+    @JsonProperty("release_date")
+    val releaseDate: String? = null,
+    @JsonProperty("revenue")
+    val revenue: Long? = null,
+    @JsonProperty("runtime")
+    val runtime: Int? = null,
+    @JsonProperty("spoken_languages")
+    val spokenLanguages: List<Language>? = null,
+    @JsonProperty("status")
+    val status: String? = null,
+    @JsonProperty("tagline")
+    val tagline: String? = null,
+    @JsonProperty("title")
+    val title: String? = null,
+    @JsonProperty("video")
+    val video: Boolean? = null,
+    @JsonProperty("vote_average")
+    val voteAverage: Double? = null,
+    @JsonProperty("vote_count")
+    val voteCount: Int? = null,
+    @JsonProperty("rating")
+    var userRating: Float = 0f,
+    // Appendable responses
+    @JsonProperty("alternative_titles")
+    private var alternativeTitles: MoviesAlternativeTitles? = null,
+    @JsonProperty("credits")
+    private var credits: Credits? = null,
+    @JsonProperty("images")
+    private var images: MovieImages? = null,
+    @JsonProperty("keywords")
+    private var keywords: MovieKeywords? = null,
+    @JsonProperty("release_dates")
+    private var releases: ReleaseInfoResults? = null,
+    @JsonProperty("videos")
+    private var videos: Video.Results? = null,
+    @JsonProperty("translations")
+    private var translations: MovieTranslations? = null,
+    @JsonProperty("similar")
+    private var similarMovies: ResultsPage<MovieDb>? = null,
+    @JsonProperty("recommendations")
+    private val recommendedMovies: ResultsPage<MovieDb>? = null,
+    @JsonProperty("reviews")
+    private var reviews: ResultsPage<Reviews>? = null,
+    @JsonProperty("lists")
+    private var lists: ResultsPage<MovieList>? = null
+) : IdElement(), Multi {
+    override val mediaType: Multi.MediaType?
+        get() = Multi.MediaType.MOVIE
+
+    fun getAlternativeTitles(): List<AlternativeTitle>? {
+        return if (alternativeTitles != null) alternativeTitles!!.titles else null
+    }
+
+    fun getCast(): List<PersonCast>? = credits?.getCast()
+
+    fun getCrew(): List<PersonCrew>? = credits?.getCrew()
+
+    fun getImages(vararg artworkTypes: ArtworkType?): List<Artwork>? {
+        return if (images != null) images!!.getAll(*artworkTypes) else null
+    }
+
+    fun getKeywords(): List<Keyword>? {
+        return if (keywords != null) keywords!!.keywords else null
+    }
+
+    fun getReleases(): List<ReleaseInfo>? {
+        return if (releases != null) releases!!.results else null
+    }
+
+    fun getVideos(): List<Video>? {
+        return if (videos != null) videos!!.videos else null
     }
 
     fun getYear(): String? {
