@@ -25,6 +25,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.AutoTransition
+import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.repository.MoviesRepository
@@ -42,10 +43,10 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class MovieInfoFragment : Fragment() {
-    private val homeViewModel: HomeViewModel by activityViewModels()
-    private val settings: Settings by inject()
     lateinit var binding: FragmentMovieInfoBinding
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private val myDatabase: MyDatabase by inject()
+    private val settings: Settings by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMovieInfoBinding.inflate(inflater, container, false)
@@ -78,9 +79,10 @@ class MovieInfoFragment : Fragment() {
             updateGenres(movieDb)
             watchlistItemReference.whereEqualTo("id", movieDb.id).get().addOnSuccessListener {
                 val isInWatchlist = it.documents.size > 0
+                val document = it.documents[0]
                 if (isInWatchlist) {
-                    val movieDbfromDB = it.documents[0].toObject(MovieDb::class.java) as MovieDb
-                    val selectedMovieDocId = it.documents[0].id
+                    val movieDbfromDB = document.toObject(MovieDb::class.java) as MovieDb
+                    val selectedMovieDocId = document.id
                     Log.d(TAG, "updateUI: idOfMovie - $selectedMovieDocId")
                     progressMovieInfo.visible(true, AutoTransition())
                     lifecycleScope.launch {
@@ -101,16 +103,16 @@ class MovieInfoFragment : Fragment() {
                     }
                 } else progressMovieInfo.visible(false, AutoTransition())
                 actionAddWlist.apply {
-                    text =
-                        if (!isInWatchlist) getString(R.string.text_add_to_watchlist)
-                        else getString(R.string.text_remove_from_watchlist)
                     if (!isInWatchlist) {
+                        text = getString(R.string.text_add_to_watchlist)
+                        icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
                         setOnClickListener {
                             watchlistItemReference.add(movieDb)
                         }
                     } else {
+                        text = getString(R.string.text_remove_from_watchlist)
+                        icon = requireContext().getDrawableExt(R.drawable.ic_bookmark)
                         setOnClickListener {
-
                         }
                     }
                 }
