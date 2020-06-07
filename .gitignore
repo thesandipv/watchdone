@@ -96,5 +96,5 @@ output.json
 # End of https://www.gitignore.io/api/android
 
 # My List
-/gradle.properties
+/tmdb.properties
 /keystore.properties
