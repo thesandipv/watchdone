@@ -71,8 +71,10 @@ android {
                 pathPrefix: "/apps/watchdone"
         ]
         if (!System.getenv("CI")) {
-            buildConfigField "String", "TMDB_API", tmdbApi
-            buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbBearerToken
+            def tmdbProperties = new Properties()
+            tmdbProperties.load(new FileInputStream(rootProject.file("tmdb.properties")))
+            buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbProperties["tmdbBearerToken"]
+            buildConfigField "String", "TMDB_API", tmdbProperties["tmdbApi"]
             signingConfig signingConfigs.signing
         } else {
             buildConfigField "String", "TMDB_API", System.getenv("TMDB_API")
