@@ -22,5 +22,5 @@ jobs:
     - name: Build with Gradle
       env: 
         TMDB_API: ${{ secrets.TMDB_API }} 
-        TMDB_BEARER_TOKEN: ${{ TMDB_BEARER_TOKEN }}
+        TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
       run: ./gradlew build
