@@ -30,17 +30,18 @@ ext {
     minimumSdkVersion = 16
 }
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
 android {
-    signingConfigs {
-        signing {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+    if (!System.getenv("CI")) {
+        def keystorePropertiesFile = rootProject.file("keystore.properties")
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+        signingConfigs {
+            signing {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
     compileSdkVersion 29
@@ -69,9 +70,14 @@ android {
                 hostName  : "afterroot.web.app",
                 pathPrefix: "/apps/watchdone"
         ]
-        buildConfigField "String", "TMDB_API", tmdbApi
-        buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbBearerToken
-        signingConfig signingConfigs.signing
+        if (!System.getenv("CI")) {
+            buildConfigField "String", "TMDB_API", tmdbApi
+            buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbBearerToken
+            signingConfig signingConfigs.signing
+        } else {
+            buildConfigField "String", "TMDB_API", System.getenv("TMDB_API")
+            buildConfigField "String", "TMDB_BEARER_TOKEN", System.getenv("TMDB_BEARER_TOKEN")
+        }
         android.buildFeatures.dataBinding = true
     }
 
