@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
@@ -60,11 +59,7 @@ class HomeFragment : Fragment() {
                 requireContext().toast(item.title.toString())
             }
         }, getKoin())
-        binding.list.apply {
-            val lm = GridLayoutManager(requireContext(), 2)
-            layoutManager = lm
-            adapter = homeScreenAdapter
-        }
+        binding.list.adapter = homeScreenAdapter
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(this.viewLifecycleOwner, Observer {
                 if (it is ViewModelState.Loading) {
