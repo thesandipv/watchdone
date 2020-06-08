@@ -25,7 +25,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.TmdbApi
@@ -88,11 +87,7 @@ class SearchFragment : Fragment() {
             }
         }
         searchResultsAdapter = DelegateAdapter(itemSelectedCallback, getKoin())
-        list.apply {
-            val lm = GridLayoutManager(requireContext(), 2)
-            layoutManager = lm
-            adapter = searchResultsAdapter
-        }
+        list.adapter = searchResultsAdapter
     }
 
     private fun showSearchResults(title: String) = lifecycleScope.launch(Dispatchers.Main) {

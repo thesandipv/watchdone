@@ -79,23 +79,23 @@ class MovieInfoFragment : Fragment() {
             updateGenres(movieDb)
             watchlistItemReference.whereEqualTo("id", movieDb.id).get().addOnSuccessListener {
                 val isInWatchlist = it.documents.size > 0
-                val document = it.documents[0]
                 if (isInWatchlist) {
-                    val movieDbfromDB = document.toObject(MovieDb::class.java) as MovieDb
+                    val document = it.documents[0]
+                    val resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
                     val selectedMovieDocId = document.id
                     Log.d(TAG, "updateUI: idOfMovie - $selectedMovieDocId")
                     progressMovieInfo.visible(true, AutoTransition())
                     lifecycleScope.launch {
-                        val movieDbNew = get<MoviesRepository>().getMovieInfo(movieDb.id)
-                        if (movieDbNew != movieDbfromDB) {
+                        val resultFromServer = get<MoviesRepository>().getMovieInfo(movieDb.id)
+                        if (resultFromServer != resultFromDB) {
                             Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
                             val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
-                            selectedMovieDocRef.set(movieDbNew, SetOptions.merge()).addOnSuccessListener {
+                            selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
                                 Log.d(TAG, "updateUI: DB updated with latest data")
                                 progressMovieInfo.visible(false, AutoTransition())
                             }
-                            moviedb = movieDbNew
-                            updateGenres(movieDbNew)
+                            moviedb = resultFromServer
+                            updateGenres(resultFromServer)
                         } else {
                             progressMovieInfo.visible(false, AutoTransition())
                             Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
@@ -103,6 +103,7 @@ class MovieInfoFragment : Fragment() {
                     }
                 } else progressMovieInfo.visible(false, AutoTransition())
                 actionAddWlist.apply {
+                    visible(true)
                     if (!isInWatchlist) {
                         text = getString(R.string.text_add_to_watchlist)
                         icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
@@ -116,8 +117,11 @@ class MovieInfoFragment : Fragment() {
                         }
                     }
                 }
-                actionMarkWatched.setOnClickListener {
+                actionMarkWatched.apply {
+                    visible(true)
+                    setOnClickListener {
 
+                    }
                 }
             }
         }
