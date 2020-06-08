@@ -17,4 +17,5 @@
 
 <resources>
     <integer name="fragment_anim_time">200</integer>
+    <integer name="grid_item_span_count">2</integer>
 </resources>
