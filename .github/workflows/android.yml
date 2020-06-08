@@ -23,4 +23,4 @@ jobs:
       env: 
         TMDB_API: ${{ secrets.TMDB_API }} 
         TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
