@@ -125,7 +125,9 @@ class SearchFragment : Fragment() {
         homeViewModel.error.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 progress_bar_search.visible(false, AutoTransition())
-                requireContext().toast(it)
+                requireContext().toast("Via: $TAG : $it")
+                //Set value to null after displaying error so prevent Observers from another context
+                homeViewModel.error.postValue(null)
             }
         })
     }
