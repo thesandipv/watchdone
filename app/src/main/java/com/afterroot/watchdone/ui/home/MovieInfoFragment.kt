@@ -61,13 +61,13 @@ class MovieInfoFragment : Fragment() {
                 if (state is ViewModelState.Loaded<*>) {
                     val snapshot = state.data as QuerySnapshot
                     homeViewModel.selectedMovie.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
-                        updateUI(movieDb, snapshot)
+                        updateUI(movieDb)
                     })
                 }
             })
     }
 
-    private fun updateUI(movieDb: MovieDb, snapshot: QuerySnapshot) {
+    private fun updateUI(movieDb: MovieDb) {
         val watchlistItemReference = get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
             .document(get<FirebaseAuth>().currentUser?.uid.toString())
             .collection(DatabaseFields.COLLECTION_WATCHDONE)
@@ -79,10 +79,16 @@ class MovieInfoFragment : Fragment() {
             updateGenres(movieDb)
             watchlistItemReference.whereEqualTo("id", movieDb.id).get().addOnSuccessListener {
                 val isInWatchlist = it.documents.size > 0
+                var isWatched = false
+                var resultFromDB: MovieDb? = null
+                var selectedMovieDocId: String? = null
                 if (isInWatchlist) {
                     val document = it.documents[0]
-                    val resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
-                    val selectedMovieDocId = document.id
+                    document.getBoolean(DatabaseFields.FIELD_IS_WATCHED)?.let { watched ->
+                        isWatched = watched
+                    }
+                    resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
+                    selectedMovieDocId = document.id
                     Log.d(TAG, "updateUI: idOfMovie - $selectedMovieDocId")
                     progressMovieInfo.visible(true, AutoTransition())
                     lifecycleScope.launch {
@@ -114,13 +120,24 @@ class MovieInfoFragment : Fragment() {
                         text = getString(R.string.text_remove_from_watchlist)
                         icon = requireContext().getDrawableExt(R.drawable.ic_bookmark)
                         setOnClickListener {
+                            selectedMovieDocId?.let { id -> watchlistItemReference.document(id).delete() }
                         }
                     }
                 }
                 actionMarkWatched.apply {
                     visible(true)
-                    setOnClickListener {
-
+                    if (isInWatchlist && selectedMovieDocId != null && resultFromDB != null) {
+                        if (isWatched) {
+                            text = getString(R.string.text_mark_as_unwatched)
+                            icon = requireContext().getDrawableExt(R.drawable.ic_clear)
+                        } else {
+                            text = getString(R.string.text_mark_as_watched)
+                            icon = requireContext().getDrawableExt(R.drawable.ic_done)
+                        }
+                        setOnClickListener {
+                            watchlistItemReference.document(selectedMovieDocId)
+                                .update(DatabaseFields.FIELD_IS_WATCHED, !isWatched)
+                        }
                     }
                 }
             }
