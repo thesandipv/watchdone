@@ -220,7 +220,7 @@ data class MovieDb(
     @JsonProperty("alternative_titles")
     private var alternativeTitles: MoviesAlternativeTitles? = null,
     @JsonProperty("credits")
-    private var credits: Credits? = null,
+    var credits: Credits? = null,
     @JsonProperty("images")
     private var images: MovieImages? = null,
     @JsonProperty("keywords")

@@ -46,10 +46,10 @@ public class AbstractTmdbApiTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        apiKey = System.getenv("apikey");
+        apiKey = System.getenv("TMDB_API");
 
         if (StringUtils.isBlank(apiKey)) {
-            String g = "Missing api key: To run test you need to provide the key as environment variable named 'apikey' " +
+            String g = "Missing api key: To run test you need to provide the key as environment variable named 'TMDB_API' " +
                     "and you have to make sure that this is key relates to a linked application";
 
             throw new RuntimeException(g);
