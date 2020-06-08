@@ -84,6 +84,20 @@
                     android:background="@android:color/transparent"
                     app:layout_collapseMode="pin" />
 
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                    android:id="@+id/progress_movie_info"
+                    style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:indeterminate="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:mpb_progressStyle="horizontal"
+                    app:mpb_useIntrinsicPadding="false"
+                    tools:layout_height="4dp" />
+
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -94,17 +108,17 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_horizontal"
+                android:paddingRight="@dimen/padding_horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/action_add_wlist"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="@dimen/padding_vertical"
+                    android:layout_marginEnd="@dimen/padding_horizontal"
+                    android:layout_marginRight="@dimen/padding_horizontal"
                     android:text="@string/text_add_to_watchlist"
                     android:visibility="gone"
                     app:icon="@drawable/ic_bookmark_border"
@@ -118,8 +132,6 @@
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="@string/text_mark_as_watched"
                     android:visibility="gone"
                     app:icon="@drawable/ic_done"
@@ -134,28 +146,12 @@
                     android:id="@+id/movie_overview"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="@dimen/padding_vertical"
                     android:text="@{moviedb.overview}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/action_add_wlist"
                     tools:text="@tools:sample/lorem/random[5]" />
-
-                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-                    android:id="@+id/progress_movie_info"
-                    style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:mpb_progressStyle="horizontal"
-                    app:mpb_useIntrinsicPadding="false" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
