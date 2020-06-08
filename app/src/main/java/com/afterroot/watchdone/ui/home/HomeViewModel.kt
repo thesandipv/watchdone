@@ -36,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.inject
@@ -66,11 +67,13 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
 
     fun getTrendingMovies(isReload: Boolean = false): LiveData<MovieResultsPage> {
         if (trendingMovies.value == null || isReload) {
-            trendingMovies = liveData(Dispatchers.IO) {
+            trendingMovies = liveData(Dispatchers.IO) { //Background Thread
                 try {
                     emit(get<MoviesRepository>().getMoviesTrendingInSearch())
                 } catch (e: Exception) {
-                    error.value = e.message
+                    withContext(Dispatchers.Default) { //Emit error on Default Dispatcher
+                        error.value = e.message
+                    }
                     Log.e("TMDbApi", "getTrendingMovies: ${e.message}")
                 }
             } as MutableLiveData<MovieResultsPage>
