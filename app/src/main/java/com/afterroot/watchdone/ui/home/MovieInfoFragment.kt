@@ -38,7 +38,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
@@ -53,8 +55,8 @@ class MovieInfoFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
@@ -65,6 +67,8 @@ class MovieInfoFragment : Fragment() {
                     })
                 }
             })
+
+        setErrorObserver()
     }
 
     private fun updateUI(movieDb: MovieDb) {
@@ -158,6 +162,17 @@ class MovieInfoFragment : Fragment() {
             binding.genres = movieDb.genres
             Log.d(TAG, "updateGenres: Genres set from MovieDb Object")
         }
+    }
+
+    private fun setErrorObserver() {
+        homeViewModel.error.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                progress_bar_search.visible(false, AutoTransition())
+                requireContext().toast("Via: $TAG : $it")
+                //Set value to null after displaying error so prevent Observers from another context
+                homeViewModel.error.postValue(null)
+            }
+        })
     }
 
     companion object {

@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
@@ -31,6 +32,7 @@ import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.android.synthetic.main.fragment_search.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
@@ -78,6 +80,18 @@ class HomeFragment : Fragment() {
             })
 
         homeViewModel.addGenres(viewLifecycleOwner)
+        setErrorObserver()
+    }
+
+    private fun setErrorObserver() {
+        homeViewModel.error.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                progress_bar_search.visible(false, AutoTransition())
+                requireContext().toast("Via: $TAG : $it")
+                //Set value to null after displaying error so prevent Observers from another context
+                homeViewModel.error.postValue(null)
+            }
+        })
     }
 
     companion object {

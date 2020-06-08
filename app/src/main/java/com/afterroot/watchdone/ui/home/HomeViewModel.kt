@@ -71,7 +71,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
                     emit(get<MoviesRepository>().getMoviesTrendingInSearch())
                 } as MutableLiveData<MovieResultsPage>
             } catch (e: Exception) {
-                error.value = e.message //Emit error TODO may not work
+                error.value = e.message //Emit error
                 Log.e("TMDbApi", "getTrendingMovies: ${e.message}")
             }
         }
