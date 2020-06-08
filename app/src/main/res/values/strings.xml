@@ -45,6 +45,7 @@
     <string name="text_discover">Discover</string>
     <string name="text_login_to_tmdb">Login to TMDb</string>
     <string name="text_mark_as_watched">Mark as Watched</string>
+    <string name="text_mark_as_unwatched">Mark as UnWatched</string>
     <string name="theme_battery">Set by Battery Saver</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_device_default">Device Default</string>

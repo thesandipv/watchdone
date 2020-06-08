@@ -27,4 +27,5 @@ object DatabaseFields {
     const val FIELD_FCM_ID = "fcmId"
     const val FIELD_TOTAL_ITEMS = "total_items"
     const val FIELD_RELEASE_DATE = "releaseDate"
+    const val FIELD_IS_WATCHED = "isWatched"
 }

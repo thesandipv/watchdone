@@ -66,8 +66,13 @@ class HomeFragment : Fragment() {
                     binding.progressBarHome.visible(true)
                 } else if (it is ViewModelState.Loaded<*>) {
                     binding.progressBarHome.visible(false)
-                    val listData = it.data as QuerySnapshot
-                    homeScreenAdapter.add(listData.toObjects(MovieDb::class.java))
+                    try { //Fixes crash when user is being logged out
+                        val listData = it.data as QuerySnapshot
+                        homeScreenAdapter.add(listData.toObjects(MovieDb::class.java))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
                     // list.scheduleLayoutAnimation()
                 }
             })
