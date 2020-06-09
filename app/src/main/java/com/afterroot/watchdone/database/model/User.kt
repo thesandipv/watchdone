@@ -13,19 +13,16 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.database
+package com.afterroot.watchdone.database.model
 
-object DatabaseFields {
-    //table 'users'
-    const val COLLECTION_USERS = "users"
-    const val COLLECTION_WATCHDONE = "watchdone"
-    const val COLLECTION_WATCHLIST = "watchlist"
-    const val COLLECTION_ITEMS = "items"
-    const val FIELD_NAME = "name"
-    const val FIELD_EMAIL = "email"
-    const val FIELD_UID = "uid"
-    const val FIELD_FCM_ID = "fcmId"
-    const val FIELD_TOTAL_ITEMS = "total_items"
-    const val FIELD_RELEASE_DATE = "releaseDate"
-    const val FIELD_IS_WATCHED = "isWatched"
+import java.io.Serializable
+
+//Collection 'users'
+data class User(
+    var name: String?,
+    var email: String?,
+    var uid: String,
+    var fcmId: String
+) : Serializable {
+    constructor() : this("", "", "", "")
 }

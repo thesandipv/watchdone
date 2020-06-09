@@ -35,8 +35,9 @@ import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.database.DatabaseFields
-import com.afterroot.watchdone.model.User
+import com.afterroot.watchdone.database.model.Collection
+import com.afterroot.watchdone.database.model.Field
+import com.afterroot.watchdone.database.model.User
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
@@ -132,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     private fun addUserInfoInDB() {
         try {
             val curUser = FirebaseUtils.auth!!.currentUser
-            val userRef = get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS).document(curUser!!.uid)
+            val userRef = get<FirebaseFirestore>().collection(Collection.USERS).document(curUser!!.uid)
             FirebaseInstanceId.getInstance().instanceId
                 .addOnCompleteListener(OnCompleteListener { tokenTask ->
                     if (!tokenTask.isSuccessful) {
@@ -150,8 +151,8 @@ class MainActivity : AppCompatActivity() {
                                         setUserTask.exception
                                     )
                                 }
-                            } else if (getUserTask.result!![DatabaseFields.FIELD_FCM_ID] != tokenTask.result?.token!!) {
-                                userRef.update(DatabaseFields.FIELD_FCM_ID, tokenTask.result?.token!!)
+                            } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result?.token!!) {
+                                userRef.update(Field.FCM_ID, tokenTask.result?.token!!)
                             }
                         } else Log.e(TAG, "Unknown Error", getUserTask.exception)
                     }

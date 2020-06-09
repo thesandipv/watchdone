@@ -26,7 +26,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.database.model.Collection
+import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.ui.MainActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.google.firebase.firestore.FirebaseFirestore
@@ -47,9 +48,9 @@ class FireMessagingService : FirebaseMessagingService() {
     private fun updateToken(token: String) {
         try {
             if (FirebaseUtils.isUserSignedIn) {
-                get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
+                get<FirebaseFirestore>().collection(Collection.USERS)
                     .document(FirebaseUtils.firebaseUser!!.uid)
-                    .update(DatabaseFields.FIELD_FCM_ID, token)
+                    .update(Field.FCM_ID, token)
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -33,9 +33,7 @@ public class StringIdElement extends AbstractJsonMapping implements Serializable
 
         StringIdElement that = (StringIdElement) o;
 
-        if (!id.equals(that.id)) return false;
-
-        return true;
+        return id.equals(that.id);
     }
 
 
