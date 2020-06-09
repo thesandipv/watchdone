@@ -16,7 +16,7 @@ public class TmdbTvEpisodes extends AbstractTmdbApi {
     public static final String TMDB_METHOD_TV_EPISODE = "episode";
 
 
-    public static enum EpisodeMethod {
+    public enum EpisodeMethod {
         // base method shared by all tv apis
         credits, external_ids, images, videos
         // specific method for episodes

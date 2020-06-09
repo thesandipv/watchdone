@@ -1,8 +1,5 @@
 package com.afterroot.tmdbapi;
 
-import java.util.Collections;
-import java.util.HashMap;
-
 import com.afterroot.tmdbapi.model.MovieList;
 import com.afterroot.tmdbapi.model.config.Account;
 import com.afterroot.tmdbapi.model.core.AccountID;
@@ -12,6 +9,9 @@ import com.afterroot.tmdbapi.model.core.ResultsPage;
 import com.afterroot.tmdbapi.model.core.SessionToken;
 import com.afterroot.tmdbapi.tools.ApiUrl;
 import com.afterroot.tmdbapi.tools.MovieDbException;
+
+import java.util.Collections;
+import java.util.HashMap;
 
 import static com.afterroot.tmdbapi.TmdbTV.TMDB_METHOD_TV;
 import static com.afterroot.tmdbapi.TmdbTvEpisodes.TMDB_METHOD_TV_EPISODE;
@@ -251,7 +251,7 @@ public class TmdbAccount extends AbstractTmdbApi {
      * needed to tell tmdb api about what type of id is provided. E.g. see http://docs.themoviedb.apiary.io/reference/account/accountidwatchlist
      */
     // note http://stackoverflow.com/questions/8143995/should-java-member-enum-types-be-capitalized
-    public static enum MediaType {
+    public enum MediaType {
         MOVIE, TV;
 
 

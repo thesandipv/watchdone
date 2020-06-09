@@ -35,9 +35,7 @@ public class IdElement extends AbstractJsonMapping implements Serializable {
 
         IdElement idElement = (IdElement) o;
 
-        if (id != idElement.id) return false;
-
-        return true;
+        return id == idElement.id;
     }
 
 

@@ -24,9 +24,7 @@ public class NamedElement extends AbstractJsonMapping {
 
         NamedElement that = (NamedElement) o;
 
-        if (!name.equals(that.name)) return false;
-
-        return true;
+        return name.equals(that.name);
     }
 
 

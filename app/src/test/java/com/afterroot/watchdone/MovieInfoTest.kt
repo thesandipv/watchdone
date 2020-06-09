@@ -17,22 +17,29 @@ package com.afterroot.watchdone
 
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.di.apiModule
-import com.afterroot.watchdone.di.firebaseModule
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
-import org.koin.core.context.startKoin
 import org.koin.test.KoinTest
-import org.koin.test.get
+import org.koin.test.KoinTestRule
+import org.koin.test.inject
 
 class MovieInfoTest : KoinTest {
+    @get:Rule
+    val testRule = KoinTestRule.create {
+        printLogger()
+        modules(apiModule)
+    }
+
+    private val moviesRepository by inject<MoviesRepository>()
+
     @Test
-    fun isNewMovieDbWorking() {
-        startKoin { modules(firebaseModule, apiModule) }
+    fun `MovieDb Working`() {
         runBlocking {
             launch {
-                Assert.assertEquals("Fight Club", get<MoviesRepository>().getMovieInfo(550).title)
+                Assert.assertEquals("Fight Club", moviesRepository.getMovieInfo(550).title)
             }
         }
     }

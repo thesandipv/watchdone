@@ -1,7 +1,5 @@
 package com.afterroot.tmdbapi;
 
-import static com.afterroot.tmdbapi.Utils.asStringArray;
-
 import com.afterroot.tmdbapi.model.ContentRating;
 import com.afterroot.tmdbapi.model.Credits;
 import com.afterroot.tmdbapi.model.MovieImages;
@@ -9,6 +7,8 @@ import com.afterroot.tmdbapi.model.config.Timezone;
 import com.afterroot.tmdbapi.model.core.TvKeywords;
 import com.afterroot.tmdbapi.model.tv.TvSeries;
 import com.afterroot.tmdbapi.tools.ApiUrl;
+
+import static com.afterroot.tmdbapi.Utils.asStringArray;
 
 
 public class TmdbTV extends AbstractTmdbApi {
@@ -24,8 +24,7 @@ public class TmdbTV extends AbstractTmdbApi {
     public static final String TMDB_METHOD_KEYWORDS = "keywords";
 
 
-
-    public static enum TvMethod {credits, external_ids, images, videos, recommendations, keywords, content_ratings}
+    public enum TvMethod {credits, external_ids, images, videos, recommendations, keywords, content_ratings}
 
 
 

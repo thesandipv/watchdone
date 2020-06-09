@@ -13,16 +13,23 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.model
+package com.afterroot.watchdone.database.model
 
-import java.io.Serializable
+object Collection {
+    //Collections
+    const val USERS = "users"
+    const val WATCHDONE = "watchdone"
+    const val WATCHLIST = "watchlist"
+    const val ITEMS = "items"
+}
 
-//Collection 'users'
-data class User(
-    var name: String?,
-    var email: String?,
-    var uid: String,
-    var fcmId: String
-) : Serializable {
-    constructor() : this("", "", "", "")
+object Field {
+    //Fields
+    const val NAME = "name"
+    const val EMAIL = "email"
+    const val UID = "uid"
+    const val FCM_ID = "fcmId"
+    const val TOTAL_ITEMS = "total_items"
+    const val RELEASE_DATE = "releaseDate"
+    const val IS_WATCHED = "isWatched"
 }

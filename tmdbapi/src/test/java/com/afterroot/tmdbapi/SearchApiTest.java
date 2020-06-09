@@ -1,17 +1,25 @@
 package com.afterroot.tmdbapi;
 
-import com.afterroot.tmdbapi.model.*;
+import com.afterroot.tmdbapi.model.Collection;
+import com.afterroot.tmdbapi.model.Company;
+import com.afterroot.tmdbapi.model.MovieDb;
+import com.afterroot.tmdbapi.model.MovieList;
+import com.afterroot.tmdbapi.model.Multi;
 import com.afterroot.tmdbapi.model.core.MovieResultsPage;
 import com.afterroot.tmdbapi.model.keywords.Keyword;
 import com.afterroot.tmdbapi.model.people.Person;
 import com.afterroot.tmdbapi.model.tv.TvSeries;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class SearchApiTest extends AbstractTmdbApiTest {
@@ -23,7 +31,7 @@ public class SearchApiTest extends AbstractTmdbApiTest {
 
         MovieResultsPage movieResultsPage = search.searchMovie("What Ever Happened to Baby Jane?", null, null, false, null);
 
-        Assert.assertTrue(movieResultsPage.getResults().size() == 2);
+        assertEquals(2, movieResultsPage.getResults().size());
         Assert.assertEquals(10242, movieResultsPage.getResults().get(0).getId());
     }
 
@@ -56,10 +64,10 @@ public class SearchApiTest extends AbstractTmdbApiTest {
 
 
     @Test
-    public void testSearchCollection() throws Exception {
+    public void testSearchCollection() {
         List<Collection> result = tmdb.getSearch().searchCollection("batman", LANGUAGE_DEFAULT, 0).getResults();
 
-        assertFalse("No collections found", result == null);
+        assertNotNull("No collections found", result);
         assertTrue("No collections found", result.size() > 0);
     }
 
@@ -74,10 +82,10 @@ public class SearchApiTest extends AbstractTmdbApiTest {
 
 
     @Test
-    @Ignore
-    // Why ignored? Part of api but somehow not yet implemented.
+    @Ignore("Part of api but somehow not yet implemented.")
+    // Why ignored?
     // See https://www.themoviedb.org/talk/593409e3c3a36859ef01eddb#597124f8c3a3681608008424
-    public void testSearchList() throws Exception {
+    public void testSearchList() {
         List<MovieList> results = tmdb.getSearch().searchList("watch", LANGUAGE_DEFAULT, 0).getResults();
 
         assertFalse("No lists found", results == null);
