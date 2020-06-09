@@ -1,11 +1,5 @@
 package com.afterroot.tmdbapi;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-
 import com.afterroot.tmdbapi.model.AlternativeTitle;
 import com.afterroot.tmdbapi.model.Credits;
 import com.afterroot.tmdbapi.model.MovieDb;
@@ -21,6 +15,11 @@ import com.afterroot.tmdbapi.model.core.MovieResultsPage;
 import com.afterroot.tmdbapi.model.core.SessionToken;
 import com.afterroot.tmdbapi.model.keywords.Keyword;
 import com.afterroot.tmdbapi.tools.ApiUrl;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 import static com.afterroot.tmdbapi.TmdbAccount.PARAM_SESSION;
 import static com.afterroot.tmdbapi.TmdbMovies.MovieMethod.videos;
@@ -40,7 +39,7 @@ public class TmdbMovies extends AbstractTmdbApi {
 
     // account_states and rating are not included as it wouldn't work anyway because of missing session id
     // --> inject session id into tmdb-instance?
-    public static enum MovieMethod {
+    public enum MovieMethod {
         alternative_titles, credits, images, keywords, releases, release_dates,
         @Deprecated trailers,
         videos, // replacement for trailers

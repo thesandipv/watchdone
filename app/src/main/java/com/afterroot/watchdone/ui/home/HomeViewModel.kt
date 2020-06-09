@@ -30,8 +30,9 @@ import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.database.model.Collection
+import com.afterroot.watchdone.database.model.Field
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
@@ -51,11 +52,11 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
         watchlistSnapshot.apply {
             if (value == null) {
                 value = ViewModelState.Loading
-                db.collection(DatabaseFields.COLLECTION_USERS).document(userId)
-                    .collection(DatabaseFields.COLLECTION_WATCHDONE)
-                    .document(DatabaseFields.COLLECTION_WATCHLIST)
-                    .collection(DatabaseFields.COLLECTION_ITEMS)
-                    .orderBy(DatabaseFields.FIELD_RELEASE_DATE, Query.Direction.DESCENDING)
+                db.collection(Collection.USERS).document(userId)
+                    .collection(Collection.WATCHDONE)
+                    .document(Collection.WATCHLIST)
+                    .collection(Collection.ITEMS)
+                    .orderBy(Field.RELEASE_DATE, Query.Direction.DESCENDING)
                     .addSnapshotListener { querySnapshot, _ ->
                         querySnapshot.let { value = ViewModelState.Loaded(it) }
                     }

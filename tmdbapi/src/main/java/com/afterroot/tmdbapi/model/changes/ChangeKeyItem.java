@@ -14,10 +14,9 @@ public class ChangeKeyItem {
 
     @JsonProperty("key")
     private String key;
+    private final Map<String, Object> newItems = new HashMap<>();
     @JsonProperty("items")
-    private List<ChangedItem> changedItems = new ArrayList<ChangedItem>();
-
-    private Map<String, Object> newItems = new HashMap<String, Object>();
+    private List<ChangedItem> changedItems = new ArrayList<>();
 
 
     public String getKey() {

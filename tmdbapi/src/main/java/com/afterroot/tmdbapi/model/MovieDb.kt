@@ -216,6 +216,8 @@ data class MovieDb(
     val voteCount: Int? = null,
     @JsonProperty("rating")
     var userRating: Float = 0f,
+    @JsonProperty("isWatched")
+    var isWatched: Boolean = false,
     // Appendable responses
     @JsonProperty("alternative_titles")
     private var alternativeTitles: MoviesAlternativeTitles? = null,

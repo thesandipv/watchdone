@@ -24,7 +24,8 @@ import androidx.fragment.app.Fragment
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.database.DatabaseFields
+import com.afterroot.watchdone.database.model.Collection
+import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getGravatarUrl
@@ -66,9 +67,9 @@ class EditProfileFragment : Fragment() {
                                 user.updateProfile(request).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         requireContext().toast(getString(R.string.msg_profile_updated))
-                                        db.collection(DatabaseFields.COLLECTION_USERS)
+                                        db.collection(Collection.USERS)
                                             .document(user.uid)
-                                            .update(DatabaseFields.FIELD_NAME, newName)
+                                            .update(Field.NAME, newName)
                                     }
                                 }
                             } else requireContext().toast(getString(R.string.msg_no_changes))

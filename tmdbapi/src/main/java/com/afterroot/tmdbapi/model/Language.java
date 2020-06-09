@@ -1,8 +1,8 @@
 package com.afterroot.tmdbapi.model;
 
+import com.afterroot.tmdbapi.model.core.AbstractJsonMapping;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.afterroot.tmdbapi.model.core.AbstractJsonMapping;
 
 
 @JsonRootName("spoken_language")
@@ -47,10 +47,7 @@ public class Language extends AbstractJsonMapping {
         if ((this.isoCode == null) ? (other.isoCode != null) : !this.isoCode.equals(other.isoCode)) {
             return false;
         }
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        return true;
+        return (this.name == null) ? (other.name == null) : this.name.equals(other.name);
     }
 
 

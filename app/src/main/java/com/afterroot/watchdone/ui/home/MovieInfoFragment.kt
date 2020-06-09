@@ -30,13 +30,14 @@ import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.database.DatabaseFields
 import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.database.model.Collection
+import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.launch
@@ -61,7 +62,6 @@ class MovieInfoFragment : Fragment() {
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
                 if (state is ViewModelState.Loaded<*>) {
-                    val snapshot = state.data as QuerySnapshot
                     homeViewModel.selectedMovie.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
                         updateUI(movieDb)
                     })
@@ -72,11 +72,11 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun updateUI(movieDb: MovieDb) {
-        val watchlistItemReference = get<FirebaseFirestore>().collection(DatabaseFields.COLLECTION_USERS)
+        val watchListRef = get<FirebaseFirestore>().collection(Collection.USERS)
             .document(get<FirebaseAuth>().currentUser?.uid.toString())
-            .collection(DatabaseFields.COLLECTION_WATCHDONE)
-            .document(DatabaseFields.COLLECTION_WATCHLIST)
-            .collection(DatabaseFields.COLLECTION_ITEMS)
+            .collection(Collection.WATCHDONE)
+            .document(Collection.WATCHLIST)
+        val watchlistItemReference = watchListRef.collection(Collection.ITEMS)
         binding.apply {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
@@ -88,7 +88,7 @@ class MovieInfoFragment : Fragment() {
                 var selectedMovieDocId: String? = null
                 if (isInWatchlist) {
                     val document = it.documents[0]
-                    document.getBoolean(DatabaseFields.FIELD_IS_WATCHED)?.let { watched ->
+                    document.getBoolean(Field.IS_WATCHED)?.let { watched ->
                         isWatched = watched
                     }
                     resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
@@ -119,6 +119,7 @@ class MovieInfoFragment : Fragment() {
                         icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
                         setOnClickListener {
                             watchlistItemReference.add(movieDb)
+                            watchListRef.update(Field.TOTAL_ITEMS, FieldValue.increment(1))
                         }
                     } else {
                         text = getString(R.string.text_remove_from_watchlist)
@@ -140,7 +141,7 @@ class MovieInfoFragment : Fragment() {
                         }
                         setOnClickListener {
                             watchlistItemReference.document(selectedMovieDocId)
-                                .update(DatabaseFields.FIELD_IS_WATCHED, !isWatched)
+                                .update(Field.IS_WATCHED, !isWatched)
                         }
                     }
                 }
