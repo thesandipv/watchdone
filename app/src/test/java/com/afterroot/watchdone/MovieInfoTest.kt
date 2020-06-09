@@ -15,20 +15,21 @@
 
 package com.afterroot.watchdone
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.afterroot.tmdbapi2.repository.MoviesRepository
+import com.afterroot.watchdone.di.apiModule
+import com.afterroot.watchdone.di.firebaseModule
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.junit.runner.RunWith
+import org.koin.core.context.startKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
 
-@RunWith(AndroidJUnit4::class)
 class MovieInfoTest : KoinTest {
     @Test
     fun isNewMovieDbWorking() {
+        startKoin { modules(firebaseModule, apiModule) }
         runBlocking {
             launch {
                 Assert.assertEquals("Fight Club", get<MoviesRepository>().getMovieInfo(550).title)
