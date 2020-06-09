@@ -21,6 +21,9 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.afterroot.watchdone.Constants
 
+/**
+ * Helper Class for managing main preferences of App
+ */
 class Settings(val context: Context) {
 
     private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)

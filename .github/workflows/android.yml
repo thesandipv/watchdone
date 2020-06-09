@@ -20,7 +20,12 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      env: 
-        TMDB_API: ${{ secrets.TMDB_API }} 
+      env:
+        TMDB_API: ${{ secrets.TMDB_API }}
         TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
       run: ./gradlew assembleDebug
+    - name: Run Tests
+      env:
+        TMDB_API: ${{ secrets.TMDB_API }}
+        TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+      run: ./gradlew test
