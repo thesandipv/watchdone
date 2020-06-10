@@ -13,12 +13,8 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:hint="@string/title_search"
+    android:label="@string/app_name">
 
-    <item
-        android:id="@+id/navigation_discover"
-        android:icon="@drawable/ic_discover"
-        android:title="@string/text_discover"
-        app:showAsAction="ifRoom" />
-</menu>
+</searchable>
