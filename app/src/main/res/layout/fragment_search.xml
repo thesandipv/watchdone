@@ -57,29 +57,4 @@
 
         <!--TODO Add No Result found info-->
     </FrameLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_search"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:paddingLeft="@dimen/padding_horizontal_half"
-        android:paddingTop="@dimen/padding_vertical_half"
-        android:paddingRight="@dimen/padding_horizontal_half"
-        android:paddingBottom="@dimen/bottom_height_search_adjust"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title_search"
-            android:imeOptions="actionSearch"
-            android:selectAllOnFocus="true"
-            android:singleLine="true" />
-    </com.google.android.material.textfield.TextInputLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>
