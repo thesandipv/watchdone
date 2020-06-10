@@ -228,7 +228,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_search -> {
                     fab.hide()
-                    toolbar.hideOnScroll = false
+                    toolbar.apply {
+                        hideOnScroll = true
+                    }
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_edit_profile -> {
@@ -236,6 +238,10 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_movie_info -> {
+                    fab.hide()
+                    drawerToggle.progress(0f, 1f) //As back arrow
+                }
+                R.id.navigation_discover -> {
                     fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
@@ -252,7 +258,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 

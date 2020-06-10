@@ -15,11 +15,16 @@
 
 package com.afterroot.watchdone.ui.search
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
-import android.view.KeyEvent
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -34,6 +39,7 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.ui.home.HomeViewModel
+import com.afterroot.watchdone.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,21 +51,17 @@ import org.koin.android.ext.android.getKoin
 
 class SearchFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private var queryTextListener: SearchView.OnQueryTextListener? = null
+    private var searchResultsAdapter: DelegateAdapter? = null
+    private var searchTask: Job? = null
+    private var searchView: SearchView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
-    private var searchTask: Job? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        input_search.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                searchTask = showSearchResults(input_search.text.toString())
-                return@setOnKeyListener true
-            }
-            return@setOnKeyListener false
-        }
         setErrorObserver()
         initAdapter()
         loadTrending()
@@ -72,7 +74,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private var searchResultsAdapter: DelegateAdapter? = null
     private fun initAdapter() {
         val itemSelectedCallback = object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
@@ -130,6 +131,35 @@ class SearchFragment : Fragment() {
                 homeViewModel.error.postValue(null)
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+        val search = menu.findItem(R.id.action_search)
+        val manager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+        if (search != null) {
+            searchView = search.actionView as SearchView
+        }
+
+        if (searchView != null) {
+            searchView!!.setSearchableInfo(manager.getSearchableInfo(requireActivity().componentName))
+            queryTextListener = object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String): Boolean {
+                    Log.i("onQueryTextChange", newText)
+                    return true
+                }
+
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    Log.i("onQueryTextSubmit", query)
+                    searchTask = showSearchResults(query)
+                    view?.let { requireContext().hideKeyboard(it) }
+                    return true
+                }
+            }
+            searchView!!.setOnQueryTextListener(queryTextListener)
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     companion object {

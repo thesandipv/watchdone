@@ -24,9 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.afterroot.tmdbapi.model.Discover
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
-import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 
@@ -38,7 +36,6 @@ class DiscoverFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        requireActivity().toolbar.replaceMenu(R.menu.menu_discover)
 
         lifecycleScope.launch {
             val repo = DiscoverRepository(get()).getMoviesDiscover(Discover())
