@@ -15,8 +15,12 @@
 
 package com.afterroot.watchdone.utils
 
+import android.app.Activity
 import android.content.Context
+import android.graphics.Point
+import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
@@ -34,4 +38,26 @@ fun Context.showKeyboard(view: View) {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun dp2px(context: Context, dp: Int): Int {
+    val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val display = wm.defaultDisplay
+    val metrics = DisplayMetrics()
+    display.getMetrics(metrics)
+    return (dp * metrics.density + 0.5f).toInt()
+}
+
+fun px2dp(context: Context, px: Int): Int {
+    val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val display = wm.defaultDisplay
+    val displaymetrics = DisplayMetrics()
+    display.getMetrics(displaymetrics)
+    return (px / displaymetrics.density + 0.5f).toInt()
+}
+
+fun Context.getScreenWidth(): Int {
+    val size = Point()
+    (this as Activity).windowManager.defaultDisplay.getSize(size)
+    return size.x
 }
