@@ -21,17 +21,16 @@ import androidx.collection.SparseArrayCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.Types
 import com.afterroot.tmdbapi.model.MovieDb
-import org.koin.core.Koin
 import java.util.ArrayList
 
-class DelegateAdapter(callbacks: ItemSelectedCallback<MovieDb>, koin: Koin) :
+class DelegateAdapter(callbacks: ItemSelectedCallback<MovieDb>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mList = ArrayList<MovieDb?>()
     private var delegateAdapters = SparseArrayCompat<AdapterType>()
 
     init {
         with(delegateAdapters) {
-            put(Types.MOVIE, MovieAdapterType(callbacks, koin))
+            put(Types.MOVIE, MovieAdapterType(callbacks))
         }
         stateRestorationPolicy = StateRestorationPolicy.PREVENT
     }
