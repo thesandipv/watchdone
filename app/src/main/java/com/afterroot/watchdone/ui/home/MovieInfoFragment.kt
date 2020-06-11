@@ -35,6 +35,7 @@ import com.afterroot.watchdone.database.model.Collection
 import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
+import com.google.android.gms.ads.AdRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -69,6 +70,8 @@ class MovieInfoFragment : Fragment() {
             })
 
         setErrorObserver()
+
+        binding.adView.loadAd(AdRequest.Builder().build())
     }
 
     private fun updateUI(movieDb: MovieDb) {
