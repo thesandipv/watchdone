@@ -62,4 +62,6 @@
     <string name="title_watchlist">Watchlist</string>
     <string name="url_play_store_developer" translatable="false">https://play.google.com/store/apps/dev?id=5302118761742285445</string>
     <string name="url_privacy_policy" translatable="false">https://afterroot.web.app/privacy-policy</string>
+    <string name="content_desc_watched_icon">Watched Icon</string>
+    <string name="content_desc_movie_poster">Movie/TV Show Poster</string>
 </resources>
