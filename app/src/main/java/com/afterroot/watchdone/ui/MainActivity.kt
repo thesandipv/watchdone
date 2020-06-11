@@ -25,12 +25,15 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.progress
+import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -38,11 +41,13 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.database.model.Collection
 import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.database.model.User
+import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
@@ -56,13 +61,14 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val settings: Settings by inject()
-    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(toolbar)
     }
 
@@ -204,6 +210,7 @@ class MainActivity : AppCompatActivity() {
             }
             when (destination.id) {
                 R.id.navigation_home -> {
+                    setTitle(getString(R.string.title_watchlist))
                     fab.apply {
                         show()
                         setOnClickListener { navController.navigate(R.id.toSearch) }
@@ -223,10 +230,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_settings -> {
+                    setTitle(getString(R.string.title_settings))
                     fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_search -> {
+                    setTitle(getString(R.string.title_trending_movies))
                     fab.hide()
                     toolbar.apply {
                         hideOnScroll = true
@@ -234,17 +243,35 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_edit_profile -> {
+                    setTitle(getString(R.string.title_edit_profile))
                     fab.show()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_movie_info -> {
+                    setTitle(null)
+                    binding.titleLayout.visible(false)
                     fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_discover -> {
+                    setTitle(getString(R.string.text_discover))
                     fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
+            }
+        }
+    }
+
+    private fun setTitle(title: String?) {
+        binding.apply {
+            val params = navHostFragment.layoutParams as CoordinatorLayout.LayoutParams
+            if (title.isNullOrBlank()) {
+                params.behavior = null
+                titleLayout.visible(false)
+            } else {
+                params.behavior = AppBarLayout.ScrollingViewBehavior()
+                this.title = title
+                titleLayout.visible(true)
             }
         }
     }
