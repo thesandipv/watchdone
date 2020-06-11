@@ -51,6 +51,7 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin)
                 GlideApp.with(posterView.context).load(settings.baseUrl + settings.imageSize + item.posterPath)
                     .into(posterView)
             } else GlideApp.with(posterView.context).load(posterView.context.getDrawableExt(R.drawable.ic_broken_image))
+                .override(posterView.context.resources.getDimensionPixelSize(R.dimen.placeholder_image_size))
                 .into(posterView)
             with(super.itemView) {
                 tag = item
