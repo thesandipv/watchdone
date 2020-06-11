@@ -47,7 +47,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.getKoin
 
 class SearchFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -87,7 +86,7 @@ class SearchFragment : Fragment() {
                 requireContext().toast(item.title.toString())
             }
         }
-        searchResultsAdapter = DelegateAdapter(itemSelectedCallback, getKoin())
+        searchResultsAdapter = DelegateAdapter(itemSelectedCallback)
         list.adapter = searchResultsAdapter
     }
 
