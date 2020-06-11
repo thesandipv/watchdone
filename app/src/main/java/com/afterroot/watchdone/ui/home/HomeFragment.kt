@@ -37,7 +37,6 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.getKoin
 
 class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -62,7 +61,7 @@ class HomeFragment : Fragment() {
                 super.onLongClick(position, item)
                 requireContext().toast(item.title.toString())
             }
-        }, getKoin())
+        })
         binding.list.adapter = homeScreenAdapter
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(this.viewLifecycleOwner, Observer {

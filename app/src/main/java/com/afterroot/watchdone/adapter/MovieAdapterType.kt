@@ -15,42 +15,48 @@
 
 package com.afterroot.watchdone.adapter
 
+import android.content.Context
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.core.extensions.getDrawableExt
-import com.afterroot.core.extensions.inflate
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.getScreenWidth
 import kotlinx.android.synthetic.main.list_item_movie.view.*
-import org.koin.core.Koin
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>, koin: Koin) : AdapterType {
-    val settings = koin.get<Settings>()
-    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder = MovieVH(parent)
+class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>) : AdapterType, KoinComponent {
+    val settings: Settings by inject()
+    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
+        MovieVH(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: AbstractJsonMapping) {
         holder as MovieVH
         holder.bind(item as MovieDb)
     }
 
-    inner class MovieVH(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.list_item_movie)) {
-        private val titleView: AppCompatTextView = itemView.title
-        private val yearView: AppCompatTextView = itemView.year
+    inner class MovieVH(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = itemView.poster
-        private val rating = itemView.rating
+
+        // val view = ListItemMovieBinding.inflate(LayoutInflater.from(parent.context))
+        val context: Context = posterView.context
+        var heightRatio: Float = 3f / 2f
+        val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
         fun bind(item: MovieDb) {
-            titleView.text = item.title
-            yearView.text = item.releaseDate
-            rating.text = item.voteAverage.toString()
+            binding.movieDb = item
             if (item.posterPath != null) {
-                GlideApp.with(posterView.context).load(settings.baseUrl + settings.imageSize + item.posterPath)
+                GlideApp.with(context).load(settings.baseUrl + settings.imageSize + item.posterPath)
+                    .override(width, (width * heightRatio).toInt())
+                    .centerCrop()
                     .into(posterView)
-            } else GlideApp.with(posterView.context).load(posterView.context.getDrawableExt(R.drawable.ic_broken_image))
+            } else GlideApp.with(context).load(context.getDrawableExt(R.drawable.ic_broken_image))
                 .override(posterView.context.resources.getDimensionPixelSize(R.dimen.placeholder_image_size))
                 .into(posterView)
             with(super.itemView) {
