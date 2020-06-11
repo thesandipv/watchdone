@@ -19,8 +19,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.afterroot.watchdone.GlideApp
@@ -44,21 +44,24 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>) : AdapterTy
 
     inner class MovieVH(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = itemView.poster
-
-        // val view = ListItemMovieBinding.inflate(LayoutInflater.from(parent.context))
         val context: Context = posterView.context
         var heightRatio: Float = 3f / 2f
         val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
         fun bind(item: MovieDb) {
             binding.movieDb = item
-            if (item.posterPath != null) {
-                GlideApp.with(context).load(settings.baseUrl + settings.imageSize + item.posterPath)
-                    .override(width, (width * heightRatio).toInt())
-                    .centerCrop()
-                    .into(posterView)
-            } else GlideApp.with(context).load(context.getDrawableExt(R.drawable.ic_broken_image))
-                .override(posterView.context.resources.getDimensionPixelSize(R.dimen.placeholder_image_size))
+            posterView.updateLayoutParams {
+                this.width = this@MovieVH.width
+                this.height = (width * heightRatio).toInt()
+            }
+            // if (item.posterPath != null) {
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + item.posterPath)
+                .override(width, (width * heightRatio).toInt())
+                .placeholder(R.drawable.ic_broken_image)
+                .error(R.drawable.ic_broken_image)
+                .centerCrop()
                 .into(posterView)
+            // } else GlideApp.with(context).load(R.drawable.ic_broken_image)
+            //     .into(posterView)
             with(super.itemView) {
                 tag = item
                 setOnClickListener {
