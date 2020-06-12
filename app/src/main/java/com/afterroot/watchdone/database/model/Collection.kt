@@ -32,4 +32,5 @@ object Field {
     const val TOTAL_ITEMS = "total_items"
     const val RELEASE_DATE = "releaseDate"
     const val IS_WATCHED = "isWatched"
+    const val ID = "id"
 }
