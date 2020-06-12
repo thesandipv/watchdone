@@ -15,23 +15,19 @@
 
 package com.afterroot.watchdone.di
 
+import androidx.startup.AppInitializer
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
+import com.afterroot.watchdone.FirestoreInitializer
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val firebaseModule = module {
     single {
-        Firebase.firestore.apply {
-            firestoreSettings =
-                FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).build()
-        }
+        AppInitializer.getInstance(androidContext()).initializeComponent(FirestoreInitializer::class.java)
     }
 
     single {
