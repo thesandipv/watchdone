@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,17 +42,20 @@
             tools:listitem="@layout/list_item_movie"
             tools:visibility="visible" />
 
-        <ProgressBar
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
             android:id="@+id/progress_bar_search"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="top"
+            android:indeterminate="true"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_search"
+            app:mpb_progressStyle="horizontal"
+            app:mpb_useIntrinsicPadding="false"
             tools:visibility="visible" />
 
         <!--TODO Add No Result found info-->
