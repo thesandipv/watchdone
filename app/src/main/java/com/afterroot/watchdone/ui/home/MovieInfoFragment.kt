@@ -19,6 +19,9 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -43,18 +46,24 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
+import org.jetbrains.anko.browse
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class MovieInfoFragment : Fragment() {
-    lateinit var binding: FragmentMovieInfoBinding
+    private lateinit var binding: FragmentMovieInfoBinding
+    private var menu: Menu? = null
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val myDatabase: MyDatabase by inject()
     private val settings: Settings by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = FragmentMovieInfoBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -99,10 +108,10 @@ class MovieInfoFragment : Fragment() {
                     }
                     resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
                     selectedMovieDocId = document.id
-                    Log.d(TAG, "updateUI: idOfMovie - $selectedMovieDocId")
                     progressMovieInfo.visible(true, AutoTransition())
                     lifecycleScope.launch {
-                        val resultFromServer = get<MoviesRepository>().getMovieInfo(movieDb.id)
+                        val resultFromServer =
+                            withContext(Dispatchers.IO) { get<MoviesRepository>().getMovieInfo(movieDb.id) }
                         if (resultFromServer != resultFromDB) {
                             Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
                             val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
@@ -117,7 +126,15 @@ class MovieInfoFragment : Fragment() {
                             Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
                         }
                     }
-                } else progressMovieInfo.visible(false, AutoTransition())
+                } else {
+                    progressMovieInfo.visible(true, AutoTransition())
+                    lifecycleScope.launch {
+                        val resultFromServer =
+                            withContext(Dispatchers.IO) { get<MoviesRepository>().getMovieInfo(movieDb.id) }
+                        moviedb = resultFromServer
+                        progressMovieInfo.visible(false, AutoTransition())
+                    }
+                }
                 actionAddWlist.apply {
                     visible(true)
                     if (!isInWatchlist) {
@@ -153,6 +170,7 @@ class MovieInfoFragment : Fragment() {
                     }
                 }
             }
+            menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.moviedb?.imdbId.isNullOrBlank()
         }
     }
 
@@ -185,6 +203,26 @@ class MovieInfoFragment : Fragment() {
                 homeViewModel.error.postValue(null)
             }
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_view_imdb -> {
+                binding.moviedb?.imdbId?.let {
+                    val imdbUrl = HttpUrl.Builder().scheme("https")
+                        .host("www.imdb.com")
+                        .addPathSegments("title").addPathSegment(it).build()
+                    requireContext().browse(imdbUrl.toUrl().toString(), true)
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_movie_info, menu)
+        this.menu = menu
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     companion object {
