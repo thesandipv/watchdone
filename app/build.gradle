@@ -127,6 +127,11 @@ android {
 
 }
 
+configurations.all {
+    resolutionStrategy.force "org.antlr:antlr4-runtime:4.7.1"
+    resolutionStrategy.force "org.antlr:antlr4-tool:4.7.1"
+}
+
 dependencies {
     implementation "com.afterroot.core:core:$coreVersion"
     implementation project(path: ':tmdbapi')
@@ -143,17 +148,18 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:$legacySupportV4Version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"
     implementation "androidx.multidex:multidex:$multidexVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
-    implementation "androidx.preference:preference:$preferenceVersion"
+    implementation "androidx.preference:preference-ktx:$preferenceVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
     implementation "androidx.room:room-ktx:$roomKtxVersion"
     implementation "androidx.room:room-runtime:$roomKtxVersion"
+    implementation "androidx.startup:startup-runtime:1.0.0-alpha01"
     implementation "androidx.vectordrawable:vectordrawable:$vectordrawableVersion"
     implementation "com.android.billingclient:billing:$billingVersion"
     kapt "androidx.room:room-compiler:$roomKtxVersion"
