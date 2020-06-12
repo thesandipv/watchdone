@@ -36,8 +36,9 @@ import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.DelegateAdapter
+import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.ui.home.HomeViewModel
 import com.afterroot.watchdone.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -51,7 +52,7 @@ import org.koin.android.ext.android.get
 class SearchFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private var queryTextListener: SearchView.OnQueryTextListener? = null
-    private var searchResultsAdapter: DelegateAdapter? = null
+    private var searchResultsAdapter: DelegateListAdapter? = null
     private var searchTask: Job? = null
     private var searchView: SearchView? = null
 
@@ -86,19 +87,17 @@ class SearchFragment : Fragment() {
                 requireContext().toast(item.title.toString())
             }
         }
-        searchResultsAdapter = DelegateAdapter(itemSelectedCallback)
+        searchResultsAdapter = DelegateListAdapter(MovieDiffCallback(), itemSelectedCallback)
         list.adapter = searchResultsAdapter
     }
 
     private fun showSearchResults(title: String) = lifecycleScope.launch(Dispatchers.Main) {
         progress_bar_search.visible(true, AutoTransition())
-        list.visible(false, AutoTransition())
+        list.visible(true, AutoTransition())
         try {
             val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
             progress_bar_search.visible(false, AutoTransition())
-            list.visible(true, AutoTransition())
-            searchResultsAdapter?.add(movies.results)
-            list.scheduleLayoutAnimation()
+            searchResultsAdapter?.submitList(movies.results)
         } catch (mde: MovieDbException) {
             mde.printStackTrace()
             progress_bar_search.visible(false)
@@ -107,13 +106,11 @@ class SearchFragment : Fragment() {
 
     private fun loadTrending() = lifecycleScope.launch(Dispatchers.Main) {
         progress_bar_search.visible(true, AutoTransition())
-        list.visible(false, AutoTransition())
+        list.visible(true, AutoTransition())
         try {
             homeViewModel.getTrendingMovies().observe(viewLifecycleOwner, Observer {
                 progress_bar_search.visible(false, AutoTransition())
-                list.visible(true, AutoTransition())
-                searchResultsAdapter?.add(it.results)
-                list.scheduleLayoutAnimation()
+                searchResultsAdapter?.submitList(it.results)
             })
         } catch (mde: MovieDbException) {
             mde.printStackTrace()

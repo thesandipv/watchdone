@@ -29,8 +29,9 @@ import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.DelegateAdapter
+import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
@@ -50,7 +51,7 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val homeScreenAdapter = DelegateAdapter(object : ItemSelectedCallback<MovieDb> {
+        val homeScreenAdapter = DelegateListAdapter(MovieDiffCallback(), object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
                 super.onClick(position, view, item)
                 homeViewModel.selectMovie(item)
@@ -71,7 +72,7 @@ class HomeFragment : Fragment() {
                     binding.progressBarHome.visible(false)
                     try { //Fixes crash when user is being logged out
                         val listData = it.data as QuerySnapshot
-                        homeScreenAdapter.add(listData.toObjects(MovieDb::class.java))
+                        homeScreenAdapter.submitList(listData.toObjects(MovieDb::class.java))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
