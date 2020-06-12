@@ -16,10 +16,13 @@
 <resources>
     <string name="action_settings">Settings</string>
     <string name="action_sign_out">Sign Out</string>
+    <string name="action_view_in_imdb">View in IMDb</string>
     <string name="ad_banner_unit_id" translatable="false">ca-app-pub-6628325093439880/1366582369</string>
     <string name="admob_app_id" translatable="false">ca-app-pub-6628325093439880~2908563040</string>
     <string name="app_name">WatchDone</string>
     <string name="button_add_watched">Add Watched</string>
+    <string name="content_desc_movie_poster">Movie/TV Show Poster</string>
+    <string name="content_desc_watched_icon">Watched Icon</string>
     <string name="contentDesc">fab</string>
     <string name="date_time_format">dd-MMM-yyyy hh:mm a</string>
     <string name="dialog_msg_no_network">No Network Available. Please check connection and try again.</string>
@@ -62,6 +65,4 @@
     <string name="title_watchlist">Watchlist</string>
     <string name="url_play_store_developer" translatable="false">https://play.google.com/store/apps/dev?id=5302118761742285445</string>
     <string name="url_privacy_policy" translatable="false">https://afterroot.web.app/privacy-policy</string>
-    <string name="content_desc_watched_icon">Watched Icon</string>
-    <string name="content_desc_movie_poster">Movie/TV Show Poster</string>
 </resources>

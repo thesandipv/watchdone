@@ -16,21 +16,31 @@
 package com.afterroot.watchdone.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.afterroot.tmdbapi.model.Discover
+import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
+import com.afterroot.watchdone.R
+import com.afterroot.watchdone.adapter.DelegateListAdapter
+import com.afterroot.watchdone.adapter.ItemSelectedCallback
+import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 
 class DiscoverFragment : Fragment() {
+    lateinit var binding: FragmentDiscoverBinding
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentDiscoverBinding.inflate(inflater, container, false)
+        binding = FragmentDiscoverBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -39,7 +49,20 @@ class DiscoverFragment : Fragment() {
 
         lifecycleScope.launch {
             val repo = DiscoverRepository(get()).getMoviesDiscover(Discover())
-            Log.d(TAG, "onActivityCreated: ${repo.results}")
+            val homeScreenAdapter = DelegateListAdapter(MovieDiffCallback(), object : ItemSelectedCallback<MovieDb> {
+                override fun onClick(position: Int, view: View?, item: MovieDb) {
+                    super.onClick(position, view, item)
+                    homeViewModel.selectMovie(item)
+                    findNavController().navigate(R.id.discoverToMovieInfo)
+                }
+
+                override fun onLongClick(position: Int, item: MovieDb) {
+                    super.onLongClick(position, item)
+                    requireContext().toast(item.title.toString())
+                }
+            })
+            binding.list.adapter = homeScreenAdapter
+            homeScreenAdapter.submitList(repo.results)
         }
     }
 
