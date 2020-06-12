@@ -15,6 +15,7 @@
 
 package com.afterroot.watchdone.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,6 +38,7 @@ import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.android.gms.ads.AdRequest
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -57,6 +59,7 @@ class MovieInfoFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -84,7 +87,7 @@ class MovieInfoFragment : Fragment() {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
-            watchlistItemReference.whereEqualTo("id", movieDb.id).get().addOnSuccessListener {
+            watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get().addOnSuccessListener {
                 val isInWatchlist = it.documents.size > 0
                 var isWatched = false
                 var resultFromDB: MovieDb? = null
@@ -122,13 +125,14 @@ class MovieInfoFragment : Fragment() {
                         icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
                         setOnClickListener {
                             watchlistItemReference.add(movieDb)
-                            watchListRef.update(Field.TOTAL_ITEMS, FieldValue.increment(1))
+                            watchListRef.updateTotalItemsCounter(1)
                         }
                     } else {
                         text = getString(R.string.text_remove_from_watchlist)
                         icon = requireContext().getDrawableExt(R.drawable.ic_bookmark)
                         setOnClickListener {
                             selectedMovieDocId?.let { id -> watchlistItemReference.document(id).delete() }
+                            watchListRef.updateTotalItemsCounter(-1)
                         }
                     }
                 }
@@ -150,6 +154,10 @@ class MovieInfoFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun DocumentReference.updateTotalItemsCounter(by: Long) {
+        this.set(hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)), SetOptions.merge())
     }
 
     private fun updateGenres(movieDb: MovieDb) {
