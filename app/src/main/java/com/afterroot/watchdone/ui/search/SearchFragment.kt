@@ -40,6 +40,7 @@ import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.ui.home.HomeViewModel
+import com.afterroot.watchdone.utils.EventObserver
 import com.afterroot.watchdone.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
@@ -119,13 +120,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                progress_bar_search.visible(false, AutoTransition())
-                requireContext().toast("Via: $TAG : $it")
-                //Set value to null after displaying error so prevent Observers from another context
-                homeViewModel.error.postValue(null)
-            }
+        homeViewModel.error.observe(viewLifecycleOwner, EventObserver {
+            progress_bar_search.visible(false, AutoTransition())
+            requireContext().toast("Via: $TAG : $it")
         })
     }
 

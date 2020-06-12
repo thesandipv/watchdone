@@ -33,6 +33,7 @@ import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.database.model.Collection
 import com.afterroot.watchdone.database.model.Field
+import com.afterroot.watchdone.utils.Event
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
     private val db: FirebaseFirestore by inject()
     private var trendingMovies = MutableLiveData<MovieResultsPage>()
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
-    val error = MutableLiveData<String?>()
+    val error = MutableLiveData<Event<String>>()
     val selectedMovie = MutableLiveData<MovieDb>()
 
     fun getWatchlistSnapshot(userId: String): LiveData<ViewModelState> {
@@ -72,7 +73,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
                     emit(get<MoviesRepository>().getMoviesTrendingInSearch())
                 } as MutableLiveData<MovieResultsPage>
             } catch (e: Exception) {
-                error.value = e.message //Emit error
+                error.value = Event(e.message!!)
                 Log.e("TMDbApi", "getTrendingMovies: ${e.message}")
             }
         }
