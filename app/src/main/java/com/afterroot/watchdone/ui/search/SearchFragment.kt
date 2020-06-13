@@ -39,6 +39,7 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
+import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.ui.home.HomeViewModel
 import com.afterroot.watchdone.utils.EventObserver
 import com.afterroot.watchdone.utils.hideKeyboard
@@ -98,7 +99,7 @@ class SearchFragment : Fragment() {
         try {
             val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
             progress_bar_search.visible(false, AutoTransition())
-            searchResultsAdapter?.submitList(movies.results)
+            searchResultsAdapter?.submitList(movies.toMovieDataHolder())
         } catch (mde: MovieDbException) {
             mde.printStackTrace()
             progress_bar_search.visible(false)
@@ -111,7 +112,7 @@ class SearchFragment : Fragment() {
         try {
             homeViewModel.getTrendingMovies().observe(viewLifecycleOwner, Observer {
                 progress_bar_search.visible(false, AutoTransition())
-                searchResultsAdapter?.submitList(it.results)
+                searchResultsAdapter?.submitList(it.toMovieDataHolder())
             })
         } catch (mde: MovieDbException) {
             mde.printStackTrace()

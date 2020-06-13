@@ -22,11 +22,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.Types
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.watchdone.data.model.MovieDataHolder
 
 class DelegateListAdapter(
-    callback: DiffUtil.ItemCallback<MovieDb>,
+    callback: DiffUtil.ItemCallback<MovieDataHolder>,
     selectedCallback: ItemSelectedCallback<MovieDb>
-) : ListAdapter<MovieDb, RecyclerView.ViewHolder>(callback) {
+) : ListAdapter<MovieDataHolder, RecyclerView.ViewHolder>(callback) {
     private var delegateAdapters = SparseArrayCompat<AdapterType>()
 
     init {
@@ -41,18 +42,18 @@ class DelegateListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        delegateAdapters.get(getItemViewType(position))!!.onBindViewHolder(holder, getItem(position))
+        delegateAdapters.get(getItemViewType(position))!!.onBindViewHolder(holder, getItem(position).data)
     }
 
     override fun getItemViewType(position: Int): Int = Types.MOVIE
 }
 
-class MovieDiffCallback : DiffUtil.ItemCallback<MovieDb>() {
-    override fun areItemsTheSame(oldItem: MovieDb, newItem: MovieDb): Boolean {
-        return oldItem.id == newItem.id
+class MovieDiffCallback : DiffUtil.ItemCallback<MovieDataHolder>() {
+    override fun areItemsTheSame(oldItem: MovieDataHolder, newItem: MovieDataHolder): Boolean {
+        return oldItem.data.id == newItem.data.id
     }
 
-    override fun areContentsTheSame(oldItem: MovieDb, newItem: MovieDb): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: MovieDataHolder, newItem: MovieDataHolder): Boolean {
+        return oldItem.data == newItem.data
     }
 }
