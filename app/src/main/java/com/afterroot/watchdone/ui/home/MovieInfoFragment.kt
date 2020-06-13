@@ -34,9 +34,9 @@ import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.data.model.Collection
+import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.database.MyDatabase
-import com.afterroot.watchdone.database.model.Collection
-import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.android.gms.ads.AdRequest
