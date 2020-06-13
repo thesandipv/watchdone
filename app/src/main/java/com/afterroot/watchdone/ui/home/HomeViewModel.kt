@@ -32,15 +32,14 @@ import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.database.model.Collection
-import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.utils.Event
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.inject
+import com.google.firebase.firestore.Query as FirestoreQuery
 
 class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinComponent {
     private val db: FirebaseFirestore by inject()
@@ -49,18 +48,27 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
     val error = MutableLiveData<Event<String>>()
     val selectedMovie = MutableLiveData<MovieDb>()
 
-    fun getWatchlistSnapshot(userId: String): LiveData<ViewModelState> {
+    fun getWatchlistSnapshot(
+        userId: String,
+        isReload: Boolean = false,
+        additionQueries: (FirestoreQuery.() -> FirestoreQuery)? = null
+    ): LiveData<ViewModelState> {
         watchlistSnapshot.apply {
-            if (value == null) {
+            if (value == null || isReload) {
                 value = ViewModelState.Loading
-                db.collection(Collection.USERS).document(userId)
+                val ref = db.collection(Collection.USERS).document(userId)
                     .collection(Collection.WATCHDONE)
                     .document(Collection.WATCHLIST)
                     .collection(Collection.ITEMS)
-                    .orderBy(Field.RELEASE_DATE, Query.Direction.DESCENDING)
-                    .addSnapshotListener { querySnapshot, _ ->
+                if (additionQueries == null) {
+                    ref.addSnapshotListener { querySnapshot, _ ->
                         querySnapshot.let { value = ViewModelState.Loaded(it) }
                     }
+                } else {
+                    ref.additionQueries().addSnapshotListener { querySnapshot, _ ->
+                        querySnapshot.let { value = ViewModelState.Loaded(it) }
+                    }
+                }
             }
         }
         return watchlistSnapshot
