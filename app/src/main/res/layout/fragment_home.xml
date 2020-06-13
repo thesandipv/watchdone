@@ -13,27 +13,32 @@
   ~ limitations under the License.
   -->
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@+id/progress_bar_home"
+        app:layout_constraintStart_toStartOf="@+id/progress_bar_home">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layoutAnimation="@anim/layout_anim_fall_down"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chip_scroll_view"
+            app:layout_constraintVertical_bias="0.0"
             app:spanCount="@integer/grid_item_span_count"
             tools:itemCount="10"
+            tools:layout_conversion_absoluteHeight="785dp"
+            tools:layout_conversion_absoluteWidth="393dp"
             tools:listitem="@layout/list_item_movie" />
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
@@ -41,16 +46,33 @@
             style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
             android:indeterminate="true"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_search"
+            app:layout_constraintTop_toTopOf="parent"
             app:mpb_progressStyle="horizontal"
             app:mpb_useIntrinsicPadding="false"
             tools:visibility="visible" />
 
-    </FrameLayout>
+        <HorizontalScrollView
+            android:id="@+id/chip_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="none"
+                app:singleLine="true"
+                tools:layout_height="32dp"
+                tools:layout_width="32dp" />
+
+        </HorizontalScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
