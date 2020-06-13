@@ -19,8 +19,10 @@ package com.afterroot.watchdone.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
+import com.afterroot.watchdone.data.model.AdditionalParams
+import com.afterroot.watchdone.data.model.DataHolder
 
 interface AdapterType {
     fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
-    fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: AbstractJsonMapping)
+    fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: DataHolder<AbstractJsonMapping, AdditionalParams>)
 }

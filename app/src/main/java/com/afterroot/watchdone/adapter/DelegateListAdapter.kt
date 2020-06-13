@@ -22,6 +22,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.Types
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
+import com.afterroot.watchdone.data.model.AdditionalParams
+import com.afterroot.watchdone.data.model.DataHolder
 import com.afterroot.watchdone.data.model.MovieDataHolder
 
 class DelegateListAdapter(
@@ -42,7 +45,9 @@ class DelegateListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        delegateAdapters.get(getItemViewType(position))!!.onBindViewHolder(holder, getItem(position).data)
+        @Suppress("UNCHECKED_CAST")
+        delegateAdapters.get(getItemViewType(position))!!
+            .onBindViewHolder(holder, getItem(position) as DataHolder<AbstractJsonMapping, AdditionalParams>)
     }
 
     override fun getItemViewType(position: Int): Int = Types.MOVIE
