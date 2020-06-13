@@ -15,4 +15,4 @@
 
 package com.afterroot.watchdone.data.model
 
-data class MovieAdditionalParams(val isWatched: Boolean? = false) : AdditionalParams
+interface AdditionalParams
