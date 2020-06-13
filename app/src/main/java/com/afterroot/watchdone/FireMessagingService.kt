@@ -26,8 +26,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.afterroot.watchdone.database.model.Collection
-import com.afterroot.watchdone.database.model.Field
+import com.afterroot.watchdone.data.model.Collection
+import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.ui.MainActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.google.firebase.firestore.FirebaseFirestore
