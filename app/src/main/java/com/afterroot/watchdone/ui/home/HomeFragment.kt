@@ -32,7 +32,8 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
-import com.afterroot.watchdone.database.model.Field
+import com.afterroot.watchdone.data.model.Field
+import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.utils.EventObserver
 import com.google.android.material.chip.Chip
@@ -97,7 +98,7 @@ class HomeFragment : Fragment() {
                 binding.progressBarHome.visible(false)
                 try { //Fixes crash when user is being logged out
                     val listData = it.data as QuerySnapshot
-                    submitList(listData.toObjects(MovieDb::class.java))
+                    submitList(listData.toMovieDataHolder())
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
