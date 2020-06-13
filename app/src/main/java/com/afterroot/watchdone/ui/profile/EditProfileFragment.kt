@@ -24,8 +24,8 @@ import androidx.fragment.app.Fragment
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.database.model.Collection
-import com.afterroot.watchdone.database.model.Field
+import com.afterroot.watchdone.data.model.Collection
+import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getGravatarUrl

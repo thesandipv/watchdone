@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.database.model
+package com.afterroot.watchdone.data.model
 
 object Collection {
     //Collections
