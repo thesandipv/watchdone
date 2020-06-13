@@ -30,6 +30,7 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
+import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
@@ -62,7 +63,7 @@ class DiscoverFragment : Fragment() {
                 }
             })
             binding.list.adapter = homeScreenAdapter
-            homeScreenAdapter.submitList(repo.results)
+            homeScreenAdapter.submitList(repo.toMovieDataHolder())
         }
     }
 

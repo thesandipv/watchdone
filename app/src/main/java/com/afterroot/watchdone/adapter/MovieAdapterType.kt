@@ -21,10 +21,14 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.data.model.AdditionalParams
+import com.afterroot.watchdone.data.model.DataHolder
+import com.afterroot.watchdone.data.model.MovieAdditionalParams
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
@@ -37,9 +41,9 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>) : AdapterTy
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         MovieVH(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: AbstractJsonMapping) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: DataHolder<AbstractJsonMapping, AdditionalParams>) {
         holder as MovieVH
-        holder.bind(item as MovieDb)
+        holder.bind(item.data as MovieDb, item.additionalParams as MovieAdditionalParams?)
     }
 
     inner class MovieVH(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -47,12 +51,13 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>) : AdapterTy
         val context: Context = posterView.context
         var heightRatio: Float = 3f / 2f
         val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
-        fun bind(item: MovieDb) {
+        fun bind(item: MovieDb, additionalParams: MovieAdditionalParams?) {
             binding.movieDb = item
             posterView.updateLayoutParams {
                 this.width = this@MovieVH.width
                 this.height = (width * heightRatio).toInt()
             }
+            binding.isWatched.visible(additionalParams?.isWatched ?: false)
             // if (item.posterPath != null) {
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + item.posterPath)
                 .override(width, (width * heightRatio).toInt())
