@@ -32,18 +32,20 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
+import com.afterroot.watchdone.database.model.Field
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.utils.EventObserver
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.android.synthetic.main.fragment_search.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 
 class HomeFragment : Fragment() {
+    private lateinit var binding: FragmentHomeBinding
     private val homeViewModel: HomeViewModel by activityViewModels()
-    lateinit var binding: FragmentHomeBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -66,30 +68,46 @@ class HomeFragment : Fragment() {
             }
         })
         binding.list.adapter = homeScreenAdapter
-        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
-            .observe(this.viewLifecycleOwner, Observer {
-                if (it is ViewModelState.Loading) {
-                    binding.progressBarHome.visible(true)
-                } else if (it is ViewModelState.Loaded<*>) {
-                    binding.progressBarHome.visible(false)
-                    try { //Fixes crash when user is being logged out
-                        val listData = it.data as QuerySnapshot
-                        homeScreenAdapter.submitList(listData.toObjects(MovieDb::class.java))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
-                    // list.scheduleLayoutAnimation()
-                }
-            })
-
+        homeScreenAdapter.submitQuery(Query.Direction.DESCENDING)
         homeViewModel.addGenres(viewLifecycleOwner)
+
+        val queryMap = hashMapOf<String, Any>()
+        queryMap["Ascending"] = Query.Direction.ASCENDING
+        queryMap["Descending"] = Query.Direction.DESCENDING
+
+        queryMap.forEach { mapItem ->
+            val chip = Chip(requireContext())
+            chip.text = mapItem.key
+            chip.setOnClickListener {
+                homeScreenAdapter.submitQuery(mapItem.value as Query.Direction, true)
+            }
+            binding.chipGroup.addView(chip)
+        }
+
         setErrorObserver()
+    }
+
+    private fun DelegateListAdapter.submitQuery(direction: Query.Direction, isReload: Boolean = false) {
+        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, isReload) {
+            orderBy(Field.RELEASE_DATE, direction)
+        }.observe(viewLifecycleOwner, Observer {
+            if (it is ViewModelState.Loading) {
+                binding.progressBarHome.visible(true)
+            } else if (it is ViewModelState.Loaded<*>) {
+                binding.progressBarHome.visible(false)
+                try { //Fixes crash when user is being logged out
+                    val listData = it.data as QuerySnapshot
+                    submitList(listData.toObjects(MovieDb::class.java))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     private fun setErrorObserver() {
         homeViewModel.error.observe(viewLifecycleOwner, EventObserver {
-            progress_bar_search.visible(false, AutoTransition())
+            binding.progressBarHome.visible(false, AutoTransition())
             requireContext().toast("Via: $TAG : $it")
         })
     }
