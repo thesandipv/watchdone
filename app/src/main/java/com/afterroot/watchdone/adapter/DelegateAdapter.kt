@@ -23,6 +23,7 @@ import com.afterroot.tmdbapi.Types
 import com.afterroot.tmdbapi.model.MovieDb
 import java.util.ArrayList
 
+@Deprecated("Ues New Adapter instead", ReplaceWith("DelegateListAdapter"))
 class DelegateAdapter(callbacks: ItemSelectedCallback<MovieDb>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mList = ArrayList<MovieDb?>()
@@ -40,8 +41,9 @@ class DelegateAdapter(callbacks: ItemSelectedCallback<MovieDb>) :
 
     override fun getItemCount(): Int = mList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        delegateAdapters.get(getItemViewType(position))!!.onBindViewHolder(holder, mList[position]!!)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        //delegateAdapters.get(getItemViewType(position))!!.onBindViewHolder(holder, mList[position]!!)
+    }
 
     override fun getItemViewType(position: Int): Int = Types.MOVIE
 
