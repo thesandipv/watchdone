@@ -1,0 +1,2 @@
+- [] Add Metrics by Genres on User Profile
+- [] Configure R8 Code Shrinking - App Crash when enabled.
