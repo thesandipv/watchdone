@@ -94,6 +94,10 @@
             <meta-data
                 android:name="com.afterroot.watchdone.KoinInitializer"
                 android:value="androidx.startup" />
+            <meta-data
+                android:name="com.afterroot.watchdone.FirestoreInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
         </provider>
 
         <service
