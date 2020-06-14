@@ -2,7 +2,7 @@ package com.afterroot.tmdbapi
 
 import android.os.AsyncTask
 import com.afterroot.tmdbapi.model.JobDepartment
-import com.afterroot.tmdbapi.model.config.TmdbConfiguration
+import com.afterroot.tmdbapi.model.config.ImagesConfig
 import com.afterroot.tmdbapi.tools.ApiUrl
 import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.tmdbapi.tools.RequestCountLimitException
@@ -31,7 +31,8 @@ class TmdbApi @JvmOverloads constructor(
      */
     private var autoRetry: Boolean = true
 ) {
-    var configuration: TmdbConfiguration
+    @Deprecated("Use new api from V2")
+    lateinit var configuration: ImagesConfig
 
     /**
      * Uses the instance's api key to request information from api.tmdb.org.
@@ -133,9 +134,9 @@ class TmdbApi @JvmOverloads constructor(
     val trending: TmdbTrending
         get() = TmdbTrending(this)
 
-    init {
+    init { //Omit
         try {
-            configuration = TmdbConfig(this).config.tmdbConfiguration
+            configuration = TmdbConfig(this).config.imagesConfig!!
         } catch (ex: MovieDbException) {
             throw ex
         } catch (ex: Throwable) {
