@@ -49,6 +49,7 @@
     <string name="text_mark_as_unwatched">Mark as UnWatched</string>
     <string name="text_mark_as_watched">Mark as Watched</string>
     <string name="text_remove_from_watchlist">Remove from Watchlist</string>
+    <string name="text_ship_show_watched">Show only Watched</string>
     <string name="theme_battery">Set by Battery Saver</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_device_default">Device Default</string>
