@@ -9,21 +9,9 @@ data class TmdbConfiguration(
     @JsonProperty("poster_sizes") var posterSizes: List<String>,
     @JsonProperty("backdrop_sizes") var backdropSizes: List<String>,
     @JsonProperty("profile_sizes") var profileSizes: List<String>,
-    @JsonProperty("logo_sizes") var logoSizes: List<String>
+    @JsonProperty("logo_sizes") var logoSizes: List<String>,
+    @JsonProperty("still_sizes") var stillSizes: List<String>
 ) : AbstractJsonMapping() {
-
-    /**
-     * Copy the data from the passed object to this one
-     *
-     * @param config
-     */
-    fun clone(config: TmdbConfiguration) {
-        backdropSizes = config.backdropSizes
-        baseUrl = config.baseUrl
-        posterSizes = config.posterSizes
-        profileSizes = config.profileSizes
-        logoSizes = config.logoSizes
-    }
 
     /**
      * Check that the poster size is valid
