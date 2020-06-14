@@ -4,7 +4,7 @@ import com.afterroot.tmdbapi.model.Genre;
 import com.afterroot.tmdbapi.model.JobDepartment;
 import com.afterroot.tmdbapi.model.MovieDb;
 import com.afterroot.tmdbapi.model.Reviews;
-import com.afterroot.tmdbapi.model.config.TmdbConfiguration;
+import com.afterroot.tmdbapi.model.config.ImagesConfig;
 import com.afterroot.tmdbapi.model.core.ResponseStatusException;
 import com.afterroot.tmdbapi.model.keywords.Keyword;
 
@@ -29,7 +29,7 @@ public class MiscApiTest extends AbstractTmdbApiTest {
     @Test
     public void testConfiguration() throws IOException {
 
-        TmdbConfiguration tmdbConfig = tmdb.getConfiguration();
+        ImagesConfig tmdbConfig = tmdb.getConfiguration();
         assertNotNull("Configuration failed", tmdbConfig);
         assertTrue("No base URL", StringUtils.isNotBlank(tmdbConfig.getBaseUrl()));
         assertTrue("No backdrop sizes", tmdbConfig.getBackdropSizes().size() > 0);
