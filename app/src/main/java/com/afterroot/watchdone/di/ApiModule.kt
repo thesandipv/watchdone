@@ -17,14 +17,8 @@ package com.afterroot.watchdone.di
 
 import com.afterroot.tmdbapi2.Constants
 import com.afterroot.tmdbapi2.TMDbInterceptor
-import com.afterroot.tmdbapi2.api.AuthApi
-import com.afterroot.tmdbapi2.api.DiscoverApi
-import com.afterroot.tmdbapi2.api.GenresApi
-import com.afterroot.tmdbapi2.api.MoviesApi
-import com.afterroot.tmdbapi2.repository.AuthRepository
-import com.afterroot.tmdbapi2.repository.DiscoverRepository
-import com.afterroot.tmdbapi2.repository.GenresRepository
-import com.afterroot.tmdbapi2.repository.MoviesRepository
+import com.afterroot.tmdbapi2.api.*
+import com.afterroot.tmdbapi2.repository.*
 import com.afterroot.watchdone.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -47,6 +41,9 @@ val apiModule = module {
 
     factory { provideGenresApi(get()) }
     factory { GenresRepository(get()) }
+
+    factory { provideConfigApi(get()) }
+    factory { ConfigRepository(get()) }
 }
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
@@ -67,3 +64,4 @@ fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi:
 fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
 fun provideDiscoverApi(retrofit: Retrofit): DiscoverApi = retrofit.create(DiscoverApi::class.java)
 fun provideGenresApi(retrofit: Retrofit): GenresApi = retrofit.create(GenresApi::class.java)
+fun provideConfigApi(retrofit: Retrofit): ConfigApi = retrofit.create(ConfigApi::class.java)

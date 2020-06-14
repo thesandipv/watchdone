@@ -28,13 +28,14 @@ import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.progress
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.TmdbApi
+import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
@@ -54,6 +55,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
 import org.koin.android.ext.android.get
@@ -101,18 +103,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (settings.baseUrl == null) {
-            settings.baseUrl = get<TmdbApi>().configuration.secureBaseUrl
+            lifecycleScope.launch {
+                settings.baseUrl = get<ConfigRepository>().getConfig().imagesConfig?.secureBaseUrl
+            }
         }
         if (settings.posterSizes == null) {
-            val set = mutableSetOf<String>()
-            try {
-                get<TmdbApi>().configuration.posterSizes.map {
-                    set.add(it)
+            lifecycleScope.launch {
+                val set = mutableSetOf<String>()
+                try {
+                    get<ConfigRepository>().getConfig().imagesConfig?.posterSizes?.map {
+                        set.add(it)
+                    }
+                } catch (e: Exception) {
+                } finally {
+                    settings.posterSizes = set
                 }
-            } catch (e: Exception) {
-            } finally {
-                settings.posterSizes = set
             }
+
         }
         //Initialize AdMob SDK
         MobileAds.initialize(this) {
@@ -141,28 +148,28 @@ class MainActivity : AppCompatActivity() {
             val curUser = FirebaseUtils.auth!!.currentUser
             val userRef = get<FirebaseFirestore>().collection(Collection.USERS).document(curUser!!.uid)
             FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { tokenTask ->
-                    if (!tokenTask.isSuccessful) {
-                        return@OnCompleteListener
-                    }
-                    userRef.get().addOnCompleteListener { getUserTask ->
-                        if (getUserTask.isSuccessful) {
-                            if (!getUserTask.result!!.exists()) {
-                                container.snackbar("User not available. Creating User..").anchorView = toolbar
-                                val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
-                                userRef.set(user).addOnCompleteListener { setUserTask ->
-                                    if (!setUserTask.isSuccessful) Log.e(
-                                        TAG,
-                                        "Can't create firebaseUser",
-                                        setUserTask.exception
-                                    )
+                    .addOnCompleteListener(OnCompleteListener { tokenTask ->
+                        if (!tokenTask.isSuccessful) {
+                            return@OnCompleteListener
+                        }
+                        userRef.get().addOnCompleteListener { getUserTask ->
+                            if (getUserTask.isSuccessful) {
+                                if (!getUserTask.result!!.exists()) {
+                                    container.snackbar("User not available. Creating User..").anchorView = toolbar
+                                    val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
+                                    userRef.set(user).addOnCompleteListener { setUserTask ->
+                                        if (!setUserTask.isSuccessful) Log.e(
+                                                TAG,
+                                                "Can't create firebaseUser",
+                                                setUserTask.exception
+                                        )
+                                    }
+                                } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result?.token!!) {
+                                    userRef.update(Field.FCM_ID, tokenTask.result?.token!!)
                                 }
-                            } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result?.token!!) {
-                                userRef.update(Field.FCM_ID, tokenTask.result?.token!!)
-                            }
-                        } else Log.e(TAG, "Unknown Error", getUserTask.exception)
-                    }
-                })
+                            } else Log.e(TAG, "Unknown Error", getUserTask.exception)
+                        }
+                    })
         } catch (e: Exception) {
             Log.e(TAG, "addUserInfoInDB: $e")
         }
@@ -181,11 +188,11 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             RC_PERMISSION -> {
                 val isPermissionNotGranted =
-                    grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
+                        grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
                 if (isPermissionNotGranted) {
                     container.indefiniteSnackbar(
-                        getString(R.string.msg_grant_app_permissions),
-                        getString(R.string.text_action_grant)
+                            getString(R.string.msg_grant_app_permissions),
+                            getString(R.string.text_action_grant)
                     ) {
                         checkPermissions()
                     }.anchorView = toolbar
