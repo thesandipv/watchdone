@@ -47,6 +47,10 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
+    buildFeatures {
+        dataBinding true
+    }
+
     defaultConfig {
         applicationId "com.afterroot.watchdone"
         minSdkVersion project.ext.minimumSdkVersion
@@ -68,7 +72,7 @@ android {
 
         manifestPlaceholders = [
                 hostName  : "afterroot.web.app",
-                pathPrefix: "/apps/watchdone"
+                pathPrefix: "/apps/watchdone/launch"
         ]
         if (!System.getenv("CI")) {
             def tmdbProperties = new Properties()
@@ -80,7 +84,6 @@ android {
             buildConfigField "String", "TMDB_API", System.getenv("TMDB_API")
             buildConfigField "String", "TMDB_BEARER_TOKEN", System.getenv("TMDB_BEARER_TOKEN")
         }
-        android.buildFeatures.dataBinding = true
     }
 
     buildTypes {
