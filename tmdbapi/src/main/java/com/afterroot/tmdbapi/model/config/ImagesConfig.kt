@@ -3,14 +3,14 @@ package com.afterroot.tmdbapi.model.config
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class TmdbConfiguration(
-    @JsonProperty("base_url") var baseUrl: String,
-    @JsonProperty("secure_base_url") var secureBaseUrl: String,
-    @JsonProperty("poster_sizes") var posterSizes: List<String>,
-    @JsonProperty("backdrop_sizes") var backdropSizes: List<String>,
-    @JsonProperty("profile_sizes") var profileSizes: List<String>,
-    @JsonProperty("logo_sizes") var logoSizes: List<String>,
-    @JsonProperty("still_sizes") var stillSizes: List<String>
+data class ImagesConfig(
+        @JsonProperty("base_url") var baseUrl: String,
+        @JsonProperty("secure_base_url") var secureBaseUrl: String,
+        @JsonProperty("poster_sizes") var posterSizes: List<String>,
+        @JsonProperty("backdrop_sizes") var backdropSizes: List<String>,
+        @JsonProperty("profile_sizes") var profileSizes: List<String>,
+        @JsonProperty("logo_sizes") var logoSizes: List<String>,
+        @JsonProperty("still_sizes") var stillSizes: List<String>
 ) : AbstractJsonMapping() {
 
     /**
