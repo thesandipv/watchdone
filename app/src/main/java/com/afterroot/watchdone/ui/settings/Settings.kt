@@ -20,6 +20,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.afterroot.watchdone.Constants
+import com.google.firebase.firestore.Query
 
 /**
  * Helper Class for managing main preferences of App
@@ -56,4 +57,12 @@ class Settings(val context: Context) {
     var imageSize: String?
         get() = preferences.getString(Constants.PREF_KEY_IMAGE_SIZE, "w342")
         set(value) = putString(Constants.PREF_KEY_IMAGE_SIZE, value)
+    var ascSort: Boolean
+        get() = preferences.getBoolean(Constants.PREF_KEY_SORT_ORDER, false)
+        set(value) = putBoolean(Constants.PREF_KEY_SORT_ORDER, value)
+    var queryDirection: Query.Direction
+        get() = if (ascSort) Query.Direction.ASCENDING else Query.Direction.DESCENDING
+        set(value) {
+            ascSort = value == Query.Direction.ASCENDING
+        }
 }

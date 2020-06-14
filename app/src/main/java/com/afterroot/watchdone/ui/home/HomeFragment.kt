@@ -35,6 +35,7 @@ import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
+import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.EventObserver
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
@@ -42,10 +43,13 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var homeScreenAdapter: DelegateListAdapter
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private val settings: Settings by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -56,7 +60,7 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val homeScreenAdapter = DelegateListAdapter(MovieDiffCallback(), object : ItemSelectedCallback<MovieDb> {
+        homeScreenAdapter = DelegateListAdapter(MovieDiffCallback(), object : ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
                 super.onClick(position, view, item)
                 homeViewModel.selectMovie(item)
@@ -69,28 +73,48 @@ class HomeFragment : Fragment() {
             }
         })
         binding.list.adapter = homeScreenAdapter
-        homeScreenAdapter.submitQuery(Query.Direction.DESCENDING)
+        homeScreenAdapter.submitQuery(settings.queryDirection)
         homeViewModel.addGenres(viewLifecycleOwner)
 
-        val queryMap = hashMapOf<String, Any>()
-        queryMap["Ascending"] = Query.Direction.ASCENDING
-        queryMap["Descending"] = Query.Direction.DESCENDING
-
-        queryMap.forEach { mapItem ->
-            val chip = Chip(requireContext())
-            chip.text = mapItem.key
-            chip.setOnClickListener {
-                homeScreenAdapter.submitQuery(mapItem.value as Query.Direction, true)
-            }
-            binding.chipGroup.addView(chip)
-        }
-
         setErrorObserver()
+        setUpChips()
     }
 
-    private fun DelegateListAdapter.submitQuery(direction: Query.Direction, isReload: Boolean = false) {
+    var isWatchedChecked: Boolean = false
+    lateinit var sortChip: Chip
+    private fun setUpChips() {
+        sortChip = Chip(requireContext(), null, R.attr.SortChipStyle).apply {
+            text = if (settings.ascSort) "Sort by Ascending" else "Sort by Descending"
+            setOnClickListener {
+                val curr = settings.ascSort
+                settings.ascSort = !curr
+                this.text = if (!settings.ascSort) "Sort by Ascending" else "Sort by Descending"
+                homeScreenAdapter.submitQuery(settings.queryDirection, true, isWatchedChecked)
+            }
+        }
+        binding.chipGroup.addView(sortChip)
+
+        val isWatchedChip = Chip(requireContext(), null, R.attr.FilterChip).apply {
+            text = context.getString(R.string.text_ship_show_watched)
+            setOnCheckedChangeListener { _, isChecked ->
+                isWatchedChecked = isChecked
+                homeScreenAdapter.submitQuery(settings.queryDirection, true, isWatchedChecked)
+            }
+        }
+        binding.chipGroup.addView(isWatchedChip)
+    }
+
+    private fun DelegateListAdapter.submitQuery(
+        direction: Query.Direction,
+        isReload: Boolean = false,
+        filterWatched: Boolean = false
+    ) {
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, isReload) {
-            orderBy(Field.RELEASE_DATE, direction)
+            if (filterWatched) {
+                whereEqualTo(Field.IS_WATCHED, filterWatched).orderBy(Field.RELEASE_DATE, direction)
+            } else {
+                orderBy(Field.RELEASE_DATE, direction)
+            }
         }.observe(viewLifecycleOwner, Observer {
             if (it is ViewModelState.Loading) {
                 binding.progressBarHome.visible(true)
