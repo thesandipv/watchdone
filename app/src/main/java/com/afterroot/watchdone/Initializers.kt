@@ -16,6 +16,7 @@
 package com.afterroot.watchdone
 
 import android.content.Context
+import androidx.annotation.Keep
 import androidx.startup.Initializer
 import com.afterroot.watchdone.di.apiModule
 import com.afterroot.watchdone.di.appModule
@@ -30,6 +31,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 
+@Keep
 class KoinInitializer : Initializer<KoinApplication> {
     override fun create(context: Context): KoinApplication = startKoin {
         androidLogger()
