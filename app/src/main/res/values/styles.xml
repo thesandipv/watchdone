@@ -23,11 +23,16 @@
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="MyStyle.FilterChip" parent="Widget.MaterialComponents.Chip.Choice" />
+    <style name="ChipStyle.FilterChip" parent="Widget.MaterialComponents.Chip.Choice" />
+
+    <style name="ChipStyle.SortChip" parent="Widget.MaterialComponents.Chip.Action" />
+
     <style name="MyTheme.Main.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="MyTheme.Main.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="MyTheme.Main.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
