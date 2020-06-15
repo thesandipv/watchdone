@@ -16,10 +16,17 @@
 package com.afterroot.tmdbapi2.repository
 
 import com.afterroot.tmdbapi.TmdbTrending
+import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.api.MoviesApi
+import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 
 class MoviesRepository(val api: MoviesApi) {
     suspend fun getMoviesTrendingInSearch(by: String = TmdbTrending.BY_DAY) = api.getMoviesTrendingInSearch(by)
 
     suspend fun getMovieInfo(movieId: Int) = api.getMovieInfo(movieId)
+
+    suspend fun getFullMovieInfo(movieId: Int, vararg appendableResponses: MovieAppendableResponses): MovieDb {
+        val joined = appendableResponses.joinToString(",")
+        return api.getFullMovieInfo(movieId, joined)
+    }
 }
