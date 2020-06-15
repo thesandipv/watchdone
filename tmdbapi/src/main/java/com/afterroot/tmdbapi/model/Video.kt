@@ -16,7 +16,7 @@ data class Video(
         @JsonProperty("type")
         var type: String? = null
 ) : NamedStringIdElement() {
-    inner class Results : IdElement() {
+    class Results : IdElement() {
         @JsonProperty("results")
         val videos: List<Video>? = null
     }
