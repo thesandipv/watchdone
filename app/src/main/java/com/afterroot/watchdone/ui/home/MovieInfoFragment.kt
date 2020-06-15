@@ -110,8 +110,7 @@ class MovieInfoFragment : Fragment() {
                     selectedMovieDocId = document.id
                     progressMovieInfo.visible(true, AutoTransition())
                     lifecycleScope.launch {
-                        val resultFromServer =
-                            withContext(Dispatchers.IO) { get<MoviesRepository>().getMovieInfo(movieDb.id) }
+                        val resultFromServer = getInfoFromServer(movieDb.id)
                         if (resultFromServer != resultFromDB) {
                             Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
                             val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
@@ -129,9 +128,7 @@ class MovieInfoFragment : Fragment() {
                 } else {
                     progressMovieInfo.visible(true, AutoTransition())
                     lifecycleScope.launch {
-                        val resultFromServer =
-                            withContext(Dispatchers.IO) { get<MoviesRepository>().getMovieInfo(movieDb.id) }
-                        moviedb = resultFromServer
+                        moviedb = getInfoFromServer(movieDb.id)
                         progressMovieInfo.visible(false, AutoTransition())
                     }
                 }
@@ -172,6 +169,10 @@ class MovieInfoFragment : Fragment() {
             }
             menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.moviedb?.imdbId.isNullOrBlank()
         }
+    }
+
+    private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
+        get<MoviesRepository>().getMovieInfo(id)
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long) {
