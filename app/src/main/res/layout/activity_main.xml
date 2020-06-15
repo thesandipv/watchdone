@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:fabAlignmentMode="center"
-            app:fabAnimationMode="slide"
+            app:fabAnimationMode="scale"
             app:fabCradleRoundedCornerRadius="@dimen/fab_cradle_radius"
             app:hideOnScroll="true"
             app:layout_scrollFlags="scroll|enterAlways" />

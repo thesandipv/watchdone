@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Discover
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
@@ -49,6 +50,7 @@ class DiscoverFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         lifecycleScope.launch {
+            binding.progressBarDiscover.visible(true)
             val repo = DiscoverRepository(get()).getMoviesDiscover(Discover())
             val homeScreenAdapter = DelegateListAdapter(MovieDiffCallback(), object : ItemSelectedCallback<MovieDb> {
                 override fun onClick(position: Int, view: View?, item: MovieDb) {
@@ -64,6 +66,7 @@ class DiscoverFragment : Fragment() {
             })
             binding.list.adapter = homeScreenAdapter
             homeScreenAdapter.submitList(repo.toMovieDataHolder())
+            binding.progressBarDiscover.visible(false)
         }
     }
 
