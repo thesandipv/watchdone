@@ -10,10 +10,12 @@ import java.io.Serializable
 abstract class AbstractJsonMapping : Serializable {
     @JsonAnySetter
     open fun handleUnknown(key: String?, value: Any?) {
-        val sb = StringBuilder()
-        sb.append("Unknown property: '").append(key)
-        sb.append("' value: '").append(value).append("'")
-        Log.d(TAG, "handleUnknown: $sb")
+        val unknown = "Unknown property: '$key' value: '$value'"
+        if (System.getenv("Test").isNullOrBlank()) { //Not in test environment
+            Log.d(TAG, "handleUnknown: $unknown")
+        } else { //In test environment
+            println("handleUnknown: $unknown")
+        }
     }
 
     companion object {
