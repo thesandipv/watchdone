@@ -15,6 +15,9 @@
 
 package com.afterroot.watchdone
 
+import com.afterroot.tmdbapi.model.ArtworkType
+import com.afterroot.tmdbapi2.model.MovieAppendableResponses.images
+import com.afterroot.tmdbapi2.model.MovieAppendableResponses.videos
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.di.apiModule
 import kotlinx.coroutines.launch
@@ -37,9 +40,30 @@ class MovieInfoTest : KoinTest {
 
     @Test
     fun `MovieDb Working`() {
+        launch {
+            Assert.assertEquals("Fight Club", moviesRepository.getMovieInfo(550).title)
+        }
+    }
+
+    @Test
+    fun `Full Movie Info`() {
+        launch {
+            val response = moviesRepository.getFullMovieInfo(550, images, videos)
+            Assert.assertNotNull("Images is null", response.getImages(ArtworkType.POSTER))
+            response.getImages(ArtworkType.POSTER)?.forEach {
+                println(it.toString())
+            }
+            Assert.assertNotNull("Videos is null", response.getVideos())
+            response.getVideos()?.forEach {
+                println(it.toString())
+            }
+        }
+    }
+
+    private fun launch(block: suspend () -> Unit) {
         runBlocking {
             launch {
-                Assert.assertEquals("Fight Club", moviesRepository.getMovieInfo(550).title)
+                block()
             }
         }
     }
