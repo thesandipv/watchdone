@@ -19,6 +19,7 @@ import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MoviesApi {
     @GET("3/trending/movie/{by}")
@@ -26,4 +27,7 @@ interface MoviesApi {
 
     @GET("3/movie/{movie_id}")
     suspend fun getMovieInfo(@Path("movie_id") movieId: Int): MovieDb
+
+    @GET("3/movie/{movie_id}")
+    suspend fun getFullMovieInfo(@Path("movie_id") movieId: Int, @Query("append_to_response") appendableResponses: String): MovieDb
 }
