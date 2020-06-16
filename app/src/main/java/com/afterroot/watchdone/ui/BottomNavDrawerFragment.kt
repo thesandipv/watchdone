@@ -26,7 +26,7 @@ import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.NavHeaderBinding
-import com.afterroot.watchdone.ui.home.HomeViewModel
+import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_bottom.*

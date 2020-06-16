@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.home
+package com.afterroot.watchdone.ui.movie
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -39,6 +39,8 @@ import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.viewmodel.HomeViewModel
+import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.android.gms.ads.AdRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
