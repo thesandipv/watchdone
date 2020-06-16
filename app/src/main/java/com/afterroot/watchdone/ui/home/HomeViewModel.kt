@@ -32,6 +32,8 @@ import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.data.model.Collection
 import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.network.NetworkState
+import com.afterroot.watchdone.network.NetworkStateMonitor
 import com.afterroot.watchdone.utils.Event
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +43,7 @@ import org.koin.core.get
 import org.koin.core.inject
 import com.google.firebase.firestore.Query as FirestoreQuery
 
-class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinComponent {
+class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), KoinComponent {
     private val db: FirebaseFirestore by inject()
     private var trendingMovies = MutableLiveData<MovieResultsPage>()
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
@@ -97,7 +99,7 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {
         emit(
-            get<AuthRepository>().createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone"))
+            get<AuthRepository>().createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"))
         )
     }
 
@@ -111,5 +113,24 @@ class HomeViewModel(val savedState: SavedStateHandle) : ViewModel(), KoinCompone
                 }
             })
         }
+    }
+
+    val networkMonitor: LiveData<NetworkState> by inject<NetworkStateMonitor>()
+
+    inline fun doIfNetworkConnected(
+        lifecycleOwner: LifecycleOwner,
+        crossinline doWhenConnected: (state: NetworkState) -> Unit,
+        noinline doWhenNotConnected: ((state: NetworkState) -> Unit)? = null
+    ) {
+        this@HomeViewModel.networkMonitor.observe(lifecycleOwner, Observer {
+            when (it) {
+                NetworkState.CONNECTED -> {
+                    doWhenConnected(NetworkState.CONNECTED)
+                }
+                else -> {
+                    doWhenNotConnected?.invoke(it)
+                }
+            }
+        })
     }
 }

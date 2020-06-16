@@ -15,10 +15,15 @@
 
 package com.afterroot.watchdone.di
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.startup.AppInitializer
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.FirestoreInitializer
+import com.afterroot.watchdone.network.NetworkStateMonitor
 import com.afterroot.watchdone.ui.settings.Settings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -46,5 +51,16 @@ val appModule = module {
 
     single {
         TmdbApi(BuildConfig.TMDB_API)
+    }
+
+    single {
+        androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+val networkModule = module {
+    single {
+        NetworkStateMonitor(get())
     }
 }
