@@ -22,6 +22,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import com.afterroot.watchdone.BuildConfig
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 
@@ -60,4 +61,15 @@ fun Context.getScreenWidth(): Int {
     val size = Point()
     (this as Activity).windowManager.defaultDisplay.getSize(size)
     return size.x
+}
+
+fun getMailBodyForFeedback(): String {
+    val builder = StringBuilder().apply {
+        appendln("----Do not remove this info----")
+        appendln("Version : ${BuildConfig.VERSION_NAME}")
+        appendln("Version Code : ${BuildConfig.VERSION_CODE}")
+        appendln("User ID : ${FirebaseUtils.firebaseUser?.uid}")
+        appendln("----Do not remove this info----")
+    }
+    return builder.toString()
 }
