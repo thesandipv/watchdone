@@ -24,10 +24,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.tmdbapi2.repository.AuthRepository
-import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.NavHeaderBinding
-import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -75,18 +74,10 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         })
                     }
                     R.id.send_feedback -> {
-                        val builder = StringBuilder().apply {
-                            appendln("----Do not remove this info----")
-                            appendln("Version : ${BuildConfig.VERSION_NAME}")
-                            appendln("Version Code : ${BuildConfig.VERSION_CODE}")
-                            appendln("User ID : ${FirebaseUtils.firebaseUser?.uid}")
-                            appendln("----Do not remove this info----")
-                        }
-                        val sendBody = builder.toString()
                         requireContext().email(
                             email = "afterhasroot@gmail.com",
                             subject = "Watchdone Feedback",
-                            text = sendBody
+                            text = getMailBodyForFeedback()
                         )
                     }
                 }

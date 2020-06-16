@@ -41,5 +41,8 @@
                 android:action="android.intent.action.VIEW"
                 android:data="@string/url_privacy_policy" />
         </Preference>
+        <Preference
+            android:key="oss_lic"
+            android:title="Open Source Licences" />
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

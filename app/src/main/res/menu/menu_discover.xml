@@ -14,5 +14,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<!--TODO-->
-<menu />
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/send_feedback"
+            android:title="@string/text_send_feedback" />
+    </group>
+</menu>
