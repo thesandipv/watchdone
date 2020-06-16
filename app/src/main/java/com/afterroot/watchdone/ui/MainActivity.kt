@@ -47,10 +47,10 @@ import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.data.model.User
 import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.network.NetworkState
-import com.afterroot.watchdone.ui.home.HomeViewModel
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
+import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.AppBarLayout
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val settings: Settings by inject()
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
 
     var dialog: MaterialDialog? = null
     private fun setUpNetworkObserver() {
-        homeViewModel.doIfNetworkConnected(this, doWhenConnected = {
+        networkViewModel.doIfNetworkConnected(this, doWhenConnected = {
             if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
         }, doWhenNotConnected = {
             dialog = showNetworkDialog(it)

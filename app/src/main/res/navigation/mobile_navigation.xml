@@ -84,12 +84,12 @@
         tools:layout="@layout/fragment_edit_profile" />
     <fragment
         android:id="@+id/navigation_movie_info"
-        android:name="com.afterroot.watchdone.ui.home.MovieInfoFragment"
+        android:name="com.afterroot.watchdone.ui.movie.MovieInfoFragment"
         android:label="MovieInfoFragment"
         tools:layout="@layout/fragment_movie_info" />
     <fragment
         android:id="@+id/navigation_discover"
-        android:name="com.afterroot.watchdone.ui.home.DiscoverFragment"
+        android:name="com.afterroot.watchdone.ui.discover.DiscoverFragment"
         android:label="@string/text_discover"
         tools:layout="@layout/fragment_discover">
         <action

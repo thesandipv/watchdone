@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.home
+package com.afterroot.watchdone.viewmodel
 
 sealed class ViewModelState {
     object Loading : ViewModelState()

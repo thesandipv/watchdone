@@ -37,6 +37,8 @@ import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.EventObserver
+import com.afterroot.watchdone.viewmodel.HomeViewModel
+import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
