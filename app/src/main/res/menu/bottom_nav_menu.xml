@@ -22,4 +22,10 @@
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/title_settings" />
+
+    <group>
+        <item
+            android:id="@+id/send_feedback"
+            android:title="@string/text_send_feedback" />
+    </group>
 </menu>
