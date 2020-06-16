@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.home
+package com.afterroot.watchdone.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LifecycleOwner
@@ -32,8 +32,6 @@ import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.data.model.Collection
 import com.afterroot.watchdone.database.MyDatabase
-import com.afterroot.watchdone.network.NetworkState
-import com.afterroot.watchdone.network.NetworkStateMonitor
 import com.afterroot.watchdone.utils.Event
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -113,24 +111,5 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
                 }
             })
         }
-    }
-
-    val networkMonitor: LiveData<NetworkState> by inject<NetworkStateMonitor>()
-
-    inline fun doIfNetworkConnected(
-        lifecycleOwner: LifecycleOwner,
-        crossinline doWhenConnected: (state: NetworkState) -> Unit,
-        noinline doWhenNotConnected: ((state: NetworkState) -> Unit)? = null
-    ) {
-        this@HomeViewModel.networkMonitor.observe(lifecycleOwner, Observer {
-            when (it) {
-                NetworkState.CONNECTED -> {
-                    doWhenConnected(NetworkState.CONNECTED)
-                }
-                else -> {
-                    doWhenNotConnected?.invoke(it)
-                }
-            }
-        })
     }
 }

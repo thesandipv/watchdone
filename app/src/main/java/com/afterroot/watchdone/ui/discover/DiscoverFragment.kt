@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.home
+package com.afterroot.watchdone.ui.discover
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,6 +33,7 @@ import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
+import com.afterroot.watchdone.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
