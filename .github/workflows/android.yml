@@ -23,9 +23,9 @@ jobs:
       env:
         TMDB_API: ${{ secrets.TMDB_API }}
         TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
-      run: ./gradlew assembleDebug
-    - name: Run Tests
+      run: ./gradlew assembleRelease
+    - name: Run Tests in app module
       env:
         TMDB_API: ${{ secrets.TMDB_API }}
         TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
-      run: ./gradlew test
+      run: ./gradlew :app:test
