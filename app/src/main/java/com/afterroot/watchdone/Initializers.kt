@@ -16,11 +16,13 @@
 package com.afterroot.watchdone
 
 import android.content.Context
+import android.os.Build
 import androidx.annotation.Keep
 import androidx.startup.Initializer
 import com.afterroot.watchdone.di.apiModule
 import com.afterroot.watchdone.di.appModule
 import com.afterroot.watchdone.di.firebaseModule
+import com.afterroot.watchdone.di.networkModule
 import com.afterroot.watchdone.di.roomModule
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -36,7 +38,11 @@ class KoinInitializer : Initializer<KoinApplication> {
     override fun create(context: Context): KoinApplication = startKoin {
         androidLogger()
         androidContext(context)
-        modules(listOf(firebaseModule, appModule, apiModule, roomModule))
+        val modulesList = mutableListOf(firebaseModule, appModule, apiModule, roomModule)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            modulesList.add(networkModule)
+        }
+        modules(modulesList)
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
