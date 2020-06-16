@@ -47,13 +47,14 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import kotlinx.android.synthetic.main.fragment_search.*
+import com.google.firebase.firestore.ktx.getField
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.design.snackbar
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
@@ -110,28 +111,30 @@ class MovieInfoFragment : Fragment() {
                     }
                     resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
                     selectedMovieDocId = document.id
-                    progressMovieInfo.visible(true, AutoTransition())
-                    lifecycleScope.launch {
-                        val resultFromServer = getInfoFromServer(movieDb.id)
-                        if (resultFromServer != resultFromDB) {
-                            Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
-                            val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
-                            selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
-                                Log.d(TAG, "updateUI: DB updated with latest data")
-                                progressMovieInfo.visible(false, AutoTransition())
+                    doShowingProgress {
+                        lifecycleScope.launch {
+                            val resultFromServer = getInfoFromServer(movieDb.id)
+                            if (resultFromServer != resultFromDB) {
+                                Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
+                                val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
+                                selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
+                                    Log.d(TAG, "updateUI: DB updated with latest data")
+                                    hideProgress()
+                                }
+                                moviedb = resultFromServer
+                                updateGenres(resultFromServer)
+                            } else {
+                                hideProgress()
+                                Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
                             }
-                            moviedb = resultFromServer
-                            updateGenres(resultFromServer)
-                        } else {
-                            progressMovieInfo.visible(false, AutoTransition())
-                            Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
                         }
                     }
                 } else {
-                    progressMovieInfo.visible(true, AutoTransition())
-                    lifecycleScope.launch {
-                        moviedb = getInfoFromServer(movieDb.id)
-                        progressMovieInfo.visible(false, AutoTransition())
+                    doShowingProgress {
+                        lifecycleScope.launch {
+                            moviedb = getInfoFromServer(movieDb.id)
+                            hideProgress()
+                        }
                     }
                 }
                 actionAddWlist.apply {
@@ -140,8 +143,20 @@ class MovieInfoFragment : Fragment() {
                         text = getString(R.string.text_add_to_watchlist)
                         icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
                         setOnClickListener {
-                            watchlistItemReference.add(movieDb)
-                            watchListRef.updateTotalItemsCounter(1)
+                            doShowingProgress {
+                                watchListRef.getTotalItemsCount { itemsCount ->
+                                    if (itemsCount < 5) {
+                                        watchlistItemReference.add(movieDb)
+                                        watchListRef.updateTotalItemsCounter(1)
+                                        snackBarMessage("Added to Watchlist")
+                                        hideProgress()
+                                    } else {
+                                        snackBarMessage("Can't add more movies as limit of 5")
+                                        hideProgress()
+                                    }
+                                }
+                            }
+
                         }
                     } else {
                         text = getString(R.string.text_remove_from_watchlist)
@@ -149,6 +164,7 @@ class MovieInfoFragment : Fragment() {
                         setOnClickListener {
                             selectedMovieDocId?.let { id -> watchlistItemReference.document(id).delete() }
                             watchListRef.updateTotalItemsCounter(-1)
+                            snackBarMessage("Removed from Watchlist")
                         }
                     }
                 }
@@ -166,6 +182,10 @@ class MovieInfoFragment : Fragment() {
                             watchlistItemReference.document(selectedMovieDocId)
                                 .update(Field.IS_WATCHED, !isWatched)
                         }
+                    } else {
+                        setOnClickListener {
+                            snackBarMessage("Please add to Watchlist First")
+                        }
                     }
                 }
             }
@@ -179,6 +199,12 @@ class MovieInfoFragment : Fragment() {
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long) {
         this.set(hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)), SetOptions.merge())
+    }
+
+    private fun DocumentReference.getTotalItemsCount(doOnSuccess: (Int) -> Unit) {
+        this.get().addOnCompleteListener {
+            it.result?.getField<Int>(Field.TOTAL_ITEMS)?.let { items -> doOnSuccess(items) }
+        }
     }
 
     private fun updateGenres(movieDb: MovieDb) {
@@ -200,10 +226,8 @@ class MovieInfoFragment : Fragment() {
     private fun setErrorObserver() {
         homeViewModel.error.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                progress_bar_search.visible(false, AutoTransition())
-                requireContext().toast("Via: $TAG : $it")
-                //Set value to null after displaying error so prevent Observers from another context
-                homeViewModel.error.postValue(null)
+                hideProgress()
+                snackBarMessage("Error: $it")
             }
         })
     }
@@ -226,6 +250,27 @@ class MovieInfoFragment : Fragment() {
         inflater.inflate(R.menu.menu_movie_info, menu)
         this.menu = menu
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun doShowingProgress(task: () -> Unit) {
+        binding.progressMovieInfo.apply {
+            if (visibility == View.GONE) {
+                visible(true, AutoTransition())
+            }
+        }
+        task()
+    }
+
+    private fun hideProgress() {
+        binding.progressMovieInfo.apply {
+            if (visibility == View.VISIBLE) {
+                visible(false, AutoTransition())
+            }
+        }
+    }
+
+    private fun snackBarMessage(message: String) {
+        binding.root.snackbar(message).anchorView = requireActivity().toolbar
     }
 
     companion object {
