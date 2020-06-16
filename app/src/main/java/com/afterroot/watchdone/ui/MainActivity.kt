@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -33,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
+import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.progress
 import com.afterroot.core.extensions.visible
@@ -44,6 +46,8 @@ import com.afterroot.watchdone.data.model.Collection
 import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.data.model.User
 import com.afterroot.watchdone.databinding.ActivityMainBinding
+import com.afterroot.watchdone.network.NetworkState
+import com.afterroot.watchdone.ui.home.HomeViewModel
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
@@ -68,6 +72,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val settings: Settings by inject()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,7 +126,6 @@ class MainActivity : AppCompatActivity() {
                     settings.posterSizes = set
                 }
             }
-
         }
         //Initialize AdMob SDK
         MobileAds.initialize(this) {
@@ -140,6 +144,28 @@ class MainActivity : AppCompatActivity() {
 
         //Add user in db if not available
         addUserInfoInDB()
+        setUpNetworkObserver()
+    }
+
+    var dialog: MaterialDialog? = null
+    private fun setUpNetworkObserver() {
+        homeViewModel.doIfNetworkConnected(this, doWhenConnected = {
+            if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
+        }, doWhenNotConnected = {
+            dialog = showNetworkDialog(it)
+        })
+    }
+
+    private fun showNetworkDialog(state: NetworkState) = MaterialDialog(this).show {
+        title = if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected"
+        cancelable(false)
+        message(text = "Please check your network connection")
+        negativeButton(text = "Exit") {
+            finish()
+        }
+        positiveButton(text = "Retry") {
+            setUpNetworkObserver()
+        }
     }
 
     /**
@@ -150,28 +176,28 @@ class MainActivity : AppCompatActivity() {
             val curUser = FirebaseUtils.auth!!.currentUser
             val userRef = get<FirebaseFirestore>().collection(Collection.USERS).document(curUser!!.uid)
             FirebaseInstanceId.getInstance().instanceId
-                    .addOnCompleteListener(OnCompleteListener { tokenTask ->
-                        if (!tokenTask.isSuccessful) {
-                            return@OnCompleteListener
-                        }
-                        userRef.get().addOnCompleteListener { getUserTask ->
-                            if (getUserTask.isSuccessful) {
-                                if (!getUserTask.result!!.exists()) {
-                                    container.snackbar("User not available. Creating User..").anchorView = toolbar
-                                    val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
-                                    userRef.set(user).addOnCompleteListener { setUserTask ->
-                                        if (!setUserTask.isSuccessful) Log.e(
-                                                TAG,
-                                                "Can't create firebaseUser",
-                                                setUserTask.exception
-                                        )
-                                    }
-                                } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result?.token!!) {
-                                    userRef.update(Field.FCM_ID, tokenTask.result?.token!!)
+                .addOnCompleteListener(OnCompleteListener { tokenTask ->
+                    if (!tokenTask.isSuccessful) {
+                        return@OnCompleteListener
+                    }
+                    userRef.get().addOnCompleteListener { getUserTask ->
+                        if (getUserTask.isSuccessful) {
+                            if (!getUserTask.result!!.exists()) {
+                                container.snackbar("User not available. Creating User..").anchorView = toolbar
+                                val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
+                                userRef.set(user).addOnCompleteListener { setUserTask ->
+                                    if (!setUserTask.isSuccessful) Log.e(
+                                        TAG,
+                                        "Can't create firebaseUser",
+                                        setUserTask.exception
+                                    )
                                 }
-                            } else Log.e(TAG, "Unknown Error", getUserTask.exception)
-                        }
-                    })
+                            } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result?.token!!) {
+                                userRef.update(Field.FCM_ID, tokenTask.result?.token!!)
+                            }
+                        } else Log.e(TAG, "Unknown Error", getUserTask.exception)
+                    }
+                })
         } catch (e: Exception) {
             Log.e(TAG, "addUserInfoInDB: $e")
         }
@@ -190,11 +216,11 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             RC_PERMISSION -> {
                 val isPermissionNotGranted =
-                        grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
+                    grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
                 if (isPermissionNotGranted) {
                     container.indefiniteSnackbar(
-                            getString(R.string.msg_grant_app_permissions),
-                            getString(R.string.text_action_grant)
+                        getString(R.string.msg_grant_app_permissions),
+                        getString(R.string.text_action_grant)
                     ) {
                         checkPermissions()
                     }.anchorView = toolbar
