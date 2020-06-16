@@ -19,6 +19,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -37,12 +38,14 @@ import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.EventObserver
+import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -137,6 +140,17 @@ class HomeFragment : Fragment() {
             binding.progressBarHome.visible(false, AutoTransition())
             requireContext().toast("Via: $TAG : $it")
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.send_feedback) {
+            requireContext().email(
+                email = "afterhasroot@gmail.com",
+                subject = "Watchdone Feedback",
+                text = getMailBodyForFeedback()
+            )
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

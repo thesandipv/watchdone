@@ -21,4 +21,9 @@
         android:icon="@drawable/ic_discover"
         android:title="@string/text_discover"
         app:showAsAction="ifRoom" />
+    <group>
+        <item
+            android:id="@+id/send_feedback"
+            android:title="@string/text_send_feedback" />
+    </group>
 </menu>

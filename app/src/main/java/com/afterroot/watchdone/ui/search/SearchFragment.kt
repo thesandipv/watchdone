@@ -22,6 +22,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
@@ -41,6 +42,7 @@ import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.utils.EventObserver
+import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -48,6 +50,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 
@@ -125,6 +128,17 @@ class SearchFragment : Fragment() {
             progress_bar_search.visible(false, AutoTransition())
             requireContext().toast("Via: $TAG : $it")
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.send_feedback) {
+            requireContext().email(
+                email = "afterhasroot@gmail.com",
+                subject = "Watchdone Feedback",
+                text = getMailBodyForFeedback()
+            )
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

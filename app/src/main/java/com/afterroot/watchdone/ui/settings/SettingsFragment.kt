@@ -18,9 +18,12 @@ package com.afterroot.watchdone.ui.settings
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.R
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import org.jetbrains.anko.startActivity
 import org.koin.android.ext.android.inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -44,6 +47,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             )
             return@setOnPreferenceChangeListener true
+        }
+
+        findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
+            OssLicensesMenuActivity.setActivityTitle(getString(R.string.oss_license_title))
+            requireContext().startActivity<OssLicensesMenuActivity>()
+            return@setOnPreferenceClickListener true
         }
     }
 }

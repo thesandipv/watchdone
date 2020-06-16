@@ -17,6 +17,9 @@ package com.afterroot.watchdone.ui.discover
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -33,8 +36,10 @@ import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.data.model.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
+import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 
@@ -43,6 +48,7 @@ class DiscoverFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         binding = FragmentDiscoverBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -69,6 +75,22 @@ class DiscoverFragment : Fragment() {
             homeScreenAdapter.submitList(repo.toMovieDataHolder())
             binding.progressBarDiscover.visible(false)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.send_feedback) {
+            requireContext().email(
+                email = "afterhasroot@gmail.com",
+                subject = "Watchdone Feedback",
+                text = getMailBodyForFeedback()
+            )
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_discover, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     companion object {

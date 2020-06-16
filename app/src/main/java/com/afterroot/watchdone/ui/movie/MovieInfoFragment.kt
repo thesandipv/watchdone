@@ -39,6 +39,7 @@ import com.afterroot.watchdone.data.model.Field
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.android.gms.ads.AdRequest
@@ -55,6 +56,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.design.snackbar
+import org.jetbrains.anko.email
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
@@ -241,6 +243,13 @@ class MovieInfoFragment : Fragment() {
                         .addPathSegments("title").addPathSegment(it).build()
                     requireContext().browse(imdbUrl.toUrl().toString(), true)
                 }
+            }
+            R.id.send_feedback -> {
+                requireContext().email(
+                    email = "afterhasroot@gmail.com",
+                    subject = "Watchdone Feedback",
+                    text = getMailBodyForFeedback()
+                )
             }
         }
         return super.onOptionsItemSelected(item)
