@@ -102,91 +102,93 @@ class MovieInfoFragment : Fragment() {
             moviedb = movieDb
             updateGenres(movieDb)
             watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get().addOnSuccessListener {
-                val isInWatchlist = it.documents.size > 0
-                var isWatched = false
-                var resultFromDB: MovieDb? = null
-                var selectedMovieDocId: String? = null
-                if (isInWatchlist) {
-                    val document = it.documents[0]
-                    document.getBoolean(Field.IS_WATCHED)?.let { watched ->
-                        isWatched = watched
-                    }
-                    resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
-                    selectedMovieDocId = document.id
-                    doShowingProgress {
-                        lifecycleScope.launch {
-                            val resultFromServer = getInfoFromServer(movieDb.id)
-                            if (resultFromServer != resultFromDB) {
-                                Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
-                                val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
-                                selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
-                                    Log.d(TAG, "updateUI: DB updated with latest data")
-                                    hideProgress()
-                                }
-                                moviedb = resultFromServer
-                                updateGenres(resultFromServer)
-                            } else {
-                                hideProgress()
-                                Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
-                            }
+                kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
+                    val isInWatchlist = it.documents.size > 0
+                    var isWatched = false
+                    var resultFromDB: MovieDb? = null
+                    var selectedMovieDocId: String? = null
+                    if (isInWatchlist) {
+                        val document = it.documents[0]
+                        document.getBoolean(Field.IS_WATCHED)?.let { watched ->
+                            isWatched = watched
                         }
-                    }
-                } else {
-                    doShowingProgress {
-                        lifecycleScope.launch {
-                            moviedb = getInfoFromServer(movieDb.id)
-                            hideProgress()
-                        }
-                    }
-                }
-                actionAddWlist.apply {
-                    visible(true)
-                    if (!isInWatchlist) {
-                        text = getString(R.string.text_add_to_watchlist)
-                        icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
-                        setOnClickListener {
-                            doShowingProgress {
-                                watchListRef.getTotalItemsCount { itemsCount ->
-                                    if (itemsCount < 5) {
-                                        watchlistItemReference.add(movieDb)
-                                        watchListRef.updateTotalItemsCounter(1)
-                                        snackBarMessage("Added to Watchlist")
-                                        hideProgress()
-                                    } else {
-                                        snackBarMessage("Can't add more movies as limit of 5")
+                        resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
+                        selectedMovieDocId = document.id
+                        doShowingProgress {
+                            lifecycleScope.launch {
+                                val resultFromServer = getInfoFromServer(movieDb.id)
+                                if (resultFromServer != resultFromDB) {
+                                    Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
+                                    val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
+                                    selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
+                                        Log.d(TAG, "updateUI: DB updated with latest data")
                                         hideProgress()
                                     }
+                                    moviedb = resultFromServer
+                                    updateGenres(resultFromServer)
+                                } else {
+                                    hideProgress()
+                                    Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
                                 }
                             }
-
                         }
                     } else {
-                        text = getString(R.string.text_remove_from_watchlist)
-                        icon = requireContext().getDrawableExt(R.drawable.ic_bookmark)
-                        setOnClickListener {
-                            selectedMovieDocId?.let { id -> watchlistItemReference.document(id).delete() }
-                            watchListRef.updateTotalItemsCounter(-1)
-                            snackBarMessage("Removed from Watchlist")
+                        doShowingProgress {
+                            lifecycleScope.launch {
+                                moviedb = getInfoFromServer(movieDb.id)
+                                hideProgress()
+                            }
                         }
                     }
-                }
-                actionMarkWatched.apply {
-                    visible(true)
-                    if (isInWatchlist && selectedMovieDocId != null && resultFromDB != null) {
-                        if (isWatched) {
-                            text = getString(R.string.text_mark_as_unwatched)
-                            icon = requireContext().getDrawableExt(R.drawable.ic_clear)
+                    actionAddWlist.apply {
+                        visible(true)
+                        if (!isInWatchlist) {
+                            text = getString(R.string.text_add_to_watchlist)
+                            icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
+                            setOnClickListener {
+                                doShowingProgress {
+                                    watchListRef.getTotalItemsCount { itemsCount ->
+                                        if (itemsCount < 5) {
+                                            watchlistItemReference.add(movieDb)
+                                            watchListRef.updateTotalItemsCounter(1)
+                                            snackBarMessage("Added to Watchlist")
+                                            hideProgress()
+                                        } else {
+                                            snackBarMessage("Can't add more movies as limit of 5")
+                                            hideProgress()
+                                        }
+                                    }
+                                }
+
+                            }
                         } else {
-                            text = getString(R.string.text_mark_as_watched)
-                            icon = requireContext().getDrawableExt(R.drawable.ic_done)
+                            text = getString(R.string.text_remove_from_watchlist)
+                            icon = requireContext().getDrawableExt(R.drawable.ic_bookmark)
+                            setOnClickListener {
+                                selectedMovieDocId?.let { id -> watchlistItemReference.document(id).delete() }
+                                watchListRef.updateTotalItemsCounter(-1)
+                                snackBarMessage("Removed from Watchlist")
+                            }
                         }
-                        setOnClickListener {
-                            watchlistItemReference.document(selectedMovieDocId)
-                                .update(Field.IS_WATCHED, !isWatched)
-                        }
-                    } else {
-                        setOnClickListener {
-                            snackBarMessage("Please add to Watchlist First")
+                    }
+                    actionMarkWatched.apply {
+                        visible(true)
+                        if (isInWatchlist && selectedMovieDocId != null && resultFromDB != null) {
+                            if (isWatched) {
+                                text = getString(R.string.text_mark_as_unwatched)
+                                icon = requireContext().getDrawableExt(R.drawable.ic_clear)
+                            } else {
+                                text = getString(R.string.text_mark_as_watched)
+                                icon = requireContext().getDrawableExt(R.drawable.ic_done)
+                            }
+                            setOnClickListener {
+                                watchlistItemReference.document(selectedMovieDocId)
+                                    .update(Field.IS_WATCHED, !isWatched)
+                            }
+                        } else {
+                            setOnClickListener {
+                                snackBarMessage("Please add to Watchlist First")
+                            }
                         }
                     }
                 }
@@ -205,7 +207,11 @@ class MovieInfoFragment : Fragment() {
 
     private fun DocumentReference.getTotalItemsCount(doOnSuccess: (Int) -> Unit) {
         this.get().addOnCompleteListener {
-            it.result?.getField<Int>(Field.TOTAL_ITEMS)?.let { items -> doOnSuccess(items) }
+            if (it.result?.data != null) { //Fixes
+                it.result?.getField<Int>(Field.TOTAL_ITEMS)?.let { items -> doOnSuccess(items) }
+            } else {
+                doOnSuccess(0)
+            }
         }
     }
 
