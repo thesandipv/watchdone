@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
@@ -54,5 +55,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             requireContext().startActivity<OssLicensesMenuActivity>()
             return@setOnPreferenceClickListener true
         }
+
+        findPreference<Preference>(getString(R.string.key_version))?.summary = "v${BuildConfig.VERSION_NAME}"
     }
 }
