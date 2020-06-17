@@ -15,10 +15,12 @@
 
 package com.afterroot.watchdone.data.model
 
+import com.afterroot.watchdone.BuildConfig
+
 object Collection {
     //Collections
     const val USERS = "users"
-    const val WATCHDONE = "watchdone"
+    val WATCHDONE = if (!BuildConfig.DEBUG) "watchdone" else "watchdone-debug"
     const val WATCHLIST = "watchlist"
     const val ITEMS = "items"
 }

@@ -99,6 +99,8 @@ android {
             splits.abi.enable = false
             splits.density.enable = false
             crunchPngs false
+            applicationIdSuffix '.debug'
+            signingConfig signingConfigs.signing
         }
     }
     dexOptions {
