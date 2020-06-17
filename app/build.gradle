@@ -100,7 +100,9 @@ android {
             splits.density.enable = false
             crunchPngs false
             applicationIdSuffix '.debug'
-            signingConfig signingConfigs.signing
+            if (!System.getenv("CI")) {
+                signingConfig signingConfigs.signing
+            }
         }
     }
     dexOptions {
