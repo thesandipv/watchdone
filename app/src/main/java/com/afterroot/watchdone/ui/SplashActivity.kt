@@ -21,6 +21,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.isNetworkAvailable
+import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_LOGIN
 import com.afterroot.watchdone.R
 import com.firebase.ui.auth.AuthUI
@@ -69,6 +70,7 @@ class SplashActivity : AppCompatActivity() {
                 .createSignInIntentBuilder()
                 .setLogo(R.mipmap.ic_launcher)
                 .setTosAndPrivacyPolicyUrls("", getString(R.string.url_privacy_policy))
+                .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
                 .setAvailableProviders(
                     listOf(
                         AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build(),
