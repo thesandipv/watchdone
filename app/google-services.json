@@ -8,17 +8,41 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:910276298420:android:2dadee906f0417d3f979e1",
+        "mobilesdk_app_id": "1:910276298420:android:0f370aa2b478ecb9f979e1",
         "android_client_info": {
-          "package_name": "com.afterroot.base"
+          "package_name": "com.afterroot.watchdone"
         }
       },
       "oauth_client": [
         {
-          "client_id": "910276298420-7d7g7pggf737e3618qt7s25e1iehna8o.apps.googleusercontent.com",
+          "client_id": "910276298420-5b2ekrdj2vbf3gm05jvks1m164e29el5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.afterroot.base",
+            "package_name": "com.afterroot.watchdone",
+            "certificate_hash": "2eaa061b9c74b766bd7fcfc178ef9eb3f8fb29b2"
+          }
+        },
+        {
+          "client_id": "910276298420-8bnmtp4qflattkopr4kui4l6gagoj1dq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.afterroot.watchdone",
+            "certificate_hash": "2d76e2699bd308e98dea829be5ae274e75cf8145"
+          }
+        },
+        {
+          "client_id": "910276298420-p4mmia8vc5peue4a4afmlv11pg48m52m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.afterroot.watchdone",
+            "certificate_hash": "b0fc23905191f8994eb7fe75827a43257f88c9b4"
+          }
+        },
+        {
+          "client_id": "910276298420-klo95avhfmibfsujf9v2qa0652m3jv34.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.afterroot.watchdone",
             "certificate_hash": "34179262c4455e27b8dcd2eb5e8c634b2434eaa2"
           }
         },
@@ -41,22 +65,23 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-6628325093439880~2908563040"
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:910276298420:android:0f370aa2b478ecb9f979e1",
+        "mobilesdk_app_id": "1:910276298420:android:f459aa00b1e35b40f979e1",
         "android_client_info": {
-          "package_name": "com.afterroot.watchdone"
+          "package_name": "com.afterroot.watchdone.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "910276298420-klo95avhfmibfsujf9v2qa0652m3jv34.apps.googleusercontent.com",
+          "client_id": "910276298420-rr6i9n116ef3ikjdmnt4bbh2o5ftkufv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.afterroot.watchdone",
-            "certificate_hash": "34179262c4455e27b8dcd2eb5e8c634b2434eaa2"
+            "package_name": "com.afterroot.watchdone.debug",
+            "certificate_hash": "2d76e2699bd308e98dea829be5ae274e75cf8145"
           }
         },
         {

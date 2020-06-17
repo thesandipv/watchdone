@@ -14,6 +14,7 @@
   -->
 
 <resources>
+    <string name="app_name">WatchDone-Debug</string>
     <string name="ad_banner_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="ad_interstitial_1_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
 </resources>
