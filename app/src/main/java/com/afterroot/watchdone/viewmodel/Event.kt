@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.utils
+package com.afterroot.watchdone.viewmodel
 
 import androidx.lifecycle.Observer
 
