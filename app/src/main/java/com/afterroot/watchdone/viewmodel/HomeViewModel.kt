@@ -32,7 +32,6 @@ import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.data.model.Collection
 import com.afterroot.watchdone.database.MyDatabase
-import com.afterroot.watchdone.utils.Event
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

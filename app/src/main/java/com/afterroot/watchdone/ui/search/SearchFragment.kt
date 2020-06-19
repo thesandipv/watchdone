@@ -41,9 +41,9 @@ import com.afterroot.watchdone.adapter.DelegateListAdapter
 import com.afterroot.watchdone.adapter.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.MovieDiffCallback
 import com.afterroot.watchdone.data.model.toMovieDataHolder
-import com.afterroot.watchdone.utils.EventObserver
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.utils.hideKeyboard
+import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
