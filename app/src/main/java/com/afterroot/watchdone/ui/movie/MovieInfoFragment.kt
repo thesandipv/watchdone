@@ -32,10 +32,13 @@ import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.data.model.Collection
 import com.afterroot.watchdone.data.model.Field
+import com.afterroot.watchdone.data.model.toCastDataHolder
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
@@ -101,6 +104,7 @@ class MovieInfoFragment : Fragment() {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
+            updateCast(movieDb)
             watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get().addOnSuccessListener {
                 kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
@@ -126,6 +130,7 @@ class MovieInfoFragment : Fragment() {
                                     }
                                     moviedb = resultFromServer
                                     updateGenres(resultFromServer)
+                                    updateCast(resultFromServer)
                                 } else {
                                     hideProgress()
                                     Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
@@ -136,6 +141,8 @@ class MovieInfoFragment : Fragment() {
                         doShowingProgress {
                             lifecycleScope.launch {
                                 moviedb = getInfoFromServer(movieDb.id)
+                                updateGenres(moviedb!!)
+                                updateCast(moviedb!!)
                                 hideProgress()
                             }
                         }
@@ -198,7 +205,7 @@ class MovieInfoFragment : Fragment() {
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        get<MoviesRepository>().getMovieInfo(id)
+        get<MoviesRepository>().getFullMovieInfo(id, MovieAppendableResponses.credits)
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long) {
@@ -228,6 +235,14 @@ class MovieInfoFragment : Fragment() {
         } else {
             binding.genres = movieDb.genres
             Log.d(TAG, "updateGenres: Genres set from MovieDb Object")
+        }
+    }
+
+    private fun updateCast(movieDb: MovieDb) {
+        if (movieDb.getCast() != null) {
+            val castAdapter = CastListAdapter()
+            binding.castList.adapter = castAdapter
+            castAdapter.submitList(movieDb.toCastDataHolder())
         }
     }
 
