@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2020 Sandip Vaghela
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="personDetail"
+            type="com.afterroot.tmdbapi.model.people.PersonCast" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cast_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cast_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_horizontal_half"
+                android:paddingLeft="@dimen/padding_horizontal_half"
+                android:paddingTop="4dp"
+                android:paddingEnd="@dimen/padding_horizontal_half"
+                android:paddingRight="@dimen/padding_horizontal_half"
+                android:text="@{personDetail.name}"
+                android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cast_iv"
+                tools:text="@tools:sample/full_names" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/character_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_horizontal_half"
+                android:paddingLeft="@dimen/padding_horizontal_half"
+                android:paddingEnd="@dimen/padding_horizontal_half"
+                android:paddingRight="@dimen/padding_horizontal_half"
+                android:paddingBottom="@dimen/padding_vertical_half"
+                android:text="@{personDetail.character}"
+                android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Caption"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cast_name"
+                tools:text="@tools:sample/full_names" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

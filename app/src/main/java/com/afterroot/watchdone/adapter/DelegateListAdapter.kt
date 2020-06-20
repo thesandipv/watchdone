@@ -24,6 +24,7 @@ import com.afterroot.tmdbapi.Types
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.afterroot.watchdone.data.model.AdditionalParams
+import com.afterroot.watchdone.data.model.CastDataHolder
 import com.afterroot.watchdone.data.model.DataHolder
 import com.afterroot.watchdone.data.model.MovieDataHolder
 
@@ -59,6 +60,16 @@ class MovieDiffCallback : DiffUtil.ItemCallback<MovieDataHolder>() {
     }
 
     override fun areContentsTheSame(oldItem: MovieDataHolder, newItem: MovieDataHolder): Boolean {
+        return oldItem.data == newItem.data
+    }
+}
+
+class CastDiffCallback : DiffUtil.ItemCallback<CastDataHolder>() {
+    override fun areItemsTheSame(oldItem: CastDataHolder, newItem: CastDataHolder): Boolean {
+        return oldItem.data.id == newItem.data.id
+    }
+
+    override fun areContentsTheSame(oldItem: CastDataHolder, newItem: CastDataHolder): Boolean {
         return oldItem.data == newItem.data
     }
 }
