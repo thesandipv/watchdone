@@ -113,23 +113,22 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_horizontal"
-                android:paddingRight="@dimen/padding_horizontal">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/action_add_wlist"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_horizontal"
                     android:layout_marginTop="@dimen/padding_vertical"
                     android:layout_marginEnd="@dimen/padding_horizontal"
-                    android:layout_marginRight="@dimen/padding_horizontal"
                     android:text="@string/text_add_to_watchlist"
                     android:visibility="gone"
                     app:icon="@drawable/ic_bookmark_border"
@@ -143,6 +142,8 @@
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_horizontal"
+                    android:layout_marginRight="@dimen/padding_horizontal"
                     android:text="@string/text_mark_as_watched"
                     android:visibility="gone"
                     app:icon="@drawable/ic_done"
@@ -157,12 +158,26 @@
                     android:id="@+id/movie_overview"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding_horizontal"
                     android:layout_marginTop="@dimen/padding_vertical"
+                    android:layout_marginRight="@dimen/padding_horizontal"
                     android:text="@{moviedb.overview}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/action_add_wlist"
                     tools:text="@tools:sample/lorem[15]" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cast_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/padding_vertical"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/movie_overview"
+                    tools:listitem="@layout/list_item_cast" />
 
                 <com.google.android.gms.ads.AdView
                     android:id="@+id/adView"
@@ -176,7 +191,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/movie_overview" />
+                    app:layout_constraintTop_toBottomOf="@+id/cast_list" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
