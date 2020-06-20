@@ -17,6 +17,9 @@
     <item
         android:id="@+id/action_view_imdb"
         android:title="@string/action_view_in_imdb" />
+    <item
+        android:id="@+id/action_share_to_ig_story"
+        android:title="@string/action_share_to_instagram_story" />
     <group>
         <item
             android:id="@+id/send_feedback"
