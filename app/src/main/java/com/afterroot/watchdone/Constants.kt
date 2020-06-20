@@ -25,4 +25,10 @@ object Constants {
     const val RC_LOGIN = 42
     const val RC_PERMISSION = 256
     const val RC_STORAGE_ACCESS = 12
+
+    const val IG_SHARE_IMAGE_SIZE = "w780"
+    const val IG_SHARE_ACTION = "com.instagram.share.ADD_TO_STORY"
+    const val IG_PACKAGE_NAME = "com.instagram.android"
+    const val MIME_TYPE_JPEG = "image/jpeg"
+    const val IG_EXTRA_INT_ASSET_URI = "interactive_asset_uri"
 }

@@ -16,6 +16,10 @@
 package com.afterroot.watchdone.ui.movie
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -34,6 +38,8 @@ import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.MoviesRepository
+import com.afterroot.watchdone.Constants
+import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.data.model.Collection
@@ -45,6 +51,8 @@ import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -62,6 +70,9 @@ import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.email
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class MovieInfoFragment : Fragment() {
     private lateinit var binding: FragmentMovieInfoBinding
@@ -271,6 +282,44 @@ class MovieInfoFragment : Fragment() {
                     subject = "Watchdone Feedback",
                     text = getMailBodyForFeedback()
                 )
+            }
+            R.id.action_share_to_ig_story -> {
+                GlideApp.with(requireContext()).asBitmap()
+                    .load(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + binding.moviedb?.posterPath)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            var fos: FileOutputStream? = null
+                            val file = File(
+                                requireContext().externalCacheDir.toString(),
+                                binding.moviedb?.id.toString()
+                            )
+                            try {
+                                fos = FileOutputStream(file)
+                                resource.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            } finally {
+                                fos?.flush()
+                                fos?.close()
+                                val uri = Uri.fromFile(file)
+                                val intent = Intent(Constants.IG_SHARE_ACTION).apply {
+                                    type = Constants.MIME_TYPE_JPEG
+                                    putExtra(Constants.IG_EXTRA_INT_ASSET_URI, uri)
+                                    // putExtra("content_url", attributionLinkUrl) //TODO Add deep-link
+                                }
+                                requireActivity().grantUriPermission(
+                                    Constants.IG_PACKAGE_NAME,
+                                    uri,
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                )
+                                if (requireActivity().packageManager.resolveActivity(intent, 0) != null) {
+                                    requireActivity().startActivity(intent)
+                                }
+                            }
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
             }
         }
         return super.onOptionsItemSelected(item)
