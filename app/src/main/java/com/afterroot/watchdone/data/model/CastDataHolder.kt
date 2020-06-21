@@ -15,7 +15,6 @@
 
 package com.afterroot.watchdone.data.model
 
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.people.PersonCast
 
 data class CastDataHolder(
@@ -23,9 +22,9 @@ data class CastDataHolder(
     override var additionalParams: AdditionalParams? = null
 ) : DataHolder<PersonCast, AdditionalParams>()
 
-fun MovieDb.toCastDataHolder(): List<CastDataHolder> {
+fun List<PersonCast>.toCastDataHolder(): List<CastDataHolder> {
     val list = mutableListOf<CastDataHolder>()
-    this.getCast()?.forEach {
+    this.forEach {
         val holder = CastDataHolder(it)
         list.add(holder)
     }
