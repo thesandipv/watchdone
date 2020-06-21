@@ -21,6 +21,7 @@
 
     <dimen name="padding_horizontal">50dp</dimen>
     <dimen name="padding_horizontal_half">16dp</dimen>
+    <dimen name="padding_horizontal_list">42dp</dimen>
     <dimen name="padding_normal">50dp</dimen>
     <dimen name="padding_normal_half">16dp</dimen>
     <dimen name="padding_vertical">16dp</dimen>

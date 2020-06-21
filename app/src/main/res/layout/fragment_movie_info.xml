@@ -167,18 +167,40 @@
                     app:layout_constraintTop_toBottomOf="@+id/action_add_wlist"
                     tools:text="@tools:sample/lorem[15]" />
 
+                <TextView
+                    android:id="@+id/title_cast"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_horizontal"
+                    android:layout_marginLeft="@dimen/padding_horizontal"
+                    android:layout_marginTop="@dimen/padding_vertical"
+                    android:layout_marginEnd="@dimen/padding_horizontal"
+                    android:layout_marginRight="@dimen/padding_horizontal"
+                    android:text="@string/title_cast"
+                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/movie_overview" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cast_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/padding_vertical"
+                    android:layout_marginTop="@dimen/padding_vertical_half"
+                    android:clipToPadding="false"
                     android:orientation="horizontal"
+                    android:paddingStart="@dimen/padding_horizontal_list"
+                    android:paddingLeft="@dimen/padding_horizontal_list"
+                    android:paddingEnd="@dimen/padding_horizontal_list"
+                    android:paddingRight="@dimen/padding_horizontal_list"
                     android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/movie_overview"
-                    tools:listitem="@layout/list_item_cast" />
+                    app:layout_constraintTop_toBottomOf="@+id/title_cast"
+                    tools:listitem="@layout/list_item_cast"
+                    tools:visibility="visible" />
 
                 <com.google.android.gms.ads.AdView
                     android:id="@+id/adView"

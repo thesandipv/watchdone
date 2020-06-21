@@ -72,4 +72,5 @@
     <string name="msg_add_to_wl_first">Please add to Watchlist First</string>
     <string name="msg_added_to_wl">Added to Watchlist</string>
     <string name="msg_limit_error">Can\'t add more movies as limit of 5</string>
+    <string name="title_cast">Cast</string>
 </resources>
