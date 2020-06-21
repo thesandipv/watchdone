@@ -35,6 +35,9 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import org.koin.android.ext.android.get
 
+/**
+ * FCM Service that will be used only if app is in foreground state.
+ */
 class FireMessagingService : FirebaseMessagingService() {
 
     private val _tag = "FireMessagingService"
@@ -89,7 +92,7 @@ class FireMessagingService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder =
             NotificationCompat.Builder(this, channelId ?: getString(R.string.fcm_channel_id))
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_main)
                 .setContentTitle(title ?: getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
