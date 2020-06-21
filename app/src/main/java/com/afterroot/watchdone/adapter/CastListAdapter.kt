@@ -69,7 +69,10 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
         private val posterView: AppCompatImageView = binding.castIv
         val context: Context = posterView.context
         var heightRatio: Float = 3f / 2f
-        val width = (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - 16
+        val width =
+            (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
+                R.dimen.padding_horizontal_list
+            )
 
         fun bind(personCast: PersonCast) {
             binding.personDetail = personCast
