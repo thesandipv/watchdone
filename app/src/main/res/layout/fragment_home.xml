@@ -27,7 +27,9 @@
             android:id="@+id/list"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:clipToPadding="false"
             android:layoutAnimation="@anim/layout_anim_fall_down"
+            android:paddingBottom="@dimen/margin_ref_to_fab"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -37,8 +39,6 @@
             app:layout_constraintVertical_bias="0.0"
             app:spanCount="@integer/grid_item_span_count"
             tools:itemCount="10"
-            tools:layout_conversion_absoluteHeight="785dp"
-            tools:layout_conversion_absoluteWidth="393dp"
             tools:listitem="@layout/list_item_movie" />
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
