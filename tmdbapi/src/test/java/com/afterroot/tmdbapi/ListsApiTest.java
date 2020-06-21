@@ -1,10 +1,11 @@
 package com.afterroot.tmdbapi;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.afterroot.tmdbapi.model.MovieList;
 import com.afterroot.tmdbapi.model.core.ResponseStatus;
 import com.afterroot.tmdbapi.model.core.ResponseStatusException;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,7 +14,9 @@ import java.util.Random;
 
 import static com.afterroot.tmdbapi.AccountApiTest.APITESTS_ACCOUNT;
 import static com.afterroot.tmdbapi.AccountApiTest.APITESTS_TOKEN;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class ListsApiTest extends AbstractTmdbApiTest {
