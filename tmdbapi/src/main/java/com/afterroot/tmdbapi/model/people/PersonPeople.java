@@ -1,5 +1,6 @@
 package com.afterroot.tmdbapi.model.people;
 
+import com.afterroot.tmdbapi.model.Multi;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -7,8 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.afterroot.tmdbapi.model.Multi;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class PersonPeople extends Person implements Multi {
@@ -65,7 +64,7 @@ public class PersonPeople extends Person implements Multi {
     public void addCrew(int id, String name, String profilePath, String department, String job) {
         setPersonType(PersonType.CREW);
         setId(id);
-        setName(name);
+        name = name;
         setProfilePath(profilePath);
         setDepartment(department);
         setJob(job);
@@ -86,7 +85,7 @@ public class PersonPeople extends Person implements Multi {
     public void addCast(int id, String name, String profilePath, String character, int order) {
         setPersonType(PersonType.CAST);
         setId(id);
-        setName(name);
+        name = name;
         setProfilePath(profilePath);
         setCharacter(character);
         setOrder(order);

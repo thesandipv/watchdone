@@ -16,7 +16,13 @@
 package com.afterroot.tmdbapi2.repository
 
 import com.afterroot.tmdbapi.TmdbTrending
+import com.afterroot.tmdbapi.model.Credits
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.MovieImages
+import com.afterroot.tmdbapi.model.MovieList
+import com.afterroot.tmdbapi.model.Video
+import com.afterroot.tmdbapi.model.core.MovieKeywords
+import com.afterroot.tmdbapi.model.core.ResultsPage
 import com.afterroot.tmdbapi2.api.MoviesApi
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 
@@ -29,4 +35,17 @@ class MoviesRepository(val api: MoviesApi) {
         val joined = appendableResponses.joinToString(",")
         return api.getFullMovieInfo(movieId, joined)
     }
+
+    suspend fun getPopular(region: String? = null) = api.getPopular(region)
+    suspend fun getLatest(region: String? = null) = api.getLatest(region)
+    suspend fun getNowPlaying(region: String? = null) = api.getNowPlaying(region)
+    suspend fun getTopRated(region: String? = null) = api.getTopRated(region)
+    suspend fun getUpcoming(region: String? = null) = api.getUpcoming(region)
+    suspend fun getSimilar(movieId: Int) = api.getSimilar(movieId)
+    suspend fun getRecommended(movieId: Int) = api.getRecommended(movieId)
+    suspend fun getCredits(movieId: Int): Credits = api.getCredits(movieId)
+    suspend fun getImages(movieId: Int): MovieImages = api.getImages(movieId)
+    suspend fun getVideos(movieId: Int): Video.Results = api.getVideos(movieId)
+    suspend fun getKeywords(movieId: Int): MovieKeywords = api.getKeywords(movieId)
+    suspend fun getLists(movieId: Int): ResultsPage<MovieList> = api.getLists(movieId)
 }

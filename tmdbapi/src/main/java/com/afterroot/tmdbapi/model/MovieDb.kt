@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
+@Deprecated("Use new MovieDb instead")
 class MovieDbOld : IdElement(), Multi {
     @JsonProperty("title")
     var title: String? = null
@@ -128,9 +129,9 @@ class MovieDbOld : IdElement(), Multi {
         return if (alternativeTitles != null) alternativeTitles!!.titles else null
     }
 
-    fun getCast(): List<PersonCast>? = credits?.getCast()
+    fun getCast(): List<PersonCast>? = credits?.cast
 
-    fun getCrew(): List<PersonCrew>? = credits?.getCrew()
+    fun getCrew(): List<PersonCrew>? = credits?.crew
 
     fun getImages(vararg artworkTypes: ArtworkType?): List<Artwork>? {
         return if (images != null) images!!.getAll(*artworkTypes) else null
@@ -243,33 +244,21 @@ data class MovieDb(
     override val mediaType: Multi.MediaType?
         get() = Multi.MediaType.MOVIE
 
-    fun getAlternativeTitles(): List<AlternativeTitle>? {
-        return if (alternativeTitles != null) alternativeTitles!!.titles else null
-    }
+    fun getAlternativeTitles(): List<AlternativeTitle>? = alternativeTitles?.titles
 
-    fun getCast(): List<PersonCast>? = credits?.getCast()
+    fun getCast(): List<PersonCast>? = credits?.cast
 
-    fun getCrew(): List<PersonCrew>? = credits?.getCrew()
+    fun getCrew(): List<PersonCrew>? = credits?.crew
 
-    fun getImages(vararg artworkTypes: ArtworkType?): List<Artwork>? {
-        return if (images != null) images!!.getAll(*artworkTypes) else null
-    }
+    fun getImages(vararg artworkTypes: ArtworkType?): List<Artwork>? = images?.getAll(*artworkTypes)
 
-    fun getKeywords(): List<Keyword>? {
-        return if (keywords != null) keywords!!.keywords else null
-    }
+    fun getKeywords(): List<Keyword>? = keywords?.keywords
 
-    fun getReleases(): List<ReleaseInfo>? {
-        return if (releases != null) releases!!.results else null
-    }
+    fun getReleases(): List<ReleaseInfo>? = releases?.results
 
-    fun getVideos(): List<Video>? {
-        return if (videos != null) videos!!.videos else null
-    }
+    fun getVideos(): List<Video>? = videos?.videos
 
-    fun getYear(): String? {
-        return releaseDate?.substring(0, 4)
-    }
+    fun getYear(): String? = releaseDate?.substring(0, 4)
 
     companion object {
         fun type(): Int {

@@ -15,8 +15,14 @@
 
 package com.afterroot.tmdbapi2.api
 
+import com.afterroot.tmdbapi.model.Credits
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.MovieImages
+import com.afterroot.tmdbapi.model.MovieList
+import com.afterroot.tmdbapi.model.Video
+import com.afterroot.tmdbapi.model.core.MovieKeywords
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.tmdbapi.model.core.ResultsPage
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -29,5 +35,44 @@ interface MoviesApi {
     suspend fun getMovieInfo(@Path("movie_id") movieId: Int): MovieDb
 
     @GET("3/movie/{movie_id}")
-    suspend fun getFullMovieInfo(@Path("movie_id") movieId: Int, @Query("append_to_response") appendableResponses: String): MovieDb
+    suspend fun getFullMovieInfo(
+        @Path("movie_id") movieId: Int,
+        @Query("append_to_response") appendableResponses: String
+    ): MovieDb
+
+    @GET("3/movie/popular")
+    suspend fun getPopular(@Query("region") region: String?): MovieResultsPage
+
+    @GET("3/movie/latest")
+    suspend fun getLatest(@Query("region") region: String?): MovieDb
+
+    @GET("3/movie/now_playing")
+    suspend fun getNowPlaying(@Query("region") region: String?): MovieResultsPage
+
+    @GET("3/movie/top_rated")
+    suspend fun getTopRated(@Query("region") region: String?): MovieResultsPage
+
+    @GET("3/movie/upcoming")
+    suspend fun getUpcoming(@Query("region") region: String?): MovieResultsPage
+
+    @GET("3/movie/{movie_id}/similar")
+    suspend fun getSimilar(@Path("movie_id") movieId: Int): MovieResultsPage
+
+    @GET("3/movie/{movie_id}/recommendations")
+    suspend fun getRecommended(@Path("movie_id") movieId: Int): MovieResultsPage
+
+    @GET("3/movie/{movie_id}/credits")
+    suspend fun getCredits(@Path("movie_id") movieId: Int): Credits
+
+    @GET("3/movie/{movie_id}/images")
+    suspend fun getImages(@Path("movie_id") movieId: Int): MovieImages
+
+    @GET("3/movie/{movie_id}/videos")
+    suspend fun getVideos(@Path("movie_id") movieId: Int): Video.Results
+
+    @GET("3/movie/{movie_id}/keywords")
+    suspend fun getKeywords(@Path("movie_id") movieId: Int): MovieKeywords
+
+    @GET("3/movie/{movie_id}/lists")
+    suspend fun getLists(@Path("movie_id") movieId: Int): ResultsPage<MovieList>
 }
