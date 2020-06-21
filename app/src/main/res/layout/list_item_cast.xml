@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:clipToPadding="false"
+        android:clipToPadding="true"
         app:cardCornerRadius="@dimen/card_radius"
         app:cardUseCompatPadding="true">
 
@@ -59,15 +59,18 @@
                 android:paddingRight="@dimen/padding_horizontal_half"
                 android:text="@{personDetail.name}"
                 android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/character_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cast_iv"
+                app:layout_constraintVertical_chainStyle="packed"
                 tools:text="@tools:sample/full_names" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/character_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
                 android:paddingStart="@dimen/padding_horizontal_half"
                 android:paddingLeft="@dimen/padding_horizontal_half"
                 android:paddingEnd="@dimen/padding_horizontal_half"
@@ -76,9 +79,11 @@
                 android:text="@{personDetail.character}"
                 android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Caption"
                 android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cast_name"
+                app:layout_constraintVertical_chainStyle="packed"
                 tools:text="@tools:sample/full_names" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
