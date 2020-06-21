@@ -3,7 +3,7 @@ Format is [Status] [Add|Fix|Imp[rove]] - [Description] [[addedIn|fixedIn|improve
 ---
 
 - [ ] Add - Metrics by Genres on User Profile
-- [X] Add - Share as Instagram Story [addedIn - #63646b79]
-- [X] Fix - Configure R8 Code Shrinking - App Crash when enabled. [fixedIn - #3dc43bc4 #8ebe33d5]
-- [X] Fix - FCM with 'link' not working [fixedIn - #d04e545d]
+- [X] Add - Share as Instagram Story [addedIn - 63646b7]
+- [X] Fix - Configure R8 Code Shrinking - App Crash when enabled. [fixedIn - 3dc43bc 8ebe33d]
+- [X] Fix - FCM with 'link' not working [fixedIn - d04e545]
 - [ ] FIx - App theme as per user config is not working
