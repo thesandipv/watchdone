@@ -5,13 +5,17 @@ import com.afterroot.tmdbapi.model.people.Person;
 import com.afterroot.tmdbapi.model.people.PersonCredit;
 import com.afterroot.tmdbapi.model.people.PersonCredits;
 import com.afterroot.tmdbapi.model.people.PersonPeople;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class PeopleApiTest extends AbstractTmdbApiTest {
@@ -20,7 +24,7 @@ public class PeopleApiTest extends AbstractTmdbApiTest {
     @Test
     public void testGetPersonInfo() {
         PersonPeople result = tmdb.getPeople().getPersonInfo(ID_PERSON_BRUCE_WILLIS);
-        assertTrue("Wrong actor returned", result.getId() == ID_PERSON_BRUCE_WILLIS);
+        assertEquals("Wrong actor returned", result.getId(), ID_PERSON_BRUCE_WILLIS);
     }
 
 
