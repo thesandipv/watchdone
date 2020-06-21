@@ -68,4 +68,8 @@
     <string name="url_privacy_policy" translatable="false">https://afterroot.web.app/privacy-policy</string>
     <string name="text_send_feedback">Send Feedback</string>
     <string name="action_share_to_instagram_story">Share to Instagram Story</string>
+    <string name="msg_removed_from_wl">Removed from Watchlist</string>
+    <string name="msg_add_to_wl_first">Please add to Watchlist First</string>
+    <string name="msg_added_to_wl">Added to Watchlist</string>
+    <string name="msg_limit_error">Can\'t add more movies as limit of 5</string>
 </resources>
