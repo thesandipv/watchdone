@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:contentScrim="?attr/colorSurface"
-                app:expandedTitleGravity="top"
+                app:expandedTitleGravity="top|center"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 app:title="@{moviedb.title, default=Title}"
                 app:toolbarId="@+id/toolbar_movie_info">
@@ -73,13 +73,16 @@
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="@dimen/padding_horizontal"
-                    android:layout_marginLeft="@dimen/padding_horizontal">
+                    android:layout_gravity="bottom">
 
                     <com.google.android.material.chip.ChipGroup
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingStart="@dimen/padding_horizontal"
+                        android:paddingLeft="@dimen/padding_horizontal"
+                        android:paddingEnd="@dimen/padding_horizontal"
+                        android:paddingRight="@dimen/padding_horizontal"
                         app:genres="@{genres}"
                         app:layout_collapseMode="none"
                         app:singleLine="true"
@@ -171,11 +174,11 @@
                     android:id="@+id/title_cast"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_horizontal"
-                    android:layout_marginLeft="@dimen/padding_horizontal"
-                    android:layout_marginTop="@dimen/padding_vertical"
-                    android:layout_marginEnd="@dimen/padding_horizontal"
-                    android:layout_marginRight="@dimen/padding_horizontal"
+                    android:layout_marginTop="@dimen/padding_vertical_half"
+                    android:paddingLeft="@dimen/padding_horizontal"
+                    android:paddingTop="@dimen/padding_vertical_half"
+                    android:paddingRight="@dimen/padding_horizontal"
+                    android:paddingBottom="@dimen/padding_vertical_half"
                     android:text="@string/title_cast"
                     android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6"
                     android:textSize="18sp"
@@ -187,7 +190,6 @@
                     android:id="@+id/cast_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/padding_vertical_half"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/padding_horizontal_list"
