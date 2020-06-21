@@ -21,7 +21,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -96,6 +95,9 @@ class MovieInfoFragment : Fragment() {
                 if (state is ViewModelState.Loaded<*>) {
                     homeViewModel.selectedMovie.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
                         updateUI(movieDb)
+                        launchShowingProgress {
+                            updateCast(movieDb)
+                        }
                     })
                 }
             })
@@ -105,7 +107,7 @@ class MovieInfoFragment : Fragment() {
         binding.adView.loadAd(AdRequest.Builder().build())
     }
 
-    private fun updateUI(movieDb: MovieDb) {
+    private fun updateUI(movieDb: MovieDb) { //Do operations related to database
         val watchListRef = get<FirebaseFirestore>().collection(Collection.USERS)
             .document(get<FirebaseAuth>().currentUser?.uid.toString())
             .collection(Collection.WATCHDONE)
@@ -115,7 +117,6 @@ class MovieInfoFragment : Fragment() {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
-            updateCast(movieDb)
             watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get().addOnSuccessListener {
                 kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
@@ -129,33 +130,24 @@ class MovieInfoFragment : Fragment() {
                         }
                         resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
                         selectedMovieDocId = document.id
-                        doShowingProgress {
-                            lifecycleScope.launch {
-                                val resultFromServer = getInfoFromServer(movieDb.id)
-                                if (resultFromServer != resultFromDB) {
-                                    Log.d(TAG, "updateUI: Local and Server data difference detected. Init Merging..")
-                                    val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
-                                    selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
-                                        Log.d(TAG, "updateUI: DB updated with latest data")
-                                        hideProgress()
-                                    }
-                                    moviedb = resultFromServer
-                                    updateGenres(resultFromServer)
-                                    updateCast(resultFromServer)
-                                } else {
+                        launchShowingProgress { //Only for compare and update firestore
+                            val resultFromServer = getInfoFromServerForCompare(movieDb.id)
+                            if (resultFromServer != resultFromDB) {
+                                val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
+                                selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
                                     hideProgress()
-                                    Log.d(TAG, "updateUI: Local and Server data almost same. Doing nothing.")
                                 }
+                                moviedb = resultFromServer
+                                updateGenres(resultFromServer)
+                            } else {
+                                hideProgress()
                             }
                         }
                     } else {
-                        doShowingProgress {
-                            lifecycleScope.launch {
-                                moviedb = getInfoFromServer(movieDb.id)
-                                updateGenres(moviedb!!)
-                                updateCast(moviedb!!)
-                                hideProgress()
-                            }
+                        launchShowingProgress {
+                            moviedb = getInfoFromServer(movieDb.id)
+                            updateGenres(moviedb!!)
+                            hideProgress()
                         }
                     }
                     actionAddWlist.apply {
@@ -169,10 +161,10 @@ class MovieInfoFragment : Fragment() {
                                         if (itemsCount < 5) {
                                             watchlistItemReference.add(movieDb)
                                             watchListRef.updateTotalItemsCounter(1)
-                                            snackBarMessage("Added to Watchlist")
+                                            snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
                                             hideProgress()
                                         } else {
-                                            snackBarMessage("Can't add more movies as limit of 5")
+                                            snackBarMessage(requireContext().getString(R.string.msg_limit_error))
                                             hideProgress()
                                         }
                                     }
@@ -185,7 +177,7 @@ class MovieInfoFragment : Fragment() {
                             setOnClickListener {
                                 selectedMovieDocId?.let { id -> watchlistItemReference.document(id).delete() }
                                 watchListRef.updateTotalItemsCounter(-1)
-                                snackBarMessage("Removed from Watchlist")
+                                snackBarMessage(requireContext().getString(R.string.msg_removed_from_wl))
                             }
                         }
                     }
@@ -205,7 +197,7 @@ class MovieInfoFragment : Fragment() {
                             }
                         } else {
                             setOnClickListener {
-                                snackBarMessage("Please add to Watchlist First")
+                                snackBarMessage(requireContext().getString(R.string.msg_add_to_wl_first))
                             }
                         }
                     }
@@ -217,6 +209,10 @@ class MovieInfoFragment : Fragment() {
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
         get<MoviesRepository>().getFullMovieInfo(id, MovieAppendableResponses.credits)
+    }
+
+    private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
+        get<MoviesRepository>().getMovieInfo(id)
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long) {
@@ -234,26 +230,24 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun updateGenres(movieDb: MovieDb) {
-        Log.d(TAG, "updateGenres: Updating Genres")
         if (movieDb.genres == null) {
-            Log.d(TAG, "updateGenres: Map of Genres not available. Get data from GenresId")
             movieDb.genreIds?.let {
                 myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, Observer { roomGenres ->
                     binding.genres = roomGenres
-                    Log.d(TAG, "updateGenres: Genres set from Local Database")
                 })
             }
         } else {
             binding.genres = movieDb.genres
-            Log.d(TAG, "updateGenres: Genres set from MovieDb Object")
         }
     }
 
-    private fun updateCast(movieDb: MovieDb) {
-        if (movieDb.getCast() != null) {
-            val castAdapter = CastListAdapter()
-            binding.castList.adapter = castAdapter
-            castAdapter.submitList(movieDb.toCastDataHolder())
+    private suspend fun updateCast(movieDb: MovieDb) {
+        val cast = get<MoviesRepository>().getCredits(movieDb.id).cast
+        val castAdapter = CastListAdapter()
+        castAdapter.submitList(cast?.toCastDataHolder())
+        binding.castList.apply {
+            adapter = castAdapter
+            visible(true, AutoTransition())
         }
     }
 
@@ -338,6 +332,14 @@ class MovieInfoFragment : Fragment() {
             }
         }
         task()
+    }
+
+    private fun launchShowingProgress(task: suspend () -> Unit) {
+        doShowingProgress {
+            lifecycleScope.launch {
+                task()
+            }
+        }
     }
 
     private fun hideProgress() {
