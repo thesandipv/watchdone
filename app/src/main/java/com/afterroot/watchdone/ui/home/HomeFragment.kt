@@ -126,8 +126,18 @@ class HomeFragment : Fragment() {
             } else if (it is ViewModelState.Loaded<*>) {
                 binding.progressBarHome.visible(false)
                 try { //Fixes crash when user is being logged out
-                    val listData = it.data as QuerySnapshot
-                    submitList(listData.toMovieDataHolder())
+                    if (it.data != null) {
+                        binding.infoNoMovies.visible(false, AutoTransition())
+                        val listData: QuerySnapshot = it.data as QuerySnapshot
+                        if (listData.documents.isEmpty()) {
+                            submitList(emptyList())
+                            binding.infoNoMovies.visible(true, AutoTransition())
+                            binding.infoTv.text = if (filterWatched) getString(R.string.text_info_no_movies_in_filter)
+                            else getString(R.string.text_info_no_movies)
+                        } else {
+                            submitList(listData.toMovieDataHolder())
+                        }
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

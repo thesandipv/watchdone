@@ -78,4 +78,6 @@
     <string name="dialog_msg_rewarded_ad">Movie will be added to watchlist after watching ad. This step is taken subject to support development and server costs. Thanks for your co-operation.</string>
     <string name="text_ok">OK</string>
     <string name="rate_on_play_store">Rate on Play Store</string>
+    <string name="text_info_no_movies">No Movies in Watchlist\nAdd by clicking \'+\' below</string>
+    <string name="text_info_no_movies_in_filter">No Movies found in current filter.</string>
 </resources>
