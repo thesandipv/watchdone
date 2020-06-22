@@ -19,11 +19,13 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.isNetworkAvailable
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_LOGIN
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.ui.settings.Settings
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import org.jetbrains.anko.browse
@@ -35,6 +37,16 @@ class SplashActivity : AppCompatActivity() {
     private val _tag = "SplashActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val theme = get<Settings>().theme
+        AppCompatDelegate.setDefaultNightMode(
+            when (theme) {
+                getString(R.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                getString(R.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                getString(R.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
+                getString(R.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+        )
         super.onCreate(savedInstanceState)
 
         val auth: FirebaseAuth = get()
