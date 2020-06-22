@@ -1,3 +1,6 @@
+v0.0.3 [DD-06-2020]
+-
+
 v0.0.2-EAP [17-06-2020]
 - Fix can't add movies
 - Fix unwanted crashes

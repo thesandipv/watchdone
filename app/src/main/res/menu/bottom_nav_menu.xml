@@ -25,6 +25,9 @@
 
     <group>
         <item
+            android:id="@+id/action_rate"
+            android:title="@string/rate_on_play_store" />
+        <item
             android:id="@+id/send_feedback"
             android:title="@string/text_send_feedback" />
     </group>
