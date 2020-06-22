@@ -80,4 +80,5 @@
     <string name="rate_on_play_store">Rate on Play Store</string>
     <string name="text_info_no_movies">No Movies in Watchlist\nAdd by clicking \'+\' below</string>
     <string name="text_info_no_movies_in_filter">No Movies found in current filter.</string>
+    <string name="format_search_result_for">Results for \'%s\'</string>
 </resources>
