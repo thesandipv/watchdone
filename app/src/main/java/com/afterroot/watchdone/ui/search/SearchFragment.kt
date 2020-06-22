@@ -45,6 +45,7 @@ import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -99,6 +100,7 @@ class SearchFragment : Fragment() {
     private fun showSearchResults(title: String) = lifecycleScope.launch(Dispatchers.Main) {
         progress_bar_search.visible(true, AutoTransition())
         list.visible(true, AutoTransition())
+        requireActivity().title_bar_title.text = String.format(getString(R.string.format_search_result_for), title)
         try {
             val movies = withContext(Dispatchers.Default) { get<TmdbApi>().search.searchMovie(title) }
             progress_bar_search.visible(false, AutoTransition())
