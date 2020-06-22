@@ -20,6 +20,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.afterroot.watchdone.Constants
+import com.afterroot.watchdone.R
 import com.google.firebase.firestore.Query
 
 /**
@@ -65,4 +66,6 @@ class Settings(val context: Context) {
         set(value) {
             ascSort = value == Query.Direction.ASCENDING
         }
+    val theme: String?
+        get() = preferences.getString(Constants.PREF_KEY_THEME, context.getString(R.string.theme_device_default))
 }
