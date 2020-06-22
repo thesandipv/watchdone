@@ -80,6 +80,9 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                             text = getMailBodyForFeedback()
                         )
                     }
+                    R.id.action_rate -> {
+                        requireContext().browse(getString(R.string.url_play_store), true)
+                    }
                 }
                 true
             }

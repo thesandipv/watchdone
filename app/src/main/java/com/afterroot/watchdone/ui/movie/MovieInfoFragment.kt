@@ -32,6 +32,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.AutoTransition
+import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
@@ -53,7 +54,12 @@ import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdCallback
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -74,11 +80,16 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class MovieInfoFragment : Fragment() {
+    lateinit var watchlistItemReference: CollectionReference
+    lateinit var watchListRef: DocumentReference
     private lateinit var binding: FragmentMovieInfoBinding
-    private var menu: Menu? = null
+    private lateinit var rewardedAd: RewardedAd
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val myDatabase: MyDatabase by inject()
     private val settings: Settings by inject()
+    private var adLoaded: Boolean = false
+    private var clickedAddWl: Boolean = false
+    private var menu: Menu? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -108,11 +119,11 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun updateUI(movieDb: MovieDb) { //Do operations related to database
-        val watchListRef = get<FirebaseFirestore>().collection(Collection.USERS)
+        watchListRef = get<FirebaseFirestore>().collection(Collection.USERS)
             .document(get<FirebaseAuth>().currentUser?.uid.toString())
             .collection(Collection.WATCHDONE)
             .document(Collection.WATCHLIST)
-        val watchlistItemReference = watchListRef.collection(Collection.ITEMS)
+        watchlistItemReference = watchListRef.collection(Collection.ITEMS)
         binding.apply {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
@@ -159,13 +170,23 @@ class MovieInfoFragment : Fragment() {
                                 doShowingProgress {
                                     watchListRef.getTotalItemsCount { itemsCount ->
                                         if (itemsCount < 5) {
-                                            watchlistItemReference.add(movieDb)
-                                            watchListRef.updateTotalItemsCounter(1)
-                                            snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
-                                            hideProgress()
+                                            addToWatchlist(movieDb)
                                         } else {
                                             snackBarMessage(requireContext().getString(R.string.msg_limit_error))
                                             hideProgress()
+                                            MaterialDialog(requireContext()).show {
+                                                title(R.string.text_add_to_watchlist)
+                                                message(R.string.dialog_msg_rewarded_ad)
+                                                positiveButton(R.string.text_ok) {
+                                                    clickedAddWl = true
+                                                    if (rewardedAd.isLoaded) {
+                                                        showAd()
+                                                    } else {
+                                                        snackBarMessage("Ad is not loaded yet. Loading...")
+                                                    }
+                                                }
+                                                negativeButton(R.string.fui_cancel)
+                                            }
                                         }
                                     }
                                 }
@@ -204,7 +225,58 @@ class MovieInfoFragment : Fragment() {
                 }
             }
             menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.moviedb?.imdbId.isNullOrBlank()
+            loadNewAd()
         }
+    }
+
+    private fun addToWatchlist(movieDb: MovieDb) {
+        watchlistItemReference.add(movieDb)
+        watchListRef.updateTotalItemsCounter(1)
+        snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
+        hideProgress()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun createAndLoadRewardedAd(): RewardedAd {
+        val rewardedAd = RewardedAd(requireActivity(), getString(R.string.ad_rewarded_unit_id))
+        val adLoadCallback = object : RewardedAdLoadCallback() {
+            override fun onRewardedAdLoaded() {
+                adLoaded = true
+                if (clickedAddWl) {
+                    showAd()
+                }
+            }
+
+            override fun onRewardedAdFailedToLoad(errorCode: Int) {
+                adLoaded = false
+            }
+        }
+        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
+        return rewardedAd
+    }
+
+    fun loadNewAd() {
+        this.rewardedAd = createAndLoadRewardedAd()
+    }
+
+    private fun showAd() {
+        val adCallback = object : RewardedAdCallback() {
+            override fun onUserEarnedReward(reward: RewardItem) {
+                clickedAddWl = false
+                doShowingProgress {
+                    watchListRef.updateTotalItemsCounter(-5) {
+                        binding.moviedb?.let { addToWatchlist(it) }
+                    }
+                }
+            }
+
+            override fun onRewardedAdClosed() {
+                super.onRewardedAdClosed()
+                adLoaded = false
+                loadNewAd()
+            }
+        }
+        rewardedAd.show(requireActivity(), adCallback)
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
@@ -215,8 +287,10 @@ class MovieInfoFragment : Fragment() {
         get<MoviesRepository>().getMovieInfo(id)
     }
 
-    private fun DocumentReference.updateTotalItemsCounter(by: Long) {
-        this.set(hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)), SetOptions.merge())
+    private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
+        this.set(hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)), SetOptions.merge()).addOnCompleteListener {
+            doOnSuccess?.invoke()
+        }
     }
 
     private fun DocumentReference.getTotalItemsCount(doOnSuccess: (Int) -> Unit) {
