@@ -8,13 +8,13 @@ ext {
     coreKtxVersion = '1.5.0-alpha01'
     coreVersion = '0.2.0'
     crashlyticsVersion = '2.10.1'
-    firebaseAdsVersion = '19.1.0'
+    firebaseAdsVersion = '19.2.0'
     firebaseAuthVersion = '19.3.1'
     firebaseConfigVersion = '19.1.4'
     firebaseCoreVersion = '17.4.3'
-    firebaseCrashlyticsVersion = '17.0.1'
+    firebaseCrashlyticsVersion = '17.1.0'
     firebaseFirestoreVersion = '21.4.3'
-    firebaseMessagingVersion = '20.2.0'
+    firebaseMessagingVersion = '20.2.1'
     firebaseStorageVersion = '19.1.1'
     firebaseUiAuthVersion = '4.3.2'
     firebaseUiFirestoreVersion = '5.0.0'
@@ -66,10 +66,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0-beta01'
+        classpath 'com.android.tools.build:gradle:4.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.3'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.1.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.2.0'
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.2'
     }
 }
