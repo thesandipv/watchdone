@@ -27,13 +27,16 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.palette.graphics.Palette
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
+import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
@@ -359,6 +362,7 @@ class MovieInfoFragment : Fragment() {
                 )
             }
             R.id.action_share_to_ig_story -> {
+                val dialog = requireContext().showStaticProgressDialog(getString(R.string.text_please_wait))
                 GlideApp.with(requireContext()).asBitmap()
                     .load(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + binding.moviedb?.posterPath)
                     .into(object : CustomTarget<Bitmap>() {
@@ -377,18 +381,43 @@ class MovieInfoFragment : Fragment() {
                                 fos?.flush()
                                 fos?.close()
                                 val uri = Uri.fromFile(file)
-                                val intent = Intent(Constants.IG_SHARE_ACTION).apply {
-                                    type = Constants.MIME_TYPE_JPEG
-                                    putExtra(Constants.IG_EXTRA_INT_ASSET_URI, uri)
-                                    // putExtra("content_url", attributionLinkUrl) //TODO Add deep-link
-                                }
-                                requireActivity().grantUriPermission(
-                                    Constants.IG_PACKAGE_NAME,
-                                    uri,
-                                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                )
-                                if (requireActivity().packageManager.resolveActivity(intent, 0) != null) {
-                                    requireActivity().startActivity(intent)
+                                Palette.from(resource).generate { palette ->
+                                    val intent = Intent(Constants.IG_SHARE_ACTION).apply {
+                                        type = Constants.MIME_TYPE_JPEG
+                                        putExtra(Constants.IG_EXTRA_INT_ASSET_URI, uri)
+                                        putExtra(
+                                            Constants.IG_EXTRA_CONTENT_URL,
+                                            HttpUrl.Builder().scheme(Constants.SCHEME_HTTPS).host(Constants.WATCHDONE_HOST)
+                                                .addPathSegment("movie").addPathSegment(binding.moviedb?.id.toString())
+                                                .build().toString()
+
+                                        )
+                                        putExtra(
+                                            Constants.IG_EXTRA_TOP_COLOR,
+                                            palette?.getVibrantColor(
+                                                palette.getMutedColor(
+                                                    ContextCompat.getColor(requireContext(), R.color.color_primary)
+                                                )
+                                            )?.toHex()
+                                        )
+                                        putExtra(
+                                            Constants.IG_EXTRA_BOTTOM_COLOR,
+                                            palette?.getDarkVibrantColor(
+                                                palette.getDarkMutedColor(
+                                                    ContextCompat.getColor(requireContext(), R.color.color_primary_variant)
+                                                )
+                                            )?.toHex()
+                                        )
+                                    }
+                                    requireActivity().grantUriPermission(
+                                        Constants.IG_PACKAGE_NAME,
+                                        uri,
+                                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                    )
+                                    if (requireActivity().packageManager.resolveActivity(intent, 0) != null) {
+                                        requireActivity().startActivity(intent)
+                                        dialog.dismiss()
+                                    }
                                 }
                             }
                         }
@@ -434,6 +463,8 @@ class MovieInfoFragment : Fragment() {
     private fun snackBarMessage(message: String) {
         binding.root.snackbar(message).anchorView = requireActivity().toolbar
     }
+
+    private fun Int.toHex() = "#${Integer.toHexString(this)}"
 
     companion object {
         private const val TAG = "MovieInfoFragment"
