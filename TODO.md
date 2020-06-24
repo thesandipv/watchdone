@@ -10,3 +10,5 @@ Format is [Status] [Add|Fix|Imp[rove]] - [Description] [[addedIn|fixedIn|improve
 - [X] Fix - App theme as per user config is not working [fixedIn - a49c40c]
 - [X] Add - Info when no items in watchlist [addedIn - 81f3193]
 - [X] Fix - Title in search as per search query [addedIn - 81f3193]
+- [X] Add - Deep-link Movie info [addedIn - c49b6ac]
+- [X] Add - Deep-link and Palette Color in instagram story [addedIn - ]
