@@ -101,6 +101,13 @@ class MovieInfoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        val argMovieId = arguments?.getString("movieId")
+        if (argMovieId != null) {
+            launchShowingProgress {
+                homeViewModel.selectMovie(getInfoFromServerForCompare(argMovieId.toInt()))
+            }
+        }
+
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
             .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
                 if (state is ViewModelState.Loaded<*>) {
