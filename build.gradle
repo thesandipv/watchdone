@@ -34,6 +34,7 @@ ext {
     navigationVersion = '2.2.2'
     okHttpVersion = '4.7.2'
     pagingVersion = '2.1.2'
+    paletteVersion = '1.0.0'
     preferenceVersion = '1.1.1'
     recyclerviewVersion = '1.2.0-alpha03'
     retrofitVersion = '2.9.0'
@@ -66,7 +67,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:4.1.0-beta01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.3'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.2.0'
