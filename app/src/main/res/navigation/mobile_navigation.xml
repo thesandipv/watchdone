@@ -76,6 +76,11 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <deepLink
+            android:id="@+id/deep_link_search"
+            android:autoVerify="true"
+            app:uri="https://watchdone.web.app/search"
+            tools:targetApi="m" />
     </fragment>
     <fragment
         android:id="@+id/navigation_edit_profile"
