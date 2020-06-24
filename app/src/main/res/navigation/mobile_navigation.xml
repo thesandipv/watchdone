@@ -86,7 +86,13 @@
         android:id="@+id/navigation_movie_info"
         android:name="com.afterroot.watchdone.ui.movie.MovieInfoFragment"
         android:label="MovieInfoFragment"
-        tools:layout="@layout/fragment_movie_info" />
+        tools:layout="@layout/fragment_movie_info">
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="https://watchdone.web.app/movie/{movieId}"
+            tools:targetApi="m" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_discover"
         android:name="com.afterroot.watchdone.ui.discover.DiscoverFragment"
