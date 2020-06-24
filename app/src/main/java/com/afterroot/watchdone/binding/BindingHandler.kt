@@ -31,8 +31,8 @@ fun ImageView.setAvatar(email: String?) {
 }
 
 @BindingAdapter("movieDb", "settings")
-fun ImageView.setPoster(movieDb: MovieDb, settings: Settings) {
-    GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movieDb.posterPath).into(this)
+fun ImageView.setPoster(movieDb: MovieDb?, settings: Settings?) {
+    GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + movieDb?.posterPath).into(this)
 }
 
 @BindingAdapter("genres")
