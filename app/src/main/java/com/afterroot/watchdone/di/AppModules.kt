@@ -21,18 +21,18 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.startup.AppInitializer
 import com.afterroot.tmdbapi.TmdbApi
+import com.afterroot.watchdone.AuthInitializer
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.FirestoreInitializer
 import com.afterroot.watchdone.network.NetworkStateMonitor
 import com.afterroot.watchdone.ui.settings.Settings
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val firebaseModule = module {
     single {
-        AppInitializer.getInstance(androidContext()).initializeComponent(FirestoreInitializer::class.java)
+        get<AppInitializer>().initializeComponent(FirestoreInitializer::class.java)
     }
 
     single {
@@ -40,7 +40,7 @@ val firebaseModule = module {
     }
 
     single {
-        FirebaseAuth.getInstance()
+        get<AppInitializer>().initializeComponent(AuthInitializer::class.java)
     }
 }
 
@@ -56,6 +56,8 @@ val appModule = module {
     single {
         androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
+
+    single { AppInitializer.getInstance(androidContext()) }
 }
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

@@ -24,6 +24,7 @@ import com.afterroot.watchdone.di.appModule
 import com.afterroot.watchdone.di.firebaseModule
 import com.afterroot.watchdone.di.networkModule
 import com.afterroot.watchdone.di.roomModule
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
@@ -49,12 +50,14 @@ class KoinInitializer : Initializer<KoinApplication> {
 }
 
 class FirestoreInitializer : Initializer<FirebaseFirestore> {
-    override fun create(context: Context): FirebaseFirestore {
-        return Firebase.firestore.apply {
-            firestoreSettings =
-                FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).build()
-        }
+    override fun create(context: Context): FirebaseFirestore = Firebase.firestore.apply {
+        firestoreSettings = FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).build()
     }
 
+    override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
+}
+
+class AuthInitializer : Initializer<FirebaseAuth> {
+    override fun create(context: Context): FirebaseAuth = FirebaseAuth.getInstance()
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 }
