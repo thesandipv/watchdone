@@ -44,5 +44,13 @@
         <Preference
             android:key="oss_lic"
             android:title="Open Source Licences" />
+        <Preference
+            app:icon="@drawable/tmdb_logo"
+            app:summary="This product uses the TMDb API but is not endorsed or certified by TMDb."
+            app:title="Data is provided by TMDb">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.themoviedb.org/" />
+        </Preference>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>
