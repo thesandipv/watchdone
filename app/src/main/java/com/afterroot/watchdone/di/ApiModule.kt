@@ -17,8 +17,20 @@ package com.afterroot.watchdone.di
 
 import com.afterroot.tmdbapi2.Constants
 import com.afterroot.tmdbapi2.TMDbInterceptor
-import com.afterroot.tmdbapi2.api.*
-import com.afterroot.tmdbapi2.repository.*
+import com.afterroot.tmdbapi2.api.AuthApi
+import com.afterroot.tmdbapi2.api.ConfigApi
+import com.afterroot.tmdbapi2.api.DiscoverApi
+import com.afterroot.tmdbapi2.api.GenresApi
+import com.afterroot.tmdbapi2.api.MoviesApi
+import com.afterroot.tmdbapi2.api.SearchApi
+import com.afterroot.tmdbapi2.api.TVApi
+import com.afterroot.tmdbapi2.repository.AuthRepository
+import com.afterroot.tmdbapi2.repository.ConfigRepository
+import com.afterroot.tmdbapi2.repository.DiscoverRepository
+import com.afterroot.tmdbapi2.repository.GenresRepository
+import com.afterroot.tmdbapi2.repository.MoviesRepository
+import com.afterroot.tmdbapi2.repository.SearchRepository
+import com.afterroot.tmdbapi2.repository.TVRepository
 import com.afterroot.watchdone.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -44,6 +56,12 @@ val apiModule = module {
 
     factory { provideConfigApi(get()) }
     factory { ConfigRepository(get()) }
+
+    factory { provideTVApi(get()) }
+    factory { TVRepository(get()) }
+
+    factory { provideSearchApi(get()) }
+    factory { SearchRepository(get()) }
 }
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
@@ -65,3 +83,5 @@ fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class
 fun provideDiscoverApi(retrofit: Retrofit): DiscoverApi = retrofit.create(DiscoverApi::class.java)
 fun provideGenresApi(retrofit: Retrofit): GenresApi = retrofit.create(GenresApi::class.java)
 fun provideConfigApi(retrofit: Retrofit): ConfigApi = retrofit.create(ConfigApi::class.java)
+fun provideTVApi(retrofit: Retrofit): TVApi = retrofit.create(TVApi::class.java)
+fun provideSearchApi(retrofit: Retrofit): SearchApi = retrofit.create(SearchApi::class.java)

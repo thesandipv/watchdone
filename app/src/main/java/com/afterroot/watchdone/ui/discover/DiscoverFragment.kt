@@ -31,10 +31,10 @@ import com.afterroot.tmdbapi.model.Discover
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.DelegateListAdapter
-import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.afterroot.watchdone.adapter.MovieDiffCallback
-import com.afterroot.watchdone.data.model.toMovieDataHolder
+import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
+import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
+import com.afterroot.watchdone.data.movie.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
@@ -59,18 +59,21 @@ class DiscoverFragment : Fragment() {
         lifecycleScope.launch {
             binding.progressBarDiscover.visible(true)
             val repo = DiscoverRepository(get()).getMoviesDiscover(Discover())
-            val homeScreenAdapter = DelegateListAdapter(MovieDiffCallback(), object : ItemSelectedCallback<MovieDb> {
-                override fun onClick(position: Int, view: View?, item: MovieDb) {
-                    super.onClick(position, view, item)
-                    homeViewModel.selectMovie(item)
-                    findNavController().navigate(R.id.discoverToMovieInfo)
-                }
+            val homeScreenAdapter = DelegateListAdapter(
+                MovieDiffCallback(),
+                object :
+                    ItemSelectedCallback<MovieDb> {
+                    override fun onClick(position: Int, view: View?, item: MovieDb) {
+                        super.onClick(position, view, item)
+                        homeViewModel.selectMovie(item)
+                        findNavController().navigate(R.id.discoverToMovieInfo)
+                    }
 
-                override fun onLongClick(position: Int, item: MovieDb) {
-                    super.onLongClick(position, item)
-                    requireContext().toast(item.title.toString())
-                }
-            })
+                    override fun onLongClick(position: Int, item: MovieDb) {
+                        super.onLongClick(position, item)
+                        requireContext().toast(item.title.toString())
+                    }
+                })
             binding.list.adapter = homeScreenAdapter
             homeScreenAdapter.submitList(repo.toMovieDataHolder())
             binding.progressBarDiscover.visible(false)

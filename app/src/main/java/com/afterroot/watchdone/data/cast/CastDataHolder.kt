@@ -13,6 +13,22 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.model
+package com.afterroot.watchdone.data.cast
 
-data class MovieAdditionalParams(val isWatched: Boolean? = false) : AdditionalParams
+import com.afterroot.tmdbapi.model.people.PersonCast
+import com.afterroot.watchdone.data.base.AdditionalParams
+import com.afterroot.watchdone.data.base.DataHolder
+
+data class CastDataHolder(
+    override var data: PersonCast,
+    override var additionalParams: AdditionalParams? = null
+) : DataHolder<PersonCast, AdditionalParams>()
+
+fun List<PersonCast>.toCastDataHolder(): List<CastDataHolder> {
+    val list = mutableListOf<CastDataHolder>()
+    this.forEach {
+        val holder = CastDataHolder(it)
+        list.add(holder)
+    }
+    return list
+}

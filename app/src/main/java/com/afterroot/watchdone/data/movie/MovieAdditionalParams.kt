@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.model
+package com.afterroot.watchdone.data.movie
 
-interface AdditionalParams
+import com.afterroot.watchdone.data.base.AdditionalParams
+
+data class MovieAdditionalParams(val isWatched: Boolean? = false) : AdditionalParams

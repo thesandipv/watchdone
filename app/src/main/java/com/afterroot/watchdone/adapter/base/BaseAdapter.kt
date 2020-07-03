@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.adapter
+package com.afterroot.watchdone.adapter.base
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

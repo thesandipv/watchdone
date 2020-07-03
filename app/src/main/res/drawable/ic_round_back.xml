@@ -13,22 +13,7 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/navigation_discover"
-        android:icon="@drawable/ic_discover"
-        android:title="@string/text_discover"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/navigation_search_new"
-        android:icon="@drawable/ic_search"
-        android:title="@string/title_search"
-        app:showAsAction="ifRoom" />
-    <group>
-        <item
-            android:id="@+id/send_feedback"
-            android:title="@string/text_send_feedback" />
-    </group>
-</menu>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/grey" />
+</shape>

@@ -21,26 +21,26 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.people.PersonCast
+import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
-import com.afterroot.watchdone.adapter.diff.CastDiffCallback
-import com.afterroot.watchdone.data.cast.CastDataHolder
-import com.afterroot.watchdone.databinding.ListItemCastBinding
+import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
+import com.afterroot.watchdone.data.movie.MovieDataHolder
+import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), KoinComponent {
+class SearchMoviesListAdapter : BaseListAdapter<MovieDataHolder>(MovieDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
     }
 
     override fun createItemViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return CastListViewHolder(ListItemCastBinding.inflate(LayoutInflater.from(parent.context)))
+        return MoviesListViewHolder(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
     override fun createFooterViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
@@ -51,7 +51,7 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
     }
 
     override fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        viewHolder as CastListViewHolder
+        viewHolder as MoviesListViewHolder
         viewHolder.bind(getItem(position).data)
     }
 
@@ -68,8 +68,8 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
         return ITEM
     }
 
-    inner class CastListViewHolder(val binding: ListItemCastBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val posterView: AppCompatImageView = binding.castIv
+    inner class MoviesListViewHolder(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val posterView: AppCompatImageView = binding.poster
         val context: Context = posterView.context
         var heightRatio: Float = 3f / 2f
         val width =
@@ -77,17 +77,17 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(personCast: PersonCast) {
-            binding.personDetail = personCast
+        fun bind(movie: MovieDb) {
+            binding.movieDb = movie
             posterView.updateLayoutParams {
-                this.width = this@CastListViewHolder.width
+                this.width = this@MoviesListViewHolder.width
                 this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + personCast.profilePath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movie.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .placeholder(R.drawable.ic_person)
-                .error(R.drawable.ic_person)
+                .placeholder(R.drawable.ic_placeholder_movie)
+                .error(R.drawable.ic_placeholder_movie)
                 .centerCrop()
                 .into(posterView)
         }

@@ -13,26 +13,9 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.model
+package com.afterroot.watchdone.data.base
 
-import com.afterroot.watchdone.BuildConfig
-
-object Collection {
-    //Collections
-    const val USERS = "users"
-    val WATCHDONE = if (!BuildConfig.DEBUG) "watchdone" else "watchdone-debug"
-    const val WATCHLIST = "watchlist"
-    const val ITEMS = "items"
-}
-
-object Field {
-    //Fields
-    const val NAME = "name"
-    const val EMAIL = "email"
-    const val UID = "uid"
-    const val FCM_ID = "fcmId"
-    const val TOTAL_ITEMS = "total_items"
-    const val RELEASE_DATE = "releaseDate"
-    const val IS_WATCHED = "isWatched"
-    const val ID = "id"
+abstract class DataHolder<Data, Params> {
+    abstract var data: Data
+    abstract var additionalParams: Params?
 }

@@ -13,9 +13,17 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.model
+package com.afterroot.watchdone.adapter.diff
 
-abstract class DataHolder<Data, Params> {
-    abstract var data: Data
-    abstract var additionalParams: Params?
+import androidx.recyclerview.widget.DiffUtil
+import com.afterroot.watchdone.data.people.PeopleDataHolder
+
+class PeopleDiffCallback : DiffUtil.ItemCallback<PeopleDataHolder>() {
+    override fun areItemsTheSame(oldItem: PeopleDataHolder, newItem: PeopleDataHolder): Boolean {
+        return oldItem.data.id == newItem.data.id
+    }
+
+    override fun areContentsTheSame(oldItem: PeopleDataHolder, newItem: PeopleDataHolder): Boolean {
+        return oldItem.data == newItem.data
+    }
 }
