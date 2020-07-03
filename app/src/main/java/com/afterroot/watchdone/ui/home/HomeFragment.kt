@@ -30,11 +30,11 @@ import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.DelegateListAdapter
-import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.afterroot.watchdone.adapter.MovieDiffCallback
-import com.afterroot.watchdone.data.model.Field
-import com.afterroot.watchdone.data.model.toMovieDataHolder
+import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
+import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
+import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.data.movie.toMovieDataHolder
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
@@ -65,18 +65,21 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homeScreenAdapter = DelegateListAdapter(MovieDiffCallback(), object : ItemSelectedCallback<MovieDb> {
-            override fun onClick(position: Int, view: View?, item: MovieDb) {
-                super.onClick(position, view, item)
-                homeViewModel.selectMovie(item)
-                findNavController().navigate(R.id.toMovieInfo)
-            }
+        homeScreenAdapter = DelegateListAdapter(
+            MovieDiffCallback(),
+            object :
+                ItemSelectedCallback<MovieDb> {
+                override fun onClick(position: Int, view: View?, item: MovieDb) {
+                    super.onClick(position, view, item)
+                    homeViewModel.selectMovie(item)
+                    findNavController().navigate(R.id.toMovieInfo)
+                }
 
-            override fun onLongClick(position: Int, item: MovieDb) {
-                super.onLongClick(position, item)
-                requireContext().toast(item.title.toString())
-            }
-        })
+                override fun onLongClick(position: Int, item: MovieDb) {
+                    super.onLongClick(position, item)
+                    requireContext().toast(item.title.toString())
+                }
+            })
         binding.list.adapter = homeScreenAdapter
         homeScreenAdapter.submitQuery(settings.queryDirection)
         homeViewModel.addGenres(viewLifecycleOwner)
@@ -116,7 +119,9 @@ class HomeFragment : Fragment() {
     ) {
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, isReload) {
             if (filterWatched) {
-                whereEqualTo(Field.IS_WATCHED, filterWatched).orderBy(Field.RELEASE_DATE, direction)
+                whereEqualTo(Field.IS_WATCHED, filterWatched).orderBy(
+                    Field.RELEASE_DATE, direction
+                )
             } else {
                 orderBy(Field.RELEASE_DATE, direction)
             }

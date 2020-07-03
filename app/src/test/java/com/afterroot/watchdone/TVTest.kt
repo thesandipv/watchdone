@@ -15,11 +15,8 @@
 
 package com.afterroot.watchdone
 
-import com.afterroot.tmdbapi.model.ArtworkType
-import com.afterroot.tmdbapi2.model.MovieAppendableResponses.images
-import com.afterroot.tmdbapi2.model.MovieAppendableResponses.videos
-import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.tmdbapi2.repository.SearchRepository
+import com.afterroot.tmdbapi2.repository.TVRepository
 import com.afterroot.watchdone.di.apiModule
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -30,24 +27,33 @@ import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
 
-class MovieInfoTest : KoinTest {
+class TVTest : KoinTest {
     @get:Rule
     val testRule = KoinTestRule.create {
         printLogger()
         modules(apiModule)
     }
 
-    private val moviesRepository by inject<MoviesRepository>()
+    private val tvRepository by inject<TVRepository>()
     private val searchRepository by inject<SearchRepository>()
 
     @Test
-    fun `MovieDb Working`() {
+    fun `TV Working`() {
         launch {
-            Assert.assertEquals("Fight Club", moviesRepository.getMovieInfo(550).title)
+            Assert.assertEquals("Game of Thrones", tvRepository.getTVInfo(1399).name)
         }
     }
 
     @Test
+    fun `search TV`() {
+        launch {
+            val result = searchRepository.searchTv("Game of Thrones")
+            Assert.assertNotNull(result)
+            Assert.assertNotNull(result.results)
+        }
+    }
+
+    /*@Test
     fun `Full Movie Info`() {
         launch {
             val response = moviesRepository.getFullMovieInfo(550, images, videos)
@@ -60,16 +66,7 @@ class MovieInfoTest : KoinTest {
                 println(it.toString())
             }
         }
-    }
-
-    @Test
-    fun `search Movies`() {
-        launch {
-            val result = searchRepository.searchMovie("Fight Club")
-            Assert.assertNotNull(result)
-            Assert.assertNotNull(result.results)
-        }
-    }
+    }*/
 
     private fun launch(block: suspend () -> Unit) {
         runBlocking {

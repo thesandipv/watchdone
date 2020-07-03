@@ -21,26 +21,26 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.people.PersonCast
+import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
-import com.afterroot.watchdone.adapter.diff.CastDiffCallback
-import com.afterroot.watchdone.data.cast.CastDataHolder
-import com.afterroot.watchdone.databinding.ListItemCastBinding
+import com.afterroot.watchdone.adapter.diff.TVDiffCallback
+import com.afterroot.watchdone.data.tv.TVDataHolder
+import com.afterroot.watchdone.databinding.ListItemTvBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), KoinComponent {
+class SearchTVListAdapter : BaseListAdapter<TVDataHolder>(TVDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
     }
 
     override fun createItemViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return CastListViewHolder(ListItemCastBinding.inflate(LayoutInflater.from(parent.context)))
+        return TVListViewHolder(ListItemTvBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
     override fun createFooterViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
@@ -51,7 +51,7 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
     }
 
     override fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        viewHolder as CastListViewHolder
+        viewHolder as TVListViewHolder
         viewHolder.bind(getItem(position).data)
     }
 
@@ -68,26 +68,26 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
         return ITEM
     }
 
-    inner class CastListViewHolder(val binding: ListItemCastBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val posterView: AppCompatImageView = binding.castIv
-        val context: Context = posterView.context
-        var heightRatio: Float = 3f / 2f
-        val width =
+    inner class TVListViewHolder(val binding: ListItemTvBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val posterView: AppCompatImageView = binding.poster
+        private var heightRatio: Float = 3f / 2f
+        private val context: Context = posterView.context
+        private val width =
             (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(personCast: PersonCast) {
-            binding.personDetail = personCast
+        fun bind(tv: TvSeries) {
+            binding.tvSeries = tv
             posterView.updateLayoutParams {
-                this.width = this@CastListViewHolder.width
+                this.width = this@TVListViewHolder.width
                 this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + personCast.profilePath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + tv.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .placeholder(R.drawable.ic_person)
-                .error(R.drawable.ic_person)
+                .placeholder(R.drawable.ic_placeholder_tv)
+                .error(R.drawable.ic_placeholder_tv)
                 .centerCrop()
                 .into(posterView)
         }

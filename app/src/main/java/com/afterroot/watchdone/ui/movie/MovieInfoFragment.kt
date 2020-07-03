@@ -45,9 +45,9 @@ import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
-import com.afterroot.watchdone.data.model.Collection
-import com.afterroot.watchdone.data.model.Field
-import com.afterroot.watchdone.data.model.toCastDataHolder
+import com.afterroot.watchdone.data.Collection
+import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.data.cast.toCastDataHolder
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings

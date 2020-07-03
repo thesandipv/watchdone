@@ -37,10 +37,10 @@ import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.tools.MovieDbException
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.DelegateListAdapter
-import com.afterroot.watchdone.adapter.ItemSelectedCallback
-import com.afterroot.watchdone.adapter.MovieDiffCallback
-import com.afterroot.watchdone.data.model.toMovieDataHolder
+import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
+import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
+import com.afterroot.watchdone.data.movie.toMovieDataHolder
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.EventObserver
@@ -81,7 +81,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        val itemSelectedCallback = object : ItemSelectedCallback<MovieDb> {
+        val itemSelectedCallback = object :
+            ItemSelectedCallback<MovieDb> {
             override fun onClick(position: Int, view: View?, item: MovieDb) {
                 super.onClick(position, view, item)
                 homeViewModel.selectMovie(item)
@@ -93,7 +94,10 @@ class SearchFragment : Fragment() {
                 requireContext().toast(item.title.toString())
             }
         }
-        searchResultsAdapter = DelegateListAdapter(MovieDiffCallback(), itemSelectedCallback)
+        searchResultsAdapter = DelegateListAdapter(
+            MovieDiffCallback(),
+            itemSelectedCallback
+        )
         list.adapter = searchResultsAdapter
     }
 

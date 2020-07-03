@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
+import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.progress
@@ -42,14 +43,15 @@ import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.data.model.Collection
-import com.afterroot.watchdone.data.model.Field
+import com.afterroot.watchdone.data.Collection
+import com.afterroot.watchdone.data.Field
 import com.afterroot.watchdone.data.model.User
 import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.network.NetworkState
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
+import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
@@ -243,6 +245,7 @@ class MainActivity : AppCompatActivity() {
                     navController.navigateUp()
                 }
             }
+            this.hideKeyboard(binding.root)
             when (destination.id) {
                 R.id.navigation_home -> {
                     setTitle(getString(R.string.title_watchlist))
@@ -290,6 +293,12 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_discover -> {
                     setTitle(getString(R.string.text_discover))
+                    fab.hide()
+                    drawerToggle.progress(0f, 1f) //As back arrow
+                }
+                R.id.navigation_search_new -> {
+                    binding.titleLayout.visible(false, AutoTransition())
+                    setTitle(null)
                     fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }

@@ -82,4 +82,7 @@
     <string name="text_info_no_movies_in_filter">No Movies found in current filter.</string>
     <string name="format_search_result_for">Results for \'%s\'</string>
     <string name="text_please_wait">Please Wait…</string>
+    <string name="text_search_movies">Movies</string>
+    <string name="text_search_tv">TV</string>
+    <string name="text_search_people">People</string>
 </resources>

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.adapter
+package com.afterroot.watchdone.adapter.delegate
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -26,9 +26,9 @@ import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.data.model.AdditionalParams
-import com.afterroot.watchdone.data.model.DataHolder
-import com.afterroot.watchdone.data.model.MovieAdditionalParams
+import com.afterroot.watchdone.data.base.AdditionalParams
+import com.afterroot.watchdone.data.base.DataHolder
+import com.afterroot.watchdone.data.movie.MovieAdditionalParams
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth

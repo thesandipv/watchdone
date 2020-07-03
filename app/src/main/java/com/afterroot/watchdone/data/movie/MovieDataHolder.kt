@@ -13,10 +13,12 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.model
+package com.afterroot.watchdone.data.movie
 
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.data.base.DataHolder
 import com.google.firebase.firestore.QuerySnapshot
 
 data class MovieDataHolder(

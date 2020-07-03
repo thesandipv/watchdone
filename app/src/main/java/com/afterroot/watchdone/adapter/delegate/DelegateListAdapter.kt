@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.adapter
+package com.afterroot.watchdone.adapter.delegate
 
 import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
@@ -23,10 +23,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.Types
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
-import com.afterroot.watchdone.data.model.AdditionalParams
-import com.afterroot.watchdone.data.model.CastDataHolder
-import com.afterroot.watchdone.data.model.DataHolder
-import com.afterroot.watchdone.data.model.MovieDataHolder
+import com.afterroot.watchdone.data.base.AdditionalParams
+import com.afterroot.watchdone.data.base.DataHolder
+import com.afterroot.watchdone.data.movie.MovieDataHolder
 
 class DelegateListAdapter(
     callback: DiffUtil.ItemCallback<MovieDataHolder>,
@@ -52,24 +51,4 @@ class DelegateListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int = Types.MOVIE
-}
-
-class MovieDiffCallback : DiffUtil.ItemCallback<MovieDataHolder>() {
-    override fun areItemsTheSame(oldItem: MovieDataHolder, newItem: MovieDataHolder): Boolean {
-        return oldItem.data.id == newItem.data.id
-    }
-
-    override fun areContentsTheSame(oldItem: MovieDataHolder, newItem: MovieDataHolder): Boolean {
-        return oldItem.data == newItem.data
-    }
-}
-
-class CastDiffCallback : DiffUtil.ItemCallback<CastDataHolder>() {
-    override fun areItemsTheSame(oldItem: CastDataHolder, newItem: CastDataHolder): Boolean {
-        return oldItem.data.id == newItem.data.id
-    }
-
-    override fun areContentsTheSame(oldItem: CastDataHolder, newItem: CastDataHolder): Boolean {
-        return oldItem.data == newItem.data
-    }
 }
