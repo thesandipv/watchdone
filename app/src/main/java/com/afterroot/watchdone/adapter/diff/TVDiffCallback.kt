@@ -13,20 +13,17 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.model
+package com.afterroot.watchdone.adapter.diff
 
-import com.afterroot.tmdbapi.model.people.PersonCast
+import androidx.recyclerview.widget.DiffUtil
+import com.afterroot.watchdone.data.tv.TVDataHolder
 
-data class CastDataHolder(
-    override var data: PersonCast,
-    override var additionalParams: AdditionalParams? = null
-) : DataHolder<PersonCast, AdditionalParams>()
-
-fun List<PersonCast>.toCastDataHolder(): List<CastDataHolder> {
-    val list = mutableListOf<CastDataHolder>()
-    this.forEach {
-        val holder = CastDataHolder(it)
-        list.add(holder)
+class TVDiffCallback : DiffUtil.ItemCallback<TVDataHolder>() {
+    override fun areItemsTheSame(oldItem: TVDataHolder, newItem: TVDataHolder): Boolean {
+        return oldItem.data.id == newItem.data.id
     }
-    return list
+
+    override fun areContentsTheSame(oldItem: TVDataHolder, newItem: TVDataHolder): Boolean {
+        return oldItem.data == newItem.data
+    }
 }

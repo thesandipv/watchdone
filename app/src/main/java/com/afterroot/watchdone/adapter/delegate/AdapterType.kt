@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.adapter
+package com.afterroot.watchdone.adapter.delegate
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
-import com.afterroot.watchdone.data.model.AdditionalParams
-import com.afterroot.watchdone.data.model.DataHolder
+import com.afterroot.watchdone.data.base.AdditionalParams
+import com.afterroot.watchdone.data.base.DataHolder
 
 interface AdapterType {
     fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
