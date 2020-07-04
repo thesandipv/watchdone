@@ -28,20 +28,27 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.TmdbPeople
 import com.afterroot.tmdbapi.TvResultsPage
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.adapter.SearchPeopleListAdapter
 import com.afterroot.watchdone.adapter.SearchTVListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
+import com.afterroot.watchdone.data.movie.MovieDataHolder
 import com.afterroot.watchdone.data.movie.toMovieDataHolder
+import com.afterroot.watchdone.data.people.PeopleDataHolder
 import com.afterroot.watchdone.data.people.toPeopleDataHolder
+import com.afterroot.watchdone.data.tv.TVDataHolder
 import com.afterroot.watchdone.data.tv.toTVDataHolder
 import com.afterroot.watchdone.databinding.SearchNewFragmentBinding
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.utils.showKeyboard
+import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -49,6 +56,7 @@ import kotlinx.coroutines.launch
 class SearchNewFragment : Fragment() {
 
     private val viewModel: SearchNewViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var binding: SearchNewFragmentBinding
     private var queryTextListener: SearchView.OnQueryTextListener? = null
     private var searchTask: Job? = null
@@ -105,9 +113,8 @@ class SearchNewFragment : Fragment() {
         showTV(true, isLoading = true)
         showPeople(true, isLoading = true)
         return lifecycleScope.launch {
-            val movies = viewModel.searchMovies(query)
-            val moviesListAdapter = SearchMoviesListAdapter()
-            movies.observe(viewLifecycleOwner, Observer {
+            val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback)
+            viewModel.searchMovies(query).observe(viewLifecycleOwner, Observer {
                 if (it is ViewModelState.Loaded<*>) {
                     val data = it.data as MovieResultsPage
                     moviesListAdapter.submitList(data.toMovieDataHolder())
@@ -121,9 +128,8 @@ class SearchNewFragment : Fragment() {
 
             })
 
-            val tv = viewModel.searchTV(query)
-            val tvListAdapter = SearchTVListAdapter()
-            tv.observe(viewLifecycleOwner, Observer {
+            val tvListAdapter = SearchTVListAdapter(tvItemSelectedCallback)
+            viewModel.searchTV(query).observe(viewLifecycleOwner, Observer {
                 if (it is ViewModelState.Loaded<*>) {
                     val data = it.data as TvResultsPage
                     tvListAdapter.submitList(data.toTVDataHolder())
@@ -136,9 +142,8 @@ class SearchNewFragment : Fragment() {
                 }
             })
 
-            val people = viewModel.searchPeople(query)
-            val peopleListAdapter = SearchPeopleListAdapter()
-            people.observe(viewLifecycleOwner, Observer {
+            val peopleListAdapter = SearchPeopleListAdapter(peopleItemSelectedCallback)
+            viewModel.searchPeople(query).observe(viewLifecycleOwner, Observer {
                 if (it is ViewModelState.Loaded<*>) {
                     val data = it.data as TmdbPeople.PersonResultsPage
                     peopleListAdapter.submitList(data.toPeopleDataHolder())
@@ -181,5 +186,19 @@ class SearchNewFragment : Fragment() {
         showMovies(false, isLoading = false)
         showTV(false, isLoading = false)
         showPeople(false, isLoading = false)
+    }
+
+    private val movieItemSelectedCallback = object : ItemSelectedCallback<MovieDataHolder> {
+        override fun onClick(position: Int, view: View?, item: MovieDataHolder) {
+            super.onClick(position, view, item)
+            homeViewModel.selectMovie(item.data)
+            view?.findNavController()?.navigate(R.id.searchNewToMovieInfo)
+        }
+    }
+
+    private val tvItemSelectedCallback = object : ItemSelectedCallback<TVDataHolder> {
+    }
+
+    private val peopleItemSelectedCallback = object : ItemSelectedCallback<PeopleDataHolder> {
     }
 }

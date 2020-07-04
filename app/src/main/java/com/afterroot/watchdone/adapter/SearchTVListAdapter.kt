@@ -21,10 +21,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.diff.TVDiffCallback
 import com.afterroot.watchdone.data.tv.TVDataHolder
 import com.afterroot.watchdone.databinding.ListItemTvBinding
@@ -33,7 +33,8 @@ import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class SearchTVListAdapter : BaseListAdapter<TVDataHolder>(TVDiffCallback()), KoinComponent {
+class SearchTVListAdapter(val callback: ItemSelectedCallback<TVDataHolder>) :
+    BaseListAdapter<TVDataHolder>(TVDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -52,7 +53,7 @@ class SearchTVListAdapter : BaseListAdapter<TVDataHolder>(TVDiffCallback()), Koi
 
     override fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         viewHolder as TVListViewHolder
-        viewHolder.bind(getItem(position).data)
+        viewHolder.bind(getItem(position))
     }
 
     override fun bindFooterViewHolder(viewHolder: RecyclerView.ViewHolder) {
@@ -77,14 +78,24 @@ class SearchTVListAdapter : BaseListAdapter<TVDataHolder>(TVDiffCallback()), Koi
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(tv: TvSeries) {
-            binding.tvSeries = tv
+        fun bind(tvDataHolder: TVDataHolder) {
+            binding.apply {
+                tvSeries = tvDataHolder.data
+                root.setOnClickListener {
+                    callback.onClick(absoluteAdapterPosition, root)
+                    callback.onClick(absoluteAdapterPosition, root, tvDataHolder)
+                }
+                root.setOnLongClickListener {
+                    callback.onLongClick(absoluteAdapterPosition, tvDataHolder)
+                    return@setOnLongClickListener true
+                }
+            }
             posterView.updateLayoutParams {
                 this.width = this@TVListViewHolder.width
                 this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + tv.posterPath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + tvDataHolder.data.posterPath)
                 .override(width, (width * heightRatio).toInt())
                 .placeholder(R.drawable.ic_placeholder_tv)
                 .error(R.drawable.ic_placeholder_tv)
