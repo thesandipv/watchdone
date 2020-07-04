@@ -21,11 +21,6 @@
         android:icon="@drawable/ic_discover"
         android:title="@string/text_discover"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/navigation_search_new"
-        android:icon="@drawable/ic_search"
-        android:title="@string/title_search"
-        app:showAsAction="ifRoom" />
     <group>
         <item
             android:id="@+id/send_feedback"
