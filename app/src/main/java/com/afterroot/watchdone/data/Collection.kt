@@ -35,4 +35,7 @@ object Field {
     const val RELEASE_DATE = "releaseDate"
     const val IS_WATCHED = "isWatched"
     const val ID = "id"
+    const val MEDIA_TYPE = "mediaType"
+    const val MEDIA_TYPE_MOVIE = "MOVIE"
+    const val MEDIA_TYPE_TV = "TV_SERIES"
 }
