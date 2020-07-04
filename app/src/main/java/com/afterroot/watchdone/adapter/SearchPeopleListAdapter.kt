@@ -21,10 +21,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.diff.PeopleDiffCallback
 import com.afterroot.watchdone.data.people.PeopleDataHolder
 import com.afterroot.watchdone.databinding.ListItemPersonBinding
@@ -33,7 +33,8 @@ import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class SearchPeopleListAdapter : BaseListAdapter<PeopleDataHolder>(PeopleDiffCallback()), KoinComponent {
+class SearchPeopleListAdapter(val callback: ItemSelectedCallback<PeopleDataHolder>) :
+    BaseListAdapter<PeopleDataHolder>(PeopleDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -52,7 +53,7 @@ class SearchPeopleListAdapter : BaseListAdapter<PeopleDataHolder>(PeopleDiffCall
 
     override fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         viewHolder as PeopleListViewHolder
-        viewHolder.bind(getItem(position).data)
+        viewHolder.bind(getItem(position))
     }
 
     override fun bindFooterViewHolder(viewHolder: RecyclerView.ViewHolder) {
@@ -76,14 +77,24 @@ class SearchPeopleListAdapter : BaseListAdapter<PeopleDataHolder>(PeopleDiffCall
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(person: Person) {
-            binding.personDetail = person
+        fun bind(peopleDataHolder: PeopleDataHolder) {
+            binding.apply {
+                personDetail = peopleDataHolder.data
+                root.setOnClickListener {
+                    callback.onClick(absoluteAdapterPosition, root)
+                    callback.onClick(absoluteAdapterPosition, root, peopleDataHolder)
+                }
+                root.setOnLongClickListener {
+                    callback.onLongClick(absoluteAdapterPosition, peopleDataHolder)
+                    return@setOnLongClickListener true
+                }
+            }
             posterView.updateLayoutParams {
                 this.width = this@PeopleListViewHolder.width
                 this.height = this@PeopleListViewHolder.width
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + person.profilePath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + peopleDataHolder.data.profilePath)
                 .override(width)
                 .placeholder(R.drawable.ic_placeholder_person)
                 .error(R.drawable.ic_placeholder_person)

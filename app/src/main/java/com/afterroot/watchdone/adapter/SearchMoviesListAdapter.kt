@@ -21,10 +21,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
 import com.afterroot.watchdone.data.movie.MovieDataHolder
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
@@ -33,7 +33,8 @@ import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class SearchMoviesListAdapter : BaseListAdapter<MovieDataHolder>(MovieDiffCallback()), KoinComponent {
+class SearchMoviesListAdapter(val callback: ItemSelectedCallback<MovieDataHolder>) :
+    BaseListAdapter<MovieDataHolder>(MovieDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -52,7 +53,7 @@ class SearchMoviesListAdapter : BaseListAdapter<MovieDataHolder>(MovieDiffCallba
 
     override fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         viewHolder as MoviesListViewHolder
-        viewHolder.bind(getItem(position).data)
+        viewHolder.bind(getItem(position))
     }
 
     override fun bindFooterViewHolder(viewHolder: RecyclerView.ViewHolder) {
@@ -70,21 +71,31 @@ class SearchMoviesListAdapter : BaseListAdapter<MovieDataHolder>(MovieDiffCallba
 
     inner class MoviesListViewHolder(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.poster
-        val context: Context = posterView.context
-        var heightRatio: Float = 3f / 2f
-        val width =
+        private val context: Context = posterView.context
+        private var heightRatio: Float = 3f / 2f
+        private val width =
             (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(movie: MovieDb) {
-            binding.movieDb = movie
+        fun bind(movieDataHolder: MovieDataHolder) {
+            binding.apply {
+                movieDb = movieDataHolder.data
+                root.setOnClickListener {
+                    callback.onClick(absoluteAdapterPosition, root)
+                    callback.onClick(absoluteAdapterPosition, root, movieDataHolder)
+                }
+                root.setOnLongClickListener {
+                    callback.onLongClick(absoluteAdapterPosition, movieDataHolder)
+                    return@setOnLongClickListener true
+                }
+            }
             posterView.updateLayoutParams {
                 this.width = this@MoviesListViewHolder.width
                 this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movie.posterPath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movieDataHolder.data.posterPath)
                 .override(width, (width * heightRatio).toInt())
                 .placeholder(R.drawable.ic_placeholder_movie)
                 .error(R.drawable.ic_placeholder_movie)
