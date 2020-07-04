@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         setUpNetworkObserver()
     }
 
-    var dialog: MaterialDialog? = null
+    private var dialog: MaterialDialog? = null
     private fun setUpNetworkObserver() {
         networkViewModel.doIfNetworkConnected(this, doWhenConnected = {
             if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
@@ -270,14 +270,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_settings -> {
                     setTitle(getString(R.string.title_settings))
                     fab.hide()
-                    drawerToggle.progress(0f, 1f) //As back arrow
-                }
-                R.id.navigation_search -> {
-                    setTitle(getString(R.string.title_trending_movies))
-                    fab.hide()
-                    toolbar.apply {
-                        hideOnScroll = true
-                    }
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_edit_profile -> {

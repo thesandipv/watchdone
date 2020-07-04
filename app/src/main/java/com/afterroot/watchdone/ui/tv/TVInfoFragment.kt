@@ -39,12 +39,15 @@ import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.tv.TvSeries
+import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.TVRepository
 import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.data.Collection
 import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.data.cast.toCastDataHolder
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
@@ -286,9 +289,7 @@ class TVInfoFragment : Fragment() {
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        // get<TVRepository>().getFullTVInfo(id, TVAppendableResponses.credits)
-        //TODO Add Full info
-        get<TVRepository>().getTVInfo(id)
+        get<TVRepository>().getFullTvInfo(id, MovieAppendableResponses.credits)
     }
 
     private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
@@ -324,14 +325,13 @@ class TVInfoFragment : Fragment() {
     }
 
     private suspend fun updateCast(tv: TvSeries) {
-        //TODO Add Credits
-        /*val cast = get<TVRepository>().getCredits(tv.id).cast
+        val cast = get<TVRepository>().getCredits(tv.id).cast
         val castAdapter = CastListAdapter()
         castAdapter.submitList(cast?.toCastDataHolder())
         binding.castList.apply {
             adapter = castAdapter
             visible(true, AutoTransition())
-        }*/
+        }
     }
 
     private fun setErrorObserver() {
