@@ -15,11 +15,22 @@
 
 package com.afterroot.tmdbapi2.api
 
+import com.afterroot.tmdbapi.model.Credits
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface TVApi {
     @GET("3/tv/{id}")
     suspend fun getTVInfo(@Path("id") id: Int): TvSeries
+
+    @GET("3/tv/{id}")
+    suspend fun getFullTvInfo(
+        @Path("id") id: Int,
+        @Query("append_to_response") appendableResponses: String
+    ): TvSeries
+
+    @GET("3/tv/{id}/credits")
+    suspend fun getCredits(@Path("id") id: Int): Credits
 }
