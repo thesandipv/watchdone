@@ -15,8 +15,18 @@
 
 package com.afterroot.tmdbapi2.repository
 
+import com.afterroot.tmdbapi.model.Credits
+import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.api.TVApi
+import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 
 class TVRepository(val api: TVApi) {
     suspend fun getTVInfo(id: Int) = api.getTVInfo(id)
+
+    suspend fun getFullTvInfo(id: Int, vararg appendableResponses: MovieAppendableResponses): TvSeries {
+        val joined = appendableResponses.joinToString(",")
+        return api.getFullTvInfo(id, joined)
+    }
+
+    suspend fun getCredits(id: Int): Credits = api.getCredits(id)
 }

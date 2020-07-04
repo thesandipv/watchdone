@@ -32,13 +32,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/toSearch"
-            app:destination="@id/navigation_search"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-        <action
             android:id="@+id/toEditProfile"
             app:destination="@id/navigation_edit_profile"
             app:enterAnim="@anim/slide_in_right"
@@ -78,24 +71,6 @@
         android:id="@+id/navigation_settings"
         android:name="com.afterroot.watchdone.ui.settings.SettingsFragment"
         android:label="@string/title_activity_settings" />
-    <fragment
-        android:id="@+id/navigation_search"
-        android:name="com.afterroot.watchdone.ui.search.SearchFragment"
-        android:label="@string/title_search"
-        tools:layout="@layout/fragment_search">
-        <action
-            android:id="@+id/searchToMovieInfo"
-            app:destination="@id/navigation_movie_info"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-        <deepLink
-            android:id="@+id/deep_link_search"
-            android:autoVerify="true"
-            app:uri="https://watchdone.web.app/search"
-            tools:targetApi="m" />
-    </fragment>
     <fragment
         android:id="@+id/navigation_edit_profile"
         android:name="com.afterroot.watchdone.ui.profile.EditProfileFragment"
@@ -138,14 +113,20 @@
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/navigation_search" />
+            app:popUpTo="@id/navigation_search_new" />
         <action
             android:id="@+id/searchNewToTVInfo"
             app:destination="@id/navigation_tv_info"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/navigation_search_new" />
+        <deepLink
+            android:id="@+id/deep_link_search"
+            android:autoVerify="true"
+            app:uri="https://watchdone.web.app/search"
+            tools:targetApi="m" />
     </fragment>
     <fragment
         android:id="@+id/navigation_tv_info"
