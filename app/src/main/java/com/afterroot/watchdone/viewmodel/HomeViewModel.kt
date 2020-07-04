@@ -26,6 +26,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.tmdbapi2.repository.GenresRepository
@@ -46,6 +47,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
     val error = MutableLiveData<Event<String>>()
     val selectedMovie = MutableLiveData<MovieDb>()
+    val selectedTvSeries = MutableLiveData<TvSeries>()
 
     fun getWatchlistSnapshot(
         userId: String,
@@ -92,6 +94,10 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
      */
     fun selectMovie(movie: MovieDb) {
         selectedMovie.value = movie
+    }
+
+    fun selectTVSeries(tvSeries: TvSeries) {
+        selectedTvSeries.value = tvSeries
     }
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {

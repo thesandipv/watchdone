@@ -1,14 +1,15 @@
 package com.afterroot.tmdbapi.model.tv
 
 import com.afterroot.tmdbapi.model.ContentRating
-import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.core.ResultsPage
 import com.afterroot.tmdbapi.model.people.Person
+import com.afterroot.tmdbapi2.model.Genre
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 /**
+ * @author Sandip Vaghela
  * @author Holger Brandl
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
@@ -83,11 +84,14 @@ data class TvSeries(
     override val mediaType: Multi.MediaType
         get() = Multi.MediaType.TV_SERIES
 
-    fun getContentRatings(): List<ContentRating> {
-        return contentRatings!!.contentRatings
+    fun getContentRatings(): List<ContentRating>? {
+        return contentRatings?.contentRatings
     }
 
     fun setContentRatings(contentRatings: ContentRating.Results?) {
         this.contentRatings = contentRatings
     }
+
+    //Just for Firestore
+    var releaseDate = firstAirDate
 }
