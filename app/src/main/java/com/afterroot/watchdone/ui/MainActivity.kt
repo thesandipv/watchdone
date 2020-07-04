@@ -251,8 +251,8 @@ class MainActivity : AppCompatActivity() {
                     setTitle(getString(R.string.title_watchlist))
                     fab.apply {
                         show()
-                        setOnClickListener { navController.navigate(R.id.toSearch) }
-                        setImageDrawable(context.getDrawableExt(R.drawable.ic_add))
+                        setOnClickListener { navController.navigate(R.id.toSearchNew) }
+                        setImageDrawable(context.getDrawableExt(R.drawable.ic_search))
                     }
                     drawerToggle.apply {
                         if (progress == 1f) progress(1f, 0f) //As hamburger
@@ -286,6 +286,12 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_movie_info -> {
+                    setTitle(null)
+                    binding.titleLayout.visible(false)
+                    fab.hide()
+                    drawerToggle.progress(0f, 1f) //As back arrow
+                }
+                R.id.navigation_tv_info -> {
                     setTitle(null)
                     binding.titleLayout.visible(false)
                     fab.hide()

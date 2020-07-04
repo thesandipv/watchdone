@@ -197,6 +197,11 @@ class SearchNewFragment : Fragment() {
     }
 
     private val tvItemSelectedCallback = object : ItemSelectedCallback<TVDataHolder> {
+        override fun onClick(position: Int, view: View?, item: TVDataHolder) {
+            super.onClick(position, view, item)
+            homeViewModel.selectTVSeries(item.data)
+            view?.findNavController()?.navigate(R.id.searchNewToTVInfo)
+        }
     }
 
     private val peopleItemSelectedCallback = object : ItemSelectedCallback<PeopleDataHolder> {

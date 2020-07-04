@@ -29,12 +29,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
+import com.afterroot.watchdone.adapter.MultiAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
-import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
 import com.afterroot.watchdone.data.Field
-import com.afterroot.watchdone.data.movie.toMovieDataHolder
+import com.afterroot.watchdone.data.MultiDataHolder
+import com.afterroot.watchdone.data.toMultiDataHolder
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
@@ -52,7 +53,7 @@ import org.koin.android.ext.android.inject
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var homeScreenAdapter: DelegateListAdapter
+    private lateinit var homeScreenAdapter: MultiAdapter
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val settings: Settings by inject()
 
@@ -62,24 +63,23 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    private val itemSelectedCallback = object : ItemSelectedCallback<MultiDataHolder> {
+        override fun onClick(position: Int, view: View?, item: MultiDataHolder) {
+            super.onClick(position, view, item)
+            if (item.data is MovieDb) {
+                homeViewModel.selectMovie(item.data as MovieDb)
+                findNavController().navigate(R.id.toMovieInfo)
+            } else if (item.data is TvSeries) {
+                homeViewModel.selectTVSeries(item.data as TvSeries)
+                findNavController().navigate(R.id.toTVInfo)
+            }
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homeScreenAdapter = DelegateListAdapter(
-            MovieDiffCallback(),
-            object :
-                ItemSelectedCallback<MovieDb> {
-                override fun onClick(position: Int, view: View?, item: MovieDb) {
-                    super.onClick(position, view, item)
-                    homeViewModel.selectMovie(item)
-                    findNavController().navigate(R.id.toMovieInfo)
-                }
-
-                override fun onLongClick(position: Int, item: MovieDb) {
-                    super.onLongClick(position, item)
-                    requireContext().toast(item.title.toString())
-                }
-            })
+        homeScreenAdapter = MultiAdapter(itemSelectedCallback)
         binding.list.adapter = homeScreenAdapter
         homeScreenAdapter.submitQuery(settings.queryDirection)
         homeViewModel.addGenres(viewLifecycleOwner)
@@ -88,8 +88,8 @@ class HomeFragment : Fragment() {
         setUpChips()
     }
 
-    var isWatchedChecked: Boolean = false
-    lateinit var sortChip: Chip
+    private var isWatchedChecked: Boolean = false
+    private lateinit var sortChip: Chip
     private fun setUpChips() {
         sortChip = Chip(requireContext(), null, R.attr.SortChipStyle).apply {
             text = if (settings.ascSort) "Sort by Ascending" else "Sort by Descending"
@@ -112,7 +112,7 @@ class HomeFragment : Fragment() {
         binding.chipGroup.addView(isWatchedChip)
     }
 
-    private fun DelegateListAdapter.submitQuery(
+    private fun MultiAdapter.submitQuery(
         direction: Query.Direction,
         isReload: Boolean = false,
         filterWatched: Boolean = false
@@ -140,7 +140,7 @@ class HomeFragment : Fragment() {
                             binding.infoTv.text = if (filterWatched) getString(R.string.text_info_no_movies_in_filter)
                             else getString(R.string.text_info_no_movies)
                         } else {
-                            submitList(listData.toMovieDataHolder())
+                            submitList(listData.toMultiDataHolder())
                         }
                     }
                 } catch (e: Exception) {
