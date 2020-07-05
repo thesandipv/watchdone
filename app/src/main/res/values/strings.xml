@@ -85,4 +85,5 @@
     <string name="text_search_movies">Movies</string>
     <string name="text_search_tv">TV</string>
     <string name="text_search_people">People</string>
+    <string name="search_hint">Search Movies, TV and People…</string>
 </resources>
