@@ -27,7 +27,7 @@ data class MultiDataHolder(
     override var additionalParams: MultiAdditionalParams? = null
 ) : DataHolder<Multi, MultiAdditionalParams>()
 
-data class MultiAdditionalParams(val type: String) : AdditionalParams
+data class MultiAdditionalParams(val type: String, val isWatched: Boolean? = false) : AdditionalParams
 
 fun QuerySnapshot.toMultiDataHolder(): List<MultiDataHolder> {
     val list = mutableListOf<MultiDataHolder>()
@@ -38,13 +38,19 @@ fun QuerySnapshot.toMultiDataHolder(): List<MultiDataHolder> {
             Field.MEDIA_TYPE_MOVIE -> {
                 MultiDataHolder(
                     queryDocumentSnapshot.toObject(MovieDb::class.java),
-                    MultiAdditionalParams(Field.MEDIA_TYPE_MOVIE)
+                    MultiAdditionalParams(
+                        type = Field.MEDIA_TYPE_MOVIE,
+                        isWatched = queryDocumentSnapshot.getBoolean(Field.IS_WATCHED)
+                    )
                 )
             }
             Field.MEDIA_TYPE_TV -> {
                 MultiDataHolder(
                     queryDocumentSnapshot.toObject(TvSeries::class.java),
-                    MultiAdditionalParams(Field.MEDIA_TYPE_TV)
+                    MultiAdditionalParams(
+                        type = Field.MEDIA_TYPE_TV,
+                        isWatched = queryDocumentSnapshot.getBoolean(Field.IS_WATCHED)
+                    )
                 )
             }
             else -> {

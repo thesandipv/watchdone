@@ -23,6 +23,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.tv.TvSeries
@@ -111,6 +112,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
                     callback.onLongClick(absoluteAdapterPosition, movieDataHolder)
                     return@setOnLongClickListener true
                 }
+                isWatched.visible(movieDataHolder.additionalParams?.isWatched ?: false)
             }
             posterView.updateLayoutParams {
                 this.width = this@MoviesListViewHolder.width
@@ -142,6 +144,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
                     callback.onLongClick(absoluteAdapterPosition, tvDataHolder)
                     return@setOnLongClickListener true
                 }
+                isWatched.visible(tvDataHolder.additionalParams?.isWatched ?: false)
             }
             posterView.updateLayoutParams {
                 this.width = this@TVListViewHolder.width
