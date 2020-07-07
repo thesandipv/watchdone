@@ -1,0 +1,34 @@
+## Things that I learned while developing WatchDone.
+
+- [Searchable](app/src/main/res/xml/searchable.xml) Configuration
+- AppInitializer library
+- CircleCrop() in Glide
+- Custom Layout Views (First is [SectionalListView](app/src/main/java/com/afterroot/watchdone/view/SectionalListView.kt) )
+- Data Binding
+- Deep-linking
+- Diff Configuration for CI Environment
+- First time maintained [TODO](TODO.md) with proper format
+- First time used '.properties' files for credentials
+- First time used [attrs.xml](app/src/main/res/values/attrs.xml)
+- First time used BottomAppBar in Production App
+- First time used Configuration wise Dimens, Integers and Strings (like -land, -debug etc.)
+- First time used Kotlin top level functions
+- First time used Library Module
+- First time used Manifest Placeholders
+- First time used RewardedAds
+- First time used Unit Testing using JUnit (Yes, you heard it right)
+- Home Screen Shortcuts
+- Image Height according to Display Size
+- ListAdapter
+- Major use of DI using Koin
+- Major use of Kotlin Coroutines
+- Multiple Adapter types (First working implementation is [MultiAdapter](app/src/main/java/com/afterroot/watchdone/adapter/MultiAdapter.kt))
+- Network Monitor on Android 10
+- OkHttp and Retrofit
+- POST and GET http request using Retrofit
+- Proguard Rules configuration
+- Reusing Drawables using xml like shape, gradient
+- Send data to Instagram story
+- Sending Mail Intent
+- Use activity ViewModel for passing data
+- Use of android:clipToPadding (Believe me or not)
