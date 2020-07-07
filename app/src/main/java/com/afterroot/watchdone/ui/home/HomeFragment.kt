@@ -74,6 +74,15 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(R.id.toTVInfo)
             }
         }
+
+        override fun onLongClick(position: Int, item: MultiDataHolder) {
+            super.onLongClick(position, item)
+            if (item.data is MovieDb) {
+                requireContext().toast((item.data as MovieDb).title.toString())
+            } else if (item.data is TvSeries) {
+                requireContext().toast((item.data as TvSeries).name.toString())
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
