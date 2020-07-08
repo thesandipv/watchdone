@@ -122,11 +122,6 @@ android {
         prod {
             dimension = 'ar'
         }
-
-        prodEAP {
-            dimension = 'ar'
-            versionNameSuffix = '-EAP'
-        }
     }
     compileOptions {
         sourceCompatibility = 1.8
