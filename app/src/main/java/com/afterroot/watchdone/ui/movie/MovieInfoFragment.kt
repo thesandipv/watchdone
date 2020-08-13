@@ -30,13 +30,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
+import com.afterroot.core.extensions.updateProgressText
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
@@ -93,6 +93,7 @@ class MovieInfoFragment : Fragment() {
     private var adLoaded: Boolean = false
     private var clickedAddWl: Boolean = false
     private var menu: Menu? = null
+    private var progressDialog: MaterialDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -112,9 +113,9 @@ class MovieInfoFragment : Fragment() {
         }
 
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
-            .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
+            .observe(viewLifecycleOwner, { state: ViewModelState? ->
                 if (state is ViewModelState.Loaded<*>) {
-                    homeViewModel.selectedMovie.observe(viewLifecycleOwner, Observer { movieDb: MovieDb ->
+                    homeViewModel.selectedMovie.observe(viewLifecycleOwner, { movieDb: MovieDb ->
                         updateUI(movieDb)
                         launchShowingProgress {
                             updateCast(movieDb)
@@ -178,6 +179,7 @@ class MovieInfoFragment : Fragment() {
                             icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
                             setOnClickListener {
                                 doShowingProgress {
+                                    progressDialog = requireContext().showStaticProgressDialog("Please Wait...")
                                     watchListRef.getTotalItemsCount { itemsCount ->
                                         if (itemsCount < 5) {
                                             addToWatchlist(movieDb)
@@ -192,7 +194,8 @@ class MovieInfoFragment : Fragment() {
                                                     if (rewardedAd.isLoaded) {
                                                         showAd()
                                                     } else {
-                                                        snackBarMessage("Ad is not loaded yet. Loading...")
+                                                        progressDialog =
+                                                            requireContext().showStaticProgressDialog("Please Wait...Ad is Loading")
                                                     }
                                                 }
                                                 negativeButton(R.string.fui_cancel)
@@ -253,12 +256,17 @@ class MovieInfoFragment : Fragment() {
             override fun onRewardedAdLoaded() {
                 adLoaded = true
                 if (clickedAddWl) {
+                    hideProgress()
                     showAd()
                 }
             }
 
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 adLoaded = false
+                if (clickedAddWl) {
+                    progressDialog?.updateProgressText("Adding ${binding.moviedb?.title} to Watchlist")
+                    addAfterWatchingAd()
+                }
             }
         }
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
@@ -269,15 +277,19 @@ class MovieInfoFragment : Fragment() {
         this.rewardedAd = createAndLoadRewardedAd()
     }
 
+    fun addAfterWatchingAd() {
+        doShowingProgress {
+            watchListRef.updateTotalItemsCounter(-5) {
+                binding.moviedb?.let { addToWatchlist(it) }
+            }
+        }
+    }
+
     private fun showAd() {
         val adCallback = object : RewardedAdCallback() {
             override fun onUserEarnedReward(reward: RewardItem) {
                 clickedAddWl = false
-                doShowingProgress {
-                    watchListRef.updateTotalItemsCounter(-5) {
-                        binding.moviedb?.let { addToWatchlist(it) }
-                    }
-                }
+                addAfterWatchingAd()
             }
 
             override fun onRewardedAdClosed() {
@@ -316,7 +328,7 @@ class MovieInfoFragment : Fragment() {
     private fun updateGenres(movieDb: MovieDb) {
         if (movieDb.genres == null) {
             movieDb.genreIds?.let {
-                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, Observer { roomGenres ->
+                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, { roomGenres ->
                     binding.genres = roomGenres
                 })
             }
@@ -336,7 +348,7 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, Observer {
+        homeViewModel.error.observe(viewLifecycleOwner, {
             if (it != null) {
                 hideProgress()
                 snackBarMessage("Error: $it")
@@ -458,6 +470,7 @@ class MovieInfoFragment : Fragment() {
                 visible(false, AutoTransition())
             }
         }
+        progressDialog?.dismiss()
     }
 
     private fun snackBarMessage(message: String) {
