@@ -33,11 +33,12 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 @Keep
 class KoinInitializer : Initializer<KoinApplication> {
     override fun create(context: Context): KoinApplication = startKoin {
-        androidLogger()
+        androidLogger(Level.ERROR)
         androidContext(context)
         val modulesList = mutableListOf(firebaseModule, appModule, apiModule, roomModule)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

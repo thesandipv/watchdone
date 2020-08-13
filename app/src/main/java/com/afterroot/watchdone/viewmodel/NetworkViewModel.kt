@@ -17,7 +17,6 @@ package com.afterroot.watchdone.viewmodel
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.afterroot.watchdone.network.NetworkState
 import com.afterroot.watchdone.network.NetworkStateMonitor
@@ -32,7 +31,7 @@ class NetworkViewModel : ViewModel(), KoinComponent {
         crossinline doWhenConnected: (state: NetworkState) -> Unit,
         noinline doWhenNotConnected: ((state: NetworkState) -> Unit)? = null
     ) {
-        this.networkMonitor.observe(lifecycleOwner, Observer {
+        this.networkMonitor.observe(lifecycleOwner, {
             when (it) {
                 NetworkState.CONNECTED -> {
                     doWhenConnected(NetworkState.CONNECTED)
