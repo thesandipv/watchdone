@@ -22,7 +22,10 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.watchdone.BuildConfig
+import com.afterroot.watchdone.R
+import com.afterroot.watchdone.network.NetworkState
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 
@@ -65,11 +68,11 @@ fun Context.getScreenWidth(): Int {
 
 fun getMailBodyForFeedback(): String {
     val builder = StringBuilder().apply {
-        appendln("----Do not remove this info----")
-        appendln("Version : ${BuildConfig.VERSION_NAME}")
-        appendln("Version Code : ${BuildConfig.VERSION_CODE}")
-        appendln("User ID : ${FirebaseUtils.firebaseUser?.uid}")
-        appendln("----Do not remove this info----")
+        appendLine("----Do not remove this info----")
+        appendLine("Version : ${BuildConfig.VERSION_NAME}")
+        appendLine("Version Code : ${BuildConfig.VERSION_CODE}")
+        appendLine("User ID : ${FirebaseUtils.firebaseUser?.uid}")
+        appendLine("----Do not remove this info----")
     }
     return builder.toString()
 }
