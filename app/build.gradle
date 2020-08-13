@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-//apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -170,7 +169,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
     implementation "androidx.room:room-ktx:$roomKtxVersion"
     implementation "androidx.room:room-runtime:$roomKtxVersion"
-    implementation "androidx.startup:startup-runtime:1.0.0-alpha01"
+    implementation 'androidx.startup:startup-runtime:1.0.0-alpha02'
     implementation "androidx.vectordrawable:vectordrawable:$vectordrawableVersion"
     implementation "com.android.billingclient:billing:$billingVersion"
     kapt "androidx.room:room-compiler:$roomKtxVersion"
@@ -189,7 +188,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation "com.google.android.material:material:$googleMaterialVersion"
-    implementation "com.google.firebase:firebase-analytics:17.4.3"
+    implementation "com.google.firebase:firebase-analytics:17.4.4"
     implementation "com.google.firebase:firebase-ads:$firebaseAdsVersion"
     implementation "com.google.firebase:firebase-auth:$firebaseAuthVersion"
     implementation "com.google.firebase:firebase-config:$firebaseConfigVersion"
