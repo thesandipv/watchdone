@@ -18,15 +18,18 @@ package com.afterroot.watchdone.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afterroot.core.extensions.isNetworkAvailable
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_LOGIN
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.showNetworkDialog
+import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.toast
@@ -35,6 +38,7 @@ import org.koin.android.ext.android.get
 class SplashActivity : AppCompatActivity() {
 
     private val _tag = "SplashActivity"
+    private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val theme = get<Settings>().theme
@@ -48,29 +52,32 @@ class SplashActivity : AppCompatActivity() {
             }
         )
         super.onCreate(savedInstanceState)
+    }
 
-        val auth: FirebaseAuth = get()
-        if (auth.currentUser == null && this.isNetworkAvailable()) {
-            tryLogin()
-        } else if (auth.currentUser == null && !this.isNetworkAvailable()) {
-            MaterialDialog(this).show {
-                title(R.string.dialog_title_no_network)
-                message(R.string.dialog_msg_no_network)
-                positiveButton(R.string.text_action_exit) {
-                    finish()
-                }
-                cancelable(false)
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        setUpNetworkObserver()
+        when {
+            get<FirebaseAuth>().currentUser == null -> {
+                tryLogin()
             }
-        } else if (intent.extras != null) {
-            intent.extras?.let {
-                val link = it.getString("link")
-                if (link != null) {
-                    browse(link, true)
-                    finish()
+            intent.extras != null -> {
+                intent.extras?.let {
+                    val link = it.getString("link")
+                    when {
+                        link != null -> {
+                            browse(link, true)
+                            finish()
+                        }
+                        else -> {
+                            launchMain()
+                        }
+                    }
                 }
             }
-        } else {
-            launchMain()
+            else -> {
+                launchMain()
+            }
         }
     }
 
@@ -84,7 +91,11 @@ class SplashActivity : AppCompatActivity() {
                 .setAvailableProviders(
                     listOf(
                         AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build(),
-                        AuthUI.IdpConfig.GoogleBuilder().build()
+                        AuthUI.IdpConfig.GoogleBuilder()
+                            .setSignInOptions(
+                                GoogleSignInOptions.Builder().requestProfile().requestEmail().requestId().build()
+                            )
+                            .build()
                     )
                 ).build(), RC_LOGIN
         )
@@ -106,5 +117,14 @@ class SplashActivity : AppCompatActivity() {
     private fun launchMain() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    private var dialog: MaterialDialog? = null
+    private fun setUpNetworkObserver() {
+        networkViewModel.doIfNetworkConnected(this, doWhenConnected = {
+            if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
+        }, doWhenNotConnected = {
+            dialog = showNetworkDialog(state = it, positive = { setUpNetworkObserver() }, negative = { finish() })
+        })
     }
 }

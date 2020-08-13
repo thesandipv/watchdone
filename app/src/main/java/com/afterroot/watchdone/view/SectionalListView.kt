@@ -25,7 +25,7 @@ import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
 import com.afterroot.watchdone.R
 
-class SectionalListView(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class SectionalListView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     LinearLayoutCompat(context, attrs, defStyleAttr) {
     private val progress: ProgressBar
     private val titleView: AppCompatTextView
