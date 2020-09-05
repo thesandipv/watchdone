@@ -65,10 +65,12 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/contentDesc"
                     android:scaleType="centerCrop"
+                    android:transitionName="@{moviedb.title}"
                     app:layout_collapseMode="parallax"
                     app:movieDb="@{moviedb}"
                     app:settings="@{settings}"
-                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                    tools:srcCompat="@tools:sample/backgrounds/scenic"
+                    tools:targetApi="lollipop" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"

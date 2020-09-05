@@ -18,6 +18,7 @@ package com.afterroot.watchdone.ui.search
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.provider.SearchRecentSuggestions
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ import com.afterroot.watchdone.data.people.toPeopleDataHolder
 import com.afterroot.watchdone.data.tv.TVDataHolder
 import com.afterroot.watchdone.data.tv.toTVDataHolder
 import com.afterroot.watchdone.databinding.SearchNewFragmentBinding
+import com.afterroot.watchdone.providers.RecentSearchSuggestionsProvider
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.utils.showKeyboard
 import com.afterroot.watchdone.view.SectionalListView
@@ -61,7 +63,6 @@ class SearchNewFragment : Fragment() {
     private lateinit var tvSection: SectionalListView
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val viewModel: SearchNewViewModel by activityViewModels()
-    private var queryTextListener: SearchView.OnQueryTextListener? = null
     private var searchTask: Job? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,27 +89,47 @@ class SearchNewFragment : Fragment() {
 
     private fun initSearch() {
         val manager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = binding.searchView
-        searchView.setSearchableInfo(manager.getSearchableInfo(requireActivity().componentName))
-        requireContext().showKeyboard(searchView)
-        queryTextListener = object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String): Boolean {
-                Log.i("onQueryTextChange", newText)
-                return true
-            }
+        binding.searchView.apply {
+            setSearchableInfo(manager.getSearchableInfo(requireActivity().componentName))
+            requireContext().showKeyboard(this)
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String): Boolean {
+                    Log.i("onQueryTextChange", newText)
+                    return true
+                }
 
-            override fun onQueryTextSubmit(query: String): Boolean {
-                Log.i("onQueryTextSubmit", query)
-                searchTask = showSearchResults(query)
-                view?.let { requireContext().hideKeyboard(it) }
-                return true
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    Log.i("onQueryTextSubmit", query)
+                    performSearch(query)
+                    return true
+                }
+            })
+            setOnCloseListener {
+                hideAll()
+                return@setOnCloseListener true
             }
+            setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+                override fun onSuggestionSelect(position: Int): Boolean {
+
+                    return false
+                }
+
+                override fun onSuggestionClick(position: Int): Boolean {
+                    performSearch(query.toString())
+                    return true
+                }
+            })
         }
-        searchView.setOnQueryTextListener(queryTextListener)
-        searchView.setOnCloseListener {
-            hideAll()
-            return@setOnCloseListener true
-        }
+    }
+
+    fun performSearch(query: String) {
+        SearchRecentSuggestions(
+            requireContext(),
+            RecentSearchSuggestionsProvider.AUTHORITY,
+            RecentSearchSuggestionsProvider.MODE
+        ).saveRecentQuery(query, null)
+        searchTask = showSearchResults(query)
+        view?.let { requireContext().hideKeyboard(it) }
     }
 
     private fun showSearchResults(query: String): Job? = lifecycleScope.launch {
@@ -129,7 +150,7 @@ class SearchNewFragment : Fragment() {
             addSectionAt(2, peopleSection)
         }
 
-        viewModel.searchMovies(query).observe(viewLifecycleOwner, Observer {
+        viewModel.searchMovies(query).observe(viewLifecycleOwner, {
             if (it is ViewModelState.Loaded<*>) {
                 val data = it.data as MovieResultsPage
                 moviesListAdapter.submitList(data.toMovieDataHolder())
@@ -142,7 +163,7 @@ class SearchNewFragment : Fragment() {
             }
         })
 
-        viewModel.searchTV(query).observe(viewLifecycleOwner, Observer {
+        viewModel.searchTV(query).observe(viewLifecycleOwner, {
             if (it is ViewModelState.Loaded<*>) {
                 val data = it.data as TvResultsPage
                 tvListAdapter.submitList(data.toTVDataHolder())

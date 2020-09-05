@@ -27,12 +27,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.transition.AutoTransition
+import androidx.transition.ChangeTransform
+import androidx.transition.TransitionSet
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
@@ -83,8 +86,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class MovieInfoFragment : Fragment() {
-    lateinit var watchlistItemReference: CollectionReference
-    lateinit var watchListRef: DocumentReference
+    private lateinit var watchlistItemReference: CollectionReference
+    private lateinit var watchListRef: DocumentReference
     private lateinit var binding: FragmentMovieInfoBinding
     private lateinit var rewardedAd: RewardedAd
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -94,6 +97,17 @@ class MovieInfoFragment : Fragment() {
     private var clickedAddWl: Boolean = false
     private var menu: Menu? = null
     private var progressDialog: MaterialDialog? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        TransitionSet().addTransition(AutoTransition()).addTransition(ChangeTransform()).apply {
+            ordering = TransitionSet.ORDERING_TOGETHER
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            interpolator = AccelerateDecelerateInterpolator()
+            sharedElementEnterTransition = this
+        }
+        postponeEnterTransition()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -139,6 +153,7 @@ class MovieInfoFragment : Fragment() {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
+            // executePendingBindings()
             watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get().addOnSuccessListener {
                 kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
