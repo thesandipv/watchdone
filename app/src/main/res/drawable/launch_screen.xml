@@ -26,10 +26,12 @@
     </item>
     <item
         android:bottom="80dp"
-        android:gravity="bottom|center_horizontal">
+        android:gravity="bottom|center_horizontal"
+        android:left="8dp"
+        android:right="8dp">
         <bitmap
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:antialias="true"
             android:src="@drawable/ar_logo"
             android:tint="@color/color_on_surface" />

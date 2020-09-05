@@ -40,11 +40,7 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/toMovieInfo"
-            app:destination="@id/navigation_movie_info"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:destination="@id/navigation_movie_info" />
         <action
             android:id="@+id/toDiscover"
             app:destination="@id/navigation_discover"

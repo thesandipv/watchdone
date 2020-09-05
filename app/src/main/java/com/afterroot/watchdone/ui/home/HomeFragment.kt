@@ -22,9 +22,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
@@ -68,7 +70,13 @@ class HomeFragment : Fragment() {
             super.onClick(position, view, item)
             if (item.data is MovieDb) {
                 homeViewModel.selectMovie(item.data as MovieDb)
-                findNavController().navigate(R.id.toMovieInfo)
+                findNavController().navigate(
+                    R.id.toMovieInfo,
+                    null, null,
+                    FragmentNavigatorExtras(
+                        view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item.data as MovieDb).title!!
+                    )
+                )
             } else if (item.data is TvSeries) {
                 homeViewModel.selectTVSeries(item.data as TvSeries)
                 findNavController().navigate(R.id.toTVInfo)
