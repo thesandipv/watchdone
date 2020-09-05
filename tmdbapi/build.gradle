@@ -57,7 +57,7 @@ dependencies {
     api "com.squareup.retrofit2:retrofit:$retrofitVersion"
 
     api 'commons-codec:commons-codec:20041127.091804'
-    implementation 'org.apache.commons:commons-lang3:3.10'
+    implementation 'org.apache.commons:commons-lang3:3.11'
 
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
