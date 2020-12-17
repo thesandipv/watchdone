@@ -27,15 +27,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.transition.AutoTransition
-import androidx.transition.ChangeTransform
-import androidx.transition.TransitionSet
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
@@ -54,6 +51,7 @@ import com.afterroot.watchdone.data.cast.toCastDataHolder
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -70,6 +68,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.getField
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -96,17 +95,6 @@ class MovieInfoFragment : Fragment() {
     private var clickedAddWl: Boolean = false
     private var menu: Menu? = null
     private var progressDialog: MaterialDialog? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        TransitionSet().addTransition(AutoTransition()).addTransition(ChangeTransform()).apply {
-            ordering = TransitionSet.ORDERING_TOGETHER
-            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-            interpolator = AccelerateDecelerateInterpolator()
-            sharedElementEnterTransition = this
-        }
-        postponeEnterTransition()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
@@ -143,17 +131,17 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun updateUI(movieDb: MovieDb) { //Do operations related to database
-        watchListRef = get<FirebaseFirestore>().collection(Collection.USERS)
-            .document(get<FirebaseAuth>().currentUser?.uid.toString())
-            .collection(Collection.WATCHDONE)
-            .document(Collection.WATCHLIST)
+        watchListRef = get<FirebaseFirestore>().collectionWatchdone(
+            id = get<FirebaseAuth>().currentUser?.uid.toString(),
+            isUseOnlyProdDB = settings.isUseProdDb
+        ).document(Collection.WATCHLIST)
         watchlistItemReference = watchListRef.collection(Collection.ITEMS)
         binding.apply {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
             // executePendingBindings()
-            watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get().addOnSuccessListener {
+            watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get(Source.CACHE).addOnSuccessListener {
                 kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
                     var isWatched = false

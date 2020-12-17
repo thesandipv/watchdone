@@ -50,6 +50,7 @@ import com.afterroot.watchdone.data.cast.toCastDataHolder
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -66,6 +67,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.getField
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -126,16 +128,16 @@ class TVInfoFragment : Fragment() {
     }
 
     private fun updateUI(tv: TvSeries) { //Do operations related to database
-        watchListRef = get<FirebaseFirestore>().collection(Collection.USERS)
-            .document(get<FirebaseAuth>().currentUser?.uid.toString())
-            .collection(Collection.WATCHDONE)
-            .document(Collection.WATCHLIST)
+        watchListRef = get<FirebaseFirestore>().collectionWatchdone(
+            id = get<FirebaseAuth>().currentUser?.uid.toString(),
+            isUseOnlyProdDB = settings.isUseProdDb
+        ).document(Collection.WATCHLIST)
         watchlistItemReference = watchListRef.collection(Collection.ITEMS)
         binding.apply {
             settings = this@TVInfoFragment.settings
             tvSeries = tv
             updateGenres(tv)
-            watchlistItemReference.whereEqualTo(Field.ID, tv.id).get().addOnSuccessListener {
+            watchlistItemReference.whereEqualTo(Field.ID, tv.id).get(Source.CACHE).addOnSuccessListener {
                 kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
                     var isWatched = false

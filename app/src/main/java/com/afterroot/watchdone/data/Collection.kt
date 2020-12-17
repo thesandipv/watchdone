@@ -20,7 +20,9 @@ import com.afterroot.watchdone.BuildConfig
 object Collection {
     //Collections
     const val USERS = "users"
-    val WATCHDONE = if (!BuildConfig.DEBUG) "watchdone" else "watchdone-debug"
+    const val WATCHDONE_PROD = "watchdone"
+    const val WATCHDONE_DEBUG = "watchdone-debug"
+    val WATCHDONE_AUTO = if (BuildConfig.DEBUG) WATCHDONE_DEBUG else WATCHDONE_PROD
     const val WATCHLIST = "watchlist"
     const val ITEMS = "items"
 }
