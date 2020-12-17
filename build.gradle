@@ -15,7 +15,7 @@ ext {
     firebaseCrashlyticsVersion = '17.1.1'
     firebaseFirestoreVersion = '21.5.0'
     firebaseMessagingVersion = '20.2.4'
-    firebaseStorageVersion = '19.1.1'
+    firebaseStorageVersion = '19.2.0'
     firebaseUiAuthVersion = '4.3.2'
     firebaseUiFirestoreVersion = '5.0.0'
     firebaseUiStorageVersion = '4.3.1'
@@ -23,7 +23,7 @@ ext {
     glideVersion = '4.11.0'
     googleMaterialVersion = '1.3.0-beta01'
     gsonVersion = '2.8.6'
-    jacksonVersion = '2.11.1'
+    jacksonVersion = '2.11.2'
     koinVersion = '2.1.5'
     kotlinxCoroutinesVersion = '1.4.1'
     legacySupportV13Version = '1.0.0'
@@ -67,7 +67,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha03'
+        classpath 'com.android.tools.build:gradle:4.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'

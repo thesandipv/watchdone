@@ -30,6 +30,14 @@
             android:title="@string/pref_title_image_size"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
+    <PreferenceCategory
+        app:key="key_debug"
+        app:title="Debug">
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:key="use_prod_db"
+            app:title="Use Prod Database" />
+    </PreferenceCategory>
     <PreferenceCategory app:title="About">
         <Preference
             app:icon="@mipmap/ic_launcher"
