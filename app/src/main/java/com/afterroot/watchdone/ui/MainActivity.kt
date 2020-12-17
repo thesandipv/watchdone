@@ -61,7 +61,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
@@ -185,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                     userRef.get().addOnCompleteListener { getUserTask ->
                         if (getUserTask.isSuccessful) {
                             if (!getUserTask.result!!.exists()) {
-                                container.snackbar("User not available. Creating User..").anchorView = toolbar
+                                binding.container.snackbar("User not available. Creating User..").anchorView = binding.toolbar
                                 val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
                                 userRef.set(user).addOnCompleteListener { setUserTask ->
                                     if (!setUserTask.isSuccessful) Log.e(
@@ -220,12 +219,12 @@ class MainActivity : AppCompatActivity() {
                 val isPermissionNotGranted =
                     grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
                 if (isPermissionNotGranted) {
-                    container.indefiniteSnackbar(
+                    binding.container.indefiniteSnackbar(
                         getString(R.string.msg_grant_app_permissions),
                         getString(R.string.text_action_grant)
                     ) {
                         checkPermissions()
-                    }.anchorView = toolbar
+                    }.anchorView = binding.toolbar
                 } else {
                     loadFragments()
                 }
@@ -237,7 +236,7 @@ class MainActivity : AppCompatActivity() {
         val drawerToggle = DrawerArrowDrawable(this)
         navController = findNavController(R.id.nav_host_fragment)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            toolbar.apply {
+            binding.toolbar.apply {
                 performShow()
                 hideOnScroll = true
                 navigationIcon = drawerToggle
@@ -249,7 +248,7 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.navigation_home -> {
                     setTitle(getString(R.string.title_watchlist))
-                    fab.apply {
+                    binding.fab.apply {
                         show()
                         setOnClickListener { navController.navigate(R.id.toSearchNew) }
                         setImageDrawable(context.getDrawableExt(R.drawable.ic_search))
@@ -257,7 +256,7 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.apply {
                         if (progress == 1f) progress(1f, 0f) //As hamburger
                     }
-                    toolbar.apply {
+                    binding.toolbar.apply {
                         setNavigationOnClickListener {
                             BottomNavDrawerFragment().apply {
                                 show(supportFragmentManager, this.tag)
@@ -269,35 +268,35 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_settings -> {
                     setTitle(getString(R.string.title_settings))
-                    fab.hide()
+                    binding.fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_edit_profile -> {
                     setTitle(getString(R.string.title_edit_profile))
-                    fab.show()
+                    binding.fab.show()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_movie_info -> {
                     setTitle(null)
                     binding.titleLayout.visible(false)
-                    fab.hide()
+                    binding.fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_tv_info -> {
                     setTitle(null)
                     binding.titleLayout.visible(false)
-                    fab.hide()
+                    binding.fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_discover -> {
                     setTitle(getString(R.string.text_discover))
-                    fab.hide()
+                    binding.fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
                 R.id.navigation_search_new -> {
                     binding.titleLayout.visible(false, AutoTransition())
                     setTitle(null)
-                    fab.hide()
+                    binding.fab.hide()
                     drawerToggle.progress(0f, 1f) //As back arrow
                 }
             }
