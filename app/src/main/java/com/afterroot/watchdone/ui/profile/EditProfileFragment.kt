@@ -26,22 +26,24 @@ import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.data.Collection
 import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_edit_profile.view.*
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
 
 class EditProfileFragment : Fragment() {
+    private lateinit var binding: FragmentEditProfileBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_edit_profile, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private val db: FirebaseFirestore by inject()
@@ -52,35 +54,33 @@ class EditProfileFragment : Fragment() {
 
         if (FirebaseUtils.isUserSignedIn) {
             user = FirebaseUtils.auth!!.currentUser!!
-            with(view) {
-                input_profile_name.setText(user.displayName)
-                input_email.setText(user.email)
-                input_email.isEnabled = false
-                requireActivity().apply {
-                    fab.apply {
-                        setOnClickListener {
-                            val newName = this@with.input_profile_name.text.toString().trim()
-                            if (user.displayName != newName) {
-                                val request = UserProfileChangeRequest.Builder()
-                                    .setDisplayName(newName)
-                                    .build()
-                                user.updateProfile(request).addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        requireContext().toast(getString(R.string.msg_profile_updated))
-                                        db.collection(Collection.USERS)
-                                            .document(user.uid)
-                                            .update(Field.NAME, newName)
-                                    }
+            binding.inputProfileName.setText(user.displayName)
+            binding.inputEmail.setText(user.email)
+            binding.inputEmail.isEnabled = false
+            requireActivity().apply {
+                findViewById<FloatingActionButton>(R.id.fab).apply {
+                    setOnClickListener {
+                        val newName = binding.inputProfileName.text.toString().trim()
+                        if (user.displayName != newName) {
+                            val request = UserProfileChangeRequest.Builder()
+                                .setDisplayName(newName)
+                                .build()
+                            user.updateProfile(request).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    requireContext().toast(getString(R.string.msg_profile_updated))
+                                    db.collection(Collection.USERS)
+                                        .document(user.uid)
+                                        .update(Field.NAME, newName)
                                 }
-                            } else requireContext().toast(getString(R.string.msg_no_changes))
-                        }
-                        setImageDrawable(requireContext().getDrawableExt(R.drawable.ic_save, R.color.color_on_secondary))
+                            }
+                        } else requireContext().toast(getString(R.string.msg_no_changes))
                     }
-                    toolbar.apply {
-                        fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
-                    }
-                    GlideApp.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(avatar)
+                    setImageDrawable(requireContext().getDrawableExt(R.drawable.ic_save, R.color.color_on_secondary))
                 }
+                findViewById<BottomAppBar>(R.id.toolbar).apply {
+                    fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
+                }
+                GlideApp.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
             }
         } else {
             startActivity(Intent(this.context, SplashActivity::class.java))

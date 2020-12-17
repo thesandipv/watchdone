@@ -25,28 +25,30 @@ import androidx.navigation.fragment.findNavController
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.fragment_bottom.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 
 class BottomNavDrawerFragment : BottomSheetDialogFragment() {
+    private lateinit var binding: FragmentBottomBinding
     private val homeViewModel: HomeViewModel by viewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_bottom, container, false)
+        binding = FragmentBottomBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         val user = get<FirebaseAuth>().currentUser
-        navigation_view.apply {
+        binding.navigationView.apply {
             setNavigationItemSelectedListener {
                 when (it.itemId) {
                     R.id.navigation_settings -> {

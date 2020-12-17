@@ -30,7 +30,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.transition.AutoTransition
@@ -68,7 +67,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.getField
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -82,10 +80,10 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class TVInfoFragment : Fragment() {
-    lateinit var watchListRef: DocumentReference
     private lateinit var binding: FragmentTvInfoBinding
     private lateinit var rewardedAd: RewardedAd
     private lateinit var watchlistItemReference: CollectionReference
+    private lateinit var watchListRef: DocumentReference
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val myDatabase: MyDatabase by inject()
     private val settings: Settings by inject()
@@ -93,7 +91,7 @@ class TVInfoFragment : Fragment() {
     private var clickedAddWl: Boolean = false
     private var menu: Menu? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = FragmentTvInfoBinding.inflate(inflater, container, false)
         return binding.root
@@ -111,9 +109,9 @@ class TVInfoFragment : Fragment() {
         }
 
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
-            .observe(viewLifecycleOwner, Observer { state: ViewModelState? ->
+            .observe(viewLifecycleOwner, { state: ViewModelState? ->
                 if (state is ViewModelState.Loaded<*>) {
-                    homeViewModel.selectedTvSeries.observe(viewLifecycleOwner, Observer { tvSeries: TvSeries ->
+                    homeViewModel.selectedTvSeries.observe(viewLifecycleOwner, { tvSeries: TvSeries ->
                         updateUI(tvSeries)
                         launchShowingProgress {
                             updateCast(tvSeries)
@@ -335,7 +333,7 @@ class TVInfoFragment : Fragment() {
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, Observer {
+        homeViewModel.error.observe(viewLifecycleOwner, {
             if (it != null) {
                 hideProgress()
                 snackBarMessage("Error: $it")
@@ -461,12 +459,13 @@ class TVInfoFragment : Fragment() {
     }
 
     private fun snackBarMessage(message: String) {
-        binding.root.snackbar(message).anchorView = requireActivity().toolbar
+        binding.root.snackbar(message).anchorView = requireActivity().findViewById(R.id.toolbar)
     }
 
     private fun Int.toHex() = "#${Integer.toHexString(this)}"
 
     companion object {
+        @Suppress("unused")
         private const val TAG = "MovieInfoFragment"
     }
 }

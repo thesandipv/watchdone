@@ -71,7 +71,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.getField
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -109,7 +108,7 @@ class MovieInfoFragment : Fragment() {
         postponeEnterTransition()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = FragmentMovieInfoBinding.inflate(inflater, container, false)
         return binding.root
@@ -489,12 +488,13 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun snackBarMessage(message: String) {
-        binding.root.snackbar(message).anchorView = requireActivity().toolbar
+        binding.root.snackbar(message).anchorView = requireActivity().findViewById(R.id.toolbar)
     }
 
     private fun Int.toHex() = "#${Integer.toHexString(this)}"
 
     companion object {
+        @Suppress("unused")
         private const val TAG = "MovieInfoFragment"
     }
 }
