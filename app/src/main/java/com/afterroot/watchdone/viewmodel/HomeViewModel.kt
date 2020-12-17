@@ -33,6 +33,8 @@ import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.data.Collection
 import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +45,7 @@ import com.google.firebase.firestore.Query as FirestoreQuery
 
 class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), KoinComponent {
     private val db: FirebaseFirestore by inject()
+    private val settings: Settings by inject()
     private var trendingMovies = MutableLiveData<MovieResultsPage>()
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
     val error = MutableLiveData<Event<String>>()
@@ -57,8 +60,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
         watchlistSnapshot.apply {
             if (value == null || isReload) {
                 value = ViewModelState.Loading
-                val ref = db.collection(Collection.USERS).document(userId)
-                    .collection(Collection.WATCHDONE)
+                val ref = db.collectionWatchdone(id = userId, settings.isUseProdDb)
                     .document(Collection.WATCHLIST)
                     .collection(Collection.ITEMS)
                 if (additionQueries == null) {
