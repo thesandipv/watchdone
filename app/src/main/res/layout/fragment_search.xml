@@ -13,52 +13,59 @@
   ~ limitations under the License.
   -->
 
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <data>
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:layoutAnimation="@anim/layout_anim_fall_down"
-            android:visibility="visible"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_search"
-            app:layout_constraintVertical_bias="0.0"
-            app:spanCount="@integer/grid_item_span_count"
-            tools:context=".ui.search.SearchFragment"
-            tools:listitem="@layout/list_item_movie"
-            tools:visibility="visible" />
+            android:layout_weight="1">
 
-        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-            android:id="@+id/progress_bar_search"
-            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_gravity="top"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_search"
-            app:mpb_progressStyle="horizontal"
-            app:mpb_useIntrinsicPadding="false"
-            tools:visibility="visible" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:layoutAnimation="@anim/layout_anim_fall_down"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/til_search"
+                app:layout_constraintVertical_bias="0.0"
+                app:spanCount="@integer/grid_item_span_count"
+                tools:context=".ui.search.SearchNewFragment"
+                tools:listitem="@layout/list_item_movie"
+                tools:visibility="visible" />
 
-        <!--TODO Add No Result found info-->
-    </FrameLayout>
-</androidx.appcompat.widget.LinearLayoutCompat>
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                android:id="@+id/progress_bar_search"
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="top"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_search"
+                app:mpb_progressStyle="horizontal"
+                app:mpb_useIntrinsicPadding="false"
+                tools:visibility="visible" />
+
+            <!--TODO Add No Result found info-->
+        </FrameLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

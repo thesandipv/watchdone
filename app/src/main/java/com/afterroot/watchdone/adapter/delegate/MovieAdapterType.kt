@@ -32,7 +32,6 @@ import com.afterroot.watchdone.data.movie.MovieAdditionalParams
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
-import kotlinx.android.synthetic.main.list_item_movie.view.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -47,9 +46,9 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>) : AdapterTy
     }
 
     inner class MovieVH(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val posterView: AppCompatImageView = itemView.poster
+        private val posterView: AppCompatImageView = binding.poster
+        private var heightRatio: Float = 3f / 2f
         val context: Context = posterView.context
-        var heightRatio: Float = 3f / 2f
         val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
         fun bind(item: MovieDb, additionalParams: MovieAdditionalParams?) {
             binding.movieDb = item
