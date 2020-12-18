@@ -30,6 +30,7 @@ import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
+import com.afterroot.watchdone.binding.transitionOptions
 import com.afterroot.watchdone.data.MultiDataHolder
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.databinding.ListItemTvBinding
@@ -67,11 +68,11 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
         }
     }
 
-    private fun createTVViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
+    private fun createTVViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         return TVListViewHolder(ListItemTvBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
-    private fun createMovieViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
+    private fun createMovieViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         return MoviesListViewHolder(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
@@ -121,8 +122,8 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
 
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + binding.movieDb?.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .placeholder(R.drawable.ic_placeholder_movie)
                 .error(R.drawable.ic_placeholder_movie)
+                .transition(transitionOptions)
                 .centerCrop()
                 .into(posterView)
         }
@@ -153,8 +154,8 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
 
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + binding.tvSeries?.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .placeholder(R.drawable.ic_placeholder_tv)
                 .error(R.drawable.ic_placeholder_tv)
+                .transition(transitionOptions)
                 .centerCrop()
                 .into(posterView)
         }
@@ -181,6 +182,7 @@ class MultiDiffCallback : DiffUtil.ItemCallback<MultiDataHolder>() {
         } else false
     }
 
+    @Suppress("ReplaceCallWithBinaryOperator")
     override fun areContentsTheSame(oldItem: MultiDataHolder, newItem: MultiDataHolder): Boolean {
         val oldData = oldItem.data
         val newData = newItem.data
