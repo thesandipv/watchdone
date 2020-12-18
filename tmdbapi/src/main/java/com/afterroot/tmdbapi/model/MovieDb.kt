@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
-@Deprecated("Use new MovieDb instead")
+@Deprecated("Use new MovieDb instead", ReplaceWith("MovieDb", "com.afterroot.tmdbapi.model.MovieDb"))
 class MovieDbOld : IdElement(), Multi {
     @JsonProperty("title")
     var title: String? = null
@@ -241,7 +241,7 @@ data class MovieDb(
     @JsonProperty("lists")
     private var lists: ResultsPage<MovieList>? = null
 ) : IdElement(), Multi {
-    override val mediaType: Multi.MediaType?
+    override val mediaType: Multi.MediaType
         get() = Multi.MediaType.MOVIE
 
     fun getAlternativeTitles(): List<AlternativeTitle>? = alternativeTitles?.titles
