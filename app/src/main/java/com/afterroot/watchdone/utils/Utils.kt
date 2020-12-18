@@ -18,6 +18,8 @@ package com.afterroot.watchdone.utils
 import android.app.Activity
 import android.content.Context
 import android.graphics.Point
+import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
@@ -76,3 +78,20 @@ fun getMailBodyForFeedback(): String {
     }
     return builder.toString()
 }
+
+fun withDelay(millis: Long, block: () -> Unit) {
+    Handler(Looper.getMainLooper()).postDelayed(block, millis)
+}
+
+fun Context.showNetworkDialog(state: NetworkState, positive: () -> Unit, negative: () -> Unit) =
+    MaterialDialog(this).show {
+        title(text = if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected")
+        cancelable(false)
+        message(R.string.dialog_msg_no_network)
+        negativeButton(text = "Exit") {
+            negative()
+        }
+        positiveButton(text = "Retry") {
+            positive()
+        }
+    }
