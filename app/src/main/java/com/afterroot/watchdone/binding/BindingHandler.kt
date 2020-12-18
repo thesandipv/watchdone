@@ -23,22 +23,29 @@ import com.afterroot.tmdbapi2.model.Genre
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getGravatarUrl
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
+private val crossFadeFactory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
+internal val transitionOptions = DrawableTransitionOptions.with(crossFadeFactory)
+
 @BindingAdapter("avatar")
 fun ImageView.setAvatar(email: String?) {
-    GlideApp.with(context).load(getGravatarUrl(email.toString())).circleCrop().into(this)
+    GlideApp.with(context).load(getGravatarUrl(email.toString())).circleCrop().transition(transitionOptions).into(this)
 }
 
 @BindingAdapter("movieDb", "settings")
 fun ImageView.setPoster(movieDb: MovieDb?, settings: Settings?) {
-    GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + movieDb?.posterPath).into(this)
+    GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + movieDb?.posterPath).transition(transitionOptions)
+        .into(this)
 }
 
 @BindingAdapter("tvPoster", "settings")
 fun ImageView.setPoster(tvSeries: TvSeries?, settings: Settings?) {
-    GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + tvSeries?.posterPath).into(this)
+    GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + tvSeries?.posterPath).transition(transitionOptions)
+        .into(this)
 }
 
 @BindingAdapter("genres")
