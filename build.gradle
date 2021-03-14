@@ -1,50 +1,5 @@
-ext {
-    ankoCommonsVersion = '0.10.8'
-    appcompatVersion = '1.2.0'
-    billingVersion = '3.0.2'
-    cardviewVersion = '1.0.0'
-    commonsIoVersion = '1.3.2'
-    constraintlayoutVersion = '2.1.0-alpha1'
-    coreKtxVersion = '1.5.0-alpha05'
-    coreVersion = '0.2.0'
-    crashlyticsVersion = '2.10.1'
-    firebaseAdsVersion = '19.3.0'
-    firebaseAuthVersion = '19.3.2'
-    firebaseConfigVersion = '19.2.0'
-    firebaseCoreVersion = '17.4.4'
-    firebaseCrashlyticsVersion = '17.1.1'
-    firebaseFirestoreVersion = '21.5.0'
-    firebaseMessagingVersion = '20.2.4'
-    firebaseStorageVersion = '19.2.0'
-    firebaseUiAuthVersion = '4.3.2'
-    firebaseUiFirestoreVersion = '5.0.0'
-    firebaseUiStorageVersion = '4.3.1'
-    fragmentKtxVersion = '1.2.5'
-    glideVersion = '4.11.0'
-    googleMaterialVersion = '1.3.0-beta01'
-    gsonVersion = '2.8.6'
-    jacksonVersion = '2.11.2'
-    koinVersion = '2.1.5'
-    kotlinxCoroutinesVersion = '1.4.1'
-    legacySupportV13Version = '1.0.0'
-    legacySupportV4Version = '1.0.0'
-    lifecycleVersion = '2.3.0-rc01'
-    materialDialogsVersion = '3.1.0'
-    multidexVersion = '2.0.1'
-    navigationVersion = '2.3.2'
-    okHttpVersion = '4.9.0'
-    pagingVersion = '2.1.2'
-    paletteVersion = '1.0.0'
-    preferenceVersion = '1.1.1'
-    recyclerviewVersion = '1.2.0-beta01'
-    retrofitVersion = '2.9.0'
-    roomKtxVersion = '2.2.6'
-    transitionVersion = '1.3.1'
-    vectordrawableVersion = '1.1.0'
-}
-
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,25 +16,72 @@ ext {
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.4.21'
+    apply from: rootProject.file('deps.gradle')
+
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.4'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.2'
+        classpath Libs.AGP
+        classpath Libs.Kotlin.gradlePlugin
+        classpath Libs.Google.servicesPlugin
+        classpath Libs.Firebase.crashlyticsPlugin
+        classpath Libs.Google.ossLicPlugin
+        classpath Libs.AndroidX.Navigation.safeArgsPlugin
     }
 }
 
+plugins {
+    id 'com.github.ben-manes.versions' version '0.36.0'
+}
+
 allprojects {
+    apply from: rootProject.file('deps.gradle')
+
+    def isPublishPropertiesExists = rootProject.file("publish.properties").exists()
+    def properties = new Properties()
+    if (isPublishPropertiesExists) {
+        properties.load(new FileInputStream(rootProject.file("publish.properties")))
+    }
     repositories {
         google()
+        mavenCentral()
         jcenter()
+
+        maven {
+            name = "github-afterroot-core"
+            url = uri(Libs.AfterROOT.Core.mavenUrl)
+            credentials {
+                username = properties.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
+                password = properties.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
+            }
+        }
     }
+}
+
+subprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            // Treat all Kotlin warnings as errors
+            // allWarningsAsErrors = true
+
+            // Enable experimental coroutines APIs, including Flow
+            freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+            freeCompilerArgs += "-Xopt-in=kotlin.Experimental"
+            freeCompilerArgs += [
+                    "-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+            ]
+
+            // freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
+
+            // Set JVM target to 1.8
+            jvmTarget = "1.8"
+        }
+    }
+
 }
 
 task clean(type: Delete) {

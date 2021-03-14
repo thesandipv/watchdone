@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,21 +18,18 @@ package com.afterroot.watchdone.utils
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import org.koin.core.KoinComponent
-import org.koin.core.get
 
-object FirebaseUtils : KoinComponent {
-    var auth: FirebaseAuth? = null
-        get() {
-            Log.d("FirebaseUtils", "FirebaseUtils.auth: initializing Auth")
-            return field ?: get<FirebaseAuth>()
-        }
+class FirebaseUtils(firebaseAuth: FirebaseAuth) {
+    var auth: FirebaseAuth = firebaseAuth
 
-    val firebaseUser: FirebaseUser? = null
+    val firebaseUser: FirebaseUser?
         get() {
             Log.d("FirebaseUtils", "FirebaseUtils.getFirebaseUser: getting user")
-            return field ?: auth!!.currentUser
+            return auth.currentUser
         }
+
+    val uid: String?
+        get() = firebaseUser?.uid
 
     val isUserSignedIn: Boolean
         get() {
@@ -41,4 +38,8 @@ object FirebaseUtils : KoinComponent {
             }
             return true
         }
+
+    fun isUidSame(uidForCompare: String?): Boolean {
+        return uid == uidForCompare
+    }
 }
