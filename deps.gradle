@@ -262,7 +262,9 @@ libs.Koin3 = [
         // Koin for Jetpack WorkManager
         work   : "io.insert-koin:koin-androidx-workmanager:$versions.koin3",
         // Koin for Jetpack Compose (unstable version)
-        compose: "io.insert-koin:koin-androidx-compose:$versions.koin3"
+        compose: "io.insert-koin:koin-androidx-compose:$versions.koin3",
+        // Koin Test
+        test   : "io.insert-koin:koin-test-junit4:$Versions.koin3"
 ]
 
 libs.OkHttp = [
