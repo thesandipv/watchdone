@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -39,6 +38,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.progress
 import com.afterroot.core.extensions.visible
+import com.afterroot.core.network.NetworkState
 import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -47,7 +47,6 @@ import com.afterroot.watchdone.data.Collection
 import com.afterroot.watchdone.data.Field
 import com.afterroot.watchdone.data.model.User
 import com.afterroot.watchdone.databinding.ActivityMainBinding
-import com.afterroot.watchdone.network.NetworkState
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
@@ -66,6 +65,7 @@ import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val settings: Settings by inject()
-    private val networkViewModel: NetworkViewModel by viewModels()
+    private val firebaseUtils: FirebaseUtils by inject()
+    private val networkViewModel: NetworkViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -174,7 +175,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun addUserInfoInDB() {
         try {
-            val curUser = FirebaseUtils.auth!!.currentUser
+            val curUser = firebaseUtils.firebaseUser
             val userRef = get<FirebaseFirestore>().collection(Collection.USERS).document(curUser!!.uid)
             FirebaseInstanceId.getInstance().instanceId
                 .addOnCompleteListener(OnCompleteListener { tokenTask ->
@@ -184,7 +185,8 @@ class MainActivity : AppCompatActivity() {
                     userRef.get().addOnCompleteListener { getUserTask ->
                         if (getUserTask.isSuccessful) {
                             if (!getUserTask.result!!.exists()) {
-                                binding.container.snackbar("User not available. Creating User..").anchorView = binding.toolbar
+                                binding.container.snackbar("User not available. Creating User..").anchorView =
+                                    binding.toolbar
                                 val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
                                 userRef.set(user).addOnCompleteListener { setUserTask ->
                                     if (!setUserTask.isSuccessful) Log.e(
@@ -214,6 +216,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             RC_PERMISSION -> {
                 val isPermissionNotGranted =

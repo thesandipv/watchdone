@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,11 +20,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion SDK.COMPILE
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion SDK.MIN
+        targetSdkVersion SDK.TARGET
         versionCode 2
         versionName "2.0"
 
@@ -42,30 +42,27 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation Libs.Kotlin.stdLib
 
-    api "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
-    api "com.squareup.okhttp3:okhttp:$okHttpVersion"
-    api "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
-    api "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    api Libs.OkHttp.okHttp
+    api Libs.OkHttp.logging
+    api Libs.Retrofit.retrofit
+    api Libs.Retrofit.jackson
 
-    api 'commons-codec:commons-codec:20041127.091804'
-    implementation 'org.apache.commons:commons-lang3:3.11'
+    api Libs.commonsCodec
+    implementation Libs.commonsLang
 
-    implementation "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$Versions.jacksonVersion"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$Versions.jacksonVersion"
 
     implementation 'com.google.guava:guava:29.0-jre'
 
-    implementation "androidx.room:room-runtime:$roomKtxVersion"
+    implementation Libs.AndroidX.Room.runtime
 
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation Libs.Test.junit
+    androidTestImplementation Libs.Test.espresso
+    androidTestImplementation Libs.Test.junitExt
 }

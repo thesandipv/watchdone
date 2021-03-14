@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,7 +37,7 @@ class DelegateListAdapter(
         with(delegateAdapters) {
             put(Types.MOVIE, MovieAdapterType(selectedCallback))
         }
-        stateRestorationPolicy = StateRestorationPolicy.PREVENT
+        //stateRestorationPolicy = StateRestorationPolicy.PREVENT
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

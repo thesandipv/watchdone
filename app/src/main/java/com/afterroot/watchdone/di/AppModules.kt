@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,52 +17,87 @@ package com.afterroot.watchdone.di
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.startup.AppInitializer
+import com.afterroot.core.network.NetworkStateMonitor
 import com.afterroot.tmdbapi.TmdbApi
-import com.afterroot.watchdone.AuthInitializer
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.FirestoreInitializer
-import com.afterroot.watchdone.network.NetworkStateMonitor
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.watchdone.utils.ifDebug
+import com.afterroot.watchdone.viewmodel.NetworkViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.firestoreSettings
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.firebase.storage.FirebaseStorage
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val firebaseModule = module {
-    single {
-        get<AppInitializer>().initializeComponent(FirestoreInitializer::class.java)
-    }
-
-    single {
-        FirebaseStorage.getInstance()
-    }
-
-    single {
-        get<AppInitializer>().initializeComponent(AuthInitializer::class.java)
-    }
-}
-
 val appModule = module {
-    single {
-        Settings(androidContext())
+/*
+    viewModel {
+        //TODO Saved State not Working in current koin version.
+        //Migrate when fixed in future version
+        MainViewModel(state = get(), db = get(), config = get())
     }
-
+*/
     single {
         TmdbApi(BuildConfig.TMDB_API)
     }
+}
 
+val firebaseModule = module {
+    single {
+        Firebase.firestore.apply {
+            firestoreSettings = firestoreSettings {
+                isPersistenceEnabled = true
+            }
+        }
+    }
+
+    single { FirebaseStorage.getInstance() }
+
+    single { Firebase.auth }
+
+    single { Firebase.database }
+
+    single {
+        Firebase.remoteConfig.apply {
+            setConfigSettingsAsync(remoteConfigSettings {
+                fetchTimeoutInSeconds = ifDebug(debug = 0, release = 3600)
+            })
+        }
+    }
+
+    single { FirebaseMessaging.getInstance() }
+
+    single {
+        FirebaseUtils(get())
+    }
+}
+
+val networkModule = module {
     single {
         androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    single { AppInitializer.getInstance(androidContext()) }
-}
-
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-val networkModule = module {
     single {
         NetworkStateMonitor(get())
     }
+
+    viewModel {
+        NetworkViewModel(get())
+    }
 }
+
+val settingsModule = module {
+    single {
+        Settings(androidContext())
+    }
+}
+
+val allModules = appModule + firebaseModule + roomModule + settingsModule + networkModule
