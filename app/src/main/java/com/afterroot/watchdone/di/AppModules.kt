@@ -100,4 +100,4 @@ val settingsModule = module {
     }
 }
 
-val allModules = appModule + firebaseModule + roomModule + settingsModule + networkModule
+val allModules = appModule + firebaseModule + roomModule + settingsModule + networkModule + apiModule
