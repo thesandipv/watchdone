@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,12 +48,13 @@ class EditProfileFragment : Fragment() {
 
     private val db: FirebaseFirestore by inject()
     private lateinit var user: FirebaseUser
+    private val firebaseUtils: FirebaseUtils by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (FirebaseUtils.isUserSignedIn) {
-            user = FirebaseUtils.auth!!.currentUser!!
+        if (firebaseUtils.isUserSignedIn) {
+            user = firebaseUtils.firebaseUser!!
             binding.inputProfileName.setText(user.displayName)
             binding.inputEmail.setText(user.email)
             binding.inputEmail.isEnabled = false

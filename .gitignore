@@ -98,6 +98,7 @@ output.json
 # End of https://www.gitignore.io/api/android
 
 # My List
-/tmdb.properties
-/keystore.properties
-/graphics/
+tmdb.properties
+keystore.properties
+publish.properties
+graphics/

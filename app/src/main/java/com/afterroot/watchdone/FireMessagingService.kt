@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 
 package com.afterroot.watchdone
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -33,14 +34,18 @@ import com.afterroot.watchdone.utils.FirebaseUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import org.koin.android.ext.android.get
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 
 /**
  * FCM Service that will be used only if app is in foreground state.
  */
-class FireMessagingService : FirebaseMessagingService() {
+@Suppress("EXPERIMENTAL_API_USAGE")
+class FireMessagingService : FirebaseMessagingService(), KoinComponent {
 
     private val _tag = "FireMessagingService"
+    private val firebaseUtils: FirebaseUtils by inject()
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -50,10 +55,12 @@ class FireMessagingService : FirebaseMessagingService() {
 
     private fun updateToken(token: String) {
         try {
-            if (FirebaseUtils.isUserSignedIn) {
-                get<FirebaseFirestore>().collection(Collection.USERS)
-                    .document(FirebaseUtils.firebaseUser!!.uid)
-                    .update(Field.FCM_ID, token)
+            if (firebaseUtils.isUserSignedIn) {
+                firebaseUtils.uid?.let {
+                    get<FirebaseFirestore>().collection(Collection.USERS)
+                        .document(it)
+                        .update(Field.FCM_ID, token)
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -72,6 +79,7 @@ class FireMessagingService : FirebaseMessagingService() {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun sendNotification(
         message: String,
         url: String? = "",
@@ -88,7 +96,11 @@ class FireMessagingService : FirebaseMessagingService() {
                 data = Uri.parse(url)
             }
         }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        }
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder =
             NotificationCompat.Builder(this, channelId ?: getString(R.string.fcm_channel_id))
@@ -111,7 +123,6 @@ class FireMessagingService : FirebaseMessagingService() {
             )
             notificationManager.createNotificationChannel(channel)
         }
-
 
         notificationManager.notify(0, notificationBuilder.build())
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,8 +13,23 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.network
+package com.afterroot.watchdone
 
-enum class NetworkState {
-    CONNECTED, DISCONNECTED, CONNECTION_LOST
+import androidx.annotation.Keep
+import androidx.multidex.MultiDexApplication
+import com.afterroot.watchdone.di.allModules
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+
+@Keep
+class App : MultiDexApplication() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(allModules)
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,14 +37,20 @@ fun ImageView.setAvatar(email: String?) {
 }
 
 @BindingAdapter("movieDb", "settings")
-fun ImageView.setPoster(movieDb: MovieDb?, settings: Settings?) {
+fun ImageView.setMoviePoster(movieDb: MovieDb?, settings: Settings?) {
     GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + movieDb?.posterPath).transition(transitionOptions)
         .into(this)
 }
 
-@BindingAdapter("tvPoster", "settings")
-fun ImageView.setPoster(tvSeries: TvSeries?, settings: Settings?) {
+@BindingAdapter("tvSeries", "settings")
+fun ImageView.setTVPoster(tvSeries: TvSeries?, settings: Settings?) {
     GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + tvSeries?.posterPath).transition(transitionOptions)
+        .into(this)
+}
+
+@BindingAdapter("poster")
+fun ImageView.poster(url: String) {
+    GlideApp.with(context).load(url).transition(transitionOptions)
         .into(this)
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,6 @@ package com.afterroot.watchdone.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
@@ -34,11 +33,12 @@ import com.google.firebase.auth.FirebaseAuth
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SplashActivity : AppCompatActivity() {
 
     private val _tag = "SplashActivity"
-    private val networkViewModel: NetworkViewModel by viewModels()
+    private val networkViewModel: NetworkViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val theme = get<Settings>().theme

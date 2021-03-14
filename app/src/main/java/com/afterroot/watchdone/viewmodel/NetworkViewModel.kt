@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,22 +16,18 @@
 package com.afterroot.watchdone.viewmodel
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.afterroot.watchdone.network.NetworkState
-import com.afterroot.watchdone.network.NetworkStateMonitor
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import com.afterroot.core.network.NetworkState
+import com.afterroot.core.network.NetworkStateMonitor
 
-class NetworkViewModel : ViewModel(), KoinComponent {
-    val networkMonitor: LiveData<NetworkState> by inject<NetworkStateMonitor>()
+class NetworkViewModel(val networkStateMonitor: NetworkStateMonitor) : ViewModel() {
 
     inline fun doIfNetworkConnected(
         lifecycleOwner: LifecycleOwner,
         crossinline doWhenConnected: (state: NetworkState) -> Unit,
         noinline doWhenNotConnected: ((state: NetworkState) -> Unit)? = null
     ) {
-        this.networkMonitor.observe(lifecycleOwner, {
+        networkStateMonitor.observe(lifecycleOwner, {
             when (it) {
                 NetworkState.CONNECTED -> {
                     doWhenConnected(NetworkState.CONNECTED)

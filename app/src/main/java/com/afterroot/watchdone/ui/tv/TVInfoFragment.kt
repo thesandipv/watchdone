@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -51,6 +51,7 @@ import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
+import com.afterroot.watchdone.utils.createPosterUrl
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -137,6 +138,7 @@ class TVInfoFragment : Fragment() {
             settings = this@TVInfoFragment.settings
             tvSeries = tv
             updateGenres(tv)
+            posterUrl = tv.posterPath?.let { this@TVInfoFragment.settings.createPosterUrl(it) }
             watchlistItemReference.whereEqualTo(Field.ID, tv.id).get(Source.CACHE).addOnSuccessListener {
                 kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
@@ -358,7 +360,7 @@ class TVInfoFragment : Fragment() {
                 requireContext().email(
                     email = "afterhasroot@gmail.com",
                     subject = "Watchdone Feedback",
-                    text = getMailBodyForFeedback()
+                    text = getMailBodyForFeedback(get())
                 )
             }
             R.id.action_share_to_ig_story -> {

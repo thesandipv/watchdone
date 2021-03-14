@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,16 +18,18 @@ package com.afterroot.watchdone.utils
 import android.app.Activity
 import android.content.Context
 import android.graphics.Point
+import android.graphics.Rect
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.DisplayMetrics
 import android.view.View
-import android.view.WindowManager
+import android.view.WindowMetrics
 import android.view.inputmethod.InputMethodManager
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afterroot.core.network.NetworkState
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.network.NetworkState
+import com.afterroot.watchdone.ui.settings.Settings
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 
@@ -46,34 +48,34 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun dp2px(context: Context, dp: Int): Int {
-    val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    val display = wm.defaultDisplay
-    val metrics = DisplayMetrics()
-    display.getMetrics(metrics)
-    return (dp * metrics.density + 0.5f).toInt()
+fun Context.dp2px(dp: Int): Int {
+    return (dp * resources.displayMetrics.density + 0.5f).toInt()
 }
 
-fun px2dp(context: Context, px: Int): Int {
-    val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    val display = wm.defaultDisplay
-    val displaymetrics = DisplayMetrics()
-    display.getMetrics(displaymetrics)
-    return (px / displaymetrics.density + 0.5f).toInt()
+fun Context.px2dp(px: Int): Int {
+    return (px / resources.displayMetrics.density + 0.5f).toInt()
 }
 
+@Suppress("DEPRECATION")
 fun Context.getScreenWidth(): Int {
-    val size = Point()
-    (this as Activity).windowManager.defaultDisplay.getSize(size)
-    return size.x
+    this as Activity
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val metrics: WindowMetrics = windowManager.currentWindowMetrics
+        val bounds: Rect = metrics.bounds
+        bounds.width()
+    } else {
+        val size = Point()
+        windowManager.defaultDisplay.getSize(size)
+        size.x
+    }
 }
 
-fun getMailBodyForFeedback(): String {
+fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils): String {
     val builder = StringBuilder().apply {
         appendLine("----Do not remove this info----")
         appendLine("Version : ${BuildConfig.VERSION_NAME}")
         appendLine("Version Code : ${BuildConfig.VERSION_CODE}")
-        appendLine("User ID : ${FirebaseUtils.firebaseUser?.uid}")
+        appendLine("User ID : ${firebaseUtils.uid}")
         appendLine("----Do not remove this info----")
     }
     return builder.toString()
@@ -95,3 +97,34 @@ fun Context.showNetworkDialog(state: NetworkState, positive: () -> Unit, negativ
             positive()
         }
     }
+
+/**
+ * Helper Function for getting different values for Debug and Release builds
+ * @param T type of value to return
+ * @param debug value to return if build is Debug
+ * @param release value to return if build is Release
+ * @since v0.0.4
+ * @return either [debug] or [release] with provided type [T]
+ */
+fun <T> ifDebug(debug: T, release: T): T = if (BuildConfig.DEBUG) debug else release
+
+/**
+ * Helper Function for invoking different functions for Debug and Release builds
+ * @param T type of value to return
+ * @param debug function to invoke if build is Debug
+ * @param release function to invoke if build is Release
+ * @since v0.0.4
+ * @return either [debug] or [release] with provided type [T]
+ */
+fun <T> ifDebug(debug: () -> T, release: () -> T): T = ifDebug(debug.invoke(), release.invoke())
+
+/**
+ * Helper Function for invoking function only if build is Debug
+ * @param debug function to invoke if build is Debug
+ * @since v0.0.4
+ */
+fun ifDebug(debug: () -> Unit) {
+    if (BuildConfig.DEBUG) debug.invoke()
+}
+
+fun Settings.createPosterUrl(path: String) = baseUrl + imageSize + path

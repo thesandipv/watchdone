@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,6 +52,7 @@ import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
+import com.afterroot.watchdone.utils.createPosterUrl
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -140,6 +141,7 @@ class MovieInfoFragment : Fragment() {
             settings = this@MovieInfoFragment.settings
             moviedb = movieDb
             updateGenres(movieDb)
+            posterUrl = movieDb.posterPath?.let { this@MovieInfoFragment.settings.createPosterUrl(it) }
             // executePendingBindings()
             watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get(Source.CACHE).addOnSuccessListener {
                 kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
@@ -372,7 +374,7 @@ class MovieInfoFragment : Fragment() {
                 requireContext().email(
                     email = "afterhasroot@gmail.com",
                     subject = "Watchdone Feedback",
-                    text = getMailBodyForFeedback()
+                    text = getMailBodyForFeedback(get())
                 )
             }
             R.id.action_share_to_ig_story -> {

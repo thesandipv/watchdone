@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,25 +29,31 @@ import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
+import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
-import org.koin.android.ext.android.get
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 
-class BottomNavDrawerFragment : BottomSheetDialogFragment() {
+@Suppress("EXPERIMENTAL_API_USAGE")
+class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
     private lateinit var binding: FragmentBottomBinding
     private val homeViewModel: HomeViewModel by viewModels()
+    private val auth: FirebaseAuth by inject()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentBottomBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val user = get<FirebaseAuth>().currentUser
+        val user = auth.currentUser
         binding.navigationView.apply {
             setNavigationItemSelectedListener {
                 when (it.itemId) {
@@ -79,7 +85,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         requireContext().email(
                             email = "afterhasroot@gmail.com",
                             subject = "Watchdone Feedback",
-                            text = getMailBodyForFeedback()
+                            text = getMailBodyForFeedback(get())
                         )
                     }
                     R.id.action_rate -> {
@@ -93,7 +99,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                     this.user = user
                     // avatarUrl = getGravtarUrl(user?.email.toString())
                     buttonSignOut.setOnClickListener {
-                        get<FirebaseAuth>().signOut()
+                        AuthUI.getInstance().signOut(requireContext())
                     }
                     root.setOnClickListener {
                         findNavController().navigate(R.id.toEditProfile)

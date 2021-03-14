@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sandip Vaghela
+ * Copyright (C) 2020-2021 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,8 +30,8 @@ import com.afterroot.watchdone.data.movie.MovieDataHolder
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class SearchMoviesListAdapter(val callback: ItemSelectedCallback<MovieDataHolder>) :
     BaseListAdapter<MovieDataHolder>(MovieDiffCallback()), KoinComponent {
@@ -82,11 +82,11 @@ class SearchMoviesListAdapter(val callback: ItemSelectedCallback<MovieDataHolder
             binding.apply {
                 movieDb = movieDataHolder.data
                 root.setOnClickListener {
-                    callback.onClick(absoluteAdapterPosition, root)
-                    callback.onClick(absoluteAdapterPosition, root, movieDataHolder)
+                    callback.onClick(adapterPosition, root)
+                    callback.onClick(adapterPosition, root, movieDataHolder)
                 }
                 root.setOnLongClickListener {
-                    callback.onLongClick(absoluteAdapterPosition, movieDataHolder)
+                    callback.onLongClick(adapterPosition, movieDataHolder)
                     return@setOnLongClickListener true
                 }
             }
