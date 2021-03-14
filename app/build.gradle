@@ -210,13 +210,8 @@ dependencies {
     implementation Libs.commonsIo
 
     implementation Libs.Koin3.android
-    //implementation Libs.Koin.scope
-    //implementation Libs.Koin.viewmodel
-    //implementation Libs.Koin.fragment
     implementation Libs.Koin3.ext
-
-    testImplementation "org.koin:koin-test:$Versions.koinVersion"
-    androidTestImplementation "org.koin:koin-test:$Versions.koinVersion"
+    testImplementation Libs.Koin3.test
 
     implementation Libs.Kotlin.Coroutines.core
     implementation Libs.Kotlin.Coroutines.android
