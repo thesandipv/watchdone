@@ -219,27 +219,27 @@ data class MovieDb(
     var userRating: Float = 0f,
     // Appendable responses
     @JsonProperty("alternative_titles")
-    private var alternativeTitles: MoviesAlternativeTitles? = null,
+    var alternativeTitles: MoviesAlternativeTitles? = null,
     @JsonProperty("credits")
     var credits: Credits? = null,
     @JsonProperty("images")
-    private var images: MovieImages? = null,
+    var images: MovieImages? = null,
     @JsonProperty("keywords")
-    private var keywords: MovieKeywords? = null,
+    var keywords: MovieKeywords? = null,
     @JsonProperty("release_dates")
-    private var releases: ReleaseInfoResults? = null,
+    var releases: ReleaseInfoResults? = null,
     @JsonProperty("videos")
-    private var videos: Video.Results? = null,
+    var videos: Video.Results? = null,
     @JsonProperty("translations")
-    private var translations: MovieTranslations? = null,
+    var translations: MovieTranslations? = null,
     @JsonProperty("similar")
-    private var similarMovies: ResultsPage<MovieDb>? = null,
+    var similarMovies: ResultsPage<MovieDb>? = null,
     @JsonProperty("recommendations")
-    private val recommendedMovies: ResultsPage<MovieDb>? = null,
+    val recommendedMovies: ResultsPage<MovieDb>? = null,
     @JsonProperty("reviews")
-    private var reviews: ResultsPage<Reviews>? = null,
+    var reviews: ResultsPage<Reviews>? = null,
     @JsonProperty("lists")
-    private var lists: ResultsPage<MovieList>? = null
+    var lists: ResultsPage<MovieList>? = null
 ) : IdElement(), Multi {
     override val mediaType: Multi.MediaType
         get() = Multi.MediaType.MOVIE

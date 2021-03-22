@@ -15,7 +15,7 @@
 
 package com.afterroot.watchdone.utils
 
-import com.afterroot.watchdone.data.Collection
+import com.afterroot.watchdone.base.Collection
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 

@@ -28,7 +28,6 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.afterroot.tmdbapi.TmdbPeople
@@ -39,8 +38,8 @@ import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.adapter.SearchPeopleListAdapter
 import com.afterroot.watchdone.adapter.SearchTVListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
+import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.movie.MovieDataHolder
-import com.afterroot.watchdone.data.movie.toMovieDataHolder
 import com.afterroot.watchdone.data.people.PeopleDataHolder
 import com.afterroot.watchdone.data.people.toPeopleDataHolder
 import com.afterroot.watchdone.data.tv.TVDataHolder
@@ -153,7 +152,7 @@ class SearchNewFragment : Fragment() {
         viewModel.searchMovies(query).observe(viewLifecycleOwner, {
             if (it is ViewModelState.Loaded<*>) {
                 val data = it.data as MovieResultsPage
-                moviesListAdapter.submitList(data.toMovieDataHolder())
+                moviesListAdapter.submitList(data.toMovies())
                 moviesSection.setAdapter(moviesListAdapter)
                 if (data.totalResults > 0) {
                     moviesSection.isLoaded = true
@@ -176,7 +175,7 @@ class SearchNewFragment : Fragment() {
             }
         })
 
-        viewModel.searchPeople(query).observe(viewLifecycleOwner, Observer {
+        viewModel.searchPeople(query).observe(viewLifecycleOwner, {
             if (it is ViewModelState.Loaded<*>) {
                 val data = it.data as TmdbPeople.PersonResultsPage
                 peopleListAdapter.submitList(data.toPeopleDataHolder())

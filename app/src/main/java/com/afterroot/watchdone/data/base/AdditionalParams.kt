@@ -15,4 +15,5 @@
 
 package com.afterroot.watchdone.data.base
 
+@Deprecated("To be removed")
 interface AdditionalParams

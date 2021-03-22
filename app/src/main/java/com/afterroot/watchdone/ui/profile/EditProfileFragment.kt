@@ -24,8 +24,8 @@ import androidx.fragment.app.Fragment
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.data.Collection
-import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.FirebaseUtils
