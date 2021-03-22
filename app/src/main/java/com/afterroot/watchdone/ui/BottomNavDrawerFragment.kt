@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.tmdbapi2.repository.AuthRepository
@@ -63,7 +62,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
                     }
                     R.id.tmdb_login -> {
                         val dialog = requireContext().showStaticProgressDialog("Loading...")
-                        homeViewModel.getResponseRequestToken().observe(viewLifecycleOwner, Observer { response ->
+                        homeViewModel.getResponseRequestToken().observe(viewLifecycleOwner, { response ->
                             if (response.success) {
                                 try {
                                     requireContext().browse(AuthRepository.getAuthVerifyUrl(response))

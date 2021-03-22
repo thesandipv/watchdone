@@ -149,7 +149,9 @@ android {
 
 dependencies {
     implementation Libs.AfterROOT.Core.core
-    implementation project(':tmdbapi')
+
+    implementation project(':base')
+    implementation project(':data')
 
     implementation Libs.Kotlin.stdLib
     implementation Libs.Kotlin.anko

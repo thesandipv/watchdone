@@ -17,11 +17,9 @@ package com.afterroot.watchdone.adapter.delegate
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
-import com.afterroot.watchdone.data.base.AdditionalParams
-import com.afterroot.watchdone.data.base.DataHolder
+import com.afterroot.tmdbapi.model.Multi
 
 interface AdapterType {
     fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
-    fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: DataHolder<AbstractJsonMapping, AdditionalParams>)
+    fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Multi)
 }

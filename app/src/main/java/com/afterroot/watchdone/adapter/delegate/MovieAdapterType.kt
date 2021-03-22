@@ -22,27 +22,24 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.model.MovieDb
-import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.data.base.AdditionalParams
-import com.afterroot.watchdone.data.base.DataHolder
-import com.afterroot.watchdone.data.movie.MovieAdditionalParams
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>) : AdapterType, KoinComponent {
+class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>) : AdapterType, KoinComponent {
     val settings: Settings by inject()
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         MovieVH(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: DataHolder<AbstractJsonMapping, AdditionalParams>) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Multi) {
         holder as MovieVH
-        holder.bind(item.data as MovieDb, item.additionalParams as MovieAdditionalParams?)
+        holder.bind(item as Movie)
     }
 
     inner class MovieVH(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -50,13 +47,13 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<MovieDb>) : AdapterTy
         private var heightRatio: Float = 3f / 2f
         val context: Context = posterView.context
         val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
-        fun bind(item: MovieDb, additionalParams: MovieAdditionalParams?) {
+        fun bind(item: Movie) {
             binding.movieDb = item
             posterView.updateLayoutParams {
                 this.width = this@MovieVH.width
                 this.height = (width * heightRatio).toInt()
             }
-            binding.isWatched.visible(additionalParams?.isWatched ?: false)
+            binding.isWatched.visible(item.isWatched)
             // if (item.posterPath != null) {
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + item.posterPath)
                 .override(width, (width * heightRatio).toInt())

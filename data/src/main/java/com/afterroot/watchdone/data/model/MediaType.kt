@@ -13,17 +13,12 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.adapter.diff
+package com.afterroot.watchdone.data.model
 
-import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.watchdone.data.model.Movie
-
-class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem.id == newItem.id
+interface Media {
+    enum class Type {
+        MOVIE, TV
     }
 
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem == newItem
-    }
+    val type: Type?
 }

@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.data.base
 
 //TODO Remove holder pattern
+@Deprecated("Use Direct Methods")
 abstract class DataHolder<Data, Params> {
     abstract var data: Data
     abstract var additionalParams: Params?

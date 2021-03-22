@@ -89,7 +89,7 @@ config.GPH = [
         url: "https://maven.pkg.github.com"
 ]
 
-libs.AGP = "com.android.tools.build:gradle:7.0.0-alpha09"
+libs.AGP = "com.android.tools.build:gradle:7.0.0-alpha10"
 
 libs.commonsCodec = "commons-codec:commons-codec:20041127.091804"
 libs.commonsIo = "org.apache.commons:commons-io:${versions.commonsIoVersion}"

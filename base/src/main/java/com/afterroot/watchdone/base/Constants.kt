@@ -13,9 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data
-
-import com.afterroot.watchdone.BuildConfig
+package com.afterroot.watchdone.base
 
 object Collection {
     //Collections

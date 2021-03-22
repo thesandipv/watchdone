@@ -19,6 +19,7 @@ import com.afterroot.tmdbapi.model.people.PersonCast
 import com.afterroot.watchdone.data.base.AdditionalParams
 import com.afterroot.watchdone.data.base.DataHolder
 
+@Deprecated("To be removed. Use Mappers.")
 data class CastDataHolder(
     override var data: PersonCast,
     override var additionalParams: AdditionalParams? = null
