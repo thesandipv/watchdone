@@ -28,13 +28,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Discover
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
-import com.afterroot.watchdone.data.movie.toMovieDataHolder
+import com.afterroot.watchdone.data.mapper.toMovies
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
@@ -62,20 +62,20 @@ class DiscoverFragment : Fragment() {
             val homeScreenAdapter = DelegateListAdapter(
                 MovieDiffCallback(),
                 object :
-                    ItemSelectedCallback<MovieDb> {
-                    override fun onClick(position: Int, view: View?, item: MovieDb) {
+                    ItemSelectedCallback<Movie> {
+                    override fun onClick(position: Int, view: View?, item: Movie) {
                         super.onClick(position, view, item)
                         homeViewModel.selectMovie(item)
                         findNavController().navigate(R.id.discoverToMovieInfo)
                     }
 
-                    override fun onLongClick(position: Int, item: MovieDb) {
+                    override fun onLongClick(position: Int, item: Movie) {
                         super.onLongClick(position, item)
                         requireContext().toast(item.title.toString())
                     }
                 })
             binding.list.adapter = homeScreenAdapter
-            homeScreenAdapter.submitList(repo.toMovieDataHolder())
+            homeScreenAdapter.submitList(repo.toMovies())
             binding.progressBarDiscover.visible(false)
         }
     }

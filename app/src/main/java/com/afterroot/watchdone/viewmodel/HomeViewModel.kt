@@ -19,19 +19,18 @@ import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.watchdone.data.Collection
+import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
@@ -50,7 +49,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     private var trendingMovies = MutableLiveData<MovieResultsPage>()
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
     val error = MutableLiveData<Event<String>>()
-    val selectedMovie = MutableLiveData<MovieDb>()
+    val selectedMovie = MutableLiveData<Movie>()
     val selectedTvSeries = MutableLiveData<TvSeries>()
 
     fun getWatchlistSnapshot(
@@ -95,7 +94,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     /**
      * For sending data to other fragment
      */
-    fun selectMovie(movie: MovieDb) {
+    fun selectMovie(movie: Movie) {
         selectedMovie.value = movie
     }
 
@@ -111,7 +110,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
 
     fun addGenres(owner: LifecycleOwner) {
         get<MyDatabase>().genreDao().apply {
-            getGenres().observe(owner, Observer {
+            getGenres().observe(owner, {
                 if (it.isNullOrEmpty()) {
                     viewModelScope.launch {
                         this@apply.add(get<GenresRepository>().getMoviesGenres().genres)

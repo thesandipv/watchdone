@@ -25,7 +25,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
@@ -35,7 +34,7 @@ import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.MultiAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
-import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.MultiDataHolder
 import com.afterroot.watchdone.data.toMultiDataHolder
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
@@ -45,6 +44,7 @@ import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -114,35 +114,80 @@ class HomeFragment : Fragment() {
                 val curr = settings.ascSort
                 settings.ascSort = !curr
                 this.text = if (!settings.ascSort) "Sort by Ascending" else "Sort by Descending"
-                homeScreenAdapter.submitQuery(settings.queryDirection, true, isWatchedChecked)
+                homeScreenAdapter.submitQuery(settings.queryDirection, true, QueryAction.CLEAR)
             }
         }
-        binding.chipGroup.addView(sortChip)
 
-        val isWatchedChip = Chip(requireContext(), null, R.attr.FilterChip).apply {
+        val watchStatusGroup = ChipGroup(requireContext()).apply {
+            isSingleSelection = true
+        }
+
+        val isWatchedChip = Chip(requireContext()).apply {
             text = context.getString(R.string.text_ship_show_watched)
+            isCheckable = true
             setOnCheckedChangeListener { _, isChecked ->
                 isWatchedChecked = isChecked
-                homeScreenAdapter.submitQuery(settings.queryDirection, true, isWatchedChecked)
+                if (isChecked) {
+                    homeScreenAdapter.submitQuery(settings.queryDirection, isReload = true, action = QueryAction.WATCHED)
+                } else homeScreenAdapter.clearFilters()
             }
         }
-        binding.chipGroup.addView(isWatchedChip)
+
+        val pending = Chip(requireContext()).apply {
+            text = "Pending"
+            isCheckable = true
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    homeScreenAdapter.submitList(homeScreenAdapter.currentList.filter {
+                        it.additionalParams?.isWatched == false
+                    }
+                    )                    // homeScreenAdapter.submitQuery(settings.queryDirection, isReload = true, action = QueryAction.PENDING)
+                } else homeScreenAdapter.clearFilters()
+
+            }
+        }
+        binding.chipGroup.apply {
+            addView(sortChip)
+
+            watchStatusGroup.apply {
+                addView(isWatchedChip)
+                addView(pending)
+            }
+            addView(watchStatusGroup)
+        }
+    }
+
+    enum class QueryAction {
+        CLEAR,
+        WATCHED,
+        PENDING
+    }
+
+    private fun MultiAdapter.clearFilters() {
+        submitQuery(settings.queryDirection, isReload = true)
     }
 
     private fun MultiAdapter.submitQuery(
         direction: Query.Direction,
         isReload: Boolean = false,
-        filterWatched: Boolean = false
+        action: QueryAction = QueryAction.CLEAR,
+        additionQueries: (Query.() -> Query)? = null
     ) {
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, isReload) {
-            if (filterWatched) {
-                whereEqualTo(Field.IS_WATCHED, filterWatched).orderBy(
-                    Field.RELEASE_DATE, direction
-                )
-            } else {
-                orderBy(Field.RELEASE_DATE, direction)
+            additionQueries?.let { it() }
+            when (action) {
+                QueryAction.CLEAR -> {
+                    orderBy(Field.RELEASE_DATE, direction)
+                }
+                QueryAction.WATCHED -> {
+                    whereEqualTo(Field.IS_WATCHED, true).orderBy(Field.RELEASE_DATE, direction)
+                }
+                QueryAction.PENDING -> {
+                    whereIn(Field.IS_WATCHED, listOf(false, null)).orderBy(Field.RELEASE_DATE, direction)
+                }
             }
-        }.observe(viewLifecycleOwner, Observer {
+
+        }.observe(viewLifecycleOwner, {
             if (it is ViewModelState.Loading) {
                 binding.progressBarHome.visible(true)
             } else if (it is ViewModelState.Loaded<*>) {
@@ -154,8 +199,9 @@ class HomeFragment : Fragment() {
                         if (listData.documents.isEmpty()) {
                             submitList(emptyList())
                             binding.infoNoMovies.visible(true, AutoTransition())
-                            binding.infoTv.text = if (filterWatched) getString(R.string.text_info_no_movies_in_filter)
-                            else getString(R.string.text_info_no_movies)
+                            binding.infoTv.text =
+                                if (action != QueryAction.CLEAR) getString(R.string.text_info_no_movies_in_filter)
+                                else getString(R.string.text_info_no_movies)
                         } else {
                             submitList(listData.toMultiDataHolder())
                         }

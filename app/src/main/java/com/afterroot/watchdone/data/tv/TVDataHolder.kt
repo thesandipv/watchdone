@@ -17,7 +17,7 @@ package com.afterroot.watchdone.data.tv
 
 import com.afterroot.tmdbapi.TvResultsPage
 import com.afterroot.tmdbapi.model.tv.TvSeries
-import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.base.DataHolder
 import com.google.firebase.firestore.QuerySnapshot
 

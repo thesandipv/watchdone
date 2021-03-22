@@ -17,15 +17,17 @@ package com.afterroot.watchdone.data.movie
 
 import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
-import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.base.DataHolder
 import com.google.firebase.firestore.QuerySnapshot
 
+@Deprecated("To be removed. Use Mappers.")
 data class MovieDataHolder(
     override var data: MovieDb,
     override var additionalParams: MovieAdditionalParams? = null
 ) : DataHolder<MovieDb, MovieAdditionalParams>()
 
+@Deprecated("To be removed. Use Mappers.")
 fun QuerySnapshot.toMovieDataHolder(): List<MovieDataHolder> {
     val list = mutableListOf<MovieDataHolder>()
     this.forEach { queryDocumentSnapshot ->
@@ -38,6 +40,7 @@ fun QuerySnapshot.toMovieDataHolder(): List<MovieDataHolder> {
     return list
 }
 
+@Deprecated("To be removed. Use Mappers.", ReplaceWith("toMovies()", "com.afterroot.watchdone.data.mapper.toMovies"))
 fun MovieResultsPage.toMovieDataHolder(): List<MovieDataHolder> {
     val list = mutableListOf<MovieDataHolder>()
     this.results.forEach {

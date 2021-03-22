@@ -22,7 +22,7 @@
 
         <variable
             name="movieDb"
-            type="com.afterroot.tmdbapi.model.MovieDb" />
+            type="com.afterroot.watchdone.data.model.Movie" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

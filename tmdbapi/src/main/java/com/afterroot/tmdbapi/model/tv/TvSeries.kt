@@ -91,7 +91,4 @@ data class TvSeries(
     fun setContentRatings(contentRatings: ContentRating.Results?) {
         this.contentRatings = contentRatings
     }
-
-    //Just for Firestore
-    var releaseDate = firstAirDate
 }

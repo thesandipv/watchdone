@@ -21,16 +21,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.Types
-import com.afterroot.tmdbapi.model.MovieDb
-import com.afterroot.tmdbapi.model.core.AbstractJsonMapping
-import com.afterroot.watchdone.data.base.AdditionalParams
-import com.afterroot.watchdone.data.base.DataHolder
-import com.afterroot.watchdone.data.movie.MovieDataHolder
+import com.afterroot.watchdone.data.model.Movie
 
 class DelegateListAdapter(
-    callback: DiffUtil.ItemCallback<MovieDataHolder>,
-    selectedCallback: ItemSelectedCallback<MovieDb>
-) : ListAdapter<MovieDataHolder, RecyclerView.ViewHolder>(callback) {
+    callback: DiffUtil.ItemCallback<Movie>,
+    selectedCallback: ItemSelectedCallback<Movie>
+) : ListAdapter<Movie, RecyclerView.ViewHolder>(callback) {
     private var delegateAdapters = SparseArrayCompat<AdapterType>()
 
     init {
@@ -47,7 +43,7 @@ class DelegateListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         @Suppress("UNCHECKED_CAST")
         delegateAdapters.get(getItemViewType(position))!!
-            .onBindViewHolder(holder, getItem(position) as DataHolder<AbstractJsonMapping, AdditionalParams>)
+            .onBindViewHolder(holder, getItem(position))
     }
 
     override fun getItemViewType(position: Int): Int = Types.MOVIE
