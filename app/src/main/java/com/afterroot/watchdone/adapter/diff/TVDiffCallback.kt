@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.adapter.diff
 
 import androidx.recyclerview.widget.DiffUtil

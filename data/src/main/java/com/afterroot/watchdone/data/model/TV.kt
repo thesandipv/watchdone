@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.data.model
 
 import com.afterroot.tmdbapi.model.ContentRating
@@ -30,7 +29,9 @@ import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.Genre
 
 data class TV(
-    //Info
+    // Info
+    val id: Int? = 0,
+    val name: String? = null,
     var createdBy: List<Person>? = null,
     var episodeRuntime: List<Int>? = null,
     var firstAirDate: String? = null,
@@ -59,13 +60,13 @@ data class TV(
     val images: MovieImages? = null,
     val videos: List<Video>? = null,
     val keywords: List<Keyword>? = null,
-    //Additional Data
+    // Additional Data
     var isWatched: Boolean = false
 ) : Multi {
 
     override val mediaType: Multi.MediaType
         get() = Multi.MediaType.TV_SERIES
 
-    //Just for Firestore
+    // Just for Firestore
     var releaseDate = firstAirDate
 }

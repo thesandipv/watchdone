@@ -12,12 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.data.model
 
 import java.io.Serializable
 
-//Collection 'users'
+// Collection 'users'
 data class User(
     var name: String?,
     var email: String?,

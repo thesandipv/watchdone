@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.data.mapper
 
 import com.afterroot.tmdbapi.model.tv.TvSeries
@@ -40,13 +39,15 @@ fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     voteAverage = voteAverage,
     voteCount = voteCount,
     status = status,
-    //Appendable Responses
+    // Appendable Responses
     contentRatings = getContentRatings(),
     credits = credits,
     externalIds = externalIds,
     images = images,
     videos = videos,
     keywords = keywords,
-    //Additional
+    // Additional
     isWatched = isWatched
 )
+
+fun TvResultsPage.toTV(): List<TV> = results.mapNotNull { it?.toTV() }

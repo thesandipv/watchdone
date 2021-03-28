@@ -51,6 +51,7 @@ def versions = [
         jacksonVersion            : '2.11.2',
         koin3                     : "3.0.1-beta-1",
         koinVersion               : "2.2.2",
+        ktlint                    : "0.41.0",
         kotlin_version            : "1.4.31",
         kotlinxCoroutinesVersion  : "1.4.2",
         legacySupportV13Version   : "1.0.0",

@@ -12,11 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.base
 
 object Collection {
-    //Collections
+    // Collections
     const val USERS = "users"
     const val WATCHDONE_PROD = "watchdone"
     const val WATCHDONE_DEBUG = "watchdone-debug"
@@ -26,7 +25,7 @@ object Collection {
 }
 
 object Field {
-    //Fields
+    // Fields
     const val NAME = "name"
     const val EMAIL = "email"
     const val UID = "uid"

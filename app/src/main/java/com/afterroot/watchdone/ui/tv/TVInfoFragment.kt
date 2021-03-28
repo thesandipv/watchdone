@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.tv
 
 import android.annotation.SuppressLint
@@ -112,23 +111,29 @@ class TVInfoFragment : Fragment() {
         }
 
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
-            .observe(viewLifecycleOwner, { state: ViewModelState? ->
-                if (state is ViewModelState.Loaded<*>) {
-                    homeViewModel.selectedTvSeries.observe(viewLifecycleOwner, { tvSeries: TvSeries ->
-                        updateUI(tvSeries)
-                        launchShowingProgress {
-                            updateCast(tvSeries)
-                        }
-                    })
+            .observe(
+                viewLifecycleOwner,
+                { state: ViewModelState? ->
+                    if (state is ViewModelState.Loaded<*>) {
+                        homeViewModel.selectedTvSeries.observe(
+                            viewLifecycleOwner,
+                            { tvSeries: TvSeries ->
+                                updateUI(tvSeries)
+                                launchShowingProgress {
+                                    updateCast(tvSeries)
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
 
         setErrorObserver()
 
         binding.adView.loadAd(AdRequest.Builder().build())
     }
 
-    private fun updateUI(tv: TvSeries) { //Do operations related to database
+    private fun updateUI(tv: TvSeries) { // Do operations related to database
         watchListRef = get<FirebaseFirestore>().collectionWatchdone(
             id = get<FirebaseAuth>().currentUser?.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
@@ -140,7 +145,7 @@ class TVInfoFragment : Fragment() {
             updateGenres(tv)
             posterUrl = tv.posterPath?.let { this@TVInfoFragment.settings.createPosterUrl(it) }
             watchlistItemReference.whereEqualTo(Field.ID, tv.id).get(Source.CACHE).addOnSuccessListener {
-                kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
+                kotlin.runCatching { // Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
                     var isWatched = false
                     var resultFromDB: TvSeries? = null
@@ -152,7 +157,7 @@ class TVInfoFragment : Fragment() {
                         }
                         resultFromDB = document.toObject(TvSeries::class.java) as TvSeries
                         selectedMovieDocId = document.id
-                        launchShowingProgress { //Only for compare and update firestore
+                        launchShowingProgress { // Only for compare and update firestore
                             val resultFromServer = getInfoFromServerForCompare(tv.id)
                             if (resultFromServer != resultFromDB) {
                                 val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
@@ -201,7 +206,6 @@ class TVInfoFragment : Fragment() {
                                         }
                                     }
                                 }
-
                             }
                         } else {
                             text = getString(R.string.text_remove_from_watchlist)
@@ -306,7 +310,7 @@ class TVInfoFragment : Fragment() {
 
     private fun DocumentReference.getTotalItemsCount(doOnSuccess: (Int) -> Unit) {
         this.get().addOnCompleteListener {
-            if (it.result?.data != null) { //Fixes
+            if (it.result?.data != null) { // Fixes
                 it.result?.getField<Int>(Field.TOTAL_ITEMS)?.let { items -> doOnSuccess(items) }
             } else {
                 doOnSuccess(0)
@@ -337,18 +341,21 @@ class TVInfoFragment : Fragment() {
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, {
-            if (it != null) {
-                hideProgress()
-                snackBarMessage("Error: $it")
+        homeViewModel.error.observe(
+            viewLifecycleOwner,
+            {
+                if (it != null) {
+                    hideProgress()
+                    snackBarMessage("Error: $it")
+                }
             }
-        })
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_view_imdb -> {
-                //TODO Verify TMDb has IMDb id for TVSeries
+                // TODO Verify TMDb has IMDb id for TVSeries
                 /* binding.tvSeries?.imdbId?.let {
                      val imdbUrl = HttpUrl.Builder().scheme("https")
                          .host("www.imdb.com")
@@ -473,6 +480,3 @@ class TVInfoFragment : Fragment() {
         private const val TAG = "MovieInfoFragment"
     }
 }
-
-
-
