@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.viewmodel
 
 import androidx.lifecycle.LifecycleOwner
@@ -27,15 +26,18 @@ class NetworkViewModel(val networkStateMonitor: NetworkStateMonitor) : ViewModel
         crossinline doWhenConnected: (state: NetworkState) -> Unit,
         noinline doWhenNotConnected: ((state: NetworkState) -> Unit)? = null
     ) {
-        networkStateMonitor.observe(lifecycleOwner, {
-            when (it) {
-                NetworkState.CONNECTED -> {
-                    doWhenConnected(NetworkState.CONNECTED)
-                }
-                else -> {
-                    doWhenNotConnected?.invoke(it)
+        networkStateMonitor.observe(
+            lifecycleOwner,
+            {
+                when (it) {
+                    NetworkState.CONNECTED -> {
+                        doWhenConnected(NetworkState.CONNECTED)
+                    }
+                    else -> {
+                        doWhenNotConnected?.invoke(it)
+                    }
                 }
             }
-        })
+        )
     }
 }

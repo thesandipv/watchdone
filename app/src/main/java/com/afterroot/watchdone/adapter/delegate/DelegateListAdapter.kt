@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.adapter.delegate
 
 import android.view.ViewGroup
@@ -33,7 +32,7 @@ class DelegateListAdapter(
         with(delegateAdapters) {
             put(Types.MOVIE, MovieAdapterType(selectedCallback))
         }
-        //stateRestorationPolicy = StateRestorationPolicy.PREVENT
+        // stateRestorationPolicy = StateRestorationPolicy.PREVENT
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

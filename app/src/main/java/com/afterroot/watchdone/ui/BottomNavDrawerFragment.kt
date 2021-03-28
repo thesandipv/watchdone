@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui
 
 import android.os.Bundle
@@ -62,23 +61,26 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
                     }
                     R.id.tmdb_login -> {
                         val dialog = requireContext().showStaticProgressDialog("Loading...")
-                        homeViewModel.getResponseRequestToken().observe(viewLifecycleOwner, { response ->
-                            if (response.success) {
-                                try {
-                                    requireContext().browse(AuthRepository.getAuthVerifyUrl(response))
-                                    dialog.dismiss()
-                                    dismiss()
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+                        homeViewModel.getResponseRequestToken().observe(
+                            viewLifecycleOwner,
+                            { response ->
+                                if (response.success) {
+                                    try {
+                                        requireContext().browse(AuthRepository.getAuthVerifyUrl(response))
+                                        dialog.dismiss()
+                                        dismiss()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        dialog.dismiss()
+                                        dismiss()
+                                    }
+                                } else {
+                                    requireContext().toast(response.statusMessage)
                                     dialog.dismiss()
                                     dismiss()
                                 }
-                            } else {
-                                requireContext().toast(response.statusMessage)
-                                dialog.dismiss()
-                                dismiss()
                             }
-                        })
+                        )
                     }
                     R.id.send_feedback -> {
                         requireContext().email(
@@ -105,7 +107,6 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
                         dismiss()
                     }
                 }
-
             }
         }
     }

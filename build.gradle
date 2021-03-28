@@ -22,6 +22,7 @@ buildscript {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+        mavenCentral()
     }
     dependencies {
         classpath Libs.AGP
@@ -34,6 +35,7 @@ buildscript {
 }
 
 plugins {
+    id 'com.diffplug.spotless' version '5.11.0'
     id 'com.github.ben-manes.versions' version '0.36.0'
 }
 
@@ -82,8 +84,19 @@ subprojects {
         }
     }
 
+    apply plugin: 'com.diffplug.spotless'
+    spotless {
+        kotlin {
+            target '**/*.kt'
+            targetExclude("$buildDir/**/*.kt")
+            targetExclude('bin/**/*.kt')
+
+            ktlint(Versions.ktlint)
+            licenseHeaderFile rootProject.file('copyright.kt')
+        }
+    }
 }
 
-task clean(type: Delete) {
+task clean2(type: Delete) {
     delete rootProject.buildDir
 }

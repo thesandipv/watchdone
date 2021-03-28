@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.data.model
 
 import com.afterroot.tmdbapi.TmdbMovies
@@ -34,8 +33,8 @@ import com.afterroot.tmdbapi.model.core.ResultsPage
 import com.afterroot.tmdbapi2.model.Genre
 
 data class Movie(
-    //Movie Info
-    val id: Int? = 0,
+    // Movie Info
+    val id: Int = 0,
     val adult: Boolean? = null,
     val backdropPath: String? = null,
     val belongsToCollection: Collection? = null,
@@ -74,10 +73,9 @@ data class Movie(
     private var translations: MovieTranslations? = null,
     private var videos: Video.Results? = null,
     var credits: Credits? = null,
-    //Additional Data
+    // Additional Data
     var isWatched: Boolean = false
 ) : Multi {
     override val mediaType: Multi.MediaType
         get() = Multi.MediaType.MOVIE
 }
-
