@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.search
 
 import android.app.SearchManager
@@ -132,61 +131,70 @@ class SearchNewFragment : Fragment() {
     }
 
     private fun showSearchResults(query: String): Job? = lifecycleScope.launch {
-        //SectionViews
+        // SectionViews
         moviesSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_movies)).withLoading()
         tvSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_tv)).withLoading()
         peopleSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_people)).withLoading()
 
-        //Adapters
+        // Adapters
         val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback)
         val tvListAdapter = SearchTVListAdapter(tvItemSelectedCallback)
         val peopleListAdapter = SearchPeopleListAdapter(peopleItemSelectedCallback)
 
-        //Add Children
+        // Add Children
         binding.contentSearch.apply {
             addSectionAt(0, moviesSection)
             addSectionAt(1, tvSection)
             addSectionAt(2, peopleSection)
         }
 
-        viewModel.searchMovies(query).observe(viewLifecycleOwner, {
-            if (it is ViewModelState.Loaded<*>) {
-                val data = it.data as MovieResultsPage
-                moviesListAdapter.submitList(data.toMovies())
-                moviesSection.setAdapter(moviesListAdapter)
-                if (data.totalResults > 0) {
-                    moviesSection.isLoaded = true
-                } else {
-                    moviesSection.noResults()
+        viewModel.searchMovies(query).observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loaded<*>) {
+                    val data = it.data as MovieResultsPage
+                    moviesListAdapter.submitList(data.toMovies())
+                    moviesSection.setAdapter(moviesListAdapter)
+                    if (data.totalResults > 0) {
+                        moviesSection.isLoaded = true
+                    } else {
+                        moviesSection.noResults()
+                    }
                 }
             }
-        })
+        )
 
-        viewModel.searchTV(query).observe(viewLifecycleOwner, {
-            if (it is ViewModelState.Loaded<*>) {
-                val data = it.data as TvResultsPage
-                tvListAdapter.submitList(data.toTVDataHolder())
-                tvSection.setAdapter(tvListAdapter)
-                if (data.totalResults > 0) {
-                    tvSection.isLoaded = true
-                } else {
-                    tvSection.noResults()
+        viewModel.searchTV(query).observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loaded<*>) {
+                    val data = it.data as TvResultsPage
+                    tvListAdapter.submitList(data.toTVDataHolder())
+                    tvSection.setAdapter(tvListAdapter)
+                    if (data.totalResults > 0) {
+                        tvSection.isLoaded = true
+                    } else {
+                        tvSection.noResults()
+                    }
                 }
             }
-        })
+        )
 
-        viewModel.searchPeople(query).observe(viewLifecycleOwner, {
-            if (it is ViewModelState.Loaded<*>) {
-                val data = it.data as TmdbPeople.PersonResultsPage
-                peopleListAdapter.submitList(data.toPeopleDataHolder())
-                peopleSection.setAdapter(peopleListAdapter)
-                if (data.totalResults > 0) {
-                    peopleSection.isLoaded = true
-                } else {
-                    peopleSection.noResults()
+        viewModel.searchPeople(query).observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loaded<*>) {
+                    val data = it.data as TmdbPeople.PersonResultsPage
+                    peopleListAdapter.submitList(data.toPeopleDataHolder())
+                    peopleSection.setAdapter(peopleListAdapter)
+                    if (data.totalResults > 0) {
+                        peopleSection.isLoaded = true
+                    } else {
+                        peopleSection.noResults()
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun LinearLayoutCompat.addSectionAt(index: Int, section: SectionalListView) {
@@ -218,6 +226,6 @@ class SearchNewFragment : Fragment() {
     }
 
     private val peopleItemSelectedCallback = object : ItemSelectedCallback<PeopleDataHolder> {
-        //TODO Add Cast info screen
+        // TODO Add Cast info screen
     }
 }

@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.settings
 
 import android.content.Context
@@ -45,7 +44,7 @@ class Settings(val context: Context) {
         putStringSet(key, value)
     }
 
-    //Template
+    // Template
     var isFirstInstalled
         get() = preferences.getBoolean(Constants.PREF_KEY_FIRST_INSTALL, true)
         set(value) = putBoolean(Constants.PREF_KEY_FIRST_INSTALL, value)

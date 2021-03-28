@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.home
 
 import android.os.Bundle
@@ -138,12 +137,16 @@ class HomeFragment : Fragment() {
             isCheckable = true
             setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    homeScreenAdapter.submitList(homeScreenAdapter.currentList.filter {
-                        it.additionalParams?.isWatched == false
-                    }
-                    )                    // homeScreenAdapter.submitQuery(settings.queryDirection, isReload = true, action = QueryAction.PENDING)
+                    homeScreenAdapter.submitList(
+                        homeScreenAdapter.currentList.filter {
+                            if (it is Movie) {
+                                !it.isWatched
+                            } else {
+                                !(it as TV).isWatched
+                            }
+                        }
+                    ) // homeScreenAdapter.submitQuery(settings.queryDirection, isReload = true, action = QueryAction.PENDING)
                 } else homeScreenAdapter.clearFilters()
-
             }
         }
         binding.chipGroup.apply {
@@ -186,38 +189,43 @@ class HomeFragment : Fragment() {
                     whereIn(Field.IS_WATCHED, listOf(false, null)).orderBy(Field.RELEASE_DATE, direction)
                 }
             }
-
-        }.observe(viewLifecycleOwner, {
-            if (it is ViewModelState.Loading) {
-                binding.progressBarHome.visible(true)
-            } else if (it is ViewModelState.Loaded<*>) {
-                binding.progressBarHome.visible(false)
-                try { //Fixes crash when user is being logged out
-                    if (it.data != null) {
-                        binding.infoNoMovies.visible(false, AutoTransition())
-                        val listData: QuerySnapshot = it.data as QuerySnapshot
-                        if (listData.documents.isEmpty()) {
-                            submitList(emptyList())
-                            binding.infoNoMovies.visible(true, AutoTransition())
-                            binding.infoTv.text =
-                                if (action != QueryAction.CLEAR) getString(R.string.text_info_no_movies_in_filter)
-                                else getString(R.string.text_info_no_movies)
-                        } else {
-                            submitList(listData.toMultiDataHolder())
+        }.observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loading) {
+                    binding.progressBarHome.visible(true)
+                } else if (it is ViewModelState.Loaded<*>) {
+                    binding.progressBarHome.visible(false)
+                    try { // Fixes crash when user is being logged out
+                        if (it.data != null) {
+                            binding.infoNoMovies.visible(false, AutoTransition())
+                            val listData: QuerySnapshot = it.data as QuerySnapshot
+                            if (listData.documents.isEmpty()) {
+                                submitList(emptyList())
+                                binding.infoNoMovies.visible(true, AutoTransition())
+                                binding.infoTv.text =
+                                    if (action != QueryAction.CLEAR) getString(R.string.text_info_no_movies_in_filter)
+                                    else getString(R.string.text_info_no_movies)
+                            } else {
+                                submitList(listData.toMulti())
+                            }
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
             }
-        })
+        )
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, EventObserver {
-            binding.progressBarHome.visible(false, AutoTransition())
-            requireContext().toast("Via: $TAG : $it")
-        })
+        homeViewModel.error.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                binding.progressBarHome.visible(false, AutoTransition())
+                requireContext().toast("Via: $TAG : $it")
+            }
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

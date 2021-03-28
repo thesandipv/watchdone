@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone
 
 import com.afterroot.tmdbapi2.model.RequestBodyToken
@@ -43,7 +42,6 @@ class TMDbAuthTest : KoinTest {
             val token =
                 authRepository.createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch")).requestToken
             Assert.assertNotNull("Token is Null", token)
-
         }
     }
 

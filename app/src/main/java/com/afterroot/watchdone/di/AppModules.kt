@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.di
 
 import android.content.Context
@@ -67,9 +66,11 @@ val firebaseModule = module {
 
     single {
         Firebase.remoteConfig.apply {
-            setConfigSettingsAsync(remoteConfigSettings {
-                fetchTimeoutInSeconds = ifDebug(debug = 0, release = 3600)
-            })
+            setConfigSettingsAsync(
+                remoteConfigSettings {
+                    fetchTimeoutInSeconds = ifDebug(debug = 0, release = 3600)
+                }
+            )
         }
     }
 

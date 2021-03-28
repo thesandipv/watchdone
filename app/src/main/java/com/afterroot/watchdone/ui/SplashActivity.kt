@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui
 
 import android.app.Activity
@@ -97,7 +96,8 @@ class SplashActivity : AppCompatActivity() {
                             )
                             .build()
                     )
-                ).build(), RC_LOGIN
+                ).build(),
+            RC_LOGIN
         )
     }
 
@@ -121,10 +121,14 @@ class SplashActivity : AppCompatActivity() {
 
     private var dialog: MaterialDialog? = null
     private fun setUpNetworkObserver() {
-        networkViewModel.doIfNetworkConnected(this, doWhenConnected = {
-            if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
-        }, doWhenNotConnected = {
-            dialog = showNetworkDialog(state = it, positive = { setUpNetworkObserver() }, negative = { finish() })
-        })
+        networkViewModel.doIfNetworkConnected(
+            this,
+            doWhenConnected = {
+                if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
+            },
+            doWhenNotConnected = {
+                dialog = showNetworkDialog(state = it, positive = { setUpNetworkObserver() }, negative = { finish() })
+            }
+        )
     }
 }

@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.discover
 
 import android.os.Bundle
@@ -73,7 +72,8 @@ class DiscoverFragment : Fragment() {
                         super.onLongClick(position, item)
                         requireContext().toast(item.title.toString())
                     }
-                })
+                }
+            )
             binding.list.adapter = homeScreenAdapter
             homeScreenAdapter.submitList(repo.toMovies())
             binding.progressBarDiscover.visible(false)

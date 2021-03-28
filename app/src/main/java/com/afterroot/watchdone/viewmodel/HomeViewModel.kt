@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.viewmodel
 
 import android.util.Log
@@ -80,7 +79,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     fun getTrendingMovies(isReload: Boolean = false): LiveData<MovieResultsPage> {
         if (trendingMovies.value == null || isReload) {
             try {
-                trendingMovies = liveData(Dispatchers.IO) { //Background Thread
+                trendingMovies = liveData(Dispatchers.IO) { // Background Thread
                     emit(get<MoviesRepository>().getMoviesTrendingInSearch())
                 } as MutableLiveData<MovieResultsPage>
             } catch (e: Exception) {
@@ -110,13 +109,16 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
 
     fun addGenres(owner: LifecycleOwner) {
         get<MyDatabase>().genreDao().apply {
-            getGenres().observe(owner, {
-                if (it.isNullOrEmpty()) {
-                    viewModelScope.launch {
-                        this@apply.add(get<GenresRepository>().getMoviesGenres().genres)
+            getGenres().observe(
+                owner,
+                {
+                    if (it.isNullOrEmpty()) {
+                        viewModelScope.launch {
+                            this@apply.add(get<GenresRepository>().getMoviesGenres().genres)
+                        }
                     }
                 }
-            })
+            )
         }
     }
 }
