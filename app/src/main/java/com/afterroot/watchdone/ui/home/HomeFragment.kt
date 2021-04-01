@@ -28,14 +28,14 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.model.MovieDb
-import com.afterroot.tmdbapi.model.tv.TvSeries
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.MultiAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.MultiDataHolder
-import com.afterroot.watchdone.data.toMultiDataHolder
+import com.afterroot.watchdone.data.mapper.toMulti
+import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
@@ -58,42 +58,42 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val settings: Settings by inject()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    private val itemSelectedCallback = object : ItemSelectedCallback<MultiDataHolder> {
-        override fun onClick(position: Int, view: View?, item: MultiDataHolder) {
+    private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
+        override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
-            if (item.data is MovieDb) {
-                homeViewModel.selectMovie(item.data as MovieDb)
+            if (item is Movie) {
+                homeViewModel.selectMovie(item)
                 findNavController().navigate(
                     R.id.toMovieInfo,
                     null, null,
                     FragmentNavigatorExtras(
-                        view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item.data as MovieDb).title!!
+                        view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item).title!!
                     )
                 )
-            } else if (item.data is TvSeries) {
-                homeViewModel.selectTVSeries(item.data as TvSeries)
+            } else if (item is TV) {
+                homeViewModel.selectTVSeries(item)
                 findNavController().navigate(R.id.toTVInfo)
             }
         }
 
-        override fun onLongClick(position: Int, item: MultiDataHolder) {
+        override fun onLongClick(position: Int, item: Multi) {
             super.onLongClick(position, item)
-            if (item.data is MovieDb) {
-                requireContext().toast((item.data as MovieDb).title.toString())
-            } else if (item.data is TvSeries) {
-                requireContext().toast((item.data as TvSeries).name.toString())
+            if (item is Movie) {
+                requireContext().toast((item).title.toString())
+            } else if (item is TV) {
+                requireContext().toast((item).name.toString())
             }
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         homeScreenAdapter = MultiAdapter(itemSelectedCallback)
         binding.list.adapter = homeScreenAdapter

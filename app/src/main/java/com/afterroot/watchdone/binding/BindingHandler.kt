@@ -16,7 +16,7 @@ package com.afterroot.watchdone.binding
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.Genre
 import com.afterroot.watchdone.GlideApp
@@ -36,7 +36,7 @@ fun ImageView.setAvatar(email: String?) {
 }
 
 @BindingAdapter("movieDb", "settings")
-fun ImageView.setMoviePoster(movieDb: MovieDb?, settings: Settings?) {
+fun ImageView.setMoviePoster(movieDb: NetworkMovie?, settings: Settings?) {
     GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + movieDb?.posterPath).transition(transitionOptions)
         .into(this)
 }

@@ -30,7 +30,7 @@ import com.afterroot.tmdbapi2.model.Genre
 
 data class TV(
     // Info
-    val id: Int? = 0,
+    val id: Int = 0,
     val name: String? = null,
     var createdBy: List<Person>? = null,
     var episodeRuntime: List<Int>? = null,

@@ -14,11 +14,15 @@
  */
 package com.afterroot.watchdone.data.mapper
 
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.watchdone.data.model.DbMovie
 import com.afterroot.watchdone.data.model.Movie
 
-fun MovieDb.toMovie(isWatched: Boolean = false): Movie = Movie(
+/**
+ * Maps [NetworkMovie] to [Movie]
+ */
+fun NetworkMovie.toMovie(isWatched: Boolean = false): Movie = Movie(
     id = id,
     adult = adult,
     backdropPath = backdropPath,
@@ -47,7 +51,7 @@ fun MovieDb.toMovie(isWatched: Boolean = false): Movie = Movie(
     voteCount = voteCount,
     userRating = userRating,
     recommendedMovies = recommendedMovies,
-    alternativeTitles = getAlternativeTitles(),
+    alternativeTitles = alternativeTitles(),
     images = images,
     keywords = keywords,
     lists = lists,
@@ -58,6 +62,14 @@ fun MovieDb.toMovie(isWatched: Boolean = false): Movie = Movie(
     videos = videos,
     credits = credits,
     isWatched = isWatched
+)
+
+fun DbMovie.toMovie(): Movie = Movie(
+    id = id,
+    releaseDate = releaseDate,
+    title = title,
+    isWatched = isWatched ?: false,
+    posterPath = posterPath,
 )
 
 fun MovieResultsPage.toMovies(): List<Movie> = results.mapNotNull { it?.toMovie() }

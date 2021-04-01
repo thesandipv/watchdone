@@ -12,14 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.movie
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -28,6 +26,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -38,19 +37,21 @@ import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.updateProgressText
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.MoviesRepository
+import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.cast.toCastDataHolder
+import com.afterroot.watchdone.data.mapper.toMovie
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.createPosterUrl
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
@@ -85,11 +86,13 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class MovieInfoFragment : Fragment() {
-    private lateinit var watchlistItemReference: CollectionReference
-    private lateinit var watchListRef: DocumentReference
     private lateinit var binding: FragmentMovieInfoBinding
     private lateinit var rewardedAd: RewardedAd
+    private lateinit var watchlistItemReference: CollectionReference
+    private lateinit var watchListRef: DocumentReference
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private val moviesRepository: MoviesRepository by inject()
+    private val firebaseUtils: FirebaseUtils by inject()
     private val myDatabase: MyDatabase by inject()
     private val settings: Settings by inject()
     private var adLoaded: Boolean = false
@@ -114,24 +117,30 @@ class MovieInfoFragment : Fragment() {
             }
         }
 
-        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
-            .observe(viewLifecycleOwner, { state: ViewModelState? ->
-                if (state is ViewModelState.Loaded<*>) {
-                    homeViewModel.selectedMovie.observe(viewLifecycleOwner, { movieDb: MovieDb ->
-                        updateUI(movieDb)
-                        launchShowingProgress {
-                            updateCast(movieDb)
-                        }
-                    })
+        homeViewModel.getWatchlistSnapshot(firebaseUtils.uid!!)
+            .observe(
+                viewLifecycleOwner,
+                { state: ViewModelState? ->
+                    if (state is ViewModelState.Loaded<*>) {
+                        homeViewModel.selectedMovie.observe(
+                            viewLifecycleOwner,
+                            { movie: Movie ->
+                                updateUI(movie)
+                                launchShowingProgress {
+                                    updateCast(movie)
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
 
         setErrorObserver()
 
         binding.adView.loadAd(AdRequest.Builder().build())
     }
 
-    private fun updateUI(movieDb: MovieDb) { //Do operations related to database
+    private fun updateUI(movie: Movie) { // Do operations related to database
         watchListRef = get<FirebaseFirestore>().collectionWatchdone(
             id = get<FirebaseAuth>().currentUser?.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
@@ -139,31 +148,31 @@ class MovieInfoFragment : Fragment() {
         watchlistItemReference = watchListRef.collection(Collection.ITEMS)
         binding.apply {
             settings = this@MovieInfoFragment.settings
-            moviedb = movieDb
-            updateGenres(movieDb)
-            posterUrl = movieDb.posterPath?.let { this@MovieInfoFragment.settings.createPosterUrl(it) }
+            this.movie = movie
+            updateGenres(movie)
+            posterUrl = movie.posterPath?.let { this@MovieInfoFragment.settings.createPosterUrl(it) }
             // executePendingBindings()
-            watchlistItemReference.whereEqualTo(Field.ID, movieDb.id).get(Source.CACHE).addOnSuccessListener {
-                kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
+            watchlistItemReference.whereEqualTo(Field.ID, movie.id).get(Source.CACHE).addOnSuccessListener {
+                kotlin.runCatching { // Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
                     var isWatched = false
-                    var resultFromDB: MovieDb? = null
+                    var resultFromDB: Movie? = null
                     var selectedMovieDocId: String? = null
                     if (isInWatchlist) {
                         val document = it.documents[0]
                         document.getBoolean(Field.IS_WATCHED)?.let { watched ->
                             isWatched = watched
                         }
-                        resultFromDB = document.toObject(MovieDb::class.java) as MovieDb
+                        resultFromDB = document.toObject(Movie::class.java)
                         selectedMovieDocId = document.id
-                        launchShowingProgress { //Only for compare and update firestore
-                            val resultFromServer = getInfoFromServerForCompare(movieDb.id)
+                        launchShowingProgress { // Only for compare and update firestore
+                            val resultFromServer = getInfoFromServerForCompare(movie.id)
                             if (resultFromServer != resultFromDB) {
                                 val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
                                 selectedMovieDocRef.set(resultFromServer, SetOptions.merge()).addOnSuccessListener {
                                     hideProgress()
                                 }
-                                moviedb = resultFromServer
+                                this.movie = resultFromServer
                                 updateGenres(resultFromServer)
                             } else {
                                 hideProgress()
@@ -171,8 +180,8 @@ class MovieInfoFragment : Fragment() {
                         }
                     } else {
                         launchShowingProgress {
-                            moviedb = getInfoFromServer(movieDb.id)
-                            updateGenres(moviedb!!)
+                            this.movie = getInfoFromServer(movie.id)
+                            updateGenres(this.movie!!)
                             hideProgress()
                         }
                     }
@@ -186,7 +195,7 @@ class MovieInfoFragment : Fragment() {
                                     progressDialog = requireContext().showStaticProgressDialog("Please Wait...")
                                     watchListRef.getTotalItemsCount { itemsCount ->
                                         if (itemsCount < 5) {
-                                            addToWatchlist(movieDb)
+                                            addToWatchlist(movie)
                                         } else {
                                             snackBarMessage(requireContext().getString(R.string.msg_limit_error))
                                             hideProgress()
@@ -207,7 +216,6 @@ class MovieInfoFragment : Fragment() {
                                         }
                                     }
                                 }
-
                             }
                         } else {
                             text = getString(R.string.text_remove_from_watchlist)
@@ -241,13 +249,13 @@ class MovieInfoFragment : Fragment() {
                     }
                 }
             }
-            menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.moviedb?.imdbId.isNullOrBlank()
+            menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
             loadNewAd()
         }
     }
 
-    private fun addToWatchlist(movieDb: MovieDb) {
-        watchlistItemReference.add(movieDb)
+    private fun addToWatchlist(movie: Movie) {
+        watchlistItemReference.add(movie)
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
         hideProgress()
@@ -268,7 +276,7 @@ class MovieInfoFragment : Fragment() {
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 adLoaded = false
                 if (clickedAddWl) {
-                    progressDialog?.updateProgressText("Adding ${binding.moviedb?.title} to Watchlist")
+                    progressDialog?.updateProgressText("Adding ${binding.movie?.title} to Watchlist")
                     addAfterWatchingAd()
                 }
             }
@@ -284,7 +292,7 @@ class MovieInfoFragment : Fragment() {
     fun addAfterWatchingAd() {
         doShowingProgress {
             watchListRef.updateTotalItemsCounter(-5) {
-                binding.moviedb?.let { addToWatchlist(it) }
+                binding.movie?.let { addToWatchlist(it) }
             }
         }
     }
@@ -306,11 +314,11 @@ class MovieInfoFragment : Fragment() {
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        get<MoviesRepository>().getFullMovieInfo(id, MovieAppendableResponses.credits)
+        moviesRepository.getFullMovieInfo(id, MovieAppendableResponses.credits).toMovie()
     }
 
     private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
-        get<MoviesRepository>().getMovieInfo(id)
+        moviesRepository.getMovieInfo(id).toMovie()
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
@@ -321,7 +329,7 @@ class MovieInfoFragment : Fragment() {
 
     private fun DocumentReference.getTotalItemsCount(doOnSuccess: (Int) -> Unit) {
         this.get().addOnCompleteListener {
-            if (it.result?.data != null) { //Fixes
+            if (it.result?.data != null) { // Fixes
                 it.result?.getField<Int>(Field.TOTAL_ITEMS)?.let { items -> doOnSuccess(items) }
             } else {
                 doOnSuccess(0)
@@ -329,41 +337,54 @@ class MovieInfoFragment : Fragment() {
         }
     }
 
-    private fun updateGenres(movieDb: MovieDb) {
-        if (movieDb.genres == null) {
-            movieDb.genreIds?.let {
-                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, { roomGenres ->
-                    binding.genres = roomGenres
-                })
+    private fun updateGenres(movie: Movie) {
+        if (movie.genres == null) {
+            movie.genreIds?.let {
+                myDatabase.genreDao().getGenres(it).observe(
+                    viewLifecycleOwner,
+                    { roomGenres ->
+                        binding.genres = roomGenres
+                    }
+                )
             }
         } else {
-            binding.genres = movieDb.genres
+            binding.genres = movie.genres
         }
     }
 
-    private suspend fun updateCast(movieDb: MovieDb) {
-        val cast = get<MoviesRepository>().getCredits(movieDb.id).cast
+    private suspend fun updateCast(movie: Movie) {
+        val credits = get<MoviesRepository>().getCredits(movie.id)
         val castAdapter = CastListAdapter()
-        castAdapter.submitList(cast?.toCastDataHolder())
+        val crewAdapter = CastListAdapter()
         binding.castList.apply {
             adapter = castAdapter
             visible(true, AutoTransition())
         }
+
+        binding.crewList.apply {
+            adapter = crewAdapter
+            visible(true, AutoTransition())
+        }
+        castAdapter.submitList(credits.cast)
+        crewAdapter.submitList(credits.crew)
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, {
-            if (it != null) {
-                hideProgress()
-                snackBarMessage("Error: $it")
+        homeViewModel.error.observe(
+            viewLifecycleOwner,
+            {
+                if (it != null) {
+                    hideProgress()
+                    snackBarMessage("Error: $it")
+                }
             }
-        })
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_view_imdb -> {
-                binding.moviedb?.imdbId?.let {
+                binding.movie?.imdbId?.let {
                     val imdbUrl = HttpUrl.Builder().scheme("https")
                         .host("www.imdb.com")
                         .addPathSegments("title").addPathSegment(it).build()
@@ -380,13 +401,13 @@ class MovieInfoFragment : Fragment() {
             R.id.action_share_to_ig_story -> {
                 val dialog = requireContext().showStaticProgressDialog(getString(R.string.text_please_wait))
                 GlideApp.with(requireContext()).asBitmap()
-                    .load(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + binding.moviedb?.posterPath)
+                    .load(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + binding.movie?.posterPath)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             var fos: FileOutputStream? = null
                             val file = File(
                                 requireContext().externalCacheDir.toString(),
-                                binding.moviedb?.id.toString()
+                                "${binding.movie?.id.toString()}.jpg"
                             )
                             try {
                                 fos = FileOutputStream(file)
@@ -396,15 +417,20 @@ class MovieInfoFragment : Fragment() {
                             } finally {
                                 fos?.flush()
                                 fos?.close()
-                                val uri = Uri.fromFile(file)
+                                val uri = FileProvider.getUriForFile(
+                                    requireContext(),
+                                    "${BuildConfig.APPLICATION_ID}.provider",
+                                    file
+                                )
                                 Palette.from(resource).generate { palette ->
                                     val intent = Intent(Constants.IG_SHARE_ACTION).apply {
                                         type = Constants.MIME_TYPE_JPEG
                                         putExtra(Constants.IG_EXTRA_INT_ASSET_URI, uri)
+                                        putExtra(Constants.IG_EXTRA_SOURCE_APP, BuildConfig.APPLICATION_ID)
                                         putExtra(
                                             Constants.IG_EXTRA_CONTENT_URL,
                                             HttpUrl.Builder().scheme(Constants.SCHEME_HTTPS).host(Constants.WATCHDONE_HOST)
-                                                .addPathSegment("movie").addPathSegment(binding.moviedb?.id.toString())
+                                                .addPathSegment("movie").addPathSegment(binding.movie?.id.toString())
                                                 .build().toString()
 
                                         )
@@ -424,6 +450,7 @@ class MovieInfoFragment : Fragment() {
                                                 )
                                             )?.toHex()
                                         )
+                                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                                     }
                                     requireActivity().grantUriPermission(
                                         Constants.IG_PACKAGE_NAME,
@@ -488,6 +515,3 @@ class MovieInfoFragment : Fragment() {
         private const val TAG = "MovieInfoFragment"
     }
 }
-
-
-

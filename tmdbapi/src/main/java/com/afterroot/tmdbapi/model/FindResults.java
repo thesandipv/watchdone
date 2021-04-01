@@ -11,7 +11,7 @@ import java.util.List;
 public class FindResults extends AbstractJsonMapping {
 
     @JsonProperty("movie_results")
-    private List<MovieDb> movieResults;
+    private List<NetworkMovie> movieResults;
 
     @JsonProperty("person_results")
     private List<Person> personResults;
@@ -20,7 +20,7 @@ public class FindResults extends AbstractJsonMapping {
     private List<TvSeries> tvResults;
 
 
-    public List<MovieDb> getMovieResults() {
+    public List<NetworkMovie> getMovieResults() {
         return movieResults;
     }
 
@@ -35,7 +35,7 @@ public class FindResults extends AbstractJsonMapping {
     }
 
 
-    public void setMovieResults( List<MovieDb> movieResults ) {
+    public void setMovieResults( List<NetworkMovie> movieResults ) {
         this.movieResults = movieResults;
     }
 

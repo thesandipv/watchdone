@@ -15,7 +15,7 @@
 package com.afterroot.tmdbapi
 
 import com.afterroot.tmdbapi.Utils.createImageUrl
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
@@ -33,8 +33,8 @@ class MoviesApiTest : AbstractTmdbApiTest() {
         val result = tmdb.movies.getMovie(ID_MOVIE_BLADE_RUNNER, LANGUAGE_ENGLISH, *TmdbMovies.MovieMethod.values())
         val productionCompany = result.productionCompanies?.get(0)
         Assert.assertEquals("Incorrect movie information", "Blade Runner", result.originalTitle)
-        Assert.assertTrue("no videos", result.getVideos()!!.isNotEmpty())
-        Assert.assertNotNull(result.getReleases())
+        Assert.assertTrue("no videos", result.videos()!!.isNotEmpty())
+        Assert.assertNotNull(result.releases())
         Assert.assertFalse(result.productionCompanies!!.isEmpty())
         Assert.assertNotNull(productionCompany?.logoPath)
         Assert.assertNotNull(productionCompany?.originCountry)
@@ -77,7 +77,7 @@ class MoviesApiTest : AbstractTmdbApiTest() {
         val language = ""
         val result =
             tmdb.movies.getImages(ID_MOVIE_BLADE_RUNNER, language)
-        Assert.assertFalse("No artwork found", result.posters.isEmpty())
+        Assert.assertFalse("No artwork found", result.posters!!.isEmpty())
     }
 
     @Test
@@ -97,7 +97,7 @@ class MoviesApiTest : AbstractTmdbApiTest() {
     fun testMovieKeywordsAppendedMethod() {
 //        List<Keyword> result = tmdb.getMovies().getKeywords(10191);
         val movie = tmdb.movies.getMovie(10191, "fr", TmdbMovies.MovieMethod.keywords)
-        val result = movie.getKeywords()
+        val result = movie.keywords()
         Assert.assertFalse("No keywords found", result!!.isEmpty())
         Assert.assertEquals(19, result.size.toLong())
     }
@@ -144,14 +144,14 @@ class MoviesApiTest : AbstractTmdbApiTest() {
 
     @Test
     fun testGetNowPlayingMovies() {
-        val result: List<MovieDb?> =
+        val result: List<NetworkMovie?> =
             tmdb.movies.getNowPlayingMovies(LANGUAGE_DEFAULT, 0, null).results
         Assert.assertTrue("No now playing movies found", !result.isEmpty())
     }
 
     @Test
     fun testGetPopularMovieList() {
-        val result: List<MovieDb?> =
+        val result: List<NetworkMovie?> =
             tmdb.movies.getPopularMovies(LANGUAGE_DEFAULT, 0).results
         Assert.assertTrue("No popular movies found", !result.isEmpty())
         Assert.assertNotNull(result[0]!!.originalTitle)
@@ -160,14 +160,14 @@ class MoviesApiTest : AbstractTmdbApiTest() {
 
     @Test
     fun testGetTopRatedMovies() {
-        val results: List<MovieDb?> =
+        val results: List<NetworkMovie?> =
             tmdb.movies.getTopRatedMovies(LANGUAGE_DEFAULT, 0).results
         Assert.assertTrue("No top rated movies found", !results.isEmpty())
     }
 
     @Test
     fun testGetSimilarMovies() {
-        val result: List<MovieDb?> = tmdb.movies.getSimilarMovies(
+        val result: List<NetworkMovie?> = tmdb.movies.getSimilarMovies(
             ID_MOVIE_BLADE_RUNNER,
             LANGUAGE_DEFAULT,
             0
@@ -185,7 +185,7 @@ class MoviesApiTest : AbstractTmdbApiTest() {
     @Test
     @Throws(Exception::class)
     fun testGetUpcoming() {
-        val result: List<MovieDb?> = tmdb.movies.getUpcoming("en-US", 1, null).results
+        val result: List<NetworkMovie?> = tmdb.movies.getUpcoming("en-US", 1, null).results
         Assert.assertTrue("No upcoming movies found", !result.isEmpty())
     }
 
@@ -196,7 +196,7 @@ class MoviesApiTest : AbstractTmdbApiTest() {
         val endDate: String? = null
 
         // Get some popular movies
-        val movieList: List<MovieDb?> =
+        val movieList: List<NetworkMovie?> =
             tmdb.movies.getPopularMovies(LANGUAGE_DEFAULT, 0).results
         for (movie in movieList) {
             val result = tmdb.movies.getChanges(movie!!.id, startDate, endDate)
@@ -225,7 +225,7 @@ class MoviesApiTest : AbstractTmdbApiTest() {
         // Request URL be like https://api.themoviedb.org/3/movie/293660?append_to_response=credits&language=en
         movieDb = tmdbMovies.getMovie(293660, "en", TmdbMovies.MovieMethod.credits)
         Assert.assertNotNull("Credits returned", movieDb.credits)
-        Assert.assertTrue("Credits-cast found", movieDb.getCast()!!.isNotEmpty())
-        Assert.assertTrue("Credits-crew found", movieDb.getCrew()!!.isNotEmpty())
+        Assert.assertTrue("Credits-cast found", movieDb.cast()!!.isNotEmpty())
+        Assert.assertTrue("Credits-crew found", movieDb.crew()!!.isNotEmpty())
     }
 }

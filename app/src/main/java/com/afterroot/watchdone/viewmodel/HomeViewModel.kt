@@ -23,13 +23,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
@@ -49,7 +49,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
     val error = MutableLiveData<Event<String>>()
     val selectedMovie = MutableLiveData<Movie>()
-    val selectedTvSeries = MutableLiveData<TvSeries>()
+    val selectedTvSeries = MutableLiveData<TV>()
 
     fun getWatchlistSnapshot(
         userId: String,
@@ -97,7 +97,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
         selectedMovie.value = movie
     }
 
-    fun selectTVSeries(tvSeries: TvSeries) {
+    fun selectTVSeries(tvSeries: TV) {
         selectedTvSeries.value = tvSeries
     }
 

@@ -38,6 +38,7 @@ import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.progress
 import com.afterroot.core.extensions.visible
 import com.afterroot.core.network.NetworkState
+import com.afterroot.core.onVersionGreaterThanEqualTo
 import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.Constants.RC_PERMISSION
@@ -58,7 +59,7 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
@@ -232,13 +233,13 @@ class MainActivity : AppCompatActivity() {
                         checkPermissions()
                     }.anchorView = binding.toolbar
                 } else {
-                    loadFragments()
+                    setUpNavigation()
                 }
             }
         }
     }
 
-    private fun loadFragments() {
+    private fun setUpNavigation() {
         val drawerToggle = DrawerArrowDrawable(this)
         navController = findNavController(R.id.nav_host_fragment)
         navController.addOnDestinationChangedListener { _, destination, _ ->

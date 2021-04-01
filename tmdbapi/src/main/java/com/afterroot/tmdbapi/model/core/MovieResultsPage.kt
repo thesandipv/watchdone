@@ -14,6 +14,6 @@
  */
 package com.afterroot.tmdbapi.model.core
 
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 
-class MovieResultsPage : ResultsPage<MovieDb?>()
+class MovieResultsPage : ResultsPage<NetworkMovie?>()

@@ -14,7 +14,7 @@
  */
 package com.afterroot.tmdbapi
 
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.tools.MovieDbException
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -33,7 +33,7 @@ object Utils {
      * @return True if there is a match, False otherwise.
      */
     @JvmOverloads
-    fun compareMovies(moviedb: MovieDb?, title: String, year: String, maxDistance: Int = 0): Boolean {
+    fun compareMovies(moviedb: NetworkMovie?, title: String, year: String, maxDistance: Int = 0): Boolean {
         if (moviedb == null || StringUtils.isBlank(title)) {
             return java.lang.Boolean.FALSE
         }

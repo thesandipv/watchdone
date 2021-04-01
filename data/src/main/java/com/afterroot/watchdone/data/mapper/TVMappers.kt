@@ -14,10 +14,12 @@
  */
 package com.afterroot.watchdone.data.mapper
 
+import com.afterroot.tmdbapi.TvResultsPage
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.data.model.TV
 
 fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
+    id = id,
     createdBy = createdBy,
     episodeRuntime = episodeRuntime,
     firstAirDate = firstAirDate,
