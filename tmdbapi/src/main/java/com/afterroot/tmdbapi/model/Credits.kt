@@ -14,7 +14,6 @@
  */
 package com.afterroot.tmdbapi.model
 
-import com.afterroot.tmdbapi.Utils.nullAsEmpty
 import com.afterroot.tmdbapi.model.core.IdElement
 import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.tmdbapi.model.people.PersonCast
@@ -37,9 +36,9 @@ data class Credits(
         get() {
             val involved: MutableList<Person> = ArrayList()
             involved.apply {
-                addAll(nullAsEmpty(crew))
-                addAll(nullAsEmpty(cast))
-                addAll(nullAsEmpty(guestStars))
+                crew?.let { addAll(it) }
+                cast?.let { addAll(it) }
+                guestStars?.let { addAll(it) }
             }
             return involved
         }

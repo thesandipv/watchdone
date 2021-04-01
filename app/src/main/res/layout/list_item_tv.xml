@@ -22,7 +22,7 @@
 
         <variable
             name="tvSeries"
-            type="com.afterroot.tmdbapi.model.tv.TvSeries" />
+            type="com.afterroot.watchdone.data.model.TV" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +98,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginBottom="8dp"
             android:text="@{tvSeries.firstAirDate}"
             android:textColor="@android:color/white"
@@ -113,7 +112,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:text="@{tvSeries.voteAverage.toString()}"

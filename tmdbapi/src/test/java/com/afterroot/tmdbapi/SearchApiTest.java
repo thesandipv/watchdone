@@ -2,7 +2,7 @@ package com.afterroot.tmdbapi;
 
 import com.afterroot.tmdbapi.model.Collection;
 import com.afterroot.tmdbapi.model.Company;
-import com.afterroot.tmdbapi.model.MovieDb;
+import com.afterroot.tmdbapi.model.NetworkMovie;
 import com.afterroot.tmdbapi.model.MovieList;
 import com.afterroot.tmdbapi.model.Multi;
 import com.afterroot.tmdbapi.model.core.MovieResultsPage;
@@ -41,8 +41,8 @@ public class SearchApiTest extends AbstractTmdbApiTest {
         // Try a movie with less than 1 page of results
         TmdbSearch search = tmdb.getSearch();
 
-        List<MovieDb> movieList = search.searchMovie("Blade Runner", 0, "", true, 0).getResults();
-//        List<MovieDb> movieList = tmdb.searchMovie("Blade Runner", "", true);
+        List<NetworkMovie> movieList = search.searchMovie("Blade Runner", 0, "", true, 0).getResults();
+//        List<NetworkMovie> movieList = tmdb.searchMovie("Blade Runner", "", true);
         assertTrue("No movies found, should be at least 1", movieList.size() > 0);
 
         // Try a russian language movie

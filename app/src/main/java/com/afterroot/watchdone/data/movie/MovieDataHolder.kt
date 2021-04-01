@@ -14,7 +14,7 @@
  */
 package com.afterroot.watchdone.data.movie
 
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.base.DataHolder
@@ -22,16 +22,16 @@ import com.google.firebase.firestore.QuerySnapshot
 
 @Deprecated("To be removed. Use Mappers.")
 data class MovieDataHolder(
-    override var data: MovieDb,
+    override var data: NetworkMovie,
     override var additionalParams: MovieAdditionalParams? = null
-) : DataHolder<MovieDb, MovieAdditionalParams>()
+) : DataHolder<NetworkMovie, MovieAdditionalParams>()
 
 @Deprecated("To be removed. Use Mappers.")
 fun QuerySnapshot.toMovieDataHolder(): List<MovieDataHolder> {
     val list = mutableListOf<MovieDataHolder>()
     this.forEach { queryDocumentSnapshot ->
         val holder = MovieDataHolder(
-            queryDocumentSnapshot.toObject(MovieDb::class.java),
+            queryDocumentSnapshot.toObject(NetworkMovie::class.java),
             MovieAdditionalParams(queryDocumentSnapshot.getBoolean(Field.IS_WATCHED))
         )
         list.add(holder)

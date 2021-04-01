@@ -18,7 +18,10 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-class FirebaseUtils(firebaseAuth: FirebaseAuth) {
+/**
+ * @param firebaseAuth Firebase Auth Instance
+ */
+class FirebaseUtils(/*Injected*/firebaseAuth: FirebaseAuth) {
     var auth: FirebaseAuth = firebaseAuth
 
     val firebaseUser: FirebaseUser?

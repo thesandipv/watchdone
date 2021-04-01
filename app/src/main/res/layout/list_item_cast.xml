@@ -23,6 +23,10 @@
         <variable
             name="personDetail"
             type="com.afterroot.tmdbapi.model.people.PersonCast" />
+
+        <variable
+            name="personCrew"
+            type="com.afterroot.tmdbapi.model.people.PersonCrew" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -57,7 +61,7 @@
                 android:paddingTop="4dp"
                 android:paddingEnd="@dimen/padding_horizontal_half"
                 android:paddingRight="@dimen/padding_horizontal_half"
-                android:text="@{personDetail.name}"
+                android:text="@{personDetail.name ?? personCrew.name}"
                 android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@+id/character_name"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +80,7 @@
                 android:paddingEnd="@dimen/padding_horizontal_half"
                 android:paddingRight="@dimen/padding_horizontal_half"
                 android:paddingBottom="@dimen/padding_vertical_half"
-                android:text="@{personDetail.character}"
+                android:text="@{personDetail.character ?? personCrew.job}"
                 android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Caption"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"

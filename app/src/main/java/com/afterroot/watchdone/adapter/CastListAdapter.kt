@@ -20,19 +20,20 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.tmdbapi.model.people.PersonCast
+import com.afterroot.tmdbapi.model.people.PersonCrew
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
 import com.afterroot.watchdone.adapter.diff.CastDiffCallback
-import com.afterroot.watchdone.data.cast.CastDataHolder
 import com.afterroot.watchdone.databinding.ListItemCastBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), KoinComponent {
+class CastListAdapter : BaseListAdapter<Person>(CastDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -51,7 +52,7 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
 
     override fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         viewHolder as CastListViewHolder
-        viewHolder.bind(getItem(position).data)
+        viewHolder.bind(getItem(position))
     }
 
     override fun bindFooterViewHolder(viewHolder: RecyclerView.ViewHolder) {
@@ -69,21 +70,29 @@ class CastListAdapter : BaseListAdapter<CastDataHolder>(CastDiffCallback()), Koi
 
     inner class CastListViewHolder(val binding: ListItemCastBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.castIv
+        private var heightRatio: Float = 3f / 2f
         val context: Context = posterView.context
-        var heightRatio: Float = 3f / 2f
         val width =
             (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(personCast: PersonCast) {
-            binding.personDetail = personCast
+        fun bind(personCast: Person) {
+            if (personCast is PersonCast) {
+                binding.personDetail = personCast
+            } else if (personCast is PersonCrew) {
+                binding.personCrew = personCast
+            }
             posterView.updateLayoutParams {
                 this.width = this@CastListViewHolder.width
                 this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + personCast.profilePath)
+            var imageUrl: String? = null
+            if (personCast.profilePath != null) {
+                imageUrl = settings.baseUrl + settings.imageSize + personCast.profilePath
+            }
+            GlideApp.with(context).load(imageUrl)
                 .override(width, (width * heightRatio).toInt())
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_person)
