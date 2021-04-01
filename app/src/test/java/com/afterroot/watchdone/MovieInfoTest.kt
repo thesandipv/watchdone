@@ -51,12 +51,12 @@ class MovieInfoTest : KoinTest {
     fun `Full Movie Info`() {
         launch {
             val response = moviesRepository.getFullMovieInfo(550, images, videos)
-            Assert.assertNotNull("Images is null", response.getImages(ArtworkType.POSTER))
-            response.getImages(ArtworkType.POSTER)?.forEach {
+            Assert.assertNotNull("Images is null", response.images(ArtworkType.POSTER))
+            response.images(ArtworkType.POSTER)?.forEach {
                 println(it.toString())
             }
-            Assert.assertNotNull("Videos is null", response.getVideos())
-            response.getVideos()?.forEach {
+            Assert.assertNotNull("Videos is null", response.videos())
+            response.videos()?.forEach {
                 println(it.toString())
             }
         }

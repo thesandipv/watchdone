@@ -19,11 +19,11 @@ import com.afterroot.tmdbapi.model.AlternativeTitle
 import com.afterroot.tmdbapi.model.Collection
 import com.afterroot.tmdbapi.model.Credits
 import com.afterroot.tmdbapi.model.Language
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.MovieImages
 import com.afterroot.tmdbapi.model.MovieList
 import com.afterroot.tmdbapi.model.MovieTranslations
 import com.afterroot.tmdbapi.model.Multi
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.ProductionCompany
 import com.afterroot.tmdbapi.model.ProductionCountry
 import com.afterroot.tmdbapi.model.Reviews
@@ -62,14 +62,14 @@ data class Movie(
     val voteCount: Int? = null,
     var userRating: Float = 0f,
     // Appendable responses
-    private val recommendedMovies: ResultsPage<MovieDb>? = null,
+    private val recommendedMovies: ResultsPage<NetworkMovie>? = null,
     private var alternativeTitles: List<AlternativeTitle>? = null,
     private var images: MovieImages? = null,
     private var keywords: MovieKeywords? = null,
     private var lists: ResultsPage<MovieList>? = null,
     private var releases: TmdbMovies.ReleaseInfoResults? = null,
     private var reviews: ResultsPage<Reviews>? = null,
-    private var similarMovies: ResultsPage<MovieDb>? = null,
+    private var similarMovies: ResultsPage<NetworkMovie>? = null,
     private var translations: MovieTranslations? = null,
     private var videos: Video.Results? = null,
     var credits: Credits? = null,

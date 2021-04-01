@@ -15,14 +15,14 @@
 package com.afterroot.watchdone.adapter.diff
 
 import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.watchdone.data.tv.TVDataHolder
+import com.afterroot.watchdone.data.model.TV
 
-class TVDiffCallback : DiffUtil.ItemCallback<TVDataHolder>() {
-    override fun areItemsTheSame(oldItem: TVDataHolder, newItem: TVDataHolder): Boolean {
-        return oldItem.data.id == newItem.data.id
+class TVDiffCallback : DiffUtil.ItemCallback<TV>() {
+    override fun areItemsTheSame(oldItem: TV, newItem: TV): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: TVDataHolder, newItem: TVDataHolder): Boolean {
-        return oldItem.data == newItem.data
+    override fun areContentsTheSame(oldItem: TV, newItem: TV): Boolean {
+        return oldItem == newItem
     }
 }

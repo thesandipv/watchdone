@@ -23,14 +23,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.binding.transitionOptions
-import com.afterroot.watchdone.data.MultiDataHolder
+import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.databinding.ListItemTvBinding
 import com.afterroot.watchdone.ui.settings.Settings
@@ -38,8 +37,8 @@ import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
-    ListAdapter<MultiDataHolder, RecyclerView.ViewHolder>(MultiDiffCallback()),
+class MultiAdapter(val callback: ItemSelectedCallback<Multi>) :
+    ListAdapter<Multi, RecyclerView.ViewHolder>(MultiDiffCallback()),
     KoinComponent {
     val settings: Settings by inject()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -56,7 +55,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position).data.mediaType) {
+        return when (getItem(position).mediaType) {
             Multi.MediaType.MOVIE -> {
                 MOVIE
             }
@@ -101,18 +100,18 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
         private val context: Context = posterView.context
         private var heightRatio: Float = 3f / 2f
         private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
-        fun bind(movieDataHolder: MultiDataHolder) {
+        fun bind(movie: Multi) {
             binding.apply {
-                movieDb = movieDataHolder.data as MovieDb
+                movieDb = movie as Movie
                 root.setOnClickListener {
                     callback.onClick(adapterPosition, root)
-                    callback.onClick(adapterPosition, root, movieDataHolder)
+                    callback.onClick(adapterPosition, root, movie)
                 }
                 root.setOnLongClickListener {
-                    callback.onLongClick(adapterPosition, movieDataHolder)
+                    callback.onLongClick(adapterPosition, movie)
                     return@setOnLongClickListener true
                 }
-                isWatched.visible(movieDataHolder.additionalParams?.isWatched ?: false)
+                isWatched.visible(movie.isWatched)
             }
             posterView.updateLayoutParams {
                 this.width = this@MoviesListViewHolder.width
@@ -133,18 +132,18 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
         private var heightRatio: Float = 3f / 2f
         private val context: Context = posterView.context
         private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
-        fun bind(tvDataHolder: MultiDataHolder) {
+        fun bind(tv: Multi) {
             binding.apply {
-                tvSeries = tvDataHolder.data as TvSeries
+                tvSeries = tv as TV
                 root.setOnClickListener {
                     callback.onClick(adapterPosition, root)
-                    callback.onClick(adapterPosition, root, tvDataHolder)
+                    callback.onClick(adapterPosition, root, tv)
                 }
                 root.setOnLongClickListener {
-                    callback.onLongClick(adapterPosition, tvDataHolder)
+                    callback.onLongClick(adapterPosition, tv)
                     return@setOnLongClickListener true
                 }
-                isWatched.visible(tvDataHolder.additionalParams?.isWatched ?: false)
+                isWatched.visible(tv.isWatched)
             }
             posterView.updateLayoutParams {
                 this.width = this@TVListViewHolder.width
@@ -166,32 +165,28 @@ class MultiAdapter(val callback: ItemSelectedCallback<MultiDataHolder>) :
     }
 }
 
-class MultiDiffCallback : DiffUtil.ItemCallback<MultiDataHolder>() {
-    override fun areItemsTheSame(oldItem: MultiDataHolder, newItem: MultiDataHolder): Boolean {
-        val oldData = oldItem.data
-        val newData = newItem.data
-        return if (oldData is MovieDb && newData is MovieDb) {
-            oldData.id == newData.id
-        } else if (oldData is TvSeries && newData is TvSeries) {
-            oldData.id == newData.id
-        } else if (oldData is MovieDb && newData is TvSeries) {
-            oldData.id == newData.id
-        } else if (oldData is TvSeries && newData is MovieDb) {
-            oldData.id == newData.id
+class MultiDiffCallback : DiffUtil.ItemCallback<Multi>() {
+    override fun areItemsTheSame(oldItem: Multi, newItem: Multi): Boolean {
+        return if (oldItem is Movie && newItem is Movie) {
+            oldItem.id == newItem.id
+        } else if (oldItem is TV && newItem is TV) {
+            oldItem.id == newItem.id
+        } else if (oldItem is Movie && newItem is TV) {
+            oldItem.id == newItem.id
+        } else if (oldItem is TV && newItem is Movie) {
+            oldItem.id == newItem.id
         } else false
     }
 
     @Suppress("ReplaceCallWithBinaryOperator")
-    override fun areContentsTheSame(oldItem: MultiDataHolder, newItem: MultiDataHolder): Boolean {
-        val oldData = oldItem.data
-        val newData = newItem.data
-        return if (oldData is MovieDb && newData is MovieDb) {
-            oldData.equals(newData)
-        } else if (oldData is TvSeries && newData is TvSeries) {
-            oldData.equals(newData)
-        } else if (oldData is MovieDb && newData is TvSeries) {
+    override fun areContentsTheSame(oldItem: Multi, newItem: Multi): Boolean {
+        return if (oldItem is Movie && newItem is Movie) {
+            oldItem.equals(newItem)
+        } else if (oldItem is TV && newItem is TV) {
+            oldItem.equals(newItem)
+        } else if (oldItem is Movie && newItem is TV) {
             false
-        } else if (oldData is TvSeries && newData is MovieDb) {
+        } else if (oldItem is TV && newItem is Movie) {
             false
         } else false
     }

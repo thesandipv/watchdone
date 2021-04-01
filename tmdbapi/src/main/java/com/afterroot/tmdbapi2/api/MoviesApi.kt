@@ -15,7 +15,7 @@
 package com.afterroot.tmdbapi2.api
 
 import com.afterroot.tmdbapi.model.Credits
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.MovieImages
 import com.afterroot.tmdbapi.model.MovieList
 import com.afterroot.tmdbapi.model.Video
@@ -31,19 +31,19 @@ interface MoviesApi {
     suspend fun getMoviesTrendingInSearch(@Path("by") by: String): MovieResultsPage
 
     @GET("3/movie/{movie_id}")
-    suspend fun getMovieInfo(@Path("movie_id") movieId: Int): MovieDb
+    suspend fun getMovieInfo(@Path("movie_id") movieId: Int): NetworkMovie
 
     @GET("3/movie/{movie_id}")
     suspend fun getFullMovieInfo(
         @Path("movie_id") movieId: Int,
         @Query("append_to_response") appendableResponses: String
-    ): MovieDb
+    ): NetworkMovie
 
     @GET("3/movie/popular")
     suspend fun getPopular(@Query("region") region: String?): MovieResultsPage
 
     @GET("3/movie/latest")
-    suspend fun getLatest(@Query("region") region: String?): MovieDb
+    suspend fun getLatest(@Query("region") region: String?): NetworkMovie
 
     @GET("3/movie/now_playing")
     suspend fun getNowPlaying(@Query("region") region: String?): MovieResultsPage

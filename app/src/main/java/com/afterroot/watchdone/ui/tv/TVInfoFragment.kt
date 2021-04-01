@@ -36,7 +36,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.TVRepository
 import com.afterroot.watchdone.Constants
@@ -45,7 +44,8 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.cast.toCastDataHolder
+import com.afterroot.watchdone.data.mapper.toTV
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
@@ -100,8 +100,8 @@ class TVInfoFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val argTvId = arguments?.getString("tvId")
         if (argTvId != null) {
@@ -117,10 +117,10 @@ class TVInfoFragment : Fragment() {
                     if (state is ViewModelState.Loaded<*>) {
                         homeViewModel.selectedTvSeries.observe(
                             viewLifecycleOwner,
-                            { tvSeries: TvSeries ->
-                                updateUI(tvSeries)
+                            { tv: TV ->
+                                updateUI(tv)
                                 launchShowingProgress {
-                                    updateCast(tvSeries)
+                                    updateCast(tv)
                                 }
                             }
                         )
@@ -133,7 +133,7 @@ class TVInfoFragment : Fragment() {
         binding.adView.loadAd(AdRequest.Builder().build())
     }
 
-    private fun updateUI(tv: TvSeries) { // Do operations related to database
+    private fun updateUI(tv: TV) { // Do operations related to database
         watchListRef = get<FirebaseFirestore>().collectionWatchdone(
             id = get<FirebaseAuth>().currentUser?.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
@@ -148,14 +148,14 @@ class TVInfoFragment : Fragment() {
                 kotlin.runCatching { // Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
                     var isWatched = false
-                    var resultFromDB: TvSeries? = null
+                    var resultFromDB: TV? = null
                     var selectedMovieDocId: String? = null
                     if (isInWatchlist) {
                         val document = it.documents[0]
                         document.getBoolean(Field.IS_WATCHED)?.let { watched ->
                             isWatched = watched
                         }
-                        resultFromDB = document.toObject(TvSeries::class.java) as TvSeries
+                        resultFromDB = document.toObject(TV::class.java)
                         selectedMovieDocId = document.id
                         launchShowingProgress { // Only for compare and update firestore
                             val resultFromServer = getInfoFromServerForCompare(tv.id)
@@ -244,8 +244,9 @@ class TVInfoFragment : Fragment() {
         }
     }
 
-    private fun addToWatchlist(tvSeries: TvSeries) {
-        watchlistItemReference.add(tvSeries)
+    private fun addToWatchlist(tv: TV) {
+        //TODO Add only TV Id, other data will be fetched
+        watchlistItemReference.add(tv)
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
         hideProgress()
@@ -295,11 +296,11 @@ class TVInfoFragment : Fragment() {
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        get<TVRepository>().getFullTvInfo(id, MovieAppendableResponses.credits)
+        get<TVRepository>().getFullTvInfo(id, MovieAppendableResponses.credits).toTV()
     }
 
     private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
-        get<TVRepository>().getTVInfo(id)
+        get<TVRepository>().getTVInfo(id).toTV()
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
@@ -318,22 +319,22 @@ class TVInfoFragment : Fragment() {
         }
     }
 
-    private fun updateGenres(tvSeries: TvSeries) {
-        if (tvSeries.genres == null) {
+    private fun updateGenres(tv: TV) {
+        if (tv.genres == null) {
             /*tv.genreIds?.let {
                 myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, Observer { roomGenres ->
                     binding.genres = roomGenres
                 })
             }*/
         } else {
-            binding.genres = tvSeries.genres
+            binding.genres = tv.genres
         }
     }
 
-    private suspend fun updateCast(tv: TvSeries) {
+    private suspend fun updateCast(tv: TV) {
         val cast = get<TVRepository>().getCredits(tv.id).cast
         val castAdapter = CastListAdapter()
-        castAdapter.submitList(cast?.toCastDataHolder())
+        castAdapter.submitList(cast)
         binding.castList.apply {
             adapter = castAdapter
             visible(true, AutoTransition())
@@ -355,7 +356,7 @@ class TVInfoFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_view_imdb -> {
-                // TODO Verify TMDb has IMDb id for TVSeries
+                // TODO Verify TMDb has IMDb id for TV
                 /* binding.tvSeries?.imdbId?.let {
                      val imdbUrl = HttpUrl.Builder().scheme("https")
                          .host("www.imdb.com")

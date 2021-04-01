@@ -38,11 +38,11 @@ import com.afterroot.watchdone.adapter.SearchPeopleListAdapter
 import com.afterroot.watchdone.adapter.SearchTVListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.data.mapper.toMovies
-import com.afterroot.watchdone.data.movie.MovieDataHolder
+import com.afterroot.watchdone.data.mapper.toTV
+import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.people.PeopleDataHolder
 import com.afterroot.watchdone.data.people.toPeopleDataHolder
-import com.afterroot.watchdone.data.tv.TVDataHolder
-import com.afterroot.watchdone.data.tv.toTVDataHolder
 import com.afterroot.watchdone.databinding.SearchNewFragmentBinding
 import com.afterroot.watchdone.providers.RecentSearchSuggestionsProvider
 import com.afterroot.watchdone.utils.hideKeyboard
@@ -63,14 +63,14 @@ class SearchNewFragment : Fragment() {
     private val viewModel: SearchNewViewModel by activityViewModels()
     private var searchTask: Job? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = SearchNewFragmentBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         initSearch()
     }
@@ -130,7 +130,7 @@ class SearchNewFragment : Fragment() {
         view?.let { requireContext().hideKeyboard(it) }
     }
 
-    private fun showSearchResults(query: String): Job? = lifecycleScope.launch {
+    private fun showSearchResults(query: String): Job = lifecycleScope.launch {
         // SectionViews
         moviesSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_movies)).withLoading()
         tvSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_tv)).withLoading()
@@ -169,7 +169,7 @@ class SearchNewFragment : Fragment() {
             {
                 if (it is ViewModelState.Loaded<*>) {
                     val data = it.data as TvResultsPage
-                    tvListAdapter.submitList(data.toTVDataHolder())
+                    tvListAdapter.submitList(data.toTV())
                     tvSection.setAdapter(tvListAdapter)
                     if (data.totalResults > 0) {
                         tvSection.isLoaded = true
@@ -209,18 +209,18 @@ class SearchNewFragment : Fragment() {
         peopleSection.hide()
     }
 
-    private val movieItemSelectedCallback = object : ItemSelectedCallback<MovieDataHolder> {
-        override fun onClick(position: Int, view: View?, item: MovieDataHolder) {
+    private val movieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
+        override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
-            homeViewModel.selectMovie(item.data)
+            homeViewModel.selectMovie(item)
             view?.findNavController()?.navigate(R.id.searchNewToMovieInfo)
         }
     }
 
-    private val tvItemSelectedCallback = object : ItemSelectedCallback<TVDataHolder> {
-        override fun onClick(position: Int, view: View?, item: TVDataHolder) {
+    private val tvItemSelectedCallback = object : ItemSelectedCallback<TV> {
+        override fun onClick(position: Int, view: View?, item: TV) {
             super.onClick(position, view, item)
-            homeViewModel.selectTVSeries(item.data)
+            homeViewModel.selectTVSeries(item)
             view?.findNavController()?.navigate(R.id.searchNewToTVInfo)
         }
     }

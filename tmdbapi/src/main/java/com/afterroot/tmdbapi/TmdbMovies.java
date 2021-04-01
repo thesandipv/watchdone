@@ -2,7 +2,7 @@ package com.afterroot.tmdbapi;
 
 import com.afterroot.tmdbapi.model.AlternativeTitle;
 import com.afterroot.tmdbapi.model.Credits;
-import com.afterroot.tmdbapi.model.MovieDb;
+import com.afterroot.tmdbapi.model.NetworkMovie;
 import com.afterroot.tmdbapi.model.MovieImages;
 import com.afterroot.tmdbapi.model.MovieTranslations;
 import com.afterroot.tmdbapi.model.MoviesAlternativeTitles;
@@ -61,14 +61,14 @@ public class TmdbMovies extends AbstractTmdbApi {
      * @param movieId
      * @param language
      */
-    public MovieDb getMovie(int movieId, String language, MovieMethod... appendToResponse) {
+    public NetworkMovie getMovie(int movieId, String language, MovieMethod... appendToResponse) {
         ApiUrl apiUrl = new ApiUrl(TMDB_METHOD_MOVIE, movieId);
 
         apiUrl.addLanguage(language);
 
         apiUrl.appendToResponse(asStringArray(appendToResponse));
 
-        return mapJsonResult(apiUrl, MovieDb.class);
+        return mapJsonResult(apiUrl, NetworkMovie.class);
     }
 
 
@@ -291,11 +291,11 @@ public class TmdbMovies extends AbstractTmdbApi {
     /**
      * This method is used to retrieve the newest movie that was added to TMDb.
      */
-    public MovieDb getLatestMovie() {
+    public NetworkMovie getLatestMovie() {
         ApiUrl apiUrl = new ApiUrl(TMDB_METHOD_MOVIE, MovieMethod.latest);
 
 
-        return mapJsonResult(apiUrl, MovieDb.class);
+        return mapJsonResult(apiUrl, NetworkMovie.class);
     }
 
 

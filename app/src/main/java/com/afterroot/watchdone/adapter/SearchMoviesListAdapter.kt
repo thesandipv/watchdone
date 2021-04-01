@@ -25,15 +25,15 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
-import com.afterroot.watchdone.data.movie.MovieDataHolder
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SearchMoviesListAdapter(val callback: ItemSelectedCallback<MovieDataHolder>) :
-    BaseListAdapter<MovieDataHolder>(MovieDiffCallback()), KoinComponent {
+class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>) :
+    BaseListAdapter<Movie>(MovieDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -77,15 +77,15 @@ class SearchMoviesListAdapter(val callback: ItemSelectedCallback<MovieDataHolder
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(movieDataHolder: MovieDataHolder) {
+        fun bind(movie: Movie) {
             binding.apply {
-                movieDb = movieDataHolder.data
+                movieDb = movie
                 root.setOnClickListener {
                     callback.onClick(adapterPosition, root)
-                    callback.onClick(adapterPosition, root, movieDataHolder)
+                    callback.onClick(adapterPosition, root, movie)
                 }
                 root.setOnLongClickListener {
-                    callback.onLongClick(adapterPosition, movieDataHolder)
+                    callback.onLongClick(adapterPosition, movie)
                     return@setOnLongClickListener true
                 }
             }
@@ -94,7 +94,7 @@ class SearchMoviesListAdapter(val callback: ItemSelectedCallback<MovieDataHolder
                 this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movieDataHolder.data.posterPath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movie.posterPath)
                 .override(width, (width * heightRatio).toInt())
                 .placeholder(R.drawable.ic_placeholder_movie)
                 .error(R.drawable.ic_placeholder_movie)

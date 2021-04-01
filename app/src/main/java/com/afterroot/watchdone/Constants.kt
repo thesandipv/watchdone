@@ -37,4 +37,5 @@ object Constants {
     const val IG_EXTRA_CONTENT_URL = "content_url"
     const val IG_EXTRA_TOP_COLOR = "top_background_color"
     const val IG_EXTRA_BOTTOM_COLOR = "bottom_background_color"
+    const val IG_EXTRA_SOURCE_APP = "source_application"
 }

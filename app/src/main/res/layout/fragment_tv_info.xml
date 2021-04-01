@@ -25,7 +25,7 @@
 
         <variable
             name="tvSeries"
-            type="com.afterroot.tmdbapi.model.tv.TvSeries" />
+            type="com.afterroot.watchdone.data.model.TV" />
 
         <variable
             name="settings"
@@ -145,7 +145,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_horizontal"
-                    android:layout_marginRight="@dimen/padding_horizontal"
                     android:text="@string/text_mark_as_watched"
                     android:visibility="gone"
                     app:icon="@drawable/ic_done"

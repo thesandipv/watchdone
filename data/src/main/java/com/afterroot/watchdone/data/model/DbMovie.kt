@@ -12,31 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.tmdbapi.model
 
-import com.afterroot.tmdbapi.model.core.NamedStringIdElement
-import com.fasterxml.jackson.annotation.JsonProperty
+package com.afterroot.watchdone.data.model
 
-class MovieList : NamedStringIdElement() {
-    @JsonProperty("created_by")
-    var createdBy: String? = null
+import com.afterroot.tmdbapi.model.Multi
 
-    @JsonProperty("description")
-    var description: String? = null
-
-    @JsonProperty("favorite_count")
-    var favoriteCount: Int = 0
-
-    @JsonProperty("item_count")
-    var itemCount: Int = 0
-
-    @JsonProperty("poster_path")
+data class DbMovie(
+    val id: Int = 0,
+    val releaseDate: String? = null,
+    val title: String? = null,
+    var isWatched: Boolean? = false,
     var posterPath: String? = null
-
-    @JsonProperty("list_type")
-    var listType: String? = null
-
-    // used for /list
-    @JsonProperty("items")
-    var items: List<NetworkMovie>? = null
+) : Multi {
+    override val mediaType: Multi.MediaType
+        get() = Multi.MediaType.MOVIE
 }
