@@ -19,6 +19,7 @@ import android.net.ConnectivityManager
 import com.afterroot.core.network.NetworkStateMonitor
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
+import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.ifDebug
@@ -32,6 +33,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -46,6 +48,14 @@ val appModule = module {
 */
     single {
         TmdbApi(BuildConfig.TMDB_API)
+    }
+
+    single {
+        CoroutineDispatchers(
+            default = Dispatchers.Default,
+            io = Dispatchers.IO,
+            main = Dispatchers.Main
+        )
     }
 }
 
