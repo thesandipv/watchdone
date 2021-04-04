@@ -32,17 +32,17 @@ import androidx.navigation.findNavController
 import com.afterroot.tmdbapi.TmdbPeople
 import com.afterroot.tmdbapi.TvResultsPage
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.adapter.SearchPeopleListAdapter
 import com.afterroot.watchdone.adapter.SearchTVListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.data.mapper.toMovies
+import com.afterroot.watchdone.data.mapper.toPersons
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
-import com.afterroot.watchdone.data.people.PeopleDataHolder
-import com.afterroot.watchdone.data.people.toPeopleDataHolder
 import com.afterroot.watchdone.databinding.SearchNewFragmentBinding
 import com.afterroot.watchdone.providers.RecentSearchSuggestionsProvider
 import com.afterroot.watchdone.utils.hideKeyboard
@@ -185,7 +185,7 @@ class SearchNewFragment : Fragment() {
             {
                 if (it is ViewModelState.Loaded<*>) {
                     val data = it.data as TmdbPeople.PersonResultsPage
-                    peopleListAdapter.submitList(data.toPeopleDataHolder())
+                    peopleListAdapter.submitList(data.toPersons())
                     peopleSection.setAdapter(peopleListAdapter)
                     if (data.totalResults > 0) {
                         peopleSection.isLoaded = true
@@ -225,7 +225,7 @@ class SearchNewFragment : Fragment() {
         }
     }
 
-    private val peopleItemSelectedCallback = object : ItemSelectedCallback<PeopleDataHolder> {
+    private val peopleItemSelectedCallback = object : ItemSelectedCallback<Person> {
         // TODO Add Cast info screen
     }
 }
