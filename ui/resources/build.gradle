@@ -12,8 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.data.movie
 
-import com.afterroot.watchdone.data.base.AdditionalParams
+apply plugin: 'com.android.library'
 
-data class MovieAdditionalParams(val isWatched: Boolean? = false) : AdditionalParams
+android {
+    compileSdkVersion SDK.COMPILE
+
+    defaultConfig {
+        minSdkVersion SDK.MIN
+    }
+}
+
+dependencies {
+    implementation Libs.Google.material
+}

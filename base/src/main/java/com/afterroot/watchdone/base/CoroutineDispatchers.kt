@@ -12,9 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.data.tv
 
-import com.afterroot.watchdone.data.base.AdditionalParams
+package com.afterroot.watchdone.base
 
-data class TVAdditionalParams(val isWatched: Boolean? = false) :
-    AdditionalParams
+import kotlinx.coroutines.CoroutineDispatcher
+
+data class CoroutineDispatchers(
+    val default: CoroutineDispatcher,
+    val io: CoroutineDispatcher,
+    val main: CoroutineDispatcher
+)

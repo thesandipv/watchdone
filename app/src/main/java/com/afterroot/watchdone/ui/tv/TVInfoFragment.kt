@@ -46,7 +46,6 @@ import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.TV
-import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
@@ -57,9 +56,9 @@ import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -83,11 +82,10 @@ import java.io.IOException
 
 class TVInfoFragment : Fragment() {
     private lateinit var binding: FragmentTvInfoBinding
-    private lateinit var rewardedAd: RewardedAd
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
     private val homeViewModel: HomeViewModel by activityViewModels()
-    private val myDatabase: MyDatabase by inject()
+    // private val myDatabase: MyDatabase by inject()
     private val settings: Settings by inject()
     private var adLoaded: Boolean = false
     private var clickedAddWl: Boolean = false
@@ -195,11 +193,8 @@ class TVInfoFragment : Fragment() {
                                                 message(R.string.dialog_msg_rewarded_ad)
                                                 positiveButton(R.string.text_ok) {
                                                     clickedAddWl = true
-                                                    if (rewardedAd.isLoaded) {
-                                                        showAd()
-                                                    } else {
-                                                        snackBarMessage("Ad is not loaded yet. Loading...")
-                                                    }
+                                                    snackBarMessage("Ad is not loaded yet. Loading...")
+                                                    createAndLoadRewardedAd()
                                                 }
                                                 negativeButton(R.string.fui_cancel)
                                             }
@@ -245,7 +240,7 @@ class TVInfoFragment : Fragment() {
     }
 
     private fun addToWatchlist(tv: TV) {
-        //TODO Add only TV Id, other data will be fetched
+        // TODO Add only TV Id, other data will be fetched
         watchlistItemReference.add(tv)
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
@@ -253,46 +248,49 @@ class TVInfoFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun createAndLoadRewardedAd(): RewardedAd {
-        val rewardedAd = RewardedAd(requireActivity(), getString(R.string.ad_rewarded_unit_id))
+    private fun createAndLoadRewardedAd() {
         val adLoadCallback = object : RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
+            override fun onAdLoaded(rewardedAd: RewardedAd) {
+                super.onAdLoaded(rewardedAd)
+                //TODO Make ad loaded observable
                 adLoaded = true
                 if (clickedAddWl) {
-                    showAd()
+                    showAd(rewardedAd)
                 }
             }
 
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                super.onAdFailedToLoad(adError)
                 adLoaded = false
             }
         }
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
-        return rewardedAd
+        RewardedAd.load(
+            requireActivity(),
+            getString(R.string.ad_rewarded_unit_id),
+            AdManagerAdRequest.Builder().build(),
+            adLoadCallback
+        )
     }
 
-    fun loadNewAd() {
-        this.rewardedAd = createAndLoadRewardedAd()
+    private fun loadNewAd() {
+        createAndLoadRewardedAd()
     }
 
-    private fun showAd() {
-        val adCallback = object : RewardedAdCallback() {
-            override fun onUserEarnedReward(reward: RewardItem) {
-                clickedAddWl = false
-                doShowingProgress {
-                    watchListRef.updateTotalItemsCounter(-5) {
-                        binding.tvSeries?.let { addToWatchlist(it) }
-                    }
+    private fun showAd(rewardedAd: RewardedAd) {
+
+        /* override fun onRewardedAdClosed() {
+             super.onRewardedAdClosed()
+             adLoaded = false
+             loadNewAd()
+         }*/
+        rewardedAd.show(requireActivity()) {
+            clickedAddWl = false
+            doShowingProgress {
+                watchListRef.updateTotalItemsCounter(-5) {
+                    binding.tvSeries?.let { addToWatchlist(it) }
                 }
             }
-
-            override fun onRewardedAdClosed() {
-                super.onRewardedAdClosed()
-                adLoaded = false
-                loadNewAd()
-            }
         }
-        rewardedAd.show(requireActivity(), adCallback)
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {

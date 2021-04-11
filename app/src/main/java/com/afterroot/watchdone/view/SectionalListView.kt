@@ -50,7 +50,7 @@ class SectionalListView(context: Context, attrs: AttributeSet? = null, defStyleA
         return this
     }
 
-    var isLoading: Boolean = false
+    private var isLoading: Boolean = false
         set(value) {
             field = value
             titleView.visible(true, AutoTransition())

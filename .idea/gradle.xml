@@ -15,6 +15,9 @@
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/tmdbapi" />
+            <option value="$PROJECT_DIR$/ui" />
+            <option value="$PROJECT_DIR$/ui/common-compose" />
+            <option value="$PROJECT_DIR$/ui/resources" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

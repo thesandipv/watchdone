@@ -62,9 +62,9 @@
 
         <activity
             android:name=".ui.SplashActivity"
-            android:exported="false"
             android:label="@string/app_name"
-            android:theme="@style/MyTheme.Main.Launch">
+            android:theme="@style/MyTheme.Main.Launch"
+            tools:ignore="IntentFilterExportedReceiver">
             <tools:validation testUrl="https://${hostName}${pathPrefix}" />
 
             <intent-filter>
@@ -117,8 +117,7 @@
 
         <service
             android:name=".FireMessagingService"
-            android:exported="false"
-            tools:ignore="ExportedService">
+            tools:ignore="ExportedService,IntentFilterExportedReceiver">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
