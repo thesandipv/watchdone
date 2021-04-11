@@ -72,4 +72,8 @@ fun DbMovie.toMovie(): Movie = Movie(
     posterPath = posterPath,
 )
 
+fun Movie.toDbMovie() = DbMovie(
+    id = id, releaseDate = releaseDate, title = title, isWatched = isWatched, posterPath = posterPath
+)
+
 fun MovieResultsPage.toMovies(): List<Movie> = results.mapNotNull { it?.toMovie() }

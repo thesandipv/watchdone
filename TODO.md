@@ -5,11 +5,17 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 ### Pending
 - [ ] Add - Metrics by Genres on User Profile
 - [ ] Imp - Get ig share image from cache if exists (improvedIn - ``)
+- [ ] Add - Movie Share action
+- [ ] Add - Cast info Screen
+- [ ] Add - Region Selection in Settings
 
 ### Next Version
 - [X] Add - Deep-link Movie info (addedIn - `c49b6ac`)
 - [X] Add - Deep-link and Palette Color in instagram story (addedIn - `e17ac7c`)
 - [X] Add - App Shortcuts (addedIn - `317b56e`)
+- [X] Add - TMDb Attribution (addedIn - `f0e4762`)
+- [X] Add - Movie, TV and People in Search (addedIn - `bc4f7ee`)
+- [X] Add - TV Titles Support (addedIn - `559a3a0`)
 
 ### v0.0.3
 - [X] Add - Share as Instagram Story (addedIn - `63646b7`)

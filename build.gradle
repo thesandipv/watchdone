@@ -29,7 +29,7 @@ buildscript {
         classpath Libs.Kotlin.gradlePlugin
         classpath Libs.Google.servicesPlugin
         classpath Libs.Firebase.crashlyticsPlugin
-        classpath Libs.Google.ossLicPlugin
+        //classpath Libs.Google.ossLicPlugin
         classpath Libs.AndroidX.Navigation.safeArgsPlugin
     }
 }
@@ -73,9 +73,11 @@ subprojects {
             freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
             freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
             freeCompilerArgs += "-Xopt-in=kotlin.Experimental"
+/*
             freeCompilerArgs += [
                     "-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
             ]
+*/
 
             // freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
 

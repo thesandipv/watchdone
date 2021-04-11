@@ -23,53 +23,53 @@ def version = [
 ]
 
 def versions = [
-        accompanistVersion        : "0.6.1",
-        ankoCommonsVersion        : "0.10.8",
-        appcompatVersion          : "1.3.0-rc01",
-        billingVersion            : "3.0.3",
-        browserVersion            : "1.0.0",
-        cardViewVersion           : "1.0.0",
-        collectionVersion         : "1.1.0",
-        commonsIoVersion          : "1.3.2",
-        composeVersion            : "1.0.0-beta01",
-        constraintLayoutVersion   : "2.0.4",
-        coreKtxVersion            : "1.5.0-beta02",
-        coreVersion               : "0.3.1",
-        crshlyticsPluginVersion   : "2.5.0",
-        daggerVersion             : "2.31.2",
-        emojiVersion              : "1.1.0",
-        epoxyVersion              : "4.4.1",
-        firebaseBomVersion        : "26.8.0",
-        firebaseUiAuthVersion     : "7.1.1",
-        firebaseUiFirestoreVersion: "7.1.1",
-        firebaseUiStorageVersion  : "7.1.1",
-        fragmentKtxVersion        : "1.3.2",
-        glideVersion              : "4.12.0",
-        googleMaterialVersion     : "1.3.0",
-        gsonVersion               : "2.8.6",
-        hiltVersion               : "2.33-beta",
-        jacksonVersion            : '2.12.2',
-        koin3                     : "3.0.1-beta-2",
-        koinVersion               : "2.2.2",
-        ktlint                    : "0.41.0",
-        kotlin_version            : "1.4.31",
-        kotlinxCoroutinesVersion  : "1.4.3",
-        legacySupportV13Version   : "1.0.0",
-        legacySupportV4Version    : "1.0.0",
-        lifecycleVersion          : "2.3.0",
-        materialDialogsVersion    : "3.3.0",
-        multidexVersion           : "2.0.1",
-        navigationVersion         : "2.3.4",
-        okHttpVersion             : '4.9.0',
-        pagingVersion             : "2.1.2",
-        paletteVersion            : "1.0.0",
-        preferenceVersion         : "1.1.1",
-        recyclerviewVersion       : "1.2.0-rc01",
-        retrofitVersion           : '2.9.0',
-        roomKtxVersion            : "2.3.0-rc01",
-        startUpVersion            : "1.0.0",
-        transitionVersion         : "1.3.1",
-        vectorDrawableVersion     : "1.1.0"
+        accompanist        : "0.6.1",
+        ankoCommons        : "0.10.8",
+        appcompat          : "1.3.0-rc01",
+        billing            : "3.0.3",
+        browser            : "1.0.0",
+        cardView           : "1.0.0",
+        collection         : "1.1.0",
+        commonsIo          : "1.3.2",
+        compose            : "1.0.0-beta04",
+        constraintLayout   : "2.0.4",
+        coreKtx            : "1.5.0-beta02",
+        core               : "0.3.1",
+        crshlyticsPlugin   : "2.5.2",
+        dagger             : "2.31.2",
+        emoji              : "1.1.0",
+        epoxy              : "4.4.1",
+        firebaseBom        : "27.0.0",
+        firebaseUiAuth     : "7.1.1",
+        firebaseUiFirestore: "7.1.1",
+        firebaseUiStorage  : "7.1.1",
+        fragmentKtx        : "1.3.2",
+        glide              : "4.12.0",
+        googleMaterial     : "1.3.0",
+        gson               : "2.8.6",
+        hilt               : "2.33-beta",
+        jackson            : '2.12.2',
+        koin3              : "3.0.1-beta-2",
+        koin               : "2.2.2",
+        ktlint             : "0.41.0",
+        kotlin_version     : "1.4.31",
+        kotlinxCoroutines  : "1.4.3",
+        legacySupportV13   : "1.0.0",
+        legacySupportV4    : "1.0.0",
+        lifecycle          : "2.3.0",
+        materialDialogs    : "3.3.0",
+        multidex           : "2.0.1",
+        navigation         : "2.3.4",
+        okHttp             : '4.9.0',
+        paging             : "2.1.2",
+        palette            : "1.0.0",
+        preference         : "1.1.1",
+        recyclerview       : "1.2.0-rc01",
+        retrofit           : '2.9.0',
+        roomKtx            : "2.3.0-rc01",
+        startUp            : "1.0.0",
+        transition         : "1.3.1",
+        vectorDrawable     : "1.1.0"
 ]
 
 ext.Config = config
@@ -90,10 +90,10 @@ config.GPH = [
         url: "https://maven.pkg.github.com"
 ]
 
-libs.AGP = "com.android.tools.build:gradle:7.0.0-alpha12"
+libs.AGP = "com.android.tools.build:gradle:7.0.0-alpha14"
 
 libs.commonsCodec = "commons-codec:commons-codec:20041127.091804"
-libs.commonsIo = "org.apache.commons:commons-io:${versions.commonsIoVersion}"
+libs.commonsIo = "org.apache.commons:commons-io:${versions.commonsIo}"
 libs.commonsLang = "org.apache.commons:commons-lang3:3.12.0"
 libs.materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
 
@@ -103,115 +103,115 @@ libs.AfterROOT = [
 
 libs.AfterROOT.Core = [
         mavenUrl: "${config.GPH.url}/afterroot/core",
-        core    : "${libs.AfterROOT.coreArtifactName}:${versions.coreVersion}"
+        core    : "${libs.AfterROOT.coreArtifactName}:${versions.core}"
 ]
 
 libs.Kotlin = [
         stdLib      : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin_version}",
-        anko        : "org.jetbrains.anko:anko-commons:${versions.ankoCommonsVersion}",
+        anko        : "org.jetbrains.anko:anko-commons:${versions.ankoCommons}",
         gradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin_version}"
 ]
 
 libs.Kotlin.Coroutines = [
-        core   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinxCoroutinesVersion}",
-        android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinxCoroutinesVersion}"
+        core   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinxCoroutines}",
+        android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinxCoroutines}"
 ]
 
 libs.AndroidX = [
-        appCompat       : "androidx.appcompat:appcompat:${versions.appcompatVersion}",
-        billing         : "com.android.billingclient:billing:${versions.billingVersion}",
-        browser         : "androidx.browser:browser:${versions.browserVersion}",
-        cardView        : "androidx.cardview:cardview:${versions.cardViewVersion}",
-        collection      : "androidx.collection:collection-ktx:${versions.collectionVersion}",
-        constraintLayout: "androidx.constraintlayout:constraintlayout:${versions.constraintLayoutVersion}",
-        core            : "androidx.core:core-ktx:${versions.coreKtxVersion}",
-        emoji           : "androidx.emoji:emoji:${versions.emojiVersion}",
-        fragment        : "androidx.fragment:fragment-ktx:${versions.fragmentKtxVersion}",
-        multiDex        : "androidx.multidex:multidex:${versions.multidexVersion}",
-        paging          : "androidx.paging:paging-runtime-ktx:${versions.pagingVersion}",
-        palette         : "androidx.palette:palette:${versions.paletteVersion}",
-        preference      : "androidx.preference:preference-ktx:${versions.preferenceVersion}",
-        recyclerView    : "androidx.recyclerview:recyclerview:${versions.recyclerviewVersion}",
-        startUp         : "androidx.startup:startup-runtime:${versions.startUpVersion}",
-        supportV13      : "androidx.legacy:legacy-support-v13:${versions.legacySupportV13Version}",
-        supportV4       : "androidx.legacy:legacy-support-v4:${versions.legacySupportV4Version}",
-        vectorDrawable  : "androidx.vectordrawable:vectordrawable:${versions.vectorDrawableVersion}"
+        appCompat       : "androidx.appcompat:appcompat:${versions.appcompat}",
+        billing         : "com.android.billingclient:billing:${versions.billing}",
+        browser         : "androidx.browser:browser:${versions.browser}",
+        cardView        : "androidx.cardview:cardview:${versions.cardView}",
+        collection      : "androidx.collection:collection-ktx:${versions.collection}",
+        constraintLayout: "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
+        core            : "androidx.core:core-ktx:${versions.coreKtx}",
+        emoji           : "androidx.emoji:emoji:${versions.emoji}",
+        fragment        : "androidx.fragment:fragment-ktx:${versions.fragmentKtx}",
+        multiDex        : "androidx.multidex:multidex:${versions.multidex}",
+        paging          : "androidx.paging:paging-runtime-ktx:${versions.paging}",
+        palette         : "androidx.palette:palette:${versions.palette}",
+        preference      : "androidx.preference:preference-ktx:${versions.preference}",
+        recyclerView    : "androidx.recyclerview:recyclerview:${versions.recyclerview}",
+        startUp         : "androidx.startup:startup-runtime:${versions.startUp}",
+        supportV13      : "androidx.legacy:legacy-support-v13:${versions.legacySupportV13}",
+        supportV4       : "androidx.legacy:legacy-support-v4:${versions.legacySupportV4}",
+        vectorDrawable  : "androidx.vectordrawable:vectordrawable:${versions.vectorDrawable}"
 ]
 
 libs.AndroidX.Lifecycle = [
-        common    : "androidx.lifecycle:lifecycle-common-java8:${versions.lifecycleVersion}",
+        common    : "androidx.lifecycle:lifecycle-common-java8:${versions.lifecycle}",
         extensions: "androidx.lifecycle:lifecycle-extensions:2.2.0",
-        viewmodel : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycleVersion}",
-        livedata  : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycleVersion}"
+        viewmodel : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}",
+        livedata  : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
 ]
 
 libs.AndroidX.Navigation = [
-        fragment      : "androidx.navigation:navigation-fragment-ktx:${versions.navigationVersion}",
-        ui            : "androidx.navigation:navigation-ui-ktx:${versions.navigationVersion}",
-        safeArgsPlugin: "androidx.navigation:navigation-safe-args-gradle-plugin:${versions.navigationVersion}"
+        fragment      : "androidx.navigation:navigation-fragment-ktx:${versions.navigation}",
+        ui            : "androidx.navigation:navigation-ui-ktx:${versions.navigation}",
+        safeArgsPlugin: "androidx.navigation:navigation-safe-args-gradle-plugin:${versions.navigation}"
 ]
 
 libs.AndroidX.Room = [
-        common  : "androidx.room:room-common:${versions.roomKtxVersion}",
-        room    : "androidx.room:room-ktx:${versions.roomKtxVersion}",
-        compiler: "androidx.room:room-compiler:${versions.roomKtxVersion}",
-        runtime : "androidx.room:room-runtime:${versions.roomKtxVersion}"
+        common  : "androidx.room:room-common:${versions.roomKtx}",
+        room    : "androidx.room:room-ktx:${versions.roomKtx}",
+        compiler: "androidx.room:room-compiler:${versions.roomKtx}",
+        runtime : "androidx.room:room-runtime:${versions.roomKtx}"
 ]
 
 libs.AndroidX.Compose = [
         //Compose Libs
-        ui                  : "androidx.compose.ui:ui:${versions.composeVersion}",
+        ui                  : "androidx.compose.ui:ui:${versions.compose}",
 
         // Tooling support (Previews, etc.)
-        tooling             : "androidx.compose.ui:ui-tooling:${versions.composeVersion}",
+        tooling             : "androidx.compose.ui:ui-tooling:${versions.compose}",
 
         // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-        foundation          : "androidx.compose.foundation:foundation:${versions.composeVersion}",
+        foundation          : "androidx.compose.foundation:foundation:${versions.compose}",
 
         // Material Design
-        material            : "androidx.compose.material:material:${versions.composeVersion}",
-        materialThemeAdapter: "com.google.android.material:compose-theme-adapter:${versions.composeVersion}",
+        material            : "androidx.compose.material:material:${versions.compose}",
+        materialThemeAdapter: "com.google.android.material:compose-theme-adapter:${versions.compose}",
 
         // Material design icons
-        iconsCore           : "androidx.compose.material:material-icons-core:${versions.composeVersion}",
-        iconsExt            : "androidx.compose.material:material-icons-extended:${versions.composeVersion}",
+        iconsCore           : "androidx.compose.material:material-icons-core:${versions.compose}",
+        iconsExt            : "androidx.compose.material:material-icons-extended:${versions.compose}",
 
         // Integration with observables
-        livedata            : "androidx.compose.runtime:runtime-livedata:${versions.composeVersion}",
+        livedata            : "androidx.compose.runtime:runtime-livedata:${versions.compose}",
 
-        animation           : "androidx.compose.animation:animation:${versions.composeVersion}"
+        animation           : "androidx.compose.animation:animation:${versions.compose}"
 ]
 
 libs.MaterialDialogs = [
-        input       : "com.afollestad.material-dialogs:input:${versions.materialDialogsVersion}",
-        core        : "com.afollestad.material-dialogs:core:${versions.materialDialogsVersion}",
-        bottomSheets: "com.afollestad.material-dialogs:bottomsheets:${versions.materialDialogsVersion}",
-        color       : "com.afollestad.material-dialogs:color:${versions.materialDialogsVersion}"
+        input       : "com.afollestad.material-dialogs:input:${versions.materialDialogs}",
+        core        : "com.afollestad.material-dialogs:core:${versions.materialDialogs}",
+        bottomSheets: "com.afollestad.material-dialogs:bottomsheets:${versions.materialDialogs}",
+        color       : "com.afollestad.material-dialogs:color:${versions.materialDialogs}"
 ]
 
 libs.FirebaseUI = [
-        auth     : "com.firebaseui:firebase-ui-auth:${versions.firebaseUiAuthVersion}",
-        firestore: "com.firebaseui:firebase-ui-firestore:${versions.firebaseUiFirestoreVersion}",
-        storage  : "com.firebaseui:firebase-ui-storage:${versions.firebaseUiStorageVersion}"
+        auth     : "com.firebaseui:firebase-ui-auth:${versions.firebaseUiAuth}",
+        firestore: "com.firebaseui:firebase-ui-firestore:${versions.firebaseUiFirestore}",
+        storage  : "com.firebaseui:firebase-ui-storage:${versions.firebaseUiStorage}"
 
 ]
 
 libs.Glide = [
-        glide   : "com.github.bumptech.glide:glide:${versions.glideVersion}",
-        compiler: "com.github.bumptech.glide:compiler:${versions.glideVersion}"
+        glide   : "com.github.bumptech.glide:glide:${versions.glide}",
+        compiler: "com.github.bumptech.glide:compiler:${versions.glide}"
 
 ]
 
 
 libs.Firebase = [
-        bom              : "com.google.firebase:firebase-bom:$versions.firebaseBomVersion",
+        bom              : "com.google.firebase:firebase-bom:$versions.firebaseBom",
         ads              : "com.google.firebase:firebase-ads",
         analytics        : "com.google.firebase:firebase-analytics-ktx",
         auth             : "com.google.firebase:firebase-auth-ktx",
         config           : "com.google.firebase:firebase-config-ktx",
         core             : "com.google.firebase:firebase-core",
         crashlytics      : "com.google.firebase:firebase-crashlytics-ktx",
-        crashlyticsPlugin: "com.google.firebase:firebase-crashlytics-gradle:$versions.crshlyticsPluginVersion",
+        crashlyticsPlugin: "com.google.firebase:firebase-crashlytics-gradle:$versions.crshlyticsPlugin",
         database         : "com.google.firebase:firebase-database-ktx",
         firestore        : "com.google.firebase:firebase-firestore-ktx",
         messaging        : "com.google.firebase:firebase-messaging",
@@ -221,38 +221,38 @@ libs.Firebase = [
 libs.Google = [
         ossLic        : "com.google.android.gms:play-services-oss-licenses:17.0.0",
         ossLicPlugin  : "com.google.android.gms:oss-licenses-plugin:0.10.2",
-        material      : "com.google.android.material:material:${versions.googleMaterialVersion}",
-        gson          : "com.google.code.gson:gson:${versions.gsonVersion}",
+        material      : "com.google.android.material:material:${versions.googleMaterial}",
+        gson          : "com.google.code.gson:gson:${versions.gson}",
         servicesPlugin: "com.google.gms:google-services:4.3.5"
 ]
 
 libs.Dagger = [
-        dagger  : "com.google.dagger:dagger:$versions.daggerVersion",
-        compiler: "com.google.dagger:dagger-compiler:$versions.daggerVersion"
+        dagger  : "com.google.dagger:dagger:$versions.dagger",
+        compiler: "com.google.dagger:dagger-compiler:$versions.dagger"
 ]
 
 libs.Hilt = [
-        hilt        : "com.google.dagger:hilt-android:$versions.hiltVersion",
-        compiler    : "com.google.dagger:hilt-android-compiler:$versions.hiltVersion",
-        testing     : "com.google.dagger:hilt-android-testing:$versions.hiltVersion",
-        gradlePlugin: "com.google.dagger:hilt-android-gradle-plugin:$versions.hiltVersion"
+        hilt        : "com.google.dagger:hilt-android:$versions.hilt",
+        compiler    : "com.google.dagger:hilt-android-compiler:$versions.hilt",
+        testing     : "com.google.dagger:hilt-android-testing:$versions.hilt",
+        gradlePlugin: "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt"
 ]
 
 libs.Koin = [
         // Koin for Android
-        android  : "org.koin:koin-android:$versions.koinVersion",
+        android  : "org.koin:koin-android:$versions.koin",
         // Koin AndroidX Scope features
-        scope    : "org.koin:koin-androidx-scope:$versions.koinVersion",
+        scope    : "org.koin:koin-androidx-scope:$versions.koin",
         // Koin AndroidX ViewModel features
-        viewmodel: "org.koin:koin-androidx-viewmodel:$versions.koinVersion",
+        viewmodel: "org.koin:koin-androidx-viewmodel:$versions.koin",
         // Koin AndroidX Fragment features
-        fragment : "org.koin:koin-androidx-fragment:$versions.koinVersion",
+        fragment : "org.koin:koin-androidx-fragment:$versions.koin",
         // Koin AndroidX WorkManager
-        work     : "org.koin:koin-androidx-workmanager:$versions.koinVersion",
+        work     : "org.koin:koin-androidx-workmanager:$versions.koin",
         // Koin AndroidX Jetpack Compose
-        compose  : "org.koin:koin-androidx-compose:$versions.koinVersion",
+        compose  : "org.koin:koin-androidx-compose:$versions.koin",
         // Koin AndroidX Experimental features
-        ext      : "org.koin:koin-androidx-ext:$versions.koinVersion"
+        ext      : "org.koin:koin-androidx-ext:$versions.koin"
 ]
 
 libs.Koin3 = [
@@ -269,23 +269,23 @@ libs.Koin3 = [
 ]
 
 libs.OkHttp = [
-        logging: "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
-        okHttp : "com.squareup.okhttp3:okhttp:$versions.okHttpVersion"
+        logging: "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
+        okHttp : "com.squareup.okhttp3:okhttp:$versions.okHttp"
 ]
 
 libs.Retrofit = [
-        jackson : "com.squareup.retrofit2:converter-jackson:$versions.retrofitVersion",
-        retrofit: "com.squareup.retrofit2:retrofit:$versions.retrofitVersion"
+        jackson : "com.squareup.retrofit2:converter-jackson:$versions.retrofit",
+        retrofit: "com.squareup.retrofit2:retrofit:$versions.retrofit"
 ]
 
 libs.Epoxy = [
-        epoxy    : "com.airbnb.android:epoxy:$versions.epoxyVersion",
-        processor: "com.airbnb.android:epoxy-processor:$versions.epoxyVersion"
+        epoxy    : "com.airbnb.android:epoxy:$versions.epoxy",
+        processor: "com.airbnb.android:epoxy-processor:$versions.epoxy"
 ]
 
 libs.Accompanist = [
-        glide : "dev.chrisbanes.accompanist:accompanist-glide:$versions.accompanistVersion",
-        insets: "dev.chrisbanes.accompanist:accompanist-insets:$versions.accompanistVersion"
+        glide : "dev.chrisbanes.accompanist:accompanist-glide:$versions.accompanist",
+        insets: "dev.chrisbanes.accompanist:accompanist-insets:$versions.accompanist"
 ]
 
 libs.Test = [
