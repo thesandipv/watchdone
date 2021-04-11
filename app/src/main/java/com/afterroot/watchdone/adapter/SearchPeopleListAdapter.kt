@@ -20,20 +20,20 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.diff.PeopleDiffCallback
-import com.afterroot.watchdone.data.people.PeopleDataHolder
 import com.afterroot.watchdone.databinding.ListItemPersonBinding
 import com.afterroot.watchdone.ui.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SearchPeopleListAdapter(val callback: ItemSelectedCallback<PeopleDataHolder>) :
-    BaseListAdapter<PeopleDataHolder>(PeopleDiffCallback()), KoinComponent {
+class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>) :
+    BaseListAdapter<Person>(PeopleDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -76,15 +76,15 @@ class SearchPeopleListAdapter(val callback: ItemSelectedCallback<PeopleDataHolde
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(peopleDataHolder: PeopleDataHolder) {
+        fun bind(person: Person) {
             binding.apply {
-                personDetail = peopleDataHolder.data
+                personDetail = person
                 root.setOnClickListener {
                     callback.onClick(adapterPosition, root)
-                    callback.onClick(adapterPosition, root, peopleDataHolder)
+                    callback.onClick(adapterPosition, root, person)
                 }
                 root.setOnLongClickListener {
-                    callback.onLongClick(adapterPosition, peopleDataHolder)
+                    callback.onLongClick(adapterPosition, person)
                     return@setOnLongClickListener true
                 }
             }
@@ -93,7 +93,7 @@ class SearchPeopleListAdapter(val callback: ItemSelectedCallback<PeopleDataHolde
                 this.height = this@PeopleListViewHolder.width
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + peopleDataHolder.data.profilePath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + person.profilePath)
                 .override(width)
                 .placeholder(R.drawable.ic_placeholder_person)
                 .error(R.drawable.ic_placeholder_person)

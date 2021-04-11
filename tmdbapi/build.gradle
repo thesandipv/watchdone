@@ -55,8 +55,8 @@ dependencies {
     api Libs.commonsCodec
     implementation Libs.commonsLang
 
-    api "com.fasterxml.jackson.core:jackson-annotations:$Versions.jacksonVersion"
-    api "com.fasterxml.jackson.core:jackson-databind:$Versions.jacksonVersion"
+    api "com.fasterxml.jackson.core:jackson-annotations:$Versions.jackson"
+    api "com.fasterxml.jackson.core:jackson-databind:$Versions.jackson"
 
     implementation 'com.google.guava:guava:30.1.1-jre'
 

@@ -25,11 +25,22 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.palette.graphics.Palette
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
@@ -44,9 +55,13 @@ import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
+import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
+import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.data.mapper.toDbMovie
 import com.afterroot.watchdone.data.mapper.toMovie
+import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
@@ -55,14 +70,15 @@ import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.createPosterUrl
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
+import com.afterroot.watchdone.view.SectionalListView
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -87,7 +103,6 @@ import java.io.IOException
 
 class MovieInfoFragment : Fragment() {
     private lateinit var binding: FragmentMovieInfoBinding
-    private lateinit var rewardedAd: RewardedAd
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -204,12 +219,10 @@ class MovieInfoFragment : Fragment() {
                                                 message(R.string.dialog_msg_rewarded_ad)
                                                 positiveButton(R.string.text_ok) {
                                                     clickedAddWl = true
-                                                    if (rewardedAd.isLoaded) {
-                                                        showAd()
-                                                    } else {
-                                                        progressDialog =
-                                                            requireContext().showStaticProgressDialog("Please Wait...Ad is Loading")
-                                                    }
+                                                    createAndLoadRewardedAd()
+                                                    progressDialog =
+                                                        requireContext().showStaticProgressDialog("Please Wait...Ad is Loading")
+
                                                 }
                                                 negativeButton(R.string.fui_cancel)
                                             }
@@ -247,6 +260,13 @@ class MovieInfoFragment : Fragment() {
                             }
                         }
                     }
+
+                    composeView.setContent {
+                        Column {
+                            SimilarMovies(movie)
+                        }
+
+                    }
                 }
             }
             menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
@@ -254,26 +274,60 @@ class MovieInfoFragment : Fragment() {
         }
     }
 
+    @Composable
+    fun SimilarMovies(movie: Movie) {
+        val state = remember { mutableStateOf(emptyList<Movie>()) }
+        val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback)
+
+        AndroidView(
+            factory = {
+                SectionalListView(it).withTitle("Similar Movies").withLoading().apply {
+                    setAdapter(moviesListAdapter)
+                    lifecycleScope.launch {
+                        state.value = moviesRepository.getSimilar(movie.id).toMovies()
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp)
+                .clipToBounds(),
+            update = {
+                it.isLoaded = true
+                moviesListAdapter.submitList(state.value)
+            }
+        )
+    }
+
+    private val movieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
+        override fun onClick(position: Int, view: View?, item: Movie) {
+            super.onClick(position, view, item)
+            //homeViewModel.selectMovie(item)
+            view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
+        }
+    }
+
     private fun addToWatchlist(movie: Movie) {
-        watchlistItemReference.add(movie)
+        watchlistItemReference.add(movie.toDbMovie())
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
         hideProgress()
     }
 
     @SuppressLint("MissingPermission")
-    private fun createAndLoadRewardedAd(): RewardedAd {
-        val rewardedAd = RewardedAd(requireActivity(), getString(R.string.ad_rewarded_unit_id))
+    private fun createAndLoadRewardedAd() {
         val adLoadCallback = object : RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
+            override fun onAdLoaded(ad: RewardedAd) {
+                super.onAdLoaded(ad)
                 adLoaded = true
                 if (clickedAddWl) {
                     hideProgress()
-                    showAd()
+                    showAd(ad)
                 }
             }
 
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                super.onAdFailedToLoad(adError)
                 adLoaded = false
                 if (clickedAddWl) {
                     progressDialog?.updateProgressText("Adding ${binding.movie?.title} to Watchlist")
@@ -281,12 +335,16 @@ class MovieInfoFragment : Fragment() {
                 }
             }
         }
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
-        return rewardedAd
+        RewardedAd.load(
+            requireActivity(),
+            getString(R.string.ad_rewarded_unit_id),
+            AdManagerAdRequest.Builder().build(),
+            adLoadCallback
+        )
     }
 
-    fun loadNewAd() {
-        this.rewardedAd = createAndLoadRewardedAd()
+    private fun loadNewAd() {
+        createAndLoadRewardedAd()
     }
 
     fun addAfterWatchingAd() {
@@ -297,20 +355,17 @@ class MovieInfoFragment : Fragment() {
         }
     }
 
-    private fun showAd() {
-        val adCallback = object : RewardedAdCallback() {
-            override fun onUserEarnedReward(reward: RewardItem) {
-                clickedAddWl = false
-                addAfterWatchingAd()
-            }
-
-            override fun onRewardedAdClosed() {
-                super.onRewardedAdClosed()
-                adLoaded = false
-                loadNewAd()
-            }
+    private fun showAd(rewardedAd: RewardedAd) {
+/*
+        fun onRewardedAdClosed() {
+            adLoaded = false
+            loadNewAd()
         }
-        rewardedAd.show(requireActivity(), adCallback)
+*/
+        rewardedAd.show(requireActivity()) {
+            clickedAddWl = false
+            addAfterWatchingAd()
+        }
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
@@ -407,7 +462,7 @@ class MovieInfoFragment : Fragment() {
                             var fos: FileOutputStream? = null
                             val file = File(
                                 requireContext().externalCacheDir.toString(),
-                                "${binding.movie?.id.toString()}.jpg"
+                                "${binding.movie?.id}.jpg"
                             )
                             try {
                                 fos = FileOutputStream(file)

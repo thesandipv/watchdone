@@ -82,6 +82,13 @@
             android:autoVerify="true"
             app:uri="https://watchdone.web.app/movie/{movieId}"
             tools:targetApi="m" />
+        <action
+            android:id="@+id/movieInfoToMovieInfo"
+            app:destination="@id/navigation_movie_info"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/navigation_discover"

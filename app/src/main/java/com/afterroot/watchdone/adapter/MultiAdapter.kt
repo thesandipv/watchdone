@@ -104,11 +104,11 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>) :
             binding.apply {
                 movieDb = movie as Movie
                 root.setOnClickListener {
-                    callback.onClick(adapterPosition, root)
-                    callback.onClick(adapterPosition, root, movie)
+                    callback.onClick(bindingAdapterPosition, root)
+                    callback.onClick(bindingAdapterPosition, root, movie)
                 }
                 root.setOnLongClickListener {
-                    callback.onLongClick(adapterPosition, movie)
+                    callback.onLongClick(bindingAdapterPosition, movie)
                     return@setOnLongClickListener true
                 }
                 isWatched.visible(movie.isWatched)
@@ -136,11 +136,11 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>) :
             binding.apply {
                 tvSeries = tv as TV
                 root.setOnClickListener {
-                    callback.onClick(adapterPosition, root)
-                    callback.onClick(adapterPosition, root, tv)
+                    callback.onClick(bindingAdapterPosition, root)
+                    callback.onClick(bindingAdapterPosition, root, tv)
                 }
                 root.setOnLongClickListener {
-                    callback.onLongClick(adapterPosition, tv)
+                    callback.onLongClick(bindingAdapterPosition, tv)
                     return@setOnLongClickListener true
                 }
                 isWatched.visible(tv.isWatched)

@@ -15,9 +15,9 @@
 package com.afterroot.tmdbapi2.api
 
 import com.afterroot.tmdbapi.model.Credits
-import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.MovieImages
 import com.afterroot.tmdbapi.model.MovieList
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.Video
 import com.afterroot.tmdbapi.model.core.MovieKeywords
 import com.afterroot.tmdbapi.model.core.MovieResultsPage

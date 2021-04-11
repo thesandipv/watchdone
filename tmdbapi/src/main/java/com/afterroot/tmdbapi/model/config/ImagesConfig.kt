@@ -69,7 +69,7 @@ data class ImagesConfig(
      * @param sizeToCheck
      */
     fun isValidSize(sizeToCheck: String): Boolean = isValidPosterSize(sizeToCheck) ||
-            isValidBackdropSize(sizeToCheck) ||
-            isValidProfileSize(sizeToCheck) ||
-            isValidLogoSize(sizeToCheck)
+        isValidBackdropSize(sizeToCheck) ||
+        isValidProfileSize(sizeToCheck) ||
+        isValidLogoSize(sizeToCheck)
 }

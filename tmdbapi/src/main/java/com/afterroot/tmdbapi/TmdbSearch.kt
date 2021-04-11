@@ -136,7 +136,7 @@ class TmdbSearch(tmdbApi: TmdbApi?) : AbstractTmdbApi(tmdbApi!!) {
     fun searchList(query: String, language: String?, page: Int?): MovieListResultsPage {
         System.err.println(
             "This method is part of the API but seems currently not available. " +
-                    "See https://www.themoviedb.org/talk/593409e3c3a36859ef01eddb#597124f8c3a3681608008424"
+                "See https://www.themoviedb.org/talk/593409e3c3a36859ef01eddb#597124f8c3a3681608008424"
         )
         val apiUrl = ApiUrl(TMDB_METHOD_SEARCH, TmdbLists.TMDB_METHOD_LIST)
         if (StringUtils.isNotBlank(query)) {
