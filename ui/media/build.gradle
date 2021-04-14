@@ -16,18 +16,36 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 apply from: "$rootDir/common-config.gradle"
-//apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
+apply from: "$rootDir/compose.gradle"
+
+android {
+    buildFeatures {
+        dataBinding true
+    }
+}
 
 dependencies {
-    api project(':tmdbapi')
     implementation project(':base')
+    implementation project(':data')
     implementation project(':ui:resources')
 
-    implementation Libs.AndroidX.preference
+    implementation Libs.AndroidX.appCompat
+    implementation Libs.AndroidX.constraintLayout
+    implementation Libs.AndroidX.fragment
+    implementation Libs.AndroidX.Lifecycle.common
+    implementation Libs.AndroidX.Lifecycle.extensions
+    implementation Libs.AndroidX.Lifecycle.livedata
+    implementation Libs.AndroidX.Lifecycle.viewmodel
+    implementation Libs.AndroidX.supportV13
+
+    implementation Libs.Google.material
 
     implementation platform(Libs.Firebase.bom)
-    implementation Libs.Firebase.firestore
+    implementation Libs.Firebase.ads
+
+    implementation Libs.materialProgress
 }

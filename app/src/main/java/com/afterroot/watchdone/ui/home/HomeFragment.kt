@@ -37,7 +37,7 @@ import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel

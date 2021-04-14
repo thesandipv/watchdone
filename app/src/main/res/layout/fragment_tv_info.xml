@@ -29,7 +29,7 @@
 
         <variable
             name="settings"
-            type="com.afterroot.watchdone.ui.settings.Settings" />
+            type="com.afterroot.watchdone.settings.Settings" />
 
         <variable
             name="posterUrl"

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.ui.settings
+package com.afterroot.watchdone.settings
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.afterroot.watchdone.Constants
-import com.afterroot.watchdone.R
+import com.afterroot.watchdone.base.Constants
+import com.afterroot.watchdone.data.R
 import com.google.firebase.firestore.Query
 
 /**

@@ -51,8 +51,8 @@ import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.Constants
-import com.afterroot.watchdone.GlideApp
+import com.afterroot.watchdone.base.Constants
+import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
@@ -65,7 +65,7 @@ import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.createPosterUrl
@@ -97,6 +97,7 @@ import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.email
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.qualifier
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -448,7 +449,7 @@ class MovieInfoFragment : Fragment() {
             }
             R.id.send_feedback -> {
                 requireContext().email(
-                    email = "afterhasroot@gmail.com",
+                    email = get(qualifier("feedback_email")),
                     subject = "Watchdone Feedback",
                     text = getMailBodyForFeedback(get())
                 )

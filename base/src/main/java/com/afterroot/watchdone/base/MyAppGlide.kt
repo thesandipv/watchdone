@@ -12,22 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.afterroot.watchdone.base
 
-plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-}
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 
-apply from: "$rootDir/common-config.gradle"
-//apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
-
-dependencies {
-    api project(':tmdbapi')
-    implementation project(':base')
-    implementation project(':ui:resources')
-
-    implementation Libs.AndroidX.preference
-
-    implementation platform(Libs.Firebase.bom)
-    implementation Libs.Firebase.firestore
-}
+@GlideModule
+class MyAppGlide : AppGlideModule()
