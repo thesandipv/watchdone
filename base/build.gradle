@@ -16,6 +16,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 apply from: "$rootDir/common-config.gradle"
@@ -23,4 +24,7 @@ apply from: "$rootDir/common-config.gradle"
 
 dependencies {
     implementation Libs.Kotlin.Coroutines.core
+
+    api Libs.Glide.glide
+    kapt Libs.Glide.compiler
 }

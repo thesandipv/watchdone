@@ -21,9 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.Constants.RC_LOGIN
+import com.afterroot.watchdone.base.Constants.RC_LOGIN
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.showNetworkDialog
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.firebase.ui.auth.AuthUI

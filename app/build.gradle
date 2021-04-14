@@ -157,6 +157,7 @@ dependencies {
     implementation project(':base')
     implementation project(':data')
     implementation project(':ui:common-compose')
+    implementation project(':ui:media')
     implementation project(':ui:resources')
 
     implementation Libs.Kotlin.stdLib

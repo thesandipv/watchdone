@@ -20,7 +20,7 @@ import com.afterroot.core.network.NetworkStateMonitor
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.CoroutineDispatchers
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.ifDebug
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
@@ -36,6 +36,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.qualifier
 import org.koin.dsl.module
 
 val appModule = module {
@@ -56,6 +57,10 @@ val appModule = module {
             io = Dispatchers.IO,
             main = Dispatchers.Main
         )
+    }
+
+    single(qualifier("feedback_email")) {
+        "afterhasroot@gmail.com"
     }
 }
 
