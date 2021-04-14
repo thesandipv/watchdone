@@ -13,14 +13,22 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+android {
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Versions.composeVersion
+    }
 }
 
-apply from: "$rootDir/common-config.gradle"
-//apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
-
 dependencies {
-    implementation Libs.Kotlin.Coroutines.core
+    implementation(Libs.AndroidX.Compose.ui)
+    implementation(Libs.AndroidX.Compose.tooling)
+    implementation(Libs.AndroidX.Compose.foundation)
+    implementation(Libs.AndroidX.Compose.material)
+    implementation(Libs.AndroidX.Compose.iconsCore)
+    implementation(Libs.AndroidX.Compose.iconsExt)
+    implementation(Libs.AndroidX.Compose.livedata)
 }
