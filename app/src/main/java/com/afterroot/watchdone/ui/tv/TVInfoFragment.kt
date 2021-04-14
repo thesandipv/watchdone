@@ -38,12 +38,12 @@ import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.TVRepository
-import com.afterroot.watchdone.base.Constants
-import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
@@ -252,7 +252,7 @@ class TVInfoFragment : Fragment() {
         val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onAdLoaded(rewardedAd: RewardedAd) {
                 super.onAdLoaded(rewardedAd)
-                //TODO Make ad loaded observable
+                // TODO Make ad loaded observable
                 adLoaded = true
                 if (clickedAddWl) {
                     showAd(rewardedAd)
