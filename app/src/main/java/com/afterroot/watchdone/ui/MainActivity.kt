@@ -41,9 +41,9 @@ import com.afterroot.core.network.NetworkState
 import com.afterroot.core.onVersionGreaterThanEqualTo
 import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.User
 import com.afterroot.watchdone.databinding.ActivityMainBinding

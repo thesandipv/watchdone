@@ -20,8 +20,8 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.settings.Settings
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import org.jetbrains.anko.startActivity
