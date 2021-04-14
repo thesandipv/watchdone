@@ -28,7 +28,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.network.NetworkState
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.settings.Settings
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 

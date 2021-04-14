@@ -20,14 +20,14 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.adapter.diff.TVDiffCallback
+import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.data.model.TV
-import com.afterroot.watchdone.databinding.ListItemTvBinding
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.media.databinding.ListItemTvBinding
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -23,12 +23,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.tmdbapi.model.people.PersonCast
 import com.afterroot.tmdbapi.model.people.PersonCrew
-import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.base.BaseListAdapter
 import com.afterroot.watchdone.adapter.diff.CastDiffCallback
-import com.afterroot.watchdone.databinding.ListItemCastBinding
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.base.GlideApp
+import com.afterroot.watchdone.media.databinding.ListItemCastBinding
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

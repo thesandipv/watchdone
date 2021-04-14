@@ -19,8 +19,8 @@ import androidx.databinding.BindingAdapter
 import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.Genre
-import com.afterroot.watchdone.GlideApp
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.base.GlideApp
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
