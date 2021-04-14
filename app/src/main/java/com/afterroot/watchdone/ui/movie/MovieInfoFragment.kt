@@ -51,14 +51,14 @@ import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.base.Constants
-import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.data.mapper.toDbMovie
 import com.afterroot.watchdone.data.mapper.toMovie
 import com.afterroot.watchdone.data.mapper.toMovies
@@ -223,7 +223,6 @@ class MovieInfoFragment : Fragment() {
                                                     createAndLoadRewardedAd()
                                                     progressDialog =
                                                         requireContext().showStaticProgressDialog("Please Wait...Ad is Loading")
-
                                                 }
                                                 negativeButton(R.string.fui_cancel)
                                             }
@@ -266,7 +265,6 @@ class MovieInfoFragment : Fragment() {
                         Column {
                             SimilarMovies(movie)
                         }
-
                     }
                 }
             }
@@ -303,7 +301,7 @@ class MovieInfoFragment : Fragment() {
     private val movieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
         override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
-            //homeViewModel.selectMovie(item)
+            // homeViewModel.selectMovie(item)
             view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
         }
     }
