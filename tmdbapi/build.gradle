@@ -19,34 +19,10 @@ plugins {
     id 'kotlin-parcelize'
 }
 
-android {
-    compileSdkVersion SDK.COMPILE
-
-    defaultConfig {
-        minSdkVersion SDK.MIN
-        targetSdkVersion SDK.TARGET
-        versionCode 2
-        versionName "2.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
+apply from: "$rootDir/common-config.gradle"
+//apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
 
 dependencies {
-    implementation Libs.Kotlin.stdLib
-
     api Libs.OkHttp.okHttp
     api Libs.OkHttp.logging
     api Libs.Retrofit.retrofit

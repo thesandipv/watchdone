@@ -18,37 +18,9 @@ plugins {
     id 'kotlin-android'
 }
 
-android {
-    compileSdkVersion SDK.COMPILE
-
-    buildFeatures {
-        compose = true
-    }
-
-    defaultConfig {
-        minSdkVersion SDK.MIN
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose
-    }
-}
+apply from: "$rootDir/common-config.gradle"
+apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
 
 dependencies {
-    implementation(Libs.Kotlin.stdLib)
-
-    implementation(Libs.AndroidX.core)
-
-    implementation(Libs.AndroidX.Compose.ui)
-    implementation(Libs.AndroidX.Compose.tooling)
-    implementation(Libs.AndroidX.Compose.foundation)
-    implementation(Libs.AndroidX.Compose.material)
-    implementation(Libs.AndroidX.Compose.iconsCore)
-    implementation(Libs.AndroidX.Compose.iconsExt)
-    implementation(Libs.AndroidX.Compose.livedata)
+    //All compose dependencies applied with compose.gradle
 }
