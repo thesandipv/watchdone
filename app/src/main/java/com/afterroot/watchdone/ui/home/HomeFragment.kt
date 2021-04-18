@@ -74,12 +74,12 @@ class HomeFragment : Fragment() {
                         view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item).title!!
                     )
                 )*/
-                val directions = HomeFragmentDirections.toMediaInfo(item.id.toString(), Multi.MediaType.MOVIE.name)
+                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
                 findNavController().navigate(directions)
             } else if (item is TV) {
                 /*homeViewModel.selectTVSeries(item)
                 findNavController().navigate(R.id.toTVInfo)*/
-                val directions = HomeFragmentDirections.toMediaInfo(item.id.toString(), Multi.MediaType.TV_SERIES.name)
+                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
                 findNavController().navigate(directions)
             }
         }

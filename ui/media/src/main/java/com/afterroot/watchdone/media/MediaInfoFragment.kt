@@ -84,26 +84,26 @@ class MediaInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val argMediaId = arguments?.getString("mediaId")
+        val argMediaId = arguments?.getInt("mediaId")
         val mediaType = arguments?.getString("type")?.let { valueOf(it) }
         if (argMediaId != null) {
             launchShowingProgress {
                 when (mediaType) {
                     MOVIE -> {
-                        viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId.toInt()), tv = null)
+                        viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId), tv = null)
                     }
                     PERSON -> {
                         // TODO
                     }
                     TV_SERIES -> {
                         viewModel.selectMedia(
-                            movie = null, tv = tvRepository.getTVInfo(argMediaId.toInt()).toTV()
+                            movie = null, tv = tvRepository.getTVInfo(argMediaId).toTV()
                         )
                     }
                     null -> {
                     }
                 }
-                updateCast(argMediaId.toInt())
+                updateCast(argMediaId)
             }
         }
 
