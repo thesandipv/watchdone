@@ -14,15 +14,17 @@
  */
 package com.afterroot.watchdone.data.model
 
+import com.afterroot.tmdbapi.model.Multi
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 
-data class DbMovie(
+data class DBMedia(
     val id: Int = 0,
     val releaseDate: String? = null,
     val title: String? = null,
-    var isWatched: Boolean? = false,
+    @field:JvmField var isWatched: Boolean? = false,
     var posterPath: String? = null,
-    @ServerTimestamp
-    var timestamp: Timestamp = Timestamp.now()
+    @ServerTimestamp var timestamp: Timestamp = Timestamp.now(),
+    var mediaType: Multi.MediaType? = null,
+    var rating: Double? = null
 )

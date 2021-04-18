@@ -306,6 +306,12 @@ class MainActivity : AppCompatActivity() {
                     binding.fab.hide()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
+                R.id.navigation_media_info -> {
+                    setTitle(null)
+                    binding.titleLayout.visible(false)
+                    binding.fab.hide()
+                    drawerToggle.progress(0f, 1f) // As back arrow
+                }
             }
         }
     }

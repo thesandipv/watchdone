@@ -52,24 +52,22 @@ import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.base.GlideApp
-import com.afterroot.watchdone.data.mapper.toDbMovie
+import com.afterroot.watchdone.data.mapper.toDBMedia
 import com.afterroot.watchdone.data.mapper.toMovie
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
+import com.afterroot.watchdone.media.adapter.CastListAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.utils.createPosterUrl
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.view.SectionalListView
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -307,7 +305,7 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun addToWatchlist(movie: Movie) {
-        watchlistItemReference.add(movie.toDbMovie())
+        watchlistItemReference.add(movie.toDBMedia())
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
         hideProgress()
@@ -449,7 +447,7 @@ class MovieInfoFragment : Fragment() {
                 requireContext().email(
                     email = get(qualifier("feedback_email")),
                     subject = "Watchdone Feedback",
-                    text = getMailBodyForFeedback(get())
+                    text = get(qualifier("feedback_body"))
                 )
             }
             R.id.action_share_to_ig_story -> {

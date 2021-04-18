@@ -12,28 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.afterroot.watchdone.diff
 
-plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-}
+import androidx.recyclerview.widget.DiffUtil
+import com.afterroot.tmdbapi.model.people.Person
 
-apply from: "$rootDir/common-config.gradle"
-//apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
+class PeopleDiffCallback : DiffUtil.ItemCallback<Person>() {
+    override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-dependencies {
-    api project(':tmdbapi')
-    implementation project(':base')
-    implementation project(':ui:resources')
-
-    implementation Libs.AndroidX.preference
-
-    implementation platform(Libs.Firebase.bom)
-    api Libs.Firebase.firestore
-    api Libs.Firebase.auth
-
-    api Libs.AndroidX.Room.room
-    api Libs.AndroidX.Room.runtime
-    kapt Libs.AndroidX.Room.compiler
+    override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
+        return oldItem == newItem
+    }
 }

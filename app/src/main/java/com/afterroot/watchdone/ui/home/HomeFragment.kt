@@ -21,10 +21,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
@@ -38,7 +36,6 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -51,6 +48,7 @@ import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.qualifier
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -68,17 +66,21 @@ class HomeFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
             if (item is Movie) {
-                homeViewModel.selectMovie(item)
+                /*homeViewModel.selectMovie(item)
                 findNavController().navigate(
                     R.id.toMovieInfo,
                     null, null,
                     FragmentNavigatorExtras(
                         view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item).title!!
                     )
-                )
+                )*/
+                val directions = HomeFragmentDirections.toMediaInfo(item.id.toString(), Multi.MediaType.MOVIE.name)
+                findNavController().navigate(directions)
             } else if (item is TV) {
-                homeViewModel.selectTVSeries(item)
-                findNavController().navigate(R.id.toTVInfo)
+                /*homeViewModel.selectTVSeries(item)
+                findNavController().navigate(R.id.toTVInfo)*/
+                val directions = HomeFragmentDirections.toMediaInfo(item.id.toString(), Multi.MediaType.TV_SERIES.name)
+                findNavController().navigate(directions)
             }
         }
 
@@ -233,7 +235,7 @@ class HomeFragment : Fragment() {
             requireContext().email(
                 email = "afterhasroot@gmail.com",
                 subject = "Watchdone Feedback",
-                text = getMailBodyForFeedback(get())
+                text = get(qualifier("feedback_body"))
             )
         }
         return super.onOptionsItemSelected(item)

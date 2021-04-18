@@ -12,17 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.adapter.diff
 
-import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.tmdbapi.model.people.Person
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
 
-class PeopleDiffCallback : DiffUtil.ItemCallback<Person>() {
-    override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
-        return oldItem.id == newItem.id
+apply from: "$rootDir/common-config.gradle"
+
+android {
+    buildFeatures {
+        dataBinding true
     }
+}
 
-    override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
-        return oldItem == newItem
-    }
+dependencies {
+    implementation project(':base')
+    implementation project(':data')
+    implementation project(':ui:resources')
+
+    implementation Libs.AfterROOT.Core.core
+
+    implementation Libs.MaterialDialogs.core
 }

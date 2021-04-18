@@ -24,7 +24,7 @@ import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Constants.RC_LOGIN
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.utils.showNetworkDialog
+import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

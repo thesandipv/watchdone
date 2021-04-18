@@ -12,17 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.adapter.diff
+package com.afterroot.watchdone.utils
 
-import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.watchdone.data.model.TV
-
-class TVDiffCallback : DiffUtil.ItemCallback<TV>() {
-    override fun areItemsTheSame(oldItem: TV, newItem: TV): Boolean {
-        return oldItem.id == newItem.id
+fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versionCode: Int): String {
+    val builder = StringBuilder().apply {
+        appendLine("----Do not remove this info----")
+        appendLine("Version : $version")
+        appendLine("Version Code : $versionCode")
+        appendLine("User ID : ${firebaseUtils.uid}")
+        appendLine("----Do not remove this info----")
     }
-
-    override fun areContentsTheSame(oldItem: TV, newItem: TV): Boolean {
-        return oldItem == newItem
-    }
+    return builder.toString()
 }
