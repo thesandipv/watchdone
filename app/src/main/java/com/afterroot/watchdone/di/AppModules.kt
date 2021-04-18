@@ -22,6 +22,7 @@ import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.utils.ifDebug
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.firebase.auth.ktx.auth
@@ -61,6 +62,18 @@ val appModule = module {
 
     single(qualifier("feedback_email")) {
         "afterhasroot@gmail.com"
+    }
+
+    single(qualifier("feedback_body")) {
+        getMailBodyForFeedback(get(), version = get(qualifier("version_name")), versionCode = get(qualifier("version_code")))
+    }
+
+    single(qualifier("version_code")) {
+        BuildConfig.VERSION_CODE
+    }
+
+    single(qualifier("version_name")) {
+        BuildConfig.VERSION_NAME
     }
 }
 

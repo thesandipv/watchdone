@@ -12,17 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.adapter.diff
+package com.afterroot.watchdone.diff
 
 import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.tmdbapi.model.people.Person
+import com.afterroot.watchdone.data.model.TV
 
-class CastDiffCallback : DiffUtil.ItemCallback<Person>() {
-    override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
+class TVDiffCallback : DiffUtil.ItemCallback<TV>() {
+    override fun areItemsTheSame(oldItem: TV, newItem: TV): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
+    override fun areContentsTheSame(oldItem: TV, newItem: TV): Boolean {
         return oldItem == newItem
     }
 }

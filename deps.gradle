@@ -52,7 +52,7 @@ def versions = [
         koin3              : "3.0.1-beta-2",
         koin               : "2.2.2",
         ktlint             : "0.41.0",
-        kotlin_version     : "1.4.31",
+        kotlin_version     : "1.4.32",
         kotlinxCoroutines  : "1.4.3",
         legacySupportV13   : "1.0.0",
         legacySupportV4    : "1.0.0",

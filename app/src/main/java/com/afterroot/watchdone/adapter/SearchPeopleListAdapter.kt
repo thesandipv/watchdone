@@ -22,10 +22,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.base.BaseListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
-import com.afterroot.watchdone.adapter.diff.PeopleDiffCallback
 import com.afterroot.watchdone.base.GlideApp
+import com.afterroot.watchdone.base.adapter.BaseListAdapter
+import com.afterroot.watchdone.diff.PeopleDiffCallback
 import com.afterroot.watchdone.media.databinding.ListItemPersonBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth

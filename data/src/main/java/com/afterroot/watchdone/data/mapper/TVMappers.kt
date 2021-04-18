@@ -15,7 +15,9 @@
 package com.afterroot.watchdone.data.mapper
 
 import com.afterroot.tmdbapi.TvResultsPage
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.tv.TvSeries
+import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.TV
 
 fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
@@ -50,6 +52,16 @@ fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     keywords = keywords,
     // Additional
     isWatched = isWatched
+)
+
+fun TV.toDBMedia() = DBMedia(
+    id = id,
+    releaseDate = releaseDate,
+    title = name,
+    isWatched = isWatched,
+    posterPath = posterPath,
+    mediaType = Multi.MediaType.TV_SERIES,
+    rating = voteAverage
 )
 
 fun TvResultsPage.toTV(): List<TV> = results.mapNotNull { it?.toTV() }

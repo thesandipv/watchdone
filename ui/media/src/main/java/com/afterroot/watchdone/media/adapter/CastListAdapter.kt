@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.adapter
+package com.afterroot.watchdone.media.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -23,17 +23,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.tmdbapi.model.people.PersonCast
 import com.afterroot.tmdbapi.model.people.PersonCrew
-import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.base.BaseListAdapter
-import com.afterroot.watchdone.adapter.diff.CastDiffCallback
 import com.afterroot.watchdone.base.GlideApp
+import com.afterroot.watchdone.base.adapter.BaseListAdapter
+import com.afterroot.watchdone.diff.CastDiffCallback
+import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.databinding.ListItemCastBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class CastListAdapter : BaseListAdapter<Person>(CastDiffCallback()), KoinComponent {
+class CastListAdapter :
+    BaseListAdapter<Person>(CastDiffCallback()),
+    KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -71,8 +73,8 @@ class CastListAdapter : BaseListAdapter<Person>(CastDiffCallback()), KoinCompone
     inner class CastListViewHolder(val binding: ListItemCastBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.castIv
         private var heightRatio: Float = 3f / 2f
-        val context: Context = posterView.context
-        val width =
+        private val context: Context = posterView.context
+        private val width =
             (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
                 R.dimen.padding_horizontal_list
             )

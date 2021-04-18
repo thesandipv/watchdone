@@ -25,7 +25,6 @@ import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -36,6 +35,7 @@ import org.jetbrains.anko.toast
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
+import org.koin.core.qualifier.qualifier
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
@@ -86,7 +86,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
                         requireContext().email(
                             email = "afterhasroot@gmail.com",
                             subject = "Watchdone Feedback",
-                            text = getMailBodyForFeedback(get())
+                            text = get(qualifier("feedback_body"))
                         )
                     }
                     R.id.action_rate -> {
