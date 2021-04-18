@@ -158,8 +158,7 @@
             app:uri="https://watchdone.web.app/media/{mediaId}" />
         <argument
             android:name="mediaId"
-            app:argType="string"
-            app:nullable="true" />
+            app:argType="integer" />
         <argument
             android:name="type"
             app:argType="string" />

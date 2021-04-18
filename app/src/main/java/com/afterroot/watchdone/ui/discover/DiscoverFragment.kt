@@ -67,7 +67,7 @@ class DiscoverFragment : Fragment() {
                         super.onClick(position, view, item)
                         // homeViewModel.selectMovie(item)
                         // findNavController().navigate(R.id.discoverToMovieInfo)
-                        val directions = DiscoverFragmentDirections.discoverToMediaInfo(item.id.toString(), Multi.MediaType.MOVIE.name)
+                        val directions = DiscoverFragmentDirections.discoverToMediaInfo(item.id, Multi.MediaType.MOVIE.name)
                         findNavController().navigate(directions)
                     }
 
