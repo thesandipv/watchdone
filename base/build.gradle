@@ -23,8 +23,14 @@ apply from: "$rootDir/common-config.gradle"
 //apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
 
 dependencies {
+    implementation Libs.AfterROOT.Core.core
+
     implementation Libs.Kotlin.Coroutines.core
+
+    implementation Libs.AndroidX.recyclerView
 
     api Libs.Glide.glide
     kapt Libs.Glide.compiler
+
+    implementation Libs.commonsCodec
 }

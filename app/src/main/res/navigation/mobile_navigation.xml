@@ -62,6 +62,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/toMediaInfo"
+            app:destination="@id/navigation_media_info"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -102,6 +109,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/discoverToMediaInfo"
+            app:destination="@id/navigation_media_info" />
     </fragment>
     <fragment
         android:id="@+id/navigation_search_new"
@@ -138,5 +148,20 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="https://watchdone.web.app/tv/{tvId}" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_media_info"
+        android:name="com.afterroot.watchdone.media.MediaInfoFragment"
+        android:label="MediaInfoFragment">
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://watchdone.web.app/media/{mediaId}" />
+        <argument
+            android:name="mediaId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="type"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -41,7 +41,6 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import com.google.firebase.firestore.Query as FirestoreQuery
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), KoinComponent {
     private val db: FirebaseFirestore by inject()
     private val settings: Settings by inject()

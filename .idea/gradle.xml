@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/tmdbapi" />
             <option value="$PROJECT_DIR$/ui" />
+            <option value="$PROJECT_DIR$/ui/common" />
             <option value="$PROJECT_DIR$/ui/common-compose" />
             <option value="$PROJECT_DIR$/ui/media" />
             <option value="$PROJECT_DIR$/ui/resources" />

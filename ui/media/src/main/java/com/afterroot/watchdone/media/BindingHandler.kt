@@ -27,7 +27,7 @@ private val crossFadeFactory = DrawableCrossFadeFactory.Builder().setCrossFadeEn
 internal val transitionOptions = DrawableTransitionOptions.with(crossFadeFactory)
 
 @BindingAdapter("poster")
-fun ImageView.poster(url: String) {
+fun ImageView.poster(url: String?) {
     GlideApp.with(context).load(url).transition(transitionOptions)
         .into(this)
 }

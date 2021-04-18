@@ -24,11 +24,7 @@ import android.os.Looper
 import android.view.View
 import android.view.WindowMetrics
 import android.view.inputmethod.InputMethodManager
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afterroot.core.network.NetworkState
-import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.R
-import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.base.BuildConfig
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 
@@ -69,33 +65,9 @@ fun Context.getScreenWidth(): Int {
     }
 }
 
-fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils): String {
-    val builder = StringBuilder().apply {
-        appendLine("----Do not remove this info----")
-        appendLine("Version : ${BuildConfig.VERSION_NAME}")
-        appendLine("Version Code : ${BuildConfig.VERSION_CODE}")
-        appendLine("User ID : ${firebaseUtils.uid}")
-        appendLine("----Do not remove this info----")
-    }
-    return builder.toString()
-}
-
 fun withDelay(millis: Long, block: () -> Unit) {
     Handler(Looper.getMainLooper()).postDelayed(block, millis)
 }
-
-fun Context.showNetworkDialog(state: NetworkState, positive: () -> Unit, negative: () -> Unit) =
-    MaterialDialog(this).show {
-        title(text = if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected")
-        cancelable(false)
-        message(R.string.dialog_msg_no_network)
-        negativeButton(text = "Exit") {
-            negative()
-        }
-        positiveButton(text = "Retry") {
-            positive()
-        }
-    }
 
 /**
  * Helper Function for getting different values for Debug and Release builds
@@ -125,5 +97,3 @@ fun <T> ifDebug(debug: () -> T, release: () -> T): T = ifDebug(debug.invoke(), r
 fun ifDebug(debug: () -> Unit) {
     if (BuildConfig.DEBUG) debug.invoke()
 }
-
-fun Settings.createPosterUrl(path: String) = baseUrl + imageSize + path

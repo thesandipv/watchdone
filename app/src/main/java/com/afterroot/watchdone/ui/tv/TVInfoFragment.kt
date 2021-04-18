@@ -39,7 +39,6 @@ import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.TVRepository
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.CastListAdapter
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.Field
@@ -47,10 +46,9 @@ import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
+import com.afterroot.watchdone.media.adapter.CastListAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.utils.createPosterUrl
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.bumptech.glide.request.target.CustomTarget
@@ -76,6 +74,7 @@ import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.email
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.qualifier
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -366,7 +365,7 @@ class TVInfoFragment : Fragment() {
                 requireContext().email(
                     email = "afterhasroot@gmail.com",
                     subject = "Watchdone Feedback",
-                    text = getMailBodyForFeedback(get())
+                    text = get(qualifier("feedback_body"))
                 )
             }
             R.id.action_share_to_ig_story -> {

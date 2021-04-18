@@ -18,7 +18,7 @@ import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.model.DbMovie
+import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
 import com.google.firebase.firestore.QuerySnapshot
 
@@ -26,10 +26,10 @@ fun QuerySnapshot.toMulti(): List<Multi> {
     val list = mutableListOf<Multi>()
     this.forEach { queryDocumentSnapshot ->
         val multi: Multi = when (queryDocumentSnapshot.getString(Field.MEDIA_TYPE)) {
-            Field.MEDIA_TYPE_MOVIE -> {
-                queryDocumentSnapshot.toObject(DbMovie::class.java).toMovie()
+            Multi.MediaType.MOVIE.name -> {
+                queryDocumentSnapshot.toObject(DBMedia::class.java).toMovie()
             }
-            Field.MEDIA_TYPE_TV -> {
+            Multi.MediaType.TV_SERIES.name -> {
                 queryDocumentSnapshot.toObject(TvSeries::class.java)
                     .toTV(isWatched = queryDocumentSnapshot.getBoolean(Field.IS_WATCHED) ?: false)
             }

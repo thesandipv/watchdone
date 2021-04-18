@@ -69,4 +69,7 @@ class Settings(val context: Context) {
         get() = preferences.getString(Constants.PREF_KEY_THEME, context.getString(R.string.theme_device_default))
     val isUseProdDb: Boolean
         get() = preferences.getBoolean("use_prod_db", false)
+
+    // Helper Functions
+    fun createPosterUrl(path: String) = baseUrl + imageSize + path
 }

@@ -33,6 +33,8 @@ dependencies {
     implementation project(':data')
     implementation project(':ui:resources')
 
+    implementation Libs.AfterROOT.Core.core
+
     implementation Libs.AndroidX.appCompat
     implementation Libs.AndroidX.constraintLayout
     implementation Libs.AndroidX.fragment
@@ -48,4 +50,8 @@ dependencies {
     implementation Libs.Firebase.ads
 
     implementation Libs.materialProgress
+
+    implementation Libs.Koin3.android
+
+    implementation Libs.MaterialDialogs.core
 }
