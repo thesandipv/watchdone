@@ -16,6 +16,7 @@ package com.afterroot.watchdone.utils
 
 import com.afterroot.watchdone.base.Collection
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
@@ -29,3 +30,7 @@ fun FirebaseFirestore.collectionWatchdone(id: String, isUseOnlyProdDB: Boolean):
     return collection(Collection.USERS).document(id)
         .collection(if (isUseOnlyProdDB) Collection.WATCHDONE_PROD else Collection.WATCHDONE_AUTO)
 }
+
+fun CollectionReference.documentWatchlist(): DocumentReference = document(Collection.WATCHLIST)
+fun DocumentReference.collectionWatchlistItems(): CollectionReference = collection(Collection.ITEMS)
+fun CollectionReference.collectionWatchlistItems(): CollectionReference = documentWatchlist().collectionWatchlistItems()
