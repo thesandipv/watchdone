@@ -25,6 +25,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.R
@@ -35,6 +37,7 @@ import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
+import com.afterroot.watchdone.helpers.migrateFirestore
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
@@ -178,7 +181,8 @@ class HomeFragment : Fragment() {
         action: QueryAction = QueryAction.CLEAR,
         additionQueries: (Query.() -> Query)? = null
     ) {
-        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, isReload) {
+        val userId = get<FirebaseAuth>().currentUser?.uid!!
+        homeViewModel.getWatchlistSnapshot(userId, isReload) {
             additionQueries?.let { it() }
             when (action) {
                 QueryAction.CLEAR -> {
@@ -211,6 +215,8 @@ class HomeFragment : Fragment() {
                             } else {
                                 submitList(listData.toMulti())
                             }
+                            // Check need migration or not
+                            runMigrations(listData, userId)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -218,6 +224,32 @@ class HomeFragment : Fragment() {
                 }
             }
         )
+    }
+
+    /**
+     * TODO Remove this check after 2 releases
+     *
+     * @param listData
+     * @param userId
+     * @since v0.0.4
+     */
+    private fun runMigrations(listData: QuerySnapshot, userId: String) {
+        val isRunMig = listData.documents.any { doc ->
+            doc.getDouble("voteAverage") != null
+        }
+        if (isRunMig) {
+            MaterialDialog(requireContext()).show {
+                title(text = "Migrate Data")
+                message(text = "Migration Needed for new data structure")
+                positiveButton(text = "Migrate") {
+                    val progress = requireContext().showStaticProgressDialog("Migrating Data")
+                    migrateFirestore(get(), listData, userId, settings.isUseProdDb) {
+                        progress.dismiss()
+                    }
+                }
+                negativeButton(text = "Later")
+            }
+        }
     }
 
     private fun setErrorObserver() {
