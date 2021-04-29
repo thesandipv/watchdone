@@ -79,6 +79,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+@Deprecated(
+    "Use MediaInfoFragment Instead.",
+    ReplaceWith("MediaInfoFragment", "com.afterroot.watchdone.media.MediaInfoFragment")
+)
 class TVInfoFragment : Fragment() {
     private lateinit var binding: FragmentTvInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
