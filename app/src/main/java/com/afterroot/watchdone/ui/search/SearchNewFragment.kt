@@ -31,6 +31,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.afterroot.tmdbapi.TmdbPeople
 import com.afterroot.tmdbapi.TvResultsPage
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.R
@@ -213,7 +214,8 @@ class SearchNewFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
             homeViewModel.selectMovie(item)
-            view?.findNavController()?.navigate(R.id.searchNewToMovieInfo)
+            val directions = SearchNewFragmentDirections.searchToMediaInfo(item.id, Multi.MediaType.MOVIE.name)
+            view?.findNavController()?.navigate(directions)
         }
     }
 
@@ -221,7 +223,8 @@ class SearchNewFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: TV) {
             super.onClick(position, view, item)
             homeViewModel.selectTVSeries(item)
-            view?.findNavController()?.navigate(R.id.searchNewToTVInfo)
+            val directions = SearchNewFragmentDirections.searchToMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
+            view?.findNavController()?.navigate(directions)
         }
     }
 
