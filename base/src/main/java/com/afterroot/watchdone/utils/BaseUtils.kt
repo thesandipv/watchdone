@@ -77,7 +77,7 @@ fun withDelay(millis: Long, block: () -> Unit) {
  * @since v0.0.4
  * @return either [debug] or [release] with provided type [T]
  */
-fun <T> ifDebug(debug: T, release: T): T = if (BuildConfig.DEBUG) debug else release
+fun <T> whenBuildIs(debug: T, release: T): T = if (BuildConfig.DEBUG) debug else release
 
 /**
  * Helper Function for invoking different functions for Debug and Release builds
@@ -87,13 +87,13 @@ fun <T> ifDebug(debug: T, release: T): T = if (BuildConfig.DEBUG) debug else rel
  * @since v0.0.4
  * @return either [debug] or [release] with provided type [T]
  */
-fun <T> ifDebug(debug: () -> T, release: () -> T): T = ifDebug(debug.invoke(), release.invoke())
+fun <T> whenBuildIs(debug: () -> T, release: () -> T): T = whenBuildIs(debug.invoke(), release.invoke())
 
 /**
  * Helper Function for invoking function only if build is Debug
  * @param debug function to invoke if build is Debug
  * @since v0.0.4
  */
-fun ifDebug(debug: () -> Unit) {
+fun whenBuildIs(debug: () -> Unit) {
     if (BuildConfig.DEBUG) debug.invoke()
 }

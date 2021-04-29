@@ -24,7 +24,7 @@ import java.io.Serializable
 abstract class AbstractJsonMapping : Serializable {
     @JsonAnySetter
     open fun handleUnknown(key: String?, value: Any?) {
-        val unknown = "Unknown property: '$key' value: '$value'"
+        val unknown = "Unknown property: '$key'"
         if (System.getenv("Test").isNullOrBlank()) { // Not in test environment
             Log.d(TAG, "handleUnknown: $unknown")
         } else { // In test environment
