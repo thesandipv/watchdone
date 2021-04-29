@@ -23,7 +23,7 @@ import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
-import com.afterroot.watchdone.utils.ifDebug
+import com.afterroot.watchdone.utils.whenBuildIs
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -96,7 +96,7 @@ val firebaseModule = module {
         Firebase.remoteConfig.apply {
             setConfigSettingsAsync(
                 remoteConfigSettings {
-                    fetchTimeoutInSeconds = ifDebug(debug = 0, release = 3600)
+                    fetchTimeoutInSeconds = whenBuildIs(debug = 0, release = 3600)
                 }
             )
         }
