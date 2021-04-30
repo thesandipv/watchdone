@@ -186,6 +186,9 @@ dependencies {
     implementation Libs.AndroidX.supportV4
     implementation Libs.AndroidX.vectorDrawable
 
+    implementation Libs.AndroidX.Activity.compose
+    implementation Libs.AndroidX.Navigation.compose
+
     implementation Libs.AndroidX.Compose.ui
     implementation Libs.AndroidX.Compose.tooling
     implementation Libs.AndroidX.Compose.foundation
@@ -193,6 +196,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.iconsCore
     implementation Libs.AndroidX.Compose.iconsExt
     implementation Libs.AndroidX.Compose.livedata
+
+    implementation Libs.Accompanist.insets
 
     implementation Libs.MaterialDialogs.input
     implementation Libs.MaterialDialogs.core

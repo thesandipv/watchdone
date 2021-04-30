@@ -40,7 +40,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.palette.graphics.Palette
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
@@ -304,7 +303,7 @@ class MovieInfoFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
             // homeViewModel.selectMovie(item)
-            view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
+            // view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
         }
     }
 

@@ -13,12 +13,22 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
+package com.afterroot.watchdone
 
-apply from: "$rootDir/common-config.gradle"
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.fragment.app.FragmentActivity
+import com.afterroot.watchdone.compose.theme.Theme
+import com.afterroot.watchdone.ui.home.Home
 
-dependencies {
-    implementation Libs.Google.material
-    implementation Libs.AndroidX.preference
-    implementation Libs.MaterialDialogs.core
+class HomeActivity : FragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            Theme(darkTheme = true) {
+                Home()
+            }
+        }
+    }
 }

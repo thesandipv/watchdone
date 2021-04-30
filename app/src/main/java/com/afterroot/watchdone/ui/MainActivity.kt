@@ -283,18 +283,6 @@ class MainActivity : AppCompatActivity() {
                     binding.fab.show()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
-                R.id.navigation_movie_info -> {
-                    setTitle(null)
-                    binding.titleLayout.visible(false)
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) // As back arrow
-                }
-                R.id.navigation_tv_info -> {
-                    setTitle(null)
-                    binding.titleLayout.visible(false)
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) // As back arrow
-                }
                 R.id.navigation_discover -> {
                     setTitle(getString(R.string.text_discover))
                     binding.fab.hide()

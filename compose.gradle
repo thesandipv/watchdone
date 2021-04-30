@@ -19,11 +19,13 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion Versions.composeVersion
+        kotlinCompilerExtensionVersion Versions.compose
     }
 }
 
 dependencies {
+    implementation(Libs.AndroidX.Activity.compose)
+    implementation(Libs.AndroidX.Navigation.compose)
     implementation(Libs.AndroidX.Compose.ui)
     implementation(Libs.AndroidX.Compose.tooling)
     implementation(Libs.AndroidX.Compose.foundation)
