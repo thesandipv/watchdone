@@ -22,6 +22,20 @@ plugins {
 apply from: "$rootDir/common-config.gradle"
 //apply from: "$rootDir/compose.gradle" //Uncomment for Enabling Compose
 
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental"   : "true"
+                ]
+            }
+        }
+
+    }
+}
+
 dependencies {
     api project(':tmdbapi')
     implementation project(':base')

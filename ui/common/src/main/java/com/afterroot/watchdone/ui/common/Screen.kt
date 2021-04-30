@@ -13,12 +13,14 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
+package com.afterroot.watchdone.ui.common
 
-apply from: "$rootDir/common-config.gradle"
-
-dependencies {
-    implementation Libs.Google.material
-    implementation Libs.AndroidX.preference
-    implementation Libs.MaterialDialogs.core
+enum class Screen(val route: String) {
+    Watchlist("watchlist"),
+    Discover("discover"),
+    Trending("trending"),
+    Popular("popular"),
+    Settings("settings"),
+    MovieInfo("movie/{movieId}"),
+    TVInfo("tv/{tvId}")
 }
