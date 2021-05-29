@@ -45,9 +45,7 @@ dependencies {
     implementation Libs.AndroidX.supportV13
 
     implementation Libs.Google.material
-
-    implementation platform(Libs.Firebase.bom)
-    implementation Libs.Firebase.ads
+    implementation Libs.Google.ads
 
     implementation Libs.materialProgress
 
