@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/base" />
+            <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/tmdbapi" />
             <option value="$PROJECT_DIR$/ui" />
@@ -20,6 +21,7 @@
             <option value="$PROJECT_DIR$/ui/common-compose" />
             <option value="$PROJECT_DIR$/ui/media" />
             <option value="$PROJECT_DIR$/ui/resources" />
+            <option value="$PROJECT_DIR$/ui/watchlist" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

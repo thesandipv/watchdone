@@ -16,29 +16,18 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-parcelize'
 }
 
 apply from: "$rootDir/gradle/common-config.gradle"
-//apply from: "$rootDir/gradle/compose.gradle" //Uncomment for Enabling Compose
+apply from: "$rootDir/gradle/compose.gradle" //Uncomment for Enabling Compose
 
 dependencies {
-    api Libs.OkHttp.okHttp
-    api Libs.OkHttp.logging
-    api Libs.Retrofit.retrofit
-    api Libs.Retrofit.jackson
+    //All compose dependencies applied with compose.gradle
+    implementation project(":base")
+    implementation project(":data")
 
-    api Libs.commonsCodec
-    implementation Libs.commonsLang
+    implementation Libs.Koin3.android
+    implementation Libs.Koin3.ext
 
-    api "com.fasterxml.jackson.core:jackson-annotations:$Versions.jackson"
-    api "com.fasterxml.jackson.core:jackson-databind:$Versions.jackson"
-
-    implementation 'com.google.guava:guava:30.1.1-jre'
-
-    implementation Libs.AndroidX.Room.runtime
-
-    testImplementation Libs.Test.junit
-    androidTestImplementation Libs.Test.espresso
-    androidTestImplementation Libs.Test.junitExt
+    implementation Libs.Accompanist.glide
 }
