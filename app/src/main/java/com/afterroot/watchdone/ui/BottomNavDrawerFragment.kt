@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui
 
 import android.os.Bundle
@@ -20,14 +19,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -38,6 +35,7 @@ import org.jetbrains.anko.toast
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
+import org.koin.core.qualifier.qualifier
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
@@ -63,29 +61,32 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
                     }
                     R.id.tmdb_login -> {
                         val dialog = requireContext().showStaticProgressDialog("Loading...")
-                        homeViewModel.getResponseRequestToken().observe(viewLifecycleOwner, Observer { response ->
-                            if (response.success) {
-                                try {
-                                    requireContext().browse(AuthRepository.getAuthVerifyUrl(response))
-                                    dialog.dismiss()
-                                    dismiss()
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+                        homeViewModel.getResponseRequestToken().observe(
+                            viewLifecycleOwner,
+                            { response ->
+                                if (response.success) {
+                                    try {
+                                        requireContext().browse(AuthRepository.getAuthVerifyUrl(response))
+                                        dialog.dismiss()
+                                        dismiss()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        dialog.dismiss()
+                                        dismiss()
+                                    }
+                                } else {
+                                    requireContext().toast(response.statusMessage)
                                     dialog.dismiss()
                                     dismiss()
                                 }
-                            } else {
-                                requireContext().toast(response.statusMessage)
-                                dialog.dismiss()
-                                dismiss()
                             }
-                        })
+                        )
                     }
                     R.id.send_feedback -> {
                         requireContext().email(
                             email = "afterhasroot@gmail.com",
                             subject = "Watchdone Feedback",
-                            text = getMailBodyForFeedback(get())
+                            text = get(qualifier("feedback_body"))
                         )
                     }
                     R.id.action_rate -> {
@@ -106,7 +107,6 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment(), KoinComponent {
                         dismiss()
                     }
                 }
-
             }
         }
     }

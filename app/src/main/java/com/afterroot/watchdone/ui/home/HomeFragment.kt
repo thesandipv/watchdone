@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.home
 
 import android.os.Bundle
@@ -22,29 +21,29 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.model.MovieDb
-import com.afterroot.tmdbapi.model.tv.TvSeries
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.MultiAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
-import com.afterroot.watchdone.data.Field
-import com.afterroot.watchdone.data.MultiDataHolder
-import com.afterroot.watchdone.data.toMultiDataHolder
+import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.data.mapper.toMulti
+import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
-import com.afterroot.watchdone.ui.settings.Settings
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
+import com.afterroot.watchdone.helpers.migrateFirestore
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -52,6 +51,7 @@ import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.qualifier
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -59,42 +59,46 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val settings: Settings by inject()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    private val itemSelectedCallback = object : ItemSelectedCallback<MultiDataHolder> {
-        override fun onClick(position: Int, view: View?, item: MultiDataHolder) {
+    private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
+        override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
-            if (item.data is MovieDb) {
-                homeViewModel.selectMovie(item.data as MovieDb)
+            if (item is Movie) {
+                /*homeViewModel.selectMovie(item)
                 findNavController().navigate(
                     R.id.toMovieInfo,
                     null, null,
                     FragmentNavigatorExtras(
-                        view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item.data as MovieDb).title!!
+                        view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item).title!!
                     )
-                )
-            } else if (item.data is TvSeries) {
-                homeViewModel.selectTVSeries(item.data as TvSeries)
-                findNavController().navigate(R.id.toTVInfo)
+                )*/
+                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
+                findNavController().navigate(directions)
+            } else if (item is TV) {
+                /*homeViewModel.selectTVSeries(item)
+                findNavController().navigate(R.id.toTVInfo)*/
+                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
+                findNavController().navigate(directions)
             }
         }
 
-        override fun onLongClick(position: Int, item: MultiDataHolder) {
+        override fun onLongClick(position: Int, item: Multi) {
             super.onLongClick(position, item)
-            if (item.data is MovieDb) {
-                requireContext().toast((item.data as MovieDb).title.toString())
-            } else if (item.data is TvSeries) {
-                requireContext().toast((item.data as TvSeries).name.toString())
+            if (item is Movie) {
+                requireContext().toast((item).title.toString())
+            } else if (item is TV) {
+                requireContext().toast((item).name.toString())
             }
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         homeScreenAdapter = MultiAdapter(itemSelectedCallback)
         binding.list.adapter = homeScreenAdapter
@@ -114,64 +118,148 @@ class HomeFragment : Fragment() {
                 val curr = settings.ascSort
                 settings.ascSort = !curr
                 this.text = if (!settings.ascSort) "Sort by Ascending" else "Sort by Descending"
-                homeScreenAdapter.submitQuery(settings.queryDirection, true, isWatchedChecked)
+                homeScreenAdapter.submitQuery(settings.queryDirection, true, QueryAction.CLEAR)
             }
         }
-        binding.chipGroup.addView(sortChip)
 
-        val isWatchedChip = Chip(requireContext(), null, R.attr.FilterChip).apply {
+        val watchStatusGroup = ChipGroup(requireContext()).apply {
+            isSingleSelection = true
+        }
+
+        val isWatchedChip = Chip(requireContext()).apply {
             text = context.getString(R.string.text_ship_show_watched)
+            isCheckable = true
             setOnCheckedChangeListener { _, isChecked ->
                 isWatchedChecked = isChecked
-                homeScreenAdapter.submitQuery(settings.queryDirection, true, isWatchedChecked)
+                if (isChecked) {
+                    homeScreenAdapter.submitQuery(settings.queryDirection, isReload = true, action = QueryAction.WATCHED)
+                } else homeScreenAdapter.clearFilters()
             }
         }
-        binding.chipGroup.addView(isWatchedChip)
+
+        val pending = Chip(requireContext()).apply {
+            text = "Pending"
+            isCheckable = true
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    homeScreenAdapter.submitList(
+                        homeScreenAdapter.currentList.filter {
+                            if (it is Movie) {
+                                !it.isWatched
+                            } else {
+                                !(it as TV).isWatched
+                            }
+                        }
+                    ) // homeScreenAdapter.submitQuery(settings.queryDirection, isReload = true, action = QueryAction.PENDING)
+                } else homeScreenAdapter.clearFilters()
+            }
+        }
+        binding.chipGroup.apply {
+            addView(sortChip)
+
+            watchStatusGroup.apply {
+                addView(isWatchedChip)
+                addView(pending)
+            }
+            addView(watchStatusGroup)
+        }
+    }
+
+    enum class QueryAction {
+        CLEAR,
+        WATCHED,
+        PENDING
+    }
+
+    private fun MultiAdapter.clearFilters() {
+        submitQuery(settings.queryDirection, isReload = true)
     }
 
     private fun MultiAdapter.submitQuery(
         direction: Query.Direction,
         isReload: Boolean = false,
-        filterWatched: Boolean = false
+        action: QueryAction = QueryAction.CLEAR,
+        additionQueries: (Query.() -> Query)? = null
     ) {
-        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!, isReload) {
-            if (filterWatched) {
-                whereEqualTo(Field.IS_WATCHED, filterWatched).orderBy(
-                    Field.RELEASE_DATE, direction
-                )
-            } else {
-                orderBy(Field.RELEASE_DATE, direction)
-            }
-        }.observe(viewLifecycleOwner, Observer {
-            if (it is ViewModelState.Loading) {
-                binding.progressBarHome.visible(true)
-            } else if (it is ViewModelState.Loaded<*>) {
-                binding.progressBarHome.visible(false)
-                try { //Fixes crash when user is being logged out
-                    if (it.data != null) {
-                        binding.infoNoMovies.visible(false, AutoTransition())
-                        val listData: QuerySnapshot = it.data as QuerySnapshot
-                        if (listData.documents.isEmpty()) {
-                            submitList(emptyList())
-                            binding.infoNoMovies.visible(true, AutoTransition())
-                            binding.infoTv.text = if (filterWatched) getString(R.string.text_info_no_movies_in_filter)
-                            else getString(R.string.text_info_no_movies)
-                        } else {
-                            submitList(listData.toMultiDataHolder())
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        val userId = get<FirebaseAuth>().currentUser?.uid!!
+        homeViewModel.getWatchlistSnapshot(userId, isReload) {
+            additionQueries?.let { it() }
+            when (action) {
+                QueryAction.CLEAR -> {
+                    orderBy(Field.RELEASE_DATE, direction)
+                }
+                QueryAction.WATCHED -> {
+                    whereEqualTo(Field.IS_WATCHED, true).orderBy(Field.RELEASE_DATE, direction)
+                }
+                QueryAction.PENDING -> {
+                    whereIn(Field.IS_WATCHED, listOf(false, null)).orderBy(Field.RELEASE_DATE, direction)
                 }
             }
-        })
+        }.observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loading) {
+                    binding.progressBarHome.visible(true)
+                } else if (it is ViewModelState.Loaded<*>) {
+                    binding.progressBarHome.visible(false)
+                    try { // Fixes crash when user is being logged out
+                        if (it.data != null) {
+                            binding.infoNoMovies.visible(false, AutoTransition())
+                            val listData: QuerySnapshot = it.data as QuerySnapshot
+                            if (listData.documents.isEmpty()) {
+                                submitList(emptyList())
+                                binding.infoNoMovies.visible(true, AutoTransition())
+                                binding.infoTv.text =
+                                    if (action != QueryAction.CLEAR) getString(R.string.text_info_no_movies_in_filter)
+                                    else getString(R.string.text_info_no_movies)
+                            } else {
+                                submitList(listData.toMulti())
+                            }
+                            // Check need migration or not
+                            runMigrations(listData, userId)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        )
+    }
+
+    /**
+     * TODO Remove this check after 2 releases
+     *
+     * @param listData
+     * @param userId
+     * @since v0.0.4
+     */
+    private fun runMigrations(listData: QuerySnapshot, userId: String) {
+        val isRunMig = listData.documents.any { doc ->
+            doc.getDouble("voteAverage") != null
+        }
+        if (isRunMig) {
+            MaterialDialog(requireContext()).show {
+                title(text = "Migrate Data")
+                message(text = "Migration Needed for new data structure")
+                positiveButton(text = "Migrate") {
+                    val progress = requireContext().showStaticProgressDialog("Migrating Data")
+                    migrateFirestore(get(), listData, userId, settings.isUseProdDb) {
+                        progress.dismiss()
+                    }
+                }
+                negativeButton(text = "Later")
+            }
+        }
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, EventObserver {
-            binding.progressBarHome.visible(false, AutoTransition())
-            requireContext().toast("Via: $TAG : $it")
-        })
+        homeViewModel.error.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                binding.progressBarHome.visible(false, AutoTransition())
+                requireContext().toast("Via: $TAG : $it")
+            }
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -179,7 +267,7 @@ class HomeFragment : Fragment() {
             requireContext().email(
                 email = "afterhasroot@gmail.com",
                 subject = "Watchdone Feedback",
-                text = getMailBodyForFeedback(get())
+                text = get(qualifier("feedback_body"))
             )
         }
         return super.onOptionsItemSelected(item)

@@ -13,5 +13,13 @@
  * limitations under the License.
  */
 
-rootProject.name='watchdone'
-include ':app', ':tmdbapi'
+rootProject.name = 'watchdone'
+include ':app'
+include ':base'
+include ':data'
+include ':tmdbapi'
+include ':ui:common'
+include ':ui:common-compose'
+include ':ui:media'
+include ':ui:resources'
+include ':ui:watchlist'

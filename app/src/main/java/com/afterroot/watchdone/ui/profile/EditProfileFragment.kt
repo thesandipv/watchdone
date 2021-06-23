@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.profile
 
 import android.content.Intent
@@ -22,10 +21,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.afterroot.core.extensions.getDrawableExt
-import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.data.Collection
-import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.FirebaseUtils

@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.discover
 
 import android.os.Bundle
@@ -28,20 +27,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Discover
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
-import com.afterroot.watchdone.adapter.diff.MovieDiffCallback
-import com.afterroot.watchdone.data.movie.toMovieDataHolder
+import com.afterroot.watchdone.data.mapper.toMovies
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
+import com.afterroot.watchdone.diff.MovieDiffCallback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.get
+import org.koin.core.qualifier.qualifier
 
 class DiscoverFragment : Fragment() {
     lateinit var binding: FragmentDiscoverBinding
@@ -53,8 +53,8 @@ class DiscoverFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launch {
             binding.progressBarDiscover.visible(true)
@@ -62,20 +62,23 @@ class DiscoverFragment : Fragment() {
             val homeScreenAdapter = DelegateListAdapter(
                 MovieDiffCallback(),
                 object :
-                    ItemSelectedCallback<MovieDb> {
-                    override fun onClick(position: Int, view: View?, item: MovieDb) {
+                    ItemSelectedCallback<Movie> {
+                    override fun onClick(position: Int, view: View?, item: Movie) {
                         super.onClick(position, view, item)
-                        homeViewModel.selectMovie(item)
-                        findNavController().navigate(R.id.discoverToMovieInfo)
+                        // homeViewModel.selectMovie(item)
+                        // findNavController().navigate(R.id.discoverToMovieInfo)
+                        val directions = DiscoverFragmentDirections.discoverToMediaInfo(item.id, Multi.MediaType.MOVIE.name)
+                        findNavController().navigate(directions)
                     }
 
-                    override fun onLongClick(position: Int, item: MovieDb) {
+                    override fun onLongClick(position: Int, item: Movie) {
                         super.onLongClick(position, item)
                         requireContext().toast(item.title.toString())
                     }
-                })
+                }
+            )
             binding.list.adapter = homeScreenAdapter
-            homeScreenAdapter.submitList(repo.toMovieDataHolder())
+            homeScreenAdapter.submitList(repo.toMovies())
             binding.progressBarDiscover.visible(false)
         }
     }
@@ -85,7 +88,7 @@ class DiscoverFragment : Fragment() {
             requireContext().email(
                 email = "afterhasroot@gmail.com",
                 subject = "Watchdone Feedback",
-                text = getMailBodyForFeedback(get())
+                text = get(qualifier("feedback_body"))
             )
         }
         return super.onOptionsItemSelected(item)

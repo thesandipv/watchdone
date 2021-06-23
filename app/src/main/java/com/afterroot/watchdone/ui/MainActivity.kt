@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui
 
 import android.Manifest
@@ -39,15 +38,16 @@ import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.progress
 import com.afterroot.core.extensions.visible
 import com.afterroot.core.network.NetworkState
+import com.afterroot.core.onVersionGreaterThanEqualTo
 import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.Constants.RC_PERMISSION
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.data.Collection
-import com.afterroot.watchdone.data.Field
+import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Constants.RC_PERMISSION
+import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.User
 import com.afterroot.watchdone.databinding.ActivityMainBinding
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.hideKeyboard
@@ -59,7 +59,7 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
@@ -84,12 +84,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (get<FirebaseAuth>().currentUser == null) { //If not logged in, go to login.
+        if (get<FirebaseAuth>().currentUser == null) { // If not logged in, go to login.
             startActivity(Intent(this, SplashActivity::class.java))
             finish()
         } else initialize()
         get<FirebaseAuth>().addAuthStateListener {
-            if (get<FirebaseAuth>().currentUser == null) { //If not logged in, go to login.
+            if (get<FirebaseAuth>().currentUser == null) { // If not logged in, go to login.
                 startActivity(Intent(applicationContext, SplashActivity::class.java))
                 finish()
             }
@@ -129,33 +129,35 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        //Initialize AdMob SDK
+        // Initialize AdMob SDK
         MobileAds.initialize(this) {
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //Greater than Lollipop
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                    checkPermissions() //Load Fragments after checking permissions
-                }
+        onVersionGreaterThanEqualTo(
+            Build.VERSION_CODES.M,
+            {
+                checkPermissions() // Load Fragments after checking permissions
             }
-        } else {
-            loadFragments() //Less than Lollipop, direct load fragments
-        }
+        )
 
-        //Add user in db if not available
+        setUpNavigation()
+
+        // Add user in db if not available
         addUserInfoInDB()
         setUpNetworkObserver()
     }
 
     private var dialog: MaterialDialog? = null
     private fun setUpNetworkObserver() {
-        networkViewModel.doIfNetworkConnected(this, doWhenConnected = {
-            if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
-        }, doWhenNotConnected = {
-            dialog = showNetworkDialog(it)
-        })
+        networkViewModel.doIfNetworkConnected(
+            this,
+            doWhenConnected = {
+                if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
+            },
+            doWhenNotConnected = {
+                dialog = showNetworkDialog(it)
+            }
+        )
     }
 
     private fun showNetworkDialog(state: NetworkState) = MaterialDialog(this).show {
@@ -177,30 +179,32 @@ class MainActivity : AppCompatActivity() {
         try {
             val curUser = firebaseUtils.firebaseUser
             val userRef = get<FirebaseFirestore>().collection(Collection.USERS).document(curUser!!.uid)
-            FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { tokenTask ->
-                    if (!tokenTask.isSuccessful) {
-                        return@OnCompleteListener
-                    }
-                    userRef.get().addOnCompleteListener { getUserTask ->
-                        if (getUserTask.isSuccessful) {
-                            if (!getUserTask.result!!.exists()) {
-                                binding.container.snackbar("User not available. Creating User..").anchorView =
-                                    binding.toolbar
-                                val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result?.token!!)
-                                userRef.set(user).addOnCompleteListener { setUserTask ->
-                                    if (!setUserTask.isSuccessful) Log.e(
-                                        TAG,
-                                        "Can't create firebaseUser",
-                                        setUserTask.exception
-                                    )
+            get<FirebaseMessaging>().token
+                .addOnCompleteListener(
+                    OnCompleteListener { tokenTask ->
+                        if (!tokenTask.isSuccessful) {
+                            return@OnCompleteListener
+                        }
+                        userRef.get().addOnCompleteListener { getUserTask ->
+                            if (getUserTask.isSuccessful) {
+                                if (!getUserTask.result!!.exists()) {
+                                    binding.container.snackbar("User not available. Creating User..").anchorView =
+                                        binding.toolbar
+                                    val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result)
+                                    userRef.set(user).addOnCompleteListener { setUserTask ->
+                                        if (!setUserTask.isSuccessful) Log.e(
+                                            TAG,
+                                            "Can't create firebaseUser",
+                                            setUserTask.exception
+                                        )
+                                    }
+                                } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result) {
+                                    userRef.update(Field.FCM_ID, tokenTask.result)
                                 }
-                            } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result?.token!!) {
-                                userRef.update(Field.FCM_ID, tokenTask.result?.token!!)
-                            }
-                        } else Log.e(TAG, "Unknown Error", getUserTask.exception)
+                            } else Log.e(TAG, "Unknown Error", getUserTask.exception)
+                        }
                     }
-                })
+                )
         } catch (e: Exception) {
             Log.e(TAG, "addUserInfoInDB: $e")
         }
@@ -208,10 +212,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkPermissions() {
         val permissionChecker = PermissionChecker(this)
-        if (permissionChecker.lacksPermissions(manifestPermissions)) { //missing permissions
+        if (permissionChecker.lacksPermissions(manifestPermissions)) { // missing permissions
             ActivityCompat.requestPermissions(this, manifestPermissions, RC_PERMISSION)
-        } else { //no missing permissions
-            loadFragments()
+        } else { // no missing permissions
+            setUpNavigation()
         }
     }
 
@@ -229,13 +233,13 @@ class MainActivity : AppCompatActivity() {
                         checkPermissions()
                     }.anchorView = binding.toolbar
                 } else {
-                    loadFragments()
+                    setUpNavigation()
                 }
             }
         }
     }
 
-    private fun loadFragments() {
+    private fun setUpNavigation() {
         val drawerToggle = DrawerArrowDrawable(this)
         navController = findNavController(R.id.nav_host_fragment)
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -257,7 +261,7 @@ class MainActivity : AppCompatActivity() {
                         setImageDrawable(context.getDrawableExt(R.drawable.ic_search))
                     }
                     drawerToggle.apply {
-                        if (progress == 1f) progress(1f, 0f) //As hamburger
+                        if (progress == 1f) progress(1f, 0f) // As hamburger
                     }
                     binding.toolbar.apply {
                         setNavigationOnClickListener {
@@ -272,35 +276,29 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_settings -> {
                     setTitle(getString(R.string.title_settings))
                     binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) //As back arrow
+                    drawerToggle.progress(0f, 1f) // As back arrow
                 }
                 R.id.navigation_edit_profile -> {
                     setTitle(getString(R.string.title_edit_profile))
                     binding.fab.show()
-                    drawerToggle.progress(0f, 1f) //As back arrow
-                }
-                R.id.navigation_movie_info -> {
-                    setTitle(null)
-                    binding.titleLayout.visible(false)
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) //As back arrow
-                }
-                R.id.navigation_tv_info -> {
-                    setTitle(null)
-                    binding.titleLayout.visible(false)
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) //As back arrow
+                    drawerToggle.progress(0f, 1f) // As back arrow
                 }
                 R.id.navigation_discover -> {
                     setTitle(getString(R.string.text_discover))
                     binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) //As back arrow
+                    drawerToggle.progress(0f, 1f) // As back arrow
                 }
                 R.id.navigation_search_new -> {
                     binding.titleLayout.visible(false, AutoTransition())
                     setTitle(null)
                     binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) //As back arrow
+                    drawerToggle.progress(0f, 1f) // As back arrow
+                }
+                R.id.navigation_media_info -> {
+                    setTitle(null)
+                    binding.titleLayout.visible(false)
+                    binding.fab.hide()
+                    drawerToggle.progress(0f, 1f) // As back arrow
                 }
             }
         }

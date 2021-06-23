@@ -1,6 +1,6 @@
 package com.afterroot.tmdbapi;
 
-import com.afterroot.tmdbapi.model.MovieDb;
+import com.afterroot.tmdbapi.model.NetworkMovie;
 import com.afterroot.tmdbapi.model.MovieList;
 import com.afterroot.tmdbapi.model.config.Account;
 import com.afterroot.tmdbapi.model.core.AccountID;
@@ -60,7 +60,7 @@ public class AccountApiTest extends AbstractTmdbApiTest {
         // add a tv series
         account.addToWatchList(APITESTS_TOKEN, APITESTS_ACCOUNT, 1396, TmdbAccount.MediaType.TV);
 
-        List<MovieDb> watchlistMovies = account.getWatchListMovies(APITESTS_TOKEN, APITESTS_ACCOUNT, null).getResults();
+        List<NetworkMovie> watchlistMovies = account.getWatchListMovies(APITESTS_TOKEN, APITESTS_ACCOUNT, null).getResults();
         assertTrue(watchlistMovies.size() == 1);
 
         List<TvSeries> watchlistSeries = account.getWatchListSeries(APITESTS_TOKEN, APITESTS_ACCOUNT, null).getResults();
@@ -84,7 +84,7 @@ public class AccountApiTest extends AbstractTmdbApiTest {
         // add a movie
         account.addFavorite(APITESTS_TOKEN, APITESTS_ACCOUNT, 550, TmdbAccount.MediaType.MOVIE);
 
-        List<MovieDb> favoriteMovies = account.getFavoriteMovies(APITESTS_TOKEN, APITESTS_ACCOUNT).getResults();
+        List<NetworkMovie> favoriteMovies = account.getFavoriteMovies(APITESTS_TOKEN, APITESTS_ACCOUNT).getResults();
         assertTrue(favoriteMovies.size() == 1);
 
         // clean up again
@@ -106,12 +106,12 @@ public class AccountApiTest extends AbstractTmdbApiTest {
         // get all rated movies
         Thread.sleep(2000);
 
-        List<MovieDb> ratedMovies = tmdb.getAccount().getRatedMovies(APITESTS_TOKEN, APITESTS_ACCOUNT, null).getResults();
+        List<NetworkMovie> ratedMovies = tmdb.getAccount().getRatedMovies(APITESTS_TOKEN, APITESTS_ACCOUNT, null).getResults();
         assertTrue(ratedMovies.size() > 0);
 
         // make sure that we find the movie and it is rated correctly
         boolean foundMovie = false;
-        for (MovieDb movie : ratedMovies) {
+        for (NetworkMovie movie : ratedMovies) {
             if (movie.getId() == movieID) {
                 assertEquals(movie.getUserRating(), (float) rating, 0);
                 foundMovie = true;

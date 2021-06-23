@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.di
 
 import android.content.Context
@@ -20,9 +19,11 @@ import android.net.ConnectivityManager
 import com.afterroot.core.network.NetworkStateMonitor
 import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.base.CoroutineDispatchers
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.FirebaseUtils
-import com.afterroot.watchdone.utils.ifDebug
+import com.afterroot.watchdone.utils.getMailBodyForFeedback
+import com.afterroot.watchdone.utils.whenBuildIs
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -33,8 +34,10 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.qualifier
 import org.koin.dsl.module
 
 val appModule = module {
@@ -47,6 +50,30 @@ val appModule = module {
 */
     single {
         TmdbApi(BuildConfig.TMDB_API)
+    }
+
+    single {
+        CoroutineDispatchers(
+            default = Dispatchers.Default,
+            io = Dispatchers.IO,
+            main = Dispatchers.Main
+        )
+    }
+
+    single(qualifier("feedback_email")) {
+        "afterhasroot@gmail.com"
+    }
+
+    single(qualifier("feedback_body")) {
+        getMailBodyForFeedback(get(), version = get(qualifier("version_name")), versionCode = get(qualifier("version_code")))
+    }
+
+    single(qualifier("version_code")) {
+        BuildConfig.VERSION_CODE
+    }
+
+    single(qualifier("version_name")) {
+        BuildConfig.VERSION_NAME
     }
 }
 
@@ -67,9 +94,11 @@ val firebaseModule = module {
 
     single {
         Firebase.remoteConfig.apply {
-            setConfigSettingsAsync(remoteConfigSettings {
-                fetchTimeoutInSeconds = ifDebug(debug = 0, release = 3600)
-            })
+            setConfigSettingsAsync(
+                remoteConfigSettings {
+                    fetchTimeoutInSeconds = whenBuildIs(debug = 0, release = 3600)
+                }
+            )
         }
     }
 
@@ -100,4 +129,4 @@ val settingsModule = module {
     }
 }
 
-val allModules = appModule + firebaseModule + roomModule + settingsModule + networkModule
+val allModules = appModule + firebaseModule + roomModule + settingsModule + networkModule + apiModule

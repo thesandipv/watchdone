@@ -2,7 +2,7 @@ package com.afterroot.tmdbapi;
 
 import com.afterroot.tmdbapi.model.Genre;
 import com.afterroot.tmdbapi.model.JobDepartment;
-import com.afterroot.tmdbapi.model.MovieDb;
+import com.afterroot.tmdbapi.model.NetworkMovie;
 import com.afterroot.tmdbapi.model.Reviews;
 import com.afterroot.tmdbapi.model.config.ImagesConfig;
 import com.afterroot.tmdbapi.model.core.ResponseStatusException;
@@ -103,7 +103,7 @@ public class MiscApiTest extends AbstractTmdbApiTest {
         Discover discover = new Discover();
         discover.year(2013).language(LANGUAGE_ENGLISH);
 
-        List<MovieDb> result = tmdb.getDiscover().getDiscover(discover).getResults();
+        List<NetworkMovie> result = tmdb.getDiscover().getDiscover(discover).getResults();
         assertFalse("No movies discovered", result.isEmpty());
     }*/
 
@@ -115,7 +115,7 @@ public class MiscApiTest extends AbstractTmdbApiTest {
         Discover discover = new Discover();
         discover.withKeywords(Collections.singletonList(keyword), false).language(LANGUAGE_ENGLISH);
 
-        List<MovieDb> result = tmdb.getDiscover().getDiscover(discover).getResults();
+        List<NetworkMovie> result = tmdb.getDiscover().getDiscover(discover).getResults();
         assertFalse("No movies discovered", result.isEmpty());
     }*/
 
@@ -164,7 +164,7 @@ public class MiscApiTest extends AbstractTmdbApiTest {
 
     @Test
     public void testGetKeywordMovies() throws Exception {
-        List<MovieDb> result = tmdb.getKeywords().getKeywordMovies(ID_KEYWORD, LANGUAGE_DEFAULT, 0).getResults();
+        List<NetworkMovie> result = tmdb.getKeywords().getKeywordMovies(ID_KEYWORD, LANGUAGE_DEFAULT, 0).getResults();
         assertFalse("No keyword movies found", result.isEmpty());
     }
 
@@ -197,7 +197,7 @@ public class MiscApiTest extends AbstractTmdbApiTest {
 
     @Test
     public void testGetGenreMovies() {
-        List<MovieDb> result = tmdb.getGenre().getGenreMovies(ID_GENRE_ACTION, LANGUAGE_DEFAULT, 0, Boolean.TRUE).getResults();
+        List<NetworkMovie> result = tmdb.getGenre().getGenreMovies(ID_GENRE_ACTION, LANGUAGE_DEFAULT, 0, Boolean.TRUE).getResults();
 
         assertFalse("No genre movies found", result.isEmpty());
     }

@@ -12,28 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.afterroot.tmdbapi.model.MovieDb
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
 import com.afterroot.tmdbapi2.repository.GenresRepository
 import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.watchdone.data.Collection
+import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -43,15 +41,14 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import com.google.firebase.firestore.Query as FirestoreQuery
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), KoinComponent {
     private val db: FirebaseFirestore by inject()
     private val settings: Settings by inject()
     private var trendingMovies = MutableLiveData<MovieResultsPage>()
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
     val error = MutableLiveData<Event<String>>()
-    val selectedMovie = MutableLiveData<MovieDb>()
-    val selectedTvSeries = MutableLiveData<TvSeries>()
+    val selectedMovie = MutableLiveData<Movie>()
+    val selectedTvSeries = MutableLiveData<TV>()
 
     fun getWatchlistSnapshot(
         userId: String,
@@ -81,7 +78,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     fun getTrendingMovies(isReload: Boolean = false): LiveData<MovieResultsPage> {
         if (trendingMovies.value == null || isReload) {
             try {
-                trendingMovies = liveData(Dispatchers.IO) { //Background Thread
+                trendingMovies = liveData(Dispatchers.IO) { // Background Thread
                     emit(get<MoviesRepository>().getMoviesTrendingInSearch())
                 } as MutableLiveData<MovieResultsPage>
             } catch (e: Exception) {
@@ -95,11 +92,11 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     /**
      * For sending data to other fragment
      */
-    fun selectMovie(movie: MovieDb) {
+    fun selectMovie(movie: Movie) {
         selectedMovie.value = movie
     }
 
-    fun selectTVSeries(tvSeries: TvSeries) {
+    fun selectTVSeries(tvSeries: TV) {
         selectedTvSeries.value = tvSeries
     }
 
@@ -111,13 +108,16 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
 
     fun addGenres(owner: LifecycleOwner) {
         get<MyDatabase>().genreDao().apply {
-            getGenres().observe(owner, Observer {
-                if (it.isNullOrEmpty()) {
-                    viewModelScope.launch {
-                        this@apply.add(get<GenresRepository>().getMoviesGenres().genres)
+            getGenres().observe(
+                owner,
+                {
+                    if (it.isNullOrEmpty()) {
+                        viewModelScope.launch {
+                            this@apply.add(get<GenresRepository>().getMoviesGenres().genres)
+                        }
                     }
                 }
-            })
+            )
         }
     }
 }

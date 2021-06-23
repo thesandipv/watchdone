@@ -29,22 +29,20 @@ jobs:
           ENCRYPT_KEY: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew checksum.sh
-
-      - name: Generate cache key
-        run: ./checksum.sh checksum.txt
+        run: chmod +x gradlew
 
       - name: Copy CI gradle.properties
-        run: cp .github/ci-gradle.properties gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - uses: actions/cache@v2
+      - name: Cache Gradle
+        uses: actions/cache@v2
         continue-on-error: true # continue if the cache restore/upload fails
         with:
           path: |
-            ~/.gradle/caches/modules-*
-            ~/.gradle/caches/jars-*
-            ~/.gradle/caches/build-cache-*
-          key: ${{ runner.os }}-gradle-${{ hashFiles('checksum.txt') }}
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
         run: ./gradlew :app:assemble :app:bundle :app:lintDebug :app:testDebug --stacktrace

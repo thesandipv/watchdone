@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui
 
 import android.app.Activity
@@ -22,10 +21,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.Constants.RC_LOGIN
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.ui.settings.Settings
-import com.afterroot.watchdone.utils.showNetworkDialog
+import com.afterroot.watchdone.base.Constants.RC_LOGIN
+import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -97,7 +96,8 @@ class SplashActivity : AppCompatActivity() {
                             )
                             .build()
                     )
-                ).build(), RC_LOGIN
+                ).build(),
+            RC_LOGIN
         )
     }
 
@@ -121,10 +121,14 @@ class SplashActivity : AppCompatActivity() {
 
     private var dialog: MaterialDialog? = null
     private fun setUpNetworkObserver() {
-        networkViewModel.doIfNetworkConnected(this, doWhenConnected = {
-            if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
-        }, doWhenNotConnected = {
-            dialog = showNetworkDialog(state = it, positive = { setUpNetworkObserver() }, negative = { finish() })
-        })
+        networkViewModel.doIfNetworkConnected(
+            this,
+            doWhenConnected = {
+                if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
+            },
+            doWhenNotConnected = {
+                dialog = showNetworkDialog(state = it, positive = { setUpNetworkObserver() }, negative = { finish() })
+            }
+        )
     }
 }

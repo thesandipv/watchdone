@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.di
 
 import com.afterroot.tmdbapi2.Constants
@@ -74,9 +73,11 @@ fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
 
 fun provideOkHttpClient() = OkHttpClient().newBuilder()
     .addInterceptor(TMDbInterceptor(BuildConfig.TMDB_API, v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN))
-    .addInterceptor(HttpLoggingInterceptor().apply {
-        level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-    }).build()
+    .addInterceptor(
+        HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        }
+    ).build()
 
 fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi::class.java)
 fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)

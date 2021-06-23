@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.view
 
 import android.content.Context
@@ -51,7 +50,7 @@ class SectionalListView(context: Context, attrs: AttributeSet? = null, defStyleA
         return this
     }
 
-    var isLoading: Boolean = false
+    private var isLoading: Boolean = false
         set(value) {
             field = value
             titleView.visible(true, AutoTransition())

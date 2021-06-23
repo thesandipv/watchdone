@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.tv
 
 import android.annotation.SuppressLint
@@ -37,30 +36,27 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.TVRepository
-import com.afterroot.watchdone.Constants
-import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.CastListAdapter
-import com.afterroot.watchdone.data.Collection
-import com.afterroot.watchdone.data.Field
-import com.afterroot.watchdone.data.cast.toCastDataHolder
-import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Constants
+import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.base.GlideApp
+import com.afterroot.watchdone.data.mapper.toTV
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentTvInfoBinding
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.media.adapter.CastListAdapter
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.utils.createPosterUrl
-import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -78,17 +74,21 @@ import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.email
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.qualifier
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+@Deprecated(
+    "Use MediaInfoFragment Instead.",
+    ReplaceWith("MediaInfoFragment", "com.afterroot.watchdone.media.MediaInfoFragment")
+)
 class TVInfoFragment : Fragment() {
     private lateinit var binding: FragmentTvInfoBinding
-    private lateinit var rewardedAd: RewardedAd
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
     private val homeViewModel: HomeViewModel by activityViewModels()
-    private val myDatabase: MyDatabase by inject()
+    // private val myDatabase: MyDatabase by inject()
     private val settings: Settings by inject()
     private var adLoaded: Boolean = false
     private var clickedAddWl: Boolean = false
@@ -101,8 +101,8 @@ class TVInfoFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val argTvId = arguments?.getString("tvId")
         if (argTvId != null) {
@@ -112,23 +112,29 @@ class TVInfoFragment : Fragment() {
         }
 
         homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
-            .observe(viewLifecycleOwner, { state: ViewModelState? ->
-                if (state is ViewModelState.Loaded<*>) {
-                    homeViewModel.selectedTvSeries.observe(viewLifecycleOwner, { tvSeries: TvSeries ->
-                        updateUI(tvSeries)
-                        launchShowingProgress {
-                            updateCast(tvSeries)
-                        }
-                    })
+            .observe(
+                viewLifecycleOwner,
+                { state: ViewModelState? ->
+                    if (state is ViewModelState.Loaded<*>) {
+                        homeViewModel.selectedTvSeries.observe(
+                            viewLifecycleOwner,
+                            { tv: TV ->
+                                updateUI(tv)
+                                launchShowingProgress {
+                                    updateCast(tv)
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
 
         setErrorObserver()
 
         binding.adView.loadAd(AdRequest.Builder().build())
     }
 
-    private fun updateUI(tv: TvSeries) { //Do operations related to database
+    private fun updateUI(tv: TV) { // Do operations related to database
         watchListRef = get<FirebaseFirestore>().collectionWatchdone(
             id = get<FirebaseAuth>().currentUser?.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
@@ -140,19 +146,19 @@ class TVInfoFragment : Fragment() {
             updateGenres(tv)
             posterUrl = tv.posterPath?.let { this@TVInfoFragment.settings.createPosterUrl(it) }
             watchlistItemReference.whereEqualTo(Field.ID, tv.id).get(Source.CACHE).addOnSuccessListener {
-                kotlin.runCatching { //Fix crash if user quickly press back button just after navigation
+                kotlin.runCatching { // Fix crash if user quickly press back button just after navigation
                     val isInWatchlist = it.documents.size > 0
                     var isWatched = false
-                    var resultFromDB: TvSeries? = null
+                    var resultFromDB: TV? = null
                     var selectedMovieDocId: String? = null
                     if (isInWatchlist) {
                         val document = it.documents[0]
                         document.getBoolean(Field.IS_WATCHED)?.let { watched ->
                             isWatched = watched
                         }
-                        resultFromDB = document.toObject(TvSeries::class.java) as TvSeries
+                        resultFromDB = document.toObject(TV::class.java)
                         selectedMovieDocId = document.id
-                        launchShowingProgress { //Only for compare and update firestore
+                        launchShowingProgress { // Only for compare and update firestore
                             val resultFromServer = getInfoFromServerForCompare(tv.id)
                             if (resultFromServer != resultFromDB) {
                                 val selectedMovieDocRef = watchlistItemReference.document(selectedMovieDocId)
@@ -190,18 +196,14 @@ class TVInfoFragment : Fragment() {
                                                 message(R.string.dialog_msg_rewarded_ad)
                                                 positiveButton(R.string.text_ok) {
                                                     clickedAddWl = true
-                                                    if (rewardedAd.isLoaded) {
-                                                        showAd()
-                                                    } else {
-                                                        snackBarMessage("Ad is not loaded yet. Loading...")
-                                                    }
+                                                    snackBarMessage("Ad is not loaded yet. Loading...")
+                                                    createAndLoadRewardedAd()
                                                 }
                                                 negativeButton(R.string.fui_cancel)
                                             }
                                         }
                                     }
                                 }
-
                             }
                         } else {
                             text = getString(R.string.text_remove_from_watchlist)
@@ -240,62 +242,66 @@ class TVInfoFragment : Fragment() {
         }
     }
 
-    private fun addToWatchlist(tvSeries: TvSeries) {
-        watchlistItemReference.add(tvSeries)
+    private fun addToWatchlist(tv: TV) {
+        // TODO Add only TV Id, other data will be fetched
+        watchlistItemReference.add(tv)
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
         hideProgress()
     }
 
     @SuppressLint("MissingPermission")
-    private fun createAndLoadRewardedAd(): RewardedAd {
-        val rewardedAd = RewardedAd(requireActivity(), getString(R.string.ad_rewarded_unit_id))
+    private fun createAndLoadRewardedAd() {
         val adLoadCallback = object : RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
+            override fun onAdLoaded(rewardedAd: RewardedAd) {
+                super.onAdLoaded(rewardedAd)
+                // TODO Make ad loaded observable
                 adLoaded = true
                 if (clickedAddWl) {
-                    showAd()
+                    showAd(rewardedAd)
                 }
             }
 
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                super.onAdFailedToLoad(adError)
                 adLoaded = false
             }
         }
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
-        return rewardedAd
+        RewardedAd.load(
+            requireActivity(),
+            getString(R.string.ad_rewarded_unit_id),
+            AdManagerAdRequest.Builder().build(),
+            adLoadCallback
+        )
     }
 
-    fun loadNewAd() {
-        this.rewardedAd = createAndLoadRewardedAd()
+    private fun loadNewAd() {
+        createAndLoadRewardedAd()
     }
 
-    private fun showAd() {
-        val adCallback = object : RewardedAdCallback() {
-            override fun onUserEarnedReward(reward: RewardItem) {
-                clickedAddWl = false
-                doShowingProgress {
-                    watchListRef.updateTotalItemsCounter(-5) {
-                        binding.tvSeries?.let { addToWatchlist(it) }
-                    }
+    private fun showAd(rewardedAd: RewardedAd) {
+
+        /* override fun onRewardedAdClosed() {
+             super.onRewardedAdClosed()
+             adLoaded = false
+             loadNewAd()
+         }*/
+        rewardedAd.show(requireActivity()) {
+            clickedAddWl = false
+            doShowingProgress {
+                watchListRef.updateTotalItemsCounter(-5) {
+                    binding.tvSeries?.let { addToWatchlist(it) }
                 }
             }
-
-            override fun onRewardedAdClosed() {
-                super.onRewardedAdClosed()
-                adLoaded = false
-                loadNewAd()
-            }
         }
-        rewardedAd.show(requireActivity(), adCallback)
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        get<TVRepository>().getFullTvInfo(id, MovieAppendableResponses.credits)
+        get<TVRepository>().getFullTvInfo(id, MovieAppendableResponses.credits).toTV()
     }
 
     private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
-        get<TVRepository>().getTVInfo(id)
+        get<TVRepository>().getTVInfo(id).toTV()
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
@@ -306,7 +312,7 @@ class TVInfoFragment : Fragment() {
 
     private fun DocumentReference.getTotalItemsCount(doOnSuccess: (Int) -> Unit) {
         this.get().addOnCompleteListener {
-            if (it.result?.data != null) { //Fixes
+            if (it.result?.data != null) { // Fixes
                 it.result?.getField<Int>(Field.TOTAL_ITEMS)?.let { items -> doOnSuccess(items) }
             } else {
                 doOnSuccess(0)
@@ -314,22 +320,22 @@ class TVInfoFragment : Fragment() {
         }
     }
 
-    private fun updateGenres(tvSeries: TvSeries) {
-        if (tvSeries.genres == null) {
+    private fun updateGenres(tv: TV) {
+        if (tv.genres == null) {
             /*tv.genreIds?.let {
                 myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner, Observer { roomGenres ->
                     binding.genres = roomGenres
                 })
             }*/
         } else {
-            binding.genres = tvSeries.genres
+            binding.genres = tv.genres
         }
     }
 
-    private suspend fun updateCast(tv: TvSeries) {
+    private suspend fun updateCast(tv: TV) {
         val cast = get<TVRepository>().getCredits(tv.id).cast
         val castAdapter = CastListAdapter()
-        castAdapter.submitList(cast?.toCastDataHolder())
+        castAdapter.submitList(cast)
         binding.castList.apply {
             adapter = castAdapter
             visible(true, AutoTransition())
@@ -337,18 +343,21 @@ class TVInfoFragment : Fragment() {
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(viewLifecycleOwner, {
-            if (it != null) {
-                hideProgress()
-                snackBarMessage("Error: $it")
+        homeViewModel.error.observe(
+            viewLifecycleOwner,
+            {
+                if (it != null) {
+                    hideProgress()
+                    snackBarMessage("Error: $it")
+                }
             }
-        })
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_view_imdb -> {
-                //TODO Verify TMDb has IMDb id for TVSeries
+                // TODO Verify TMDb has IMDb id for TV
                 /* binding.tvSeries?.imdbId?.let {
                      val imdbUrl = HttpUrl.Builder().scheme("https")
                          .host("www.imdb.com")
@@ -360,7 +369,7 @@ class TVInfoFragment : Fragment() {
                 requireContext().email(
                     email = "afterhasroot@gmail.com",
                     subject = "Watchdone Feedback",
-                    text = getMailBodyForFeedback(get())
+                    text = get(qualifier("feedback_body"))
                 )
             }
             R.id.action_share_to_ig_story -> {
@@ -473,6 +482,3 @@ class TVInfoFragment : Fragment() {
         private const val TAG = "MovieInfoFragment"
     }
 }
-
-
-

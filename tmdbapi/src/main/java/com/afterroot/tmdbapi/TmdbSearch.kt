@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2020-2021 Sandip Vaghela
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.afterroot.tmdbapi
 
 import com.afterroot.tmdbapi.TmdbAccount.MovieListResultsPage
@@ -122,7 +136,7 @@ class TmdbSearch(tmdbApi: TmdbApi?) : AbstractTmdbApi(tmdbApi!!) {
     fun searchList(query: String, language: String?, page: Int?): MovieListResultsPage {
         System.err.println(
             "This method is part of the API but seems currently not available. " +
-                    "See https://www.themoviedb.org/talk/593409e3c3a36859ef01eddb#597124f8c3a3681608008424"
+                "See https://www.themoviedb.org/talk/593409e3c3a36859ef01eddb#597124f8c3a3681608008424"
         )
         val apiUrl = ApiUrl(TMDB_METHOD_SEARCH, TmdbLists.TMDB_METHOD_LIST)
         if (StringUtils.isNotBlank(query)) {

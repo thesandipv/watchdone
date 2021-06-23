@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.settings
 
 import android.os.Bundle
@@ -21,8 +20,9 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.Constants
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.base.Constants
+import com.afterroot.watchdone.settings.Settings
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import org.jetbrains.anko.startActivity
 import org.koin.android.ext.android.inject

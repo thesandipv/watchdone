@@ -12,16 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.binding
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.afterroot.tmdbapi.model.MovieDb
+import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.tmdbapi2.model.Genre
-import com.afterroot.watchdone.GlideApp
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.base.GlideApp
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
@@ -37,7 +36,7 @@ fun ImageView.setAvatar(email: String?) {
 }
 
 @BindingAdapter("movieDb", "settings")
-fun ImageView.setMoviePoster(movieDb: MovieDb?, settings: Settings?) {
+fun ImageView.setMoviePoster(movieDb: NetworkMovie?, settings: Settings?) {
     GlideApp.with(context).load(settings?.baseUrl + settings?.imageSize + movieDb?.posterPath).transition(transitionOptions)
         .into(this)
 }

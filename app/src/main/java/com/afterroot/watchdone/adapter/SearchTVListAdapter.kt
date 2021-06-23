@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.adapter
 
 import android.content.Context
@@ -21,20 +20,20 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.watchdone.GlideApp
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.base.BaseListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
-import com.afterroot.watchdone.adapter.diff.TVDiffCallback
-import com.afterroot.watchdone.data.tv.TVDataHolder
-import com.afterroot.watchdone.databinding.ListItemTvBinding
-import com.afterroot.watchdone.ui.settings.Settings
+import com.afterroot.watchdone.base.GlideApp
+import com.afterroot.watchdone.base.adapter.BaseListAdapter
+import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.diff.TVDiffCallback
+import com.afterroot.watchdone.media.databinding.ListItemTvBinding
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SearchTVListAdapter(val callback: ItemSelectedCallback<TVDataHolder>) :
-    BaseListAdapter<TVDataHolder>(TVDiffCallback()), KoinComponent {
+class SearchTVListAdapter(val callback: ItemSelectedCallback<TV>) :
+    BaseListAdapter<TV>(TVDiffCallback()), KoinComponent {
     val settings: Settings by inject()
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
@@ -78,9 +77,9 @@ class SearchTVListAdapter(val callback: ItemSelectedCallback<TVDataHolder>) :
                 R.dimen.padding_horizontal_list
             )
 
-        fun bind(tvDataHolder: TVDataHolder) {
+        fun bind(tvDataHolder: TV) {
             binding.apply {
-                tvSeries = tvDataHolder.data
+                tvSeries = tvDataHolder
                 root.setOnClickListener {
                     callback.onClick(adapterPosition, root)
                     callback.onClick(adapterPosition, root, tvDataHolder)
@@ -95,7 +94,7 @@ class SearchTVListAdapter(val callback: ItemSelectedCallback<TVDataHolder>) :
                 this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + tvDataHolder.data.posterPath)
+            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + tvDataHolder.posterPath)
                 .override(width, (width * heightRatio).toInt())
                 .placeholder(R.drawable.ic_placeholder_tv)
                 .error(R.drawable.ic_placeholder_tv)

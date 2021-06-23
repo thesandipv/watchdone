@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.search
 
 import android.app.SearchManager
@@ -28,23 +27,23 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.afterroot.tmdbapi.TmdbPeople
 import com.afterroot.tmdbapi.TvResultsPage
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.adapter.SearchPeopleListAdapter
 import com.afterroot.watchdone.adapter.SearchTVListAdapter
 import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
-import com.afterroot.watchdone.data.movie.MovieDataHolder
-import com.afterroot.watchdone.data.movie.toMovieDataHolder
-import com.afterroot.watchdone.data.people.PeopleDataHolder
-import com.afterroot.watchdone.data.people.toPeopleDataHolder
-import com.afterroot.watchdone.data.tv.TVDataHolder
-import com.afterroot.watchdone.data.tv.toTVDataHolder
+import com.afterroot.watchdone.data.mapper.toMovies
+import com.afterroot.watchdone.data.mapper.toPersons
+import com.afterroot.watchdone.data.mapper.toTV
+import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.SearchNewFragmentBinding
 import com.afterroot.watchdone.providers.RecentSearchSuggestionsProvider
 import com.afterroot.watchdone.utils.hideKeyboard
@@ -65,14 +64,14 @@ class SearchNewFragment : Fragment() {
     private val viewModel: SearchNewViewModel by activityViewModels()
     private var searchTask: Job? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         binding = SearchNewFragmentBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         initSearch()
     }
@@ -132,62 +131,71 @@ class SearchNewFragment : Fragment() {
         view?.let { requireContext().hideKeyboard(it) }
     }
 
-    private fun showSearchResults(query: String): Job? = lifecycleScope.launch {
-        //SectionViews
+    private fun showSearchResults(query: String): Job = lifecycleScope.launch {
+        // SectionViews
         moviesSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_movies)).withLoading()
         tvSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_tv)).withLoading()
         peopleSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_people)).withLoading()
 
-        //Adapters
+        // Adapters
         val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback)
         val tvListAdapter = SearchTVListAdapter(tvItemSelectedCallback)
         val peopleListAdapter = SearchPeopleListAdapter(peopleItemSelectedCallback)
 
-        //Add Children
+        // Add Children
         binding.contentSearch.apply {
             addSectionAt(0, moviesSection)
             addSectionAt(1, tvSection)
             addSectionAt(2, peopleSection)
         }
 
-        viewModel.searchMovies(query).observe(viewLifecycleOwner, {
-            if (it is ViewModelState.Loaded<*>) {
-                val data = it.data as MovieResultsPage
-                moviesListAdapter.submitList(data.toMovieDataHolder())
-                moviesSection.setAdapter(moviesListAdapter)
-                if (data.totalResults > 0) {
-                    moviesSection.isLoaded = true
-                } else {
-                    moviesSection.noResults()
+        viewModel.searchMovies(query).observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loaded<*>) {
+                    val data = it.data as MovieResultsPage
+                    moviesListAdapter.submitList(data.toMovies())
+                    moviesSection.setAdapter(moviesListAdapter)
+                    if (data.totalResults > 0) {
+                        moviesSection.isLoaded = true
+                    } else {
+                        moviesSection.noResults()
+                    }
                 }
             }
-        })
+        )
 
-        viewModel.searchTV(query).observe(viewLifecycleOwner, {
-            if (it is ViewModelState.Loaded<*>) {
-                val data = it.data as TvResultsPage
-                tvListAdapter.submitList(data.toTVDataHolder())
-                tvSection.setAdapter(tvListAdapter)
-                if (data.totalResults > 0) {
-                    tvSection.isLoaded = true
-                } else {
-                    tvSection.noResults()
+        viewModel.searchTV(query).observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loaded<*>) {
+                    val data = it.data as TvResultsPage
+                    tvListAdapter.submitList(data.toTV())
+                    tvSection.setAdapter(tvListAdapter)
+                    if (data.totalResults > 0) {
+                        tvSection.isLoaded = true
+                    } else {
+                        tvSection.noResults()
+                    }
                 }
             }
-        })
+        )
 
-        viewModel.searchPeople(query).observe(viewLifecycleOwner, Observer {
-            if (it is ViewModelState.Loaded<*>) {
-                val data = it.data as TmdbPeople.PersonResultsPage
-                peopleListAdapter.submitList(data.toPeopleDataHolder())
-                peopleSection.setAdapter(peopleListAdapter)
-                if (data.totalResults > 0) {
-                    peopleSection.isLoaded = true
-                } else {
-                    peopleSection.noResults()
+        viewModel.searchPeople(query).observe(
+            viewLifecycleOwner,
+            {
+                if (it is ViewModelState.Loaded<*>) {
+                    val data = it.data as TmdbPeople.PersonResultsPage
+                    peopleListAdapter.submitList(data.toPersons())
+                    peopleSection.setAdapter(peopleListAdapter)
+                    if (data.totalResults > 0) {
+                        peopleSection.isLoaded = true
+                    } else {
+                        peopleSection.noResults()
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun LinearLayoutCompat.addSectionAt(index: Int, section: SectionalListView) {
@@ -202,23 +210,25 @@ class SearchNewFragment : Fragment() {
         peopleSection.hide()
     }
 
-    private val movieItemSelectedCallback = object : ItemSelectedCallback<MovieDataHolder> {
-        override fun onClick(position: Int, view: View?, item: MovieDataHolder) {
+    private val movieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
+        override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
-            homeViewModel.selectMovie(item.data)
-            view?.findNavController()?.navigate(R.id.searchNewToMovieInfo)
+            homeViewModel.selectMovie(item)
+            val directions = SearchNewFragmentDirections.searchToMediaInfo(item.id, Multi.MediaType.MOVIE.name)
+            view?.findNavController()?.navigate(directions)
         }
     }
 
-    private val tvItemSelectedCallback = object : ItemSelectedCallback<TVDataHolder> {
-        override fun onClick(position: Int, view: View?, item: TVDataHolder) {
+    private val tvItemSelectedCallback = object : ItemSelectedCallback<TV> {
+        override fun onClick(position: Int, view: View?, item: TV) {
             super.onClick(position, view, item)
-            homeViewModel.selectTVSeries(item.data)
-            view?.findNavController()?.navigate(R.id.searchNewToTVInfo)
+            homeViewModel.selectTVSeries(item)
+            val directions = SearchNewFragmentDirections.searchToMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
+            view?.findNavController()?.navigate(directions)
         }
     }
 
-    private val peopleItemSelectedCallback = object : ItemSelectedCallback<PeopleDataHolder> {
-        //TODO Add Cast info screen
+    private val peopleItemSelectedCallback = object : ItemSelectedCallback<Person> {
+        // TODO Add Cast info screen
     }
 }
