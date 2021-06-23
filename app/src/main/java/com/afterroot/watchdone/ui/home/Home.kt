@@ -48,6 +48,7 @@ import androidx.navigation.compose.navigate
 import androidx.navigation.compose.popUpTo
 import androidx.navigation.compose.rememberNavController
 import com.afterroot.watchdone.ui.common.Screen
+import com.afterroot.watchdone.watchlist.Watchlist
 import com.google.accompanist.insets.navigationBarsPadding
 
 @Composable
@@ -74,7 +75,7 @@ fun Home() {
         Box(Modifier.fillMaxWidth()) {
             NavHost(navController = navController, startDestination = Screen.Watchlist.route) {
                 composable(Screen.Watchlist.route) {
-                    Text(text = Screen.Watchlist.route)
+                    Watchlist(navController = navController)
                 }
 
                 composable(Screen.Discover.route) {

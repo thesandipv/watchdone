@@ -160,6 +160,7 @@ dependencies {
     implementation project(':ui:common-compose')
     implementation project(':ui:media')
     implementation project(':ui:resources')
+    implementation project(':ui:watchlist')
 
     implementation Libs.Kotlin.stdLib
     implementation Libs.Kotlin.anko
@@ -224,7 +225,7 @@ dependencies {
     implementation Libs.Firebase.firestore
     implementation Libs.Firebase.messaging
     implementation Libs.Firebase.storage
-    implementation "com.google.firebase:firebase-config-ktx"
+    implementation Libs.Firebase.config
 
     implementation Libs.commonsIo
 
