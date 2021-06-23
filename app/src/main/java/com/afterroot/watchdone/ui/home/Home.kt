@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.afterroot.watchdone.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
@@ -70,8 +69,8 @@ fun Home() {
                 },
                 modifier = Modifier.fillMaxWidth()
             )
-
-        }) {
+        }
+    ) {
         Box(Modifier.fillMaxWidth()) {
             NavHost(navController = navController, startDestination = Screen.Watchlist.route) {
                 composable(Screen.Watchlist.route) {
@@ -85,7 +84,6 @@ fun Home() {
                 composable(Screen.Settings.route) {
                     Text(text = Screen.Settings.route)
                 }
-
             }
         }
     }
@@ -185,7 +183,6 @@ internal fun HomeBottomNavigation(
                 selected = selectedNavigation == Screen.Settings,
                 onClick = { onNavigationSelected(Screen.Settings) },
             )
-
         }
     }
 }
