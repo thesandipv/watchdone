@@ -103,7 +103,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_media_info"
-        android:name="com.afterroot.watchdone.media.MediaInfoFragment"
+        android:name="com.afterroot.watchdone.media.ui.MediaInfoFragment"
         android:label="MediaInfoFragment">
         <deepLink
             android:autoVerify="true"

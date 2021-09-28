@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.view
+package com.afterroot.watchdone.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -22,7 +22,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import com.afterroot.core.extensions.visible
-import com.afterroot.watchdone.R
+import com.afterroot.watchdone.ui.common.R
 
 class SectionalListView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     LinearLayoutCompat(context, attrs, defStyleAttr) {

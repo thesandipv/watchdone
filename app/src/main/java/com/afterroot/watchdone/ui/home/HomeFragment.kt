@@ -31,7 +31,6 @@ import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.MultiAdapter
-import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.data.model.Movie
@@ -39,6 +38,7 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.helpers.migrateFirestore
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -195,35 +195,32 @@ class HomeFragment : Fragment() {
                     whereIn(Field.IS_WATCHED, listOf(false, null)).orderBy(Field.RELEASE_DATE, direction)
                 }
             }
-        }.observe(
-            viewLifecycleOwner,
-            {
-                if (it is ViewModelState.Loading) {
-                    binding.progressBarHome.visible(true)
-                } else if (it is ViewModelState.Loaded<*>) {
-                    binding.progressBarHome.visible(false)
-                    try { // Fixes crash when user is being logged out
-                        if (it.data != null) {
-                            binding.infoNoMovies.visible(false, AutoTransition())
-                            val listData: QuerySnapshot = it.data as QuerySnapshot
-                            if (listData.documents.isEmpty()) {
-                                submitList(emptyList())
-                                binding.infoNoMovies.visible(true, AutoTransition())
-                                binding.infoTv.text =
-                                    if (action != QueryAction.CLEAR) getString(R.string.text_info_no_movies_in_filter)
-                                    else getString(R.string.text_info_no_movies)
-                            } else {
-                                submitList(listData.toMulti())
-                            }
-                            // Check need migration or not
-                            runMigrations(listData, userId)
+        }.observe(viewLifecycleOwner) {
+            if (it is ViewModelState.Loading) {
+                binding.progressBarHome.visible(true)
+            } else if (it is ViewModelState.Loaded<*>) {
+                binding.progressBarHome.visible(false)
+                try { // Fixes crash when user is being logged out
+                    if (it.data != null) {
+                        binding.infoNoMovies.visible(false, AutoTransition())
+                        val listData: QuerySnapshot = it.data as QuerySnapshot
+                        if (listData.documents.isEmpty()) {
+                            submitList(emptyList())
+                            binding.infoNoMovies.visible(true, AutoTransition())
+                            binding.infoTv.text =
+                                if (action != QueryAction.CLEAR) getString(R.string.text_info_no_movies_in_filter)
+                                else getString(R.string.text_info_no_movies)
+                        } else {
+                            submitList(listData.toMulti())
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                        // Check need migration or not
+                        runMigrations(listData, userId)
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
-        )
+        }
     }
 
     /**

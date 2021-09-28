@@ -32,6 +32,10 @@ dependencies {
     implementation project(':data')
     implementation project(':ui:resources')
 
+    implementation Libs.AndroidX.core
+    implementation Libs.AndroidX.constraintLayout
+    implementation Libs.AndroidX.transition
+
     implementation Libs.AfterROOT.Core.core
 
     implementation Libs.MaterialDialogs.core
