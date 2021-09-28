@@ -23,4 +23,7 @@ apply from: "$rootDir/gradle/compose.gradle" //Uncomment for Enabling Compose
 
 dependencies {
     //All compose dependencies applied with compose.gradle
+    implementation project(":base")
+    implementation project(":data")
+    implementation project(":ui:resources")
 }
