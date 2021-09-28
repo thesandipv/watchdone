@@ -51,8 +51,6 @@ import com.afterroot.tmdbapi2.model.MovieAppendableResponses
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.SearchMoviesListAdapter
-import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.Field
@@ -64,10 +62,12 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.databinding.FragmentMovieInfoBinding
 import com.afterroot.watchdone.media.adapter.CastListAdapter
+import com.afterroot.watchdone.media.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import com.afterroot.watchdone.ui.view.SectionalListView
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.view.SectionalListView
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.bumptech.glide.request.target.CustomTarget
@@ -135,22 +135,16 @@ class MovieInfoFragment : Fragment() {
         }
 
         homeViewModel.getWatchlistSnapshot(firebaseUtils.uid!!)
-            .observe(
-                viewLifecycleOwner,
-                { state: ViewModelState? ->
-                    if (state is ViewModelState.Loaded<*>) {
-                        homeViewModel.selectedMovie.observe(
-                            viewLifecycleOwner,
-                            { movie: Movie ->
-                                updateUI(movie)
-                                launchShowingProgress {
-                                    updateCast(movie)
-                                }
-                            }
-                        )
+            .observe(viewLifecycleOwner) { state: ViewModelState? ->
+                if (state is ViewModelState.Loaded<*>) {
+                    homeViewModel.selectedMovie.observe(viewLifecycleOwner) { movie: Movie ->
+                        updateUI(movie)
+                        launchShowingProgress {
+                            updateCast(movie)
+                        }
                     }
                 }
-            )
+            }
 
         setErrorObserver()
 
@@ -225,7 +219,7 @@ class MovieInfoFragment : Fragment() {
                                                     progressDialog =
                                                         requireContext().showStaticProgressDialog("Please Wait...Ad is Loading")
                                                 }
-                                                negativeButton(R.string.fui_cancel)
+                                                negativeButton(android.R.string.cancel)
                                             }
                                         }
                                     }
@@ -395,12 +389,9 @@ class MovieInfoFragment : Fragment() {
     private fun updateGenres(movie: Movie) {
         if (movie.genres == null) {
             movie.genreIds?.let {
-                myDatabase.genreDao().getGenres(it).observe(
-                    viewLifecycleOwner,
-                    { roomGenres ->
-                        binding.genres = roomGenres
-                    }
-                )
+                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner) { roomGenres ->
+                    binding.genres = roomGenres
+                }
             }
         } else {
             binding.genres = movie.genres
@@ -425,15 +416,12 @@ class MovieInfoFragment : Fragment() {
     }
 
     private fun setErrorObserver() {
-        homeViewModel.error.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    hideProgress()
-                    snackBarMessage("Error: $it")
-                }
+        homeViewModel.error.observe(viewLifecycleOwner) {
+            if (it != null) {
+                hideProgress()
+                snackBarMessage("Error: $it")
             }
-        )
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

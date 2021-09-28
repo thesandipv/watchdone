@@ -28,4 +28,6 @@ class TVRepository(val api: TVApi) {
     }
 
     suspend fun getCredits(id: Int): Credits = api.getCredits(id)
+
+    suspend fun getSimilar(movieId: Int) = api.getSimilar(movieId)
 }

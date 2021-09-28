@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.adapter
+package com.afterroot.watchdone.media.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -21,13 +21,13 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.model.people.Person
-import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.base.adapter.BaseListAdapter
 import com.afterroot.watchdone.diff.PeopleDiffCallback
+import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.databinding.ListItemPersonBinding
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

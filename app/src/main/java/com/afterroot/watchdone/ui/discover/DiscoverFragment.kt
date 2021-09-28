@@ -31,11 +31,11 @@ import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
-import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
 import com.afterroot.watchdone.diff.MovieDiffCallback
+import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.email

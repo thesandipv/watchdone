@@ -14,6 +14,7 @@
  */
 package com.afterroot.tmdbapi2.api
 
+import com.afterroot.tmdbapi.TvResultsPage
 import com.afterroot.tmdbapi.model.Credits
 import com.afterroot.tmdbapi.model.tv.TvSeries
 import retrofit2.http.GET
@@ -32,4 +33,7 @@ interface TVApi {
 
     @GET("3/tv/{id}/credits")
     suspend fun getCredits(@Path("id") id: Int): Credits
+
+    @GET("3/tv/{id}/similar")
+    suspend fun getSimilar(@Path("id") tvId: Int): TvResultsPage
 }

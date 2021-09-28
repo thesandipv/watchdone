@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.media
+package com.afterroot.watchdone.media.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -44,9 +44,14 @@ import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.adapter.CastListAdapter
 import com.afterroot.watchdone.media.databinding.FragmentMediaInfoBinding
+import com.afterroot.watchdone.media.viewmodel.MediaInfoViewModel
+import com.afterroot.watchdone.media.viewmodel.SelectedMedia
+import com.afterroot.watchdone.media.viewmodel.State
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.auth.FirebaseAuth
@@ -113,25 +118,38 @@ class MediaInfoFragment : Fragment() {
                 is State.Error<*> -> {
                 }
                 is State.Loaded<*> -> {
-                    viewModel.getSelectedMedia().observe(
-                        viewLifecycleOwner,
-                        {
-                            when (it) {
-                                is SelectedMedia.Movie -> {
-                                    Log.d(TAG, "onViewCreated: ${it.data}")
-                                    updateUI(movie = it.data)
-                                }
-                                is SelectedMedia.TV -> {
-                                    Log.d(TAG, "onViewCreated: ${it.data}")
-                                    updateUI(tv = it.data)
-                                }
+                    viewModel.getSelectedMedia().observe(viewLifecycleOwner) {
+                        when (it) {
+                            is SelectedMedia.Movie -> {
+                                Log.d(TAG, "onViewCreated: ${it.data}")
+                                updateUI(movie = it.data)
+                            }
+                            is SelectedMedia.TV -> {
+                                Log.d(TAG, "onViewCreated: ${it.data}")
+                                updateUI(tv = it.data)
                             }
                         }
-                    )
+                    }
                 }
                 else -> {
                 }
             }
+        }
+    }
+
+    private val similarMovieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
+        override fun onClick(position: Int, view: View?, item: Movie) {
+            super.onClick(position, view, item)
+            // homeViewModel.selectMovie(item)
+            // view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
+        }
+    }
+
+    private val similarTVItemSelectedCallback = object : ItemSelectedCallback<TV> {
+        override fun onClick(position: Int, view: View?, item: TV) {
+            super.onClick(position, view, item)
+            // homeViewModel.selectMovie(item)
+            // view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
         }
     }
 
@@ -215,7 +233,12 @@ class MediaInfoFragment : Fragment() {
 
                     composeView.setContent {
                         Column {
-                            // SimilarMovies(movie)
+                            if (movie != null) {
+                                SimilarMovies(movie, lifecycleScope, moviesRepository, similarMovieItemSelectedCallback)
+                            }
+                            if (tv != null) {
+                                SimilarTV(tv, lifecycleScope, tvRepository, similarTVItemSelectedCallback)
+                            }
                         }
                     }
                 }
