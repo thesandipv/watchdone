@@ -23,54 +23,55 @@ def version = [
 ]
 
 def versions = [
-        accompanist        : "0.8.1",
+        ads                : "20.1.0",
+        accompanist        : "0.17.0",
         ankoCommons        : "0.10.8",
-        appcompat          : "1.3.0-rc01",
-        billing            : "3.0.3",
+        appcompat          : "1.4.0-alpha03",
+        billing            : "4.0.0",
         browser            : "1.0.0",
         cardView           : "1.0.0",
         collection         : "1.1.0",
         commonsIo          : "1.3.2",
-        composeActivity    : "1.3.0-alpha07",
-        composeNavigation  : "1.0.0-alpha10",
-        compose            : "1.0.0-beta09",
-        constraintLayout   : "2.0.4",
-        coreKtx            : "1.6.0-alpha02",
+        composeActivity    : "1.3.1",
+        composeNavigation  : "2.4.0-alpha07",
+        composePaging      : "1.0.0-alpha12",
+        compose            : "1.0.2",
+        constraintLayout   : "2.1.0",
+        coreKtx            : "1.7.0-alpha01",
         core               : "0.3.1",
-        crshlyticsPlugin   : "2.5.2",
-        dagger             : "2.31.2",
+        crshlyticsPlugin   : "2.7.1",
         emoji              : "1.1.0",
         epoxy              : "4.4.1",
-        firebaseBom        : "27.1.0",
-        firebaseUiAuth     : "7.1.1",
-        firebaseUiFirestore: "7.1.1",
-        firebaseUiStorage  : "7.1.1",
-        fragmentKtx        : "1.3.3",
+        firebaseBom        : "28.4.0",
+        firebaseUiAuth     : "8.0.0",
+        firebaseUiFirestore: "8.0.0",
+        firebaseUiStorage  : "8.0.0",
+        fragmentKtx        : "1.4.0-alpha07",
         glide              : "4.12.0",
-        googleMaterial     : "1.3.0",
+        googleMaterial     : "1.5.0-alpha02",
         gson               : "2.8.6",
-        hilt               : "2.33-beta",
-        jackson            : '2.12.3',
-        koin3              : "3.0.1",
+        hilt               : "2.38.1",
+        jackson            : '2.12.4',
+        koin3              : "3.1.2",
         koin               : "2.2.2",
         ktlint             : "0.41.0",
-        kotlin_version     : "1.4.32",
-        kotlinxCoroutines  : "1.4.3",
+        kotlin_version     : "1.5.21",
+        kotlinxCoroutines  : "1.5.1",
         legacySupportV13   : "1.0.0",
         legacySupportV4    : "1.0.0",
-        lifecycle          : "2.3.1",
+        lifecycle          : "2.4.0-alpha03",
         materialDialogs    : "3.3.0",
         multidex           : "2.0.1",
-        navigation         : "2.3.5",
+        navigation         : "2.4.0-alpha07",
         okHttp             : '4.9.0',
-        paging             : "3.0.0-rc01",
+        paging             : "3.1.0-alpha03",
         palette            : "1.0.0",
         preference         : "1.1.1",
-        recyclerview       : "1.2.0",
+        recyclerview       : "1.2.1",
         retrofit           : '2.9.0',
         roomKtx            : "2.3.0",
-        startUp            : "1.0.0",
-        transition         : "1.3.1",
+        startUp            : "1.1.0",
+        transition         : "1.4.1",
         vectorDrawable     : "1.1.0"
 ]
 
@@ -79,10 +80,9 @@ ext.Versions = versions
 ext.Libs = libs
 
 ext.SDK = [
-        MIN        : 21,
-        COMPILE    : 30,
-        TARGET     : 30,
-        BUILD_TOOLS: "30.0.3"
+        MIN    : 21,
+        COMPILE: 31,
+        TARGET : 31
 ]
 
 ext.VERSION_CODE = SDK.MIN * 10000000 + version.MAJOR * 10000 + version.MINOR * 100 + version.PATCH
@@ -92,12 +92,13 @@ config.GPH = [
         url: "https://maven.pkg.github.com"
 ]
 
-libs.AGP = "com.android.tools.build:gradle:7.0.0-beta04"
+libs.AGP = "com.android.tools.build:gradle:7.1.0-alpha12"
 
 libs.commonsCodec = "commons-codec:commons-codec:20041127.091804"
 libs.commonsIo = "org.apache.commons:commons-io:${versions.commonsIo}"
 libs.commonsLang = "org.apache.commons:commons-lang3:3.12.0"
 libs.materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
+libs.store = "com.dropbox.mobile.store:store4:4.0.2-KT15"
 
 libs.AfterROOT = [
         coreArtifactName: "com.afterroot.core:core"
@@ -116,7 +117,8 @@ libs.Kotlin = [
 
 libs.Kotlin.Coroutines = [
         core   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinxCoroutines}",
-        android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinxCoroutines}"
+        android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinxCoroutines}",
+        play   : "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.kotlinxCoroutines}"
 ]
 
 libs.AndroidX = [
@@ -127,8 +129,10 @@ libs.AndroidX = [
         collection      : "androidx.collection:collection-ktx:${versions.collection}",
         constraintLayout: "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
         core            : "androidx.core:core-ktx:${versions.coreKtx}",
+        datastore       : "androidx.datastore:datastore-preferences:1.0.0",
         emoji           : "androidx.emoji:emoji:${versions.emoji}",
         fragment        : "androidx.fragment:fragment-ktx:${versions.fragmentKtx}",
+        hiltCompiler    : "androidx.hilt:hilt-compiler:1.0.0",
         multiDex        : "androidx.multidex:multidex:${versions.multidex}",
         paging          : "androidx.paging:paging-runtime-ktx:${versions.paging}",
         palette         : "androidx.palette:palette:${versions.palette}",
@@ -137,6 +141,7 @@ libs.AndroidX = [
         startUp         : "androidx.startup:startup-runtime:${versions.startUp}",
         supportV13      : "androidx.legacy:legacy-support-v13:${versions.legacySupportV13}",
         supportV4       : "androidx.legacy:legacy-support-v4:${versions.legacySupportV4}",
+        transition      : "androidx.transition:transition-ktx:$versions.transition",
         vectorDrawable  : "androidx.vectordrawable:vectordrawable:${versions.vectorDrawable}"
 ]
 
@@ -146,6 +151,7 @@ libs.AndroidX.Activity = [
 
 libs.AndroidX.Lifecycle = [
         common    : "androidx.lifecycle:lifecycle-common-java8:${versions.lifecycle}",
+        runtime   : "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}",
         extensions: "androidx.lifecycle:lifecycle-extensions:2.2.0",
         viewmodel : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}",
         livedata  : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
@@ -186,7 +192,9 @@ libs.AndroidX.Compose = [
         // Integration with observables
         livedata            : "androidx.compose.runtime:runtime-livedata:${versions.compose}",
 
-        animation           : "androidx.compose.animation:animation:${versions.compose}"
+        animation           : "androidx.compose.animation:animation:${versions.compose}",
+
+        paging              : "androidx.paging:paging-compose:${versions.composePaging}"
 ]
 
 libs.MaterialDialogs = [
@@ -200,19 +208,15 @@ libs.FirebaseUI = [
         auth     : "com.firebaseui:firebase-ui-auth:${versions.firebaseUiAuth}",
         firestore: "com.firebaseui:firebase-ui-firestore:${versions.firebaseUiFirestore}",
         storage  : "com.firebaseui:firebase-ui-storage:${versions.firebaseUiStorage}"
-
 ]
 
 libs.Glide = [
         glide   : "com.github.bumptech.glide:glide:${versions.glide}",
         compiler: "com.github.bumptech.glide:compiler:${versions.glide}"
-
 ]
-
 
 libs.Firebase = [
         bom              : "com.google.firebase:firebase-bom:$versions.firebaseBom",
-        ads              : "com.google.firebase:firebase-ads",
         analytics        : "com.google.firebase:firebase-analytics-ktx",
         auth             : "com.google.firebase:firebase-auth-ktx",
         config           : "com.google.firebase:firebase-config-ktx",
@@ -230,7 +234,8 @@ libs.Google = [
         ossLicPlugin  : "com.google.android.gms:oss-licenses-plugin:0.10.2",
         material      : "com.google.android.material:material:${versions.googleMaterial}",
         gson          : "com.google.code.gson:gson:${versions.gson}",
-        servicesPlugin: "com.google.gms:google-services:4.3.5"
+        servicesPlugin: "com.google.gms:google-services:4.3.10",
+        ads           : "com.google.android.gms:play-services-ads:$versions.ads",
 ]
 
 libs.Dagger = [
@@ -242,6 +247,7 @@ libs.Hilt = [
         hilt        : "com.google.dagger:hilt-android:$versions.hilt",
         compiler    : "com.google.dagger:hilt-android-compiler:$versions.hilt",
         testing     : "com.google.dagger:hilt-android-testing:$versions.hilt",
+        compose     : "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03",
         gradlePlugin: "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt"
 ]
 
@@ -266,7 +272,7 @@ libs.Koin3 = [
         // Koin main features for Android (Scope,ViewModel ...)
         android: "io.insert-koin:koin-android:$versions.koin3",
         // Koin Android - experimental builder extensions
-        ext    : "io.insert-koin:koin-android-ext:$versions.koin3",
+        ext    : "io.insert-koin:koin-android-ext:3.0.2",
         // Koin for Jetpack WorkManager
         work   : "io.insert-koin:koin-androidx-workmanager:$versions.koin3",
         // Koin for Jetpack Compose (unstable version)
@@ -291,12 +297,15 @@ libs.Epoxy = [
 ]
 
 libs.Accompanist = [
-        glide : "com.google.accompanist:accompanist-glide:$versions.accompanist",
-        insets: "com.google.accompanist:accompanist-insets:$versions.accompanist"
+        glide       : "com.google.accompanist:accompanist-glide:$versions.accompanist",
+        insets      : "com.google.accompanist:accompanist-insets:$versions.accompanist",
+        insetsui    : "com.google.accompanist:accompanist-insets-ui:$versions.accompanist",
+        swiperefresh: "com.google.accompanist:accompanist-swiperefresh:$versions.accompanist",
+        placeholder : "com.google.accompanist:accompanist-placeholder-material:$versions.accompanist"
 ]
 
 libs.Test = [
         junit   : "junit:junit:4.13.2",
-        junitExt: "androidx.test.ext:junit:1.1.2",
-        espresso: "androidx.test.espresso:espresso-core:3.3.0"
+        junitExt: "androidx.test.ext:junit:1.1.3",
+        espresso: "androidx.test.espresso:espresso-core:3.4.0"
 ]

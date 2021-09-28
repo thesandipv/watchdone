@@ -20,7 +20,6 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
         maven { url "https://jitpack.io" }
         mavenCentral()
     }
@@ -31,12 +30,13 @@ buildscript {
         classpath Libs.Firebase.crashlyticsPlugin
         //classpath Libs.Google.ossLicPlugin
         classpath Libs.AndroidX.Navigation.safeArgsPlugin
+        classpath Libs.Hilt.gradlePlugin
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '5.12.4'
-    id 'com.github.ben-manes.versions' version '0.38.0'
+    id 'com.diffplug.spotless' version '5.15.0'
+    //id 'com.github.ben-manes.versions' version '0.39.0'
 }
 
 allprojects {
@@ -73,13 +73,6 @@ subprojects {
             freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
             freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
             freeCompilerArgs += "-Xopt-in=kotlin.Experimental"
-/*
-            freeCompilerArgs += [
-                    "-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
-            ]
-*/
-
-            // freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"
