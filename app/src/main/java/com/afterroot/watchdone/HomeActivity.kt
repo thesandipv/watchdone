@@ -17,7 +17,7 @@ package com.afterroot.watchdone
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.fragment.app.FragmentActivity
-import com.afterroot.watchdone.compose.theme.Theme
+import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.watchdone.ui.home.Home
 
 class HomeActivity : FragmentActivity() {
