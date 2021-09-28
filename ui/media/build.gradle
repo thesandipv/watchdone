@@ -31,6 +31,7 @@ android {
 dependencies {
     implementation project(':base')
     implementation project(':data')
+    implementation project(':ui:common')
     implementation project(':ui:resources')
 
     implementation Libs.AfterROOT.Core.core
@@ -45,9 +46,7 @@ dependencies {
     implementation Libs.AndroidX.supportV13
 
     implementation Libs.Google.material
-
-    implementation platform(Libs.Firebase.bom)
-    implementation Libs.Firebase.ads
+    implementation Libs.Google.ads
 
     implementation Libs.materialProgress
 

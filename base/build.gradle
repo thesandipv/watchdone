@@ -25,9 +25,11 @@ apply from: "$rootDir/gradle/common-config.gradle"
 dependencies {
     implementation Libs.AfterROOT.Core.core
 
-    implementation Libs.Kotlin.Coroutines.core
+    api Libs.Kotlin.Coroutines.core
 
     implementation Libs.AndroidX.recyclerView
+    api Libs.AndroidX.Lifecycle.common
+    api Libs.AndroidX.Lifecycle.extensions
 
     api Libs.Glide.glide
     kapt Libs.Glide.compiler

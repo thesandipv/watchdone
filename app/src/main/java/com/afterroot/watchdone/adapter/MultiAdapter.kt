@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.adapter.delegate.ItemSelectedCallback
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.binding.transitionOptions
 import com.afterroot.watchdone.data.model.Movie
@@ -33,6 +32,7 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

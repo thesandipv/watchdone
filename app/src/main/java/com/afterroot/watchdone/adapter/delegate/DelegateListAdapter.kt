@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.Types
 import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 
 class DelegateListAdapter(
     callback: DiffUtil.ItemCallback<Movie>,
