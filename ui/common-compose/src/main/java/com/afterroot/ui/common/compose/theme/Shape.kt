@@ -12,14 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.compose.theme
+package com.afterroot.ui.common.compose.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
 import androidx.compose.ui.unit.dp
 
 val shapes = Shapes(
-    small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(4.dp),
+    small = RoundedCornerShape(8.dp),
+    medium = RoundedCornerShape(8.dp),
     large = RoundedCornerShape(0.dp)
 )
+
+val fabShape = RoundedCornerShape(16.dp)
+
+val bottomSheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
