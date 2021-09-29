@@ -28,6 +28,4 @@ dependencies {
 
     implementation Libs.Koin3.android
     implementation Libs.Koin3.ext
-
-    implementation Libs.Accompanist.glide
 }

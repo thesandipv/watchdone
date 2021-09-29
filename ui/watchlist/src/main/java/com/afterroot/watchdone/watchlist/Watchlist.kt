@@ -29,10 +29,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
-import com.google.accompanist.glide.rememberGlidePainter
 
 @Composable
 fun Watchlist(
@@ -66,14 +67,17 @@ fun Watchlist(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun WatchlistItem(poster: String?, title: String?) {
     Column(Modifier.fillMaxWidth()) {
         Image(
-            painter = rememberGlidePainter(
-                request = poster,
-                fadeIn = true,
-                previewPlaceholder = R.drawable.ic_placeholder_movie
+            painter = rememberImagePainter(
+                data = poster,
+                builder = {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_placeholder_movie)
+                }
             ),
             contentDescription = title,
             modifier = Modifier.aspectRatio(3f / 2f)

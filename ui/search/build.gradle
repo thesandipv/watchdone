@@ -12,12 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.data.model
 
-interface Media {
-    enum class Type {
-        MOVIE, TV
-    }
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
 
-    val type: Type?
+apply from: "$rootDir/gradle/common-config.gradle"
+apply from: "$rootDir/gradle/compose.gradle" //Uncomment for Enabling Compose
+
+dependencies {
+    //All compose dependencies applied with compose.gradle
+    implementation project(":base")
+    implementation project(":data")
+
+    implementation Libs.Koin3.android
+    implementation Libs.Koin3.ext
 }

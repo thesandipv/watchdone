@@ -18,14 +18,11 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.tmdbapi.model.tv.TvSeries
-import com.afterroot.tmdbapi2.model.Genre
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 
 private val crossFadeFactory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
 internal val transitionOptions = DrawableTransitionOptions.with(crossFadeFactory)
@@ -47,13 +44,13 @@ fun ImageView.setTVPoster(tvSeries: TvSeries?, settings: Settings?) {
         .into(this)
 }
 
-@BindingAdapter("poster")
+/*@BindingAdapter("poster")
 fun ImageView.poster(url: String) {
     GlideApp.with(context).load(url).transition(transitionOptions)
         .into(this)
-}
+}*/
 
-@BindingAdapter("genres")
+/*@BindingAdapter("genres")
 fun ChipGroup.setGenres(genres: List<Genre>?) {
     removeAllViews()
     genres?.forEach { genre ->
@@ -61,4 +58,4 @@ fun ChipGroup.setGenres(genres: List<Genre>?) {
         chip.text = genre.name
         addView(chip)
     }
-}
+}*/
