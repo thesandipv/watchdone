@@ -19,7 +19,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Column
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +27,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
+import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.Multi.MediaType.MOVIE
 import com.afterroot.tmdbapi.model.Multi.MediaType.PERSON
 import com.afterroot.tmdbapi.model.Multi.MediaType.TV_SERIES
@@ -67,6 +67,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import java.util.Locale
 
 class MediaInfoFragment : Fragment() {
     private lateinit var binding: FragmentMediaInfoBinding
@@ -90,12 +91,13 @@ class MediaInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val argMediaId = arguments?.getInt("mediaId")
-        val mediaType = arguments?.getString("type")?.let { valueOf(it) }
+        val mediaType = arguments?.getString("type")?.let { valueOf(it.uppercase(Locale.getDefault())) }
         if (argMediaId != null) {
             launchShowingProgress {
                 when (mediaType) {
                     MOVIE -> {
                         viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId), tv = null)
+                        updateCast(argMediaId, mediaType)
                     }
                     PERSON -> {
                         // TODO
@@ -104,11 +106,11 @@ class MediaInfoFragment : Fragment() {
                         viewModel.selectMedia(
                             movie = null, tv = tvRepository.getTVInfo(argMediaId).toTV()
                         )
+                        updateCast(argMediaId, mediaType)
                     }
                     null -> {
                     }
                 }
-                updateCast(argMediaId)
             }
         }
 
@@ -231,6 +233,7 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
 
+/*
                     composeView.setContent {
                         Column {
                             if (movie != null) {
@@ -241,6 +244,7 @@ class MediaInfoFragment : Fragment() {
                             }
                         }
                     }
+*/
                 }
             }
             // menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
@@ -259,8 +263,14 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    private suspend fun updateCast(mediaId: Int) {
-        val credits = get<MoviesRepository>().getCredits(mediaId)
+    //TODO Apply Same for TV
+    private suspend fun updateCast(mediaId: Int, type: Multi.MediaType) {
+        val credits = if (type == MOVIE) {
+            get<MoviesRepository>().getCredits(mediaId)
+        } else {
+            get<TVRepository>().getCredits(mediaId)
+        }
+
         val castAdapter = CastListAdapter()
         val crewAdapter = CastListAdapter()
         binding.castList.apply {

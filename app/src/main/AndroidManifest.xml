@@ -40,7 +40,7 @@
         tools:targetApi="s">
         <activity
             android:name=".ui.MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/MyTheme.Main">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

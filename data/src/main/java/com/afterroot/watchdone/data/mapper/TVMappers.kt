@@ -65,4 +65,14 @@ fun TV.toDBMedia() = DBMedia(
     rating = voteAverage
 )
 
+fun DBMedia.toTV(): TV = TV(
+    id = id,
+    firstAirDate = releaseDate,
+    name = title,
+    isWatched = isWatched ?: false,
+    posterPath = posterPath,
+    voteAverage = rating
+)
+
+
 fun TvResultsPage.toTV(): List<TV> = results.mapNotNull { it?.toTV() }
