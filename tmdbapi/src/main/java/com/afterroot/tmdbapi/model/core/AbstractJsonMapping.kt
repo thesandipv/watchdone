@@ -25,9 +25,10 @@ abstract class AbstractJsonMapping : Serializable {
     @JsonAnySetter
     open fun handleUnknown(key: String?, value: Any?) {
         val unknown = "Unknown property: '$key'"
-        if (System.getenv("Test").isNullOrBlank()) { // Not in test environment
+        val result = kotlin.runCatching {
             Log.d(TAG, "handleUnknown: $unknown")
-        } else { // In test environment
+        }
+        if (result.isFailure) {
             println("handleUnknown: $unknown")
         }
     }
