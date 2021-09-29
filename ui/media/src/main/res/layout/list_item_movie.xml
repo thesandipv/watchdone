@@ -79,10 +79,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:ellipsize="marquee"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="@{movieDb.title}"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/white"
@@ -91,7 +90,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            tools:text="@tools:sample/lorem" />
+            tools:text="@tools:sample/lorem[10]" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/year"
