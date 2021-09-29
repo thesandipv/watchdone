@@ -107,7 +107,7 @@
         android:label="MediaInfoFragment">
         <deepLink
             android:autoVerify="true"
-            app:uri="https://watchdone.web.app/media/{mediaId}"
+            app:uri="https://watchdone.web.app/media/{type}/{mediaId}"
             tools:targetApi="m" />
         <argument
             android:name="mediaId"
