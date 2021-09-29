@@ -22,6 +22,7 @@ import com.afterroot.watchdone.data.model.TV
 
 fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     id = id,
+    name = name,
     createdBy = createdBy,
     episodeRuntime = episodeRuntime,
     firstAirDate = firstAirDate,
