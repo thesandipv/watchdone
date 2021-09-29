@@ -30,16 +30,17 @@
     <application
         android:name=".App"
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/MyTheme.Main">
+        android:theme="@style/MyTheme.Main"
+        tools:targetApi="s">
         <activity
             android:name=".ui.MainActivity"
             android:exported="false"
-            android:label="@string/app_name"
             android:theme="@style/MyTheme.Main">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -74,7 +75,7 @@
 
         <activity
             android:name=".ui.SplashActivity"
-            android:label="@string/app_name"
+            android:exported="true"
             android:theme="@style/MyTheme.Main.Launch"
             tools:ignore="IntentFilterExportedReceiver">
             <tools:validation testUrl="https://${hostName}${pathPrefix}" />
@@ -129,6 +130,7 @@
 
         <service
             android:name=".FireMessagingService"
+            android:exported="false"
             tools:ignore="ExportedService,IntentFilterExportedReceiver">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -20,7 +20,6 @@
     <string name="ad_banner_unit_id" translatable="false">ca-app-pub-6628325093439880/1366582369</string>
     <string name="ad_rewarded_unit_id" translatable="false">ca-app-pub-6628325093439880/7723902265</string>
     <string name="admob_app_id" translatable="false">ca-app-pub-6628325093439880~2908563040</string>
-    <string name="app_name">WatchDone</string>
     <string name="button_add_watched">Add Watched</string>
     <string name="content_desc_movie_poster">Movie/TV Show Poster</string>
     <string name="content_desc_watched_icon">Watched Icon</string>

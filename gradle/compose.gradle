@@ -40,4 +40,6 @@ dependencies {
     implementation(Libs.Accompanist.insets)
     implementation(Libs.Accompanist.placeholder)
     implementation(Libs.Accompanist.swiperefresh)
+
+    implementation(Libs.coil)
 }
