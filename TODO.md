@@ -9,7 +9,7 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 - [ ] Add - Cast info Screen
 - [ ] Add - Region Selection in Settings
 
-### Next Version
+### v0.0.4
 - [X] Add - Deep-link Movie info (addedIn - `c49b6ac`)
 - [X] Add - Deep-link and Palette Color in instagram story (addedIn - `e17ac7c`)
 - [X] Add - App Shortcuts (addedIn - `317b56e`)

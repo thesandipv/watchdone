@@ -88,6 +88,7 @@ class TVInfoFragment : Fragment() {
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
     private val homeViewModel: HomeViewModel by activityViewModels()
+
     // private val myDatabase: MyDatabase by inject()
     private val settings: Settings by inject()
     private var adLoaded: Boolean = false
@@ -199,7 +200,7 @@ class TVInfoFragment : Fragment() {
                                                     snackBarMessage("Ad is not loaded yet. Loading...")
                                                     createAndLoadRewardedAd()
                                                 }
-                                                negativeButton(R.string.fui_cancel)
+                                                negativeButton(android.R.string.cancel)
                                             }
                                         }
                                     }
