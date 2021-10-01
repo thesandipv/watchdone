@@ -19,6 +19,22 @@
             </SchemaInfo>
           </value>
         </entry>
+        <entry key="data_structure.config">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="data_structure.config" />
+              <option name="relativePathToSchema" value="data_structures/firestore/afterroot/configs/data_structure.config.json" />
+              <option name="schemaVersion" value="JSON Schema version 7" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="data_structures/firestore/afterroot/sample/data_structure.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
       </map>
     </state>
   </component>
