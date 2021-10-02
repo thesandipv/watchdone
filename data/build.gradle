@@ -40,6 +40,7 @@ dependencies {
     api project(':tmdbapi')
     implementation project(':base')
     implementation project(':ui:resources')
+    api project(':data_structures:lib')
 
     implementation Libs.AndroidX.preference
 
