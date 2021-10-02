@@ -14,6 +14,8 @@
  */
 package com.afterroot.watchdone.utils
 
+import com.afterroot.data.utils.FirebaseUtils
+
 fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versionCode: Int): String {
     val builder = StringBuilder().apply {
         appendLine("----Do not remove this info----")
