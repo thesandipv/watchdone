@@ -1,3 +1,6 @@
 [submodule "data_structures"]
 	path = data_structures
 	url = https://github.com/afterroot/data_structures.git
+[submodule "core"]
+	path = core
+	url = https://github.com/afterroot/core.git
