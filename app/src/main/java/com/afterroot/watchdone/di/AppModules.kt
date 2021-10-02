@@ -21,7 +21,7 @@ import com.afterroot.tmdbapi.TmdbApi
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.afterroot.watchdone.utils.whenBuildIs
 import com.afterroot.watchdone.viewmodel.NetworkViewModel

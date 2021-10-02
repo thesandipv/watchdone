@@ -19,7 +19,7 @@ import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.firebase.firestore.FirebaseFirestore

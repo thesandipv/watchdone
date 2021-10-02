@@ -48,7 +48,7 @@ import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.User
 import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.NetworkViewModel

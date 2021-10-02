@@ -52,7 +52,7 @@ import com.afterroot.watchdone.media.viewmodel.SelectedMedia
 import com.afterroot.watchdone.media.viewmodel.State
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference

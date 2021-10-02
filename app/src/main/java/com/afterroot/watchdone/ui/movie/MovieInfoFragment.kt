@@ -66,7 +66,7 @@ import com.afterroot.watchdone.media.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.view.SectionalListView
-import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState

@@ -27,7 +27,7 @@ import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
-import com.afterroot.watchdone.utils.FirebaseUtils
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
