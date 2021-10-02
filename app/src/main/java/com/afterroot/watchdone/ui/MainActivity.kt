@@ -39,16 +39,16 @@ import com.afterroot.core.extensions.progress
 import com.afterroot.core.extensions.visible
 import com.afterroot.core.network.NetworkState
 import com.afterroot.core.onVersionGreaterThanEqualTo
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.model.User
+import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
@@ -190,7 +190,12 @@ class MainActivity : AppCompatActivity() {
                                 if (!getUserTask.result!!.exists()) {
                                     binding.container.snackbar("User not available. Creating User..").anchorView =
                                         binding.toolbar
-                                    val user = User(curUser.displayName, curUser.email, curUser.uid, tokenTask.result)
+                                    val user = LocalUser(
+                                        name = curUser.displayName,
+                                        email = curUser.email,
+                                        uid = curUser.uid,
+                                        fcmId = tokenTask.result
+                                    )
                                     userRef.set(user).addOnCompleteListener { setUserTask ->
                                         if (!setUserTask.isSuccessful) Log.e(
                                             TAG,
