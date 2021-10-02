@@ -25,3 +25,7 @@ include ':ui:resources'
 include ':ui:watchlist'
 include ':ui:search'
 include ':data_structures:lib'
+
+//AfterROOT Core
+include ':core'
+project(':core').projectDir = file('core/core')
