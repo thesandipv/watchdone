@@ -14,12 +14,17 @@
  */
 package com.afterroot.watchdone.data.model
 
+import com.afterroot.data.model.UserProperties
+import com.afterroot.data.utils.valueOrBlank
 import java.io.Serializable
 
 // Collection 'users'
-data class User(
+data class LocalUser(
     var name: String? = null,
     var email: String? = null,
     var uid: String? = null,
-    var fcmId: String? = null
+    var fcmId: String? = null,
+    var userName: String? = null,
+    var isUserNameAvailable: Boolean = userName.valueOrBlank().isNotBlank(),
+    var properties: UserProperties = UserProperties()
 ) : Serializable
