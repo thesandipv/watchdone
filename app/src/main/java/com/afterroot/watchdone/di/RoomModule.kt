@@ -14,14 +14,29 @@
  */
 package com.afterroot.watchdone.di
 
+import android.content.Context
 import androidx.room.Room
+import com.afterroot.watchdone.database.GenreDao
 import com.afterroot.watchdone.database.MyDatabase
-import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.module
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
+import javax.inject.Singleton
 
-val roomModule = module {
-    single { Room.databaseBuilder(androidContext(), MyDatabase::class.java, "watchdone-db").build() }
-    single { provideGenreDao(get()) }
+@Module
+@InstallIn(SingletonComponent::class)
+object RoomModule {
+    @Provides
+    @Singleton
+    @Named("my_database")
+    fun provideMyDatabase(@ApplicationContext context: Context): MyDatabase =
+        Room.databaseBuilder(context, MyDatabase::class.java, "watchdone-db").build()
+
+    @Provides
+    @Singleton
+    @Named("genre_dao")
+    fun provideGenreDao(database: MyDatabase): GenreDao = database.genreDao()
 }
-
-fun provideGenreDao(database: MyDatabase) = database.genreDao()
