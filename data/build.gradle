@@ -32,7 +32,15 @@ android {
                 ]
             }
         }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        def tmdbPropertiesFile = rootProject.file("tmdb.properties")
+        def tmdbProperties = new Properties()
+        if (tmdbPropertiesFile.exists()) {
+            tmdbProperties.load(new FileInputStream(tmdbPropertiesFile))
+        }
+        buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbProperties["tmdbBearerToken"] ?: System.getenv("TMDB_BEARER_TOKEN")
+        buildConfigField "String", "TMDB_API", tmdbProperties["tmdbApi"] ?: System.getenv("TMDB_API")
     }
 }
 
@@ -47,8 +55,30 @@ dependencies {
     implementation platform(Libs.Firebase.bom)
     api Libs.Firebase.firestore
     api Libs.Firebase.auth
+    api Libs.Firebase.config
+    api Libs.Firebase.messaging
+
+    api Libs.Kotlin.Coroutines.core
+    api Libs.Kotlin.Coroutines.android
+    api Libs.Kotlin.Coroutines.play
 
     api Libs.AndroidX.Room.room
     api Libs.AndroidX.Room.runtime
     kapt Libs.AndroidX.Room.compiler
+
+    implementation Libs.Hilt.hilt
+    kapt Libs.Hilt.compiler
+
+    testImplementation Libs.AndroidX.Room.test
+    testImplementation Libs.AndroidX.Test.archCore
+    testImplementation Libs.AndroidX.Test.core
+    testImplementation Libs.Hilt.testing
+    testImplementation Libs.Kotlin.Coroutines.test
+    testImplementation Libs.Test.mockk
+    testImplementation Libs.Test.junit
+    testImplementation Libs.Test.junitExt
+    testImplementation Libs.Test.robolectric
+
+    kaptTest Libs.Hilt.compiler
+    kaptTest Libs.AndroidX.Room.compiler
 }

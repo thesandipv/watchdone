@@ -12,33 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone
+package com.afterroot.watchdone.test
 
 import com.afterroot.tmdbapi.model.ArtworkType
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses.images
 import com.afterroot.tmdbapi2.model.MovieAppendableResponses.videos
 import com.afterroot.tmdbapi2.repository.MoviesRepository
 import com.afterroot.tmdbapi2.repository.SearchRepository
-import com.afterroot.watchdone.di.apiModule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
-import org.junit.Rule
 import org.junit.Test
-import org.koin.core.logger.Level
-import org.koin.test.KoinTest
-import org.koin.test.KoinTestRule
-import org.koin.test.inject
+import javax.inject.Inject
 
-class MovieInfoTest : KoinTest {
-    @get:Rule
-    val testRule = KoinTestRule.create {
-        printLogger(Level.ERROR)
-        modules(apiModule)
-    }
+@HiltAndroidTest
+class MovieInfoTest : DataTest() {
 
-    private val moviesRepository by inject<MoviesRepository>()
-    private val searchRepository by inject<SearchRepository>()
+    @Inject lateinit var moviesRepository: MoviesRepository
+    @Inject lateinit var searchRepository: SearchRepository
 
     @Test
     fun `MovieDb Working`() {
