@@ -18,11 +18,13 @@
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data_structures" />
             <option value="$PROJECT_DIR$/data_structures/lib" />
+            <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/tmdbapi" />
             <option value="$PROJECT_DIR$/ui" />
             <option value="$PROJECT_DIR$/ui/common" />
             <option value="$PROJECT_DIR$/ui/common-compose" />
             <option value="$PROJECT_DIR$/ui/media" />
+            <option value="$PROJECT_DIR$/ui/profile" />
             <option value="$PROJECT_DIR$/ui/resources" />
             <option value="$PROJECT_DIR$/ui/search" />
             <option value="$PROJECT_DIR$/ui/watchlist" />

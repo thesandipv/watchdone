@@ -15,6 +15,8 @@
 package com.afterroot.watchdone.utils
 
 import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.data.model.LocalUser
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,3 +36,11 @@ fun FirebaseFirestore.collectionWatchdone(id: String, isUseOnlyProdDB: Boolean):
 fun CollectionReference.documentWatchlist(): DocumentReference = document(Collection.WATCHLIST)
 fun DocumentReference.collectionWatchlistItems(): CollectionReference = collection(Collection.ITEMS)
 fun CollectionReference.collectionWatchlistItems(): CollectionReference = documentWatchlist().collectionWatchlistItems()
+
+fun FirebaseFirestore.collectionUsers() = collection(Collection.USERS)
+
+fun FirebaseAuth.getLocalUser() = LocalUser(
+    name = currentUser?.displayName,
+    email = currentUser?.email,
+    uid = currentUser?.uid
+)
