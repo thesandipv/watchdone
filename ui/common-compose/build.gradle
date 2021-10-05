@@ -26,4 +26,6 @@ dependencies {
     implementation project(":base")
     implementation project(":data")
     implementation project(":ui:resources")
+
+    api Libs.AndroidX.Lifecycle.runtime
 }

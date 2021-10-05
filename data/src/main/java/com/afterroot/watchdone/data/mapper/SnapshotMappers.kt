@@ -14,6 +14,7 @@
  */
 package com.afterroot.watchdone.data.mapper
 
+import com.afterroot.data.model.NetworkUser
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.watchdone.base.Field
@@ -50,3 +51,5 @@ fun QuerySnapshot.toMovies(): List<Movie> {
     }
     return list
 }
+
+fun QuerySnapshot.toNetworkUser(): NetworkUser = this.documents[0].toObject(NetworkUser::class.java) ?: NetworkUser()

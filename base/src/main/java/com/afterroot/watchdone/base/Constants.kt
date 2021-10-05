@@ -63,4 +63,7 @@ object Constants {
     const val IG_EXTRA_TOP_COLOR = "top_background_color"
     const val IG_EXTRA_BOTTOM_COLOR = "bottom_background_color"
     const val IG_EXTRA_SOURCE_APP = "source_application"
+
+    const val USERNAME_LENGTH = 15
+    const val NAME_LENGTH = 30
 }
