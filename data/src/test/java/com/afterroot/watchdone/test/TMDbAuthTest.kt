@@ -12,29 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone
+package com.afterroot.watchdone.test
 
 import com.afterroot.tmdbapi2.model.RequestBodyToken
 import com.afterroot.tmdbapi2.repository.AuthRepository
-import com.afterroot.watchdone.di.apiModule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
-import org.junit.Rule
 import org.junit.Test
-import org.koin.core.logger.Level
-import org.koin.test.KoinTest
-import org.koin.test.KoinTestRule
-import org.koin.test.inject
+import javax.inject.Inject
 
-class TMDbAuthTest : KoinTest {
-    @get:Rule
-    val testRule = KoinTestRule.create {
-        printLogger(Level.ERROR)
-        modules(apiModule)
-    }
+@HiltAndroidTest
+class TMDbAuthTest : DataTest() {
 
-    private val authRepository by inject<AuthRepository>()
+    @Inject lateinit var authRepository: AuthRepository
 
     @Test
     fun `Verify request token valid`() {
