@@ -14,119 +14,54 @@
  */
 package com.afterroot.watchdone.di
 
-import android.content.Context
-import android.net.ConnectivityManager
-import com.afterroot.core.network.NetworkStateMonitor
-import com.afterroot.tmdbapi.TmdbApi
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.CoroutineDispatchers
-import com.afterroot.watchdone.settings.Settings
-import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
-import com.afterroot.watchdone.utils.whenBuildIs
-import com.afterroot.watchdone.viewmodel.NetworkViewModel
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.firestoreSettings
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
-import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.qualifier
-import org.koin.dsl.module
+import javax.inject.Named
+import javax.inject.Singleton
 
-val appModule = module {
-/*
-    viewModel {
-        //TODO Saved State not Working in current koin version.
-        //Migrate when fixed in future version
-        MainViewModel(state = get(), db = get(), config = get())
-    }
-*/
-    single {
-        TmdbApi(BuildConfig.TMDB_API)
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModules {
+    @Singleton
+    @Provides
+    fun provideDispatchers() = CoroutineDispatchers(
+        default = Dispatchers.Default,
+        io = Dispatchers.IO,
+        main = Dispatchers.Main
+    )
 
-    single {
-        CoroutineDispatchers(
-            default = Dispatchers.Default,
-            io = Dispatchers.IO,
-            main = Dispatchers.Main
-        )
-    }
+    @Provides
+    @Named("feedback_email")
+    fun provideFeedbackEmail(): String = "afterhasroot@gmail.com"
 
-    single(qualifier("feedback_email")) {
-        "afterhasroot@gmail.com"
-    }
+    @Provides
+    @Named("version_Code")
+    fun provideVersionCode(): Int = BuildConfig.VERSION_CODE
 
-    single(qualifier("feedback_body")) {
-        getMailBodyForFeedback(get(), version = get(qualifier("version_name")), versionCode = get(qualifier("version_code")))
-    }
+    @Provides
+    @Named("version_name")
+    fun provideVersionName(): String = BuildConfig.VERSION_NAME
 
-    single(qualifier("version_code")) {
-        BuildConfig.VERSION_CODE
-    }
+    @Provides
+    @Named("version_string")
+    fun provideVersionString() =
+        "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) - ${BuildConfig.COMMIT_ID}"
 
-    single(qualifier("version_name")) {
-        BuildConfig.VERSION_NAME
-    }
+    @Provides
+    @Named("feedback_body")
+    fun provideFeedbackBody(firebaseUtils: FirebaseUtils): String =
+        getMailBodyForFeedback(firebaseUtils, version = provideVersionName(), versionCode = provideVersionCode())
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = GsonBuilder().create()
 }
-
-val firebaseModule = module {
-    single {
-        Firebase.firestore.apply {
-            firestoreSettings = firestoreSettings {
-                isPersistenceEnabled = true
-            }
-        }
-    }
-
-    single { FirebaseStorage.getInstance() }
-
-    single { Firebase.auth }
-
-    single { Firebase.database }
-
-    single {
-        Firebase.remoteConfig.apply {
-            setConfigSettingsAsync(
-                remoteConfigSettings {
-                    fetchTimeoutInSeconds = whenBuildIs(debug = 0, release = 3600)
-                }
-            )
-        }
-    }
-
-    single { FirebaseMessaging.getInstance() }
-
-    single {
-        FirebaseUtils(get())
-    }
-}
-
-val networkModule = module {
-    single {
-        androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    }
-
-    single {
-        NetworkStateMonitor(get())
-    }
-
-    viewModel {
-        NetworkViewModel(get())
-    }
-}
-
-val settingsModule = module {
-    single {
-        Settings(androidContext())
-    }
-}
-
-val allModules = appModule + firebaseModule + roomModule + settingsModule + networkModule + apiModule

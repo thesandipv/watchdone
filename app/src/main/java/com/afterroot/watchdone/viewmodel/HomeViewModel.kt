@@ -34,16 +34,22 @@ import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.component.inject
+import javax.inject.Inject
 import com.google.firebase.firestore.Query as FirestoreQuery
 
-class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), KoinComponent {
-    private val db: FirebaseFirestore by inject()
-    private val settings: Settings by inject()
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    val savedState: SavedStateHandle? = null,
+    private val db: FirebaseFirestore,
+    private val settings: Settings,
+    private val myDatabase: MyDatabase,
+    private val authRepository: AuthRepository,
+    private val genresRepository: GenresRepository,
+    private val moviesRepository: MoviesRepository
+) : ViewModel() {
     private var trendingMovies = MutableLiveData<MovieResultsPage>()
     private var watchlistSnapshot = MutableLiveData<ViewModelState>()
     val error = MutableLiveData<Event<String>>()
@@ -79,7 +85,7 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
         if (trendingMovies.value == null || isReload) {
             try {
                 trendingMovies = liveData(Dispatchers.IO) { // Background Thread
-                    emit(get<MoviesRepository>().getMoviesTrendingInSearch())
+                    emit(moviesRepository.getMoviesTrendingInSearch())
                 } as MutableLiveData<MovieResultsPage>
             } catch (e: Exception) {
                 error.value = Event(e.message!!)
@@ -101,23 +107,20 @@ class HomeViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), Koi
     }
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {
-        emit(
-            get<AuthRepository>().createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"))
+        emit( //TODO Deeplink properly
+            authRepository.createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"))
         )
     }
 
     fun addGenres(owner: LifecycleOwner) {
-        get<MyDatabase>().genreDao().apply {
-            getGenres().observe(
-                owner,
-                {
-                    if (it.isNullOrEmpty()) {
-                        viewModelScope.launch {
-                            this@apply.add(get<GenresRepository>().getMoviesGenres().genres)
-                        }
+        myDatabase.genreDao().apply {
+            getGenres().observe(owner) {
+                if (it.isNullOrEmpty()) {
+                    viewModelScope.launch {
+                        this@apply.add(genresRepository.getMoviesGenres().genres)
                     }
                 }
-            )
+            }
         }
     }
 }
