@@ -18,26 +18,26 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import com.afterroot.core.network.NetworkState
 import com.afterroot.core.network.NetworkStateMonitor
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class NetworkViewModel(val networkStateMonitor: NetworkStateMonitor) : ViewModel() {
+@HiltViewModel
+class NetworkViewModel @Inject constructor(val networkStateMonitor: NetworkStateMonitor) : ViewModel() {
 
     inline fun doIfNetworkConnected(
         lifecycleOwner: LifecycleOwner,
         crossinline doWhenConnected: (state: NetworkState) -> Unit,
         noinline doWhenNotConnected: ((state: NetworkState) -> Unit)? = null
     ) {
-        networkStateMonitor.observe(
-            lifecycleOwner,
-            {
-                when (it) {
-                    NetworkState.CONNECTED -> {
-                        doWhenConnected(NetworkState.CONNECTED)
-                    }
-                    else -> {
-                        doWhenNotConnected?.invoke(it)
-                    }
+        networkStateMonitor.observe(lifecycleOwner) {
+            when (it) {
+                NetworkState.CONNECTED -> {
+                    doWhenConnected(NetworkState.CONNECTED)
+                }
+                else -> {
+                    doWhenNotConnected?.invoke(it)
                 }
             }
-        )
+        }
     }
 }

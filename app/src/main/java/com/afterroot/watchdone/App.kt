@@ -16,19 +16,8 @@ package com.afterroot.watchdone
 
 import androidx.annotation.Keep
 import androidx.multidex.MultiDexApplication
-import com.afterroot.watchdone.di.allModules
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
+import dagger.hilt.android.HiltAndroidApp
 
 @Keep
-class App : MultiDexApplication() {
-    override fun onCreate() {
-        super.onCreate()
-        startKoin {
-            androidLogger()
-            androidContext(this@App)
-            modules(allModules)
-        }
-    }
-}
+@HiltAndroidApp
+class App : MultiDexApplication()
