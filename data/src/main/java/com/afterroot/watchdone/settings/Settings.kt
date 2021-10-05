@@ -20,12 +20,17 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.R
+import com.afterroot.watchdone.data.model.LocalUser
 import com.google.firebase.firestore.Query
+import com.google.gson.Gson
 
 /**
  * Helper Class for managing main preferences of App
  */
-class Settings(val context: Context) {
+class Settings(
+    private val context: Context,
+    private val gson: Gson
+) {
 
     private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private fun putString(key: String, value: String?) = preferences.edit(true) {
@@ -70,6 +75,19 @@ class Settings(val context: Context) {
     val isUseProdDb: Boolean
         get() = preferences.getBoolean("use_prod_db", false)
 
+    var isUsernameSet: Boolean
+        get() = preferences.getBoolean("is_user_name_set", false)
+        set(value) = putBoolean("is_user_name_set", value)
+
+    var userProfile: LocalUser
+        get() = gson.fromJson(preferences.getString("profile", gson.toJson(LocalUser())), LocalUser::class.java)
+        set(value) = putString("profile", gson.toJson(value))
+
     // Helper Functions
     fun createPosterUrl(path: String) = baseUrl + imageSize + path
+
+    fun signOut() {
+        isUsernameSet = false
+        putString("profile", null)
+    }
 }
