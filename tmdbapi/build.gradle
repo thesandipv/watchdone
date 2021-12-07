@@ -1,44 +1,44 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2020-2021 Sandip Vaghela
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'kotlin-parcelize'
+	id 'com.android.library'
+	id 'kotlin-android'
+	id 'kotlin-parcelize'
 }
 
 apply from: "$rootDir/gradle/common-config.gradle"
 //apply from: "$rootDir/gradle/compose.gradle" //Uncomment for Enabling Compose
 
 dependencies {
-    api Libs.OkHttp.okHttp
-    api Libs.OkHttp.logging
-    api Libs.Retrofit.retrofit
-    api Libs.Retrofit.jackson
+	api libs.okhttp.okhttp
+	api libs.okhttp.logging
+	api libs.retrofit.retrofit
+	api libs.retrofit.jackson
 
-    api Libs.commonsCodec
-    implementation Libs.commonsLang
+	api libs.commonsCodec
+	implementation libs.commonsLang
 
-    api "com.fasterxml.jackson.core:jackson-annotations:$Versions.jackson"
-    api "com.fasterxml.jackson.core:jackson-databind:$Versions.jackson"
+	api "com.fasterxml.jackson.core:jackson-annotations:${libs.versions.jackson.get()}"
+	api "com.fasterxml.jackson.core:jackson-databind:${libs.versions.jackson.get()}"
 
-    implementation 'com.google.guava:guava:30.1.1-jre'
+	implementation 'com.google.guava:guava:30.1.1-jre'
 
-    implementation Libs.AndroidX.Room.runtime
+	implementation libs.androidx.room.runtime
 
-    testImplementation Libs.Test.junit
-    androidTestImplementation Libs.Test.espresso
-    androidTestImplementation Libs.Test.junitExt
+	testImplementation libs.test.junit
+	androidTestImplementation libs.androidx.test.espresso
+	androidTestImplementation libs.androidx.test.junitExt
 }

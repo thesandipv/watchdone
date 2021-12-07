@@ -74,5 +74,4 @@ fun DBMedia.toTV(): TV = TV(
     voteAverage = rating
 )
 
-
 fun TvResultsPage.toTV(): List<TV> = results.mapNotNull { it?.toTV() }

@@ -42,4 +42,3 @@ val typography = Typography(
 )
 
 val appBarTitleStyle = typography.h6.copy(fontWeight = FontWeight.Light)
-
