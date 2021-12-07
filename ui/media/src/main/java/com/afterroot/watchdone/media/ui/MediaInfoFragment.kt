@@ -27,6 +27,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
 import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.Multi.MediaType.MOVIE
 import com.afterroot.tmdbapi.model.Multi.MediaType.PERSON
@@ -52,7 +53,6 @@ import com.afterroot.watchdone.media.viewmodel.SelectedMedia
 import com.afterroot.watchdone.media.viewmodel.State
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -62,6 +62,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.getField
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -69,6 +70,7 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import java.util.Locale
 
+@AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
     private lateinit var binding: FragmentMediaInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
@@ -263,7 +265,7 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    //TODO Apply Same for TV
+    // TODO Apply Same for TV
     private suspend fun updateCast(mediaId: Int, type: Multi.MediaType) {
         val credits = if (type == MOVIE) {
             get<MoviesRepository>().getCredits(mediaId)

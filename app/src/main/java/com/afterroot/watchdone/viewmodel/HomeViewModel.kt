@@ -107,7 +107,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {
-        emit( //TODO Deeplink properly
+        emit( // TODO Deeplink properly
             authRepository.createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"))
         )
     }
