@@ -15,15 +15,15 @@ dependencies {
     implementation project(':ui:common-compose')
     implementation project(':ui:resources')
 
-    implementation Libs.AndroidX.core
-    implementation Libs.AndroidX.Lifecycle.viewmodel
-    implementation Libs.AndroidX.transition
+    implementation libs.androidx.core
+    implementation libs.androidx.lifecycle.viewmodel
+    implementation libs.androidx.transition
 
-    implementation Libs.Hilt.hilt
-    implementation Libs.Hilt.compose
-    kapt Libs.Hilt.compiler
+    implementation libs.hilt.hilt
+    implementation libs.hilt.compose
+    kapt libs.hilt.compiler
 
-    implementation Libs.AfterROOT.Core.core
+    implementation libs.afterroot.core
 
-    implementation Libs.FirebaseUI.auth
+    implementation libs.firebase.ui.auth
 }

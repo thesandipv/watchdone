@@ -23,7 +23,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -31,12 +30,10 @@ import javax.inject.Singleton
 object RoomModule {
     @Provides
     @Singleton
-    @Named("my_database")
     fun provideMyDatabase(@ApplicationContext context: Context): MyDatabase =
         Room.databaseBuilder(context, MyDatabase::class.java, "watchdone-db").build()
 
     @Provides
     @Singleton
-    @Named("genre_dao")
     fun provideGenreDao(database: MyDatabase): GenreDao = database.genreDao()
 }
