@@ -18,7 +18,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootDir/gradle/common-config.gradle"
 
 dependencies {
-    implementation Libs.Google.material
-    implementation Libs.AndroidX.preference
-    implementation Libs.MaterialDialogs.core
+    implementation libs.google.material
+    implementation libs.androidx.preference
+    implementation libs.materialdialogs.core
 }
