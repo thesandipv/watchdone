@@ -28,6 +28,6 @@ android {
 }
 
 dependencies {
-    implementation(Libs.Kotlin.stdLib)
-    implementation(Libs.AndroidX.core)
+    implementation libs.kotlin.stdLib
+    implementation libs.androidx.core
 }

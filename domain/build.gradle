@@ -10,12 +10,12 @@ dependencies {
     implementation project(':base')
     implementation project(':data')
 
-    implementation Libs.AndroidX.core
-    implementation Libs.AndroidX.Lifecycle.viewmodel
+    implementation libs.androidx.core
+    implementation libs.androidx.Lifecycle.viewmodel
 
-    implementation Libs.Hilt.hilt
-    implementation Libs.Hilt.compose
-    kapt Libs.Hilt.compiler
+    implementation libs.hilt.hilt
+    implementation libs.hilt.compose
+    kapt libs.hilt.compiler
 
-    implementation Libs.AfterROOT.Core.core
+    implementation libs.afterroot.core
 }

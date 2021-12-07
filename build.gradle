@@ -16,7 +16,20 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    apply from: rootProject.file('deps.gradle')
+    def version = [
+            MAJOR: 0,
+            MINOR: 0,
+            PATCH: 4,
+    ]
+
+    ext.SDK = [
+            MIN    : 21,
+            COMPILE: 31,
+            TARGET : 31
+    ]
+
+    ext.VERSION_CODE = SDK.MIN * 10000000 + version.MAJOR * 10000 + version.MINOR * 100 + version.PATCH
+    ext.VERSION_NAME = "${version.MAJOR}.${version.MINOR}.${version.PATCH}"
 
     repositories {
         google()
@@ -24,13 +37,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath Libs.AGP
-        classpath Libs.Kotlin.gradlePlugin
-        classpath Libs.Google.servicesPlugin
-        classpath Libs.Firebase.crashlyticsPlugin
-        //classpath Libs.Google.ossLicPlugin
-        classpath Libs.AndroidX.Navigation.safeArgsPlugin
-        classpath Libs.Hilt.gradlePlugin
+        classpath libs.agp
+        classpath libs.kotlin.pluginGradle
+        classpath libs.google.pluginGservices
+        classpath libs.firebase.pluginCrashlytics
+        classpath libs.google.pluginOssLic
+        classpath libs.androidx.navigation.pluginSafeArgs
+        classpath libs.hilt.pluginGradle
     }
 }
 
@@ -40,8 +53,6 @@ plugins {
 }
 
 allprojects {
-    apply from: rootProject.file('deps.gradle')
-
     def isPublishPropertiesExists = rootProject.file("publish.properties").exists()
     def properties = new Properties()
     if (isPublishPropertiesExists) {
@@ -54,7 +65,7 @@ allprojects {
 
         maven {
             name = "github-afterroot-core"
-            url = uri(Libs.AfterROOT.Core.mavenUrl)
+            url = uri("https://maven.pkg.github.com/afterroot/core")
             credentials {
                 username = properties.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
                 password = properties.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
@@ -81,12 +92,21 @@ subprojects {
 
     apply plugin: 'com.diffplug.spotless'
     spotless {
+        format 'misc', {
+            // define the files to apply `misc` to
+            target '*.gradle', '*.md', '.gitignore'
+
+            // define the steps to apply to those files
+            trimTrailingWhitespace()
+            indentWithTabs() // or spaces. Takes an integer argument if you don't like 4
+            endWithNewline()
+        }
         kotlin {
             target '**/*.kt'
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint(Versions.ktlint)
+            ktlint(libs.versions.ktlint.get())
             licenseHeaderFile rootProject.file('copyright.kt')
         }
     }
