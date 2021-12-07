@@ -21,13 +21,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.afterroot.core.extensions.getDrawableExt
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
-import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton

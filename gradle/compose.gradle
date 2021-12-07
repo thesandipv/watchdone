@@ -19,27 +19,13 @@ android {
     }
 
     composeOptions {
-        println("Compose Version: $Versions.compose")
-        kotlinCompilerExtensionVersion Versions.compose
+        kotlinCompilerExtensionVersion libs.versions.compose.get()
     }
 }
 
 dependencies {
-    implementation Libs.Kotlin.stdLib
-    implementation(Libs.AndroidX.Activity.compose)
-    implementation(Libs.AndroidX.Navigation.compose)
-    implementation(Libs.AndroidX.Compose.ui)
-    implementation(Libs.AndroidX.Compose.tooling)
-    implementation(Libs.AndroidX.Compose.foundation)
-    implementation(Libs.AndroidX.Compose.material)
-    implementation(Libs.AndroidX.Compose.iconsCore)
-    implementation(Libs.AndroidX.Compose.iconsExt)
-    implementation(Libs.AndroidX.Compose.livedata)
-    implementation(Libs.AndroidX.Compose.paging)
+    implementation libs.kotlin.stdLib
+    implementation libs.bundles.compose
 
-    implementation(Libs.Accompanist.insets)
-    implementation(Libs.Accompanist.placeholder)
-    implementation(Libs.Accompanist.swiperefresh)
-
-    implementation(Libs.coil)
+    implementation libs.coil
 }

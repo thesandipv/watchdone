@@ -26,10 +26,10 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.ui.MainActivity
-import com.afterroot.data.utils.FirebaseUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
