@@ -24,11 +24,13 @@ import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.settings.Settings
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.startActivity
-import org.koin.android.ext.android.inject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
-    private val settings: Settings by inject()
+    @Inject lateinit var settings: Settings
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_settings, rootKey)
         findPreference<ListPreference>(Constants.PREF_KEY_IMAGE_SIZE)?.apply {

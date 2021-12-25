@@ -54,7 +54,6 @@ import com.afterroot.watchdone.media.viewmodel.State
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.collectionWatchdone
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -66,20 +65,20 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
+    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var firestore: FirebaseFirestore
+    @Inject lateinit var moviesRepository: MoviesRepository
+    @Inject lateinit var myDatabase: MyDatabase
+    @Inject lateinit var settings: Settings
+    @Inject lateinit var tvRepository: TVRepository
     private lateinit var binding: FragmentMediaInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
-    private val firebaseUtils: FirebaseUtils by inject()
-    private val moviesRepository: MoviesRepository by inject()
-    private val myDatabase: MyDatabase by inject()
-    private val settings: Settings by inject()
-    private val tvRepository: TVRepository by inject()
     private val viewModel: MediaInfoViewModel by activityViewModels()
     private var progressDialog: MaterialDialog? = null
 
@@ -165,8 +164,8 @@ class MediaInfoFragment : Fragment() {
         val description = movie?.overview ?: tv?.overview
         val genres = movie?.genres ?: tv?.genres
         val genresIds = movie?.genreIds
-        watchListRef = get<FirebaseFirestore>().collectionWatchdone(
-            id = get<FirebaseAuth>().currentUser?.uid.toString(),
+        watchListRef = firestore.collectionWatchdone(
+            id = firebaseUtils.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
         ).document(Collection.WATCHLIST)
         watchlistItemReference = watchListRef.collection(Collection.ITEMS)
@@ -268,20 +267,20 @@ class MediaInfoFragment : Fragment() {
     // TODO Apply Same for TV
     private suspend fun updateCast(mediaId: Int, type: Multi.MediaType) {
         val credits = if (type == MOVIE) {
-            get<MoviesRepository>().getCredits(mediaId)
+            moviesRepository.getCredits(mediaId)
         } else {
-            get<TVRepository>().getCredits(mediaId)
+            tvRepository.getCredits(mediaId)
         }
 
         val castAdapter = CastListAdapter()
         val crewAdapter = CastListAdapter()
         binding.castList.apply {
+            adapter = crewAdapter
             adapter = castAdapter
             visible(true, AutoTransition())
         }
 
         binding.crewList.apply {
-            adapter = crewAdapter
             visible(true, AutoTransition())
         }
         castAdapter.submitList(credits.cast)

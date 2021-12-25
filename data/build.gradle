@@ -21,6 +21,7 @@ plugins {
 
 apply from: "$rootDir/gradle/common-config.gradle"
 //apply from: "$rootDir/gradle/compose.gradle" //Uncomment for Enabling Compose
+apply from: "$rootDir/gradle/oss-licence.gradle"
 
 android {
 	defaultConfig {

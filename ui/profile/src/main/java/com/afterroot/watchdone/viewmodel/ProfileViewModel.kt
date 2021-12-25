@@ -48,7 +48,7 @@ class ProfileViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
     private val getProfile: GetProfile,
     private val setProfile: SetProfile,
-    private val firebaseUtils: FirebaseUtils,
+    val firebaseUtils: FirebaseUtils,
     private val settings: Settings
 ) : ViewModel() {
 

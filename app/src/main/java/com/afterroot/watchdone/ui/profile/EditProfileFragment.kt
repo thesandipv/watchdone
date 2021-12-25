@@ -34,9 +34,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.toast
-import org.koin.android.ext.android.inject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class EditProfileFragment : Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
 
@@ -45,9 +47,9 @@ class EditProfileFragment : Fragment() {
         return binding.root
     }
 
-    private val db: FirebaseFirestore by inject()
+    @Inject lateinit var db: FirebaseFirestore
     private lateinit var user: FirebaseUser
-    private val firebaseUtils: FirebaseUtils by inject()
+    @Inject lateinit var firebaseUtils: FirebaseUtils
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
