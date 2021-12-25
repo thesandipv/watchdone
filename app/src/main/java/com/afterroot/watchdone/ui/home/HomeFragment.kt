@@ -45,19 +45,24 @@ import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
-import org.koin.core.qualifier.qualifier
+import javax.inject.Inject
+import javax.inject.Named
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homeScreenAdapter: MultiAdapter
     private val homeViewModel: HomeViewModel by activityViewModels()
-    private val settings: Settings by inject()
+    @Inject lateinit var settings: Settings
+    @Inject lateinit var firebaseAuth: FirebaseAuth
+    @Inject lateinit var firestore: FirebaseFirestore
+    @Inject @Named("feedback_body") lateinit var feedbackBody: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
@@ -100,7 +105,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeScreenAdapter = MultiAdapter(itemSelectedCallback)
+        homeScreenAdapter = MultiAdapter(itemSelectedCallback, settings)
         binding.list.adapter = homeScreenAdapter
         homeScreenAdapter.submitQuery(settings.queryDirection)
         homeViewModel.addGenres(viewLifecycleOwner)
@@ -181,7 +186,7 @@ class HomeFragment : Fragment() {
         action: QueryAction = QueryAction.CLEAR,
         additionQueries: (Query.() -> Query)? = null
     ) {
-        val userId = get<FirebaseAuth>().currentUser?.uid!!
+        val userId = firebaseAuth.currentUser?.uid!!
         homeViewModel.getWatchlistSnapshot(userId, isReload) {
             additionQueries?.let { it() }
             when (action) {
@@ -240,7 +245,7 @@ class HomeFragment : Fragment() {
                 message(text = "Migration Needed for new data structure")
                 positiveButton(text = "Migrate") {
                     val progress = requireContext().showStaticProgressDialog("Migrating Data")
-                    migrateFirestore(get(), listData, userId, settings.isUseProdDb) {
+                    migrateFirestore(firestore, listData, userId, settings.isUseProdDb) {
                         progress.dismiss()
                     }
                 }
@@ -264,7 +269,7 @@ class HomeFragment : Fragment() {
             requireContext().email(
                 email = "afterhasroot@gmail.com",
                 subject = "Watchdone Feedback",
-                text = get(qualifier("feedback_body"))
+                text = feedbackBody
             )
         }
         return super.onOptionsItemSelected(item)

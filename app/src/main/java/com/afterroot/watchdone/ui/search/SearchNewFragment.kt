@@ -51,9 +51,11 @@ import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.utils.showKeyboard
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SearchNewFragment : Fragment() {
 
     private lateinit var binding: SearchNewFragmentBinding

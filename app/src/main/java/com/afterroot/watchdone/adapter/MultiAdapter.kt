@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.adapter
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
@@ -34,13 +35,10 @@ import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import javax.inject.Inject
 
-class MultiAdapter(val callback: ItemSelectedCallback<Multi>) :
-    ListAdapter<Multi, RecyclerView.ViewHolder>(MultiDiffCallback()),
-    KoinComponent {
-    val settings: Settings by inject()
+class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Settings) :
+    ListAdapter<Multi, RecyclerView.ViewHolder>(MultiDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         var viewHolder: RecyclerView.ViewHolder? = null
         when (viewType) {
@@ -97,7 +95,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>) :
 
     inner class MoviesListViewHolder(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.poster
-        private val context: Context = posterView.context
+        private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private var heightRatio: Float = 3f / 2f
         private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
         fun bind(movie: Multi) {

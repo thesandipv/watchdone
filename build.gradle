@@ -107,7 +107,6 @@ subprojects {
             targetExclude('bin/**/*.kt')
 
             ktlint(libs.versions.ktlint.get())
-            licenseHeaderFile rootProject.file('copyright.kt')
         }
     }
 }

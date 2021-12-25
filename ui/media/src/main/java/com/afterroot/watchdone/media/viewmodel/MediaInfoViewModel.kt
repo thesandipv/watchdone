@@ -25,13 +25,15 @@ import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MediaInfoViewModel(val savedState: SavedStateHandle? = null) : ViewModel(), KoinComponent {
-
-    private val db: FirebaseFirestore by inject()
-    private val settings: Settings by inject()
+@HiltViewModel
+class MediaInfoViewModel @Inject constructor(
+    val savedState: SavedStateHandle? = null,
+    var db: FirebaseFirestore,
+    var settings: Settings
+) : ViewModel() {
     private var watchlistSnapshot = MutableLiveData<State>()
     private val selectedMedia = MutableLiveData<SelectedMedia>()
 

@@ -20,17 +20,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.afterroot.tmdbapi2.repository.SearchRepository
 import com.afterroot.watchdone.viewmodel.ViewModelState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import javax.inject.Inject
 
-class SearchNewViewModel : ViewModel(), KoinComponent {
+@HiltViewModel
+class SearchNewViewModel @Inject constructor(val repository: SearchRepository) : ViewModel() {
     private var movies = MutableLiveData<ViewModelState>()
     private var tv = MutableLiveData<ViewModelState>()
     private var people = MutableLiveData<ViewModelState>()
-    private val repository: SearchRepository by inject()
     private var previousQuery: String? = null
     fun searchMovies(query: String, includeAdult: Boolean = true): LiveData<ViewModelState> {
         if (previousQuery != query) {

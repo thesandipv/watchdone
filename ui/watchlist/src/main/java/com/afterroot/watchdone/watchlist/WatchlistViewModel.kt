@@ -27,14 +27,13 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import javax.inject.Inject
 
-class WatchlistViewModel : ViewModel(), KoinComponent {
-    private val db: FirebaseFirestore by inject()
-    val settings: Settings by inject()
+class WatchlistViewModel : ViewModel() {
+    @Inject lateinit var db: FirebaseFirestore
+    @Inject lateinit var settings: Settings
     val watchlistSnapshot = MutableSharedFlow<ViewModelState>()
-    val firebaseUtils: FirebaseUtils by inject()
+    @Inject lateinit var firebaseUtils: FirebaseUtils
     val uid: String = firebaseUtils.uid.toString()
 
     fun getWatchlistSnapshot(userId: String = uid): Flow<ViewModelState> = callbackFlow {
@@ -59,7 +58,7 @@ class WatchlistViewModel : ViewModel(), KoinComponent {
         val subs = ref.addSnapshotListener { value, _ ->
             if (value == null) return@addSnapshotListener
             try {
-                offer(value.toMulti())
+                this.trySend(value.toMulti()).isSuccess
             } catch (e: Throwable) {
             }
         }

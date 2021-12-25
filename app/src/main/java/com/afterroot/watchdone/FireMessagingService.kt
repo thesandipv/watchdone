@@ -33,18 +33,19 @@ import com.afterroot.watchdone.ui.MainActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.component.inject
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * FCM Service that will be used only if app is in foreground state.
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
-class FireMessagingService : FirebaseMessagingService(), KoinComponent {
+@AndroidEntryPoint
+class FireMessagingService : FirebaseMessagingService() {
 
     private val _tag = "FireMessagingService"
-    private val firebaseUtils: FirebaseUtils by inject()
+    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var firestore: FirebaseFirestore
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -56,7 +57,7 @@ class FireMessagingService : FirebaseMessagingService(), KoinComponent {
         try {
             if (firebaseUtils.isUserSignedIn) {
                 firebaseUtils.uid?.let {
-                    get<FirebaseFirestore>().collection(Collection.USERS)
+                    firestore.collection(Collection.USERS)
                         .document(it)
                         .update(Field.FCM_ID, token)
                 }

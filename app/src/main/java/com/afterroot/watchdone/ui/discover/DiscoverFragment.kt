@@ -28,6 +28,7 @@ import androidx.navigation.fragment.findNavController
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Discover
 import com.afterroot.tmdbapi.model.Multi
+import com.afterroot.tmdbapi2.api.DiscoverApi
 import com.afterroot.tmdbapi2.repository.DiscoverRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.adapter.delegate.DelegateListAdapter
@@ -37,15 +38,19 @@ import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
 import com.afterroot.watchdone.diff.MovieDiffCallback
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
-import org.koin.android.ext.android.get
-import org.koin.core.qualifier.qualifier
+import javax.inject.Inject
+import javax.inject.Named
 
+@AndroidEntryPoint
 class DiscoverFragment : Fragment() {
     lateinit var binding: FragmentDiscoverBinding
     private val homeViewModel: HomeViewModel by activityViewModels()
+    @Inject @Named("feedback_body") lateinit var feedbackBody: String
+    @Inject lateinit var discoverApi: DiscoverApi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -58,7 +63,7 @@ class DiscoverFragment : Fragment() {
 
         lifecycleScope.launch {
             binding.progressBarDiscover.visible(true)
-            val repo = DiscoverRepository(get()).getMoviesDiscover(Discover())
+            val repo = DiscoverRepository(discoverApi).getMoviesDiscover(Discover())
             val homeScreenAdapter = DelegateListAdapter(
                 MovieDiffCallback(),
                 object :
@@ -88,7 +93,7 @@ class DiscoverFragment : Fragment() {
             requireContext().email(
                 email = "afterhasroot@gmail.com",
                 subject = "Watchdone Feedback",
-                text = get(qualifier("feedback_body"))
+                text = feedbackBody
             )
         }
         return super.onOptionsItemSelected(item)
