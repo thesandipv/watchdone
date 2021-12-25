@@ -29,12 +29,11 @@ import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import javax.inject.Inject
 
 class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>) :
-    BaseListAdapter<Movie>(MovieDiffCallback()), KoinComponent {
-    val settings: Settings by inject()
+    BaseListAdapter<Movie>(MovieDiffCallback()) {
+    @Inject lateinit var settings: Settings
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
     }

@@ -29,11 +29,10 @@ import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import javax.inject.Inject
 
-class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>) : AdapterType, KoinComponent {
-    val settings: Settings by inject()
+class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>) : AdapterType {
+    @Inject lateinit var settings: Settings
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         MovieVH(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
 

@@ -17,30 +17,34 @@ package com.afterroot.watchdone.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.base.Constants.RC_LOGIN
-import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
+import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.toast
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private val _tag = "SplashActivity"
-    private val networkViewModel: NetworkViewModel by viewModel()
+    private val networkViewModel: NetworkViewModel by viewModels()
+    @Inject lateinit var firebaseAuth: FirebaseAuth
+    // @Inject lateinit var settings: Settings
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val theme = get<Settings>().theme
+        val theme = getString(R.string.theme_device_default)
         AppCompatDelegate.setDefaultNightMode(
             when (theme) {
                 getString(R.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -57,7 +61,7 @@ class SplashActivity : AppCompatActivity() {
         super.onPostCreate(savedInstanceState)
         setUpNetworkObserver()
         when {
-            get<FirebaseAuth>().currentUser == null -> {
+            firebaseAuth.currentUser == null -> {
                 tryLogin()
             }
             intent.extras != null -> {
@@ -81,11 +85,19 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun tryLogin() {
-        startActivityForResult(
+        val pickerLayout = AuthMethodPickerLayout.Builder(R.layout.layout_main_auth)
+            .setGoogleButtonId(R.id.button_auth_sign_in_google)
+            .setEmailButtonId(R.id.button_auth_sign_in_email)
+            .setTosAndPrivacyPolicyId(R.id.text_top_pp)
+            .build()
+
+        resultLauncher.launch(
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setLogo(R.mipmap.ic_launcher)
-                .setTosAndPrivacyPolicyUrls("", getString(R.string.url_privacy_policy))
+                .setAuthMethodPickerLayout(pickerLayout)
+                .setTheme(R.style.MyTheme_Main_Translucent_NoActionBar)
+                .setLogo(R.drawable.launch_icon)
+                .setTosAndPrivacyPolicyUrls(getString(R.string.url_tos), getString(R.string.url_privacy_policy))
                 .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
                 .setAvailableProviders(
                     listOf(
@@ -96,21 +108,16 @@ class SplashActivity : AppCompatActivity() {
                             )
                             .build()
                     )
-                ).build(),
-            RC_LOGIN
+                ).build()
         )
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RC_LOGIN) {
-            if (resultCode == Activity.RESULT_OK) {
-                launchMain()
-            } else {
-                toast(getString(R.string.msg_login_failed))
-                tryLogin()
-            }
+    private val resultLauncher = registerForActivityResult(FirebaseAuthUIActivityResultContract()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            launchMain()
         } else {
-            super.onActivityResult(requestCode, resultCode, data)
+            Toast.makeText(this, getString(R.string.msg_login_failed), Toast.LENGTH_SHORT).show()
+            tryLogin()
         }
     }
 

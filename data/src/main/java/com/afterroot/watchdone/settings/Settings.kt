@@ -23,19 +23,21 @@ import com.afterroot.watchdone.data.R
 import com.afterroot.watchdone.data.model.LocalUser
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
+import javax.inject.Inject
 
 /**
  * Helper Class for managing main preferences of App
  */
-class Settings(
+class Settings @Inject constructor(
     private val context: Context,
     private val gson: Gson
 ) {
 
-    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private fun putString(key: String, value: String?) = preferences.edit(true) {
         putString(key, value)
     }
+
+    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private fun putInt(key: String, value: Int) = preferences.edit(true) {
         putInt(key, value)

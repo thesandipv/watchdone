@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -57,24 +58,26 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private val settings: Settings by inject()
-    private val firebaseUtils: FirebaseUtils by inject()
-    private val networkViewModel: NetworkViewModel by viewModel()
+    @Inject lateinit var settings: Settings
+    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var configRepository: ConfigRepository
+    @Inject lateinit var firestore: FirebaseFirestore
+    @Inject lateinit var firebaseMessaging: FirebaseMessaging
+    private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,12 +87,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (get<FirebaseAuth>().currentUser == null) { // If not logged in, go to login.
+        if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
             startActivity(Intent(this, SplashActivity::class.java))
             finish()
         } else initialize()
-        get<FirebaseAuth>().addAuthStateListener {
-            if (get<FirebaseAuth>().currentUser == null) { // If not logged in, go to login.
+        firebaseUtils.auth.addAuthStateListener {
+            if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
                 startActivity(Intent(applicationContext, SplashActivity::class.java))
                 finish()
             }
@@ -113,14 +116,14 @@ class MainActivity : AppCompatActivity() {
 
         if (settings.baseUrl == null) {
             lifecycleScope.launch {
-                settings.baseUrl = get<ConfigRepository>().getConfig().imagesConfig?.secureBaseUrl
+                settings.baseUrl = configRepository.getConfig().imagesConfig?.secureBaseUrl
             }
         }
         if (settings.posterSizes == null) {
             lifecycleScope.launch {
                 val set = mutableSetOf<String>()
                 try {
-                    get<ConfigRepository>().getConfig().imagesConfig?.posterSizes?.map {
+                    configRepository.getConfig().imagesConfig?.posterSizes?.map {
                         set.add(it)
                     }
                 } catch (e: Exception) {
@@ -178,8 +181,8 @@ class MainActivity : AppCompatActivity() {
     private fun addUserInfoInDB() {
         try {
             val curUser = firebaseUtils.firebaseUser
-            val userRef = get<FirebaseFirestore>().collection(Collection.USERS).document(curUser!!.uid)
-            get<FirebaseMessaging>().token
+            val userRef = firestore.collection(Collection.USERS).document(curUser!!.uid)
+            firebaseMessaging.token
                 .addOnCompleteListener(
                     OnCompleteListener { tokenTask ->
                         if (!tokenTask.isSuccessful) {
@@ -187,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         userRef.get().addOnCompleteListener { getUserTask ->
                             if (getUserTask.isSuccessful) {
-                                if (!getUserTask.result!!.exists()) {
+                                if (!getUserTask.result.exists()) {
                                     binding.container.snackbar("User not available. Creating User..").anchorView =
                                         binding.toolbar
                                     val user = LocalUser(
@@ -203,7 +206,7 @@ class MainActivity : AppCompatActivity() {
                                             setUserTask.exception
                                         )
                                     }
-                                } else if (getUserTask.result!![Field.FCM_ID] != tokenTask.result) {
+                                } else if (getUserTask.result[Field.FCM_ID] != tokenTask.result) {
                                     userRef.update(Field.FCM_ID, tokenTask.result)
                                 }
                             } else Log.e(TAG, "Unknown Error", getUserTask.exception)

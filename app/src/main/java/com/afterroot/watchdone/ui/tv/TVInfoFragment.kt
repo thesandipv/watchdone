@@ -66,23 +66,24 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.getField
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.email
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
-import org.koin.core.qualifier.qualifier
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Named
 
 @Deprecated(
     "Use MediaInfoFragment Instead.",
     ReplaceWith("MediaInfoFragment", "com.afterroot.watchdone.media.MediaInfoFragment")
 )
+@AndroidEntryPoint
 class TVInfoFragment : Fragment() {
     private lateinit var binding: FragmentTvInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
@@ -90,7 +91,11 @@ class TVInfoFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     // private val myDatabase: MyDatabase by inject()
-    private val settings: Settings by inject()
+    @Inject lateinit var settings: Settings
+    @Inject lateinit var firebaseAuth: FirebaseAuth
+    @Inject lateinit var firestore: FirebaseFirestore
+    @Inject lateinit var tvRepository: TVRepository
+    @Inject @Named("feedback_body") lateinit var feedbackBody: String
     private var adLoaded: Boolean = false
     private var clickedAddWl: Boolean = false
     private var menu: Menu? = null
@@ -112,23 +117,17 @@ class TVInfoFragment : Fragment() {
             }
         }
 
-        homeViewModel.getWatchlistSnapshot(get<FirebaseAuth>().currentUser?.uid!!)
-            .observe(
-                viewLifecycleOwner,
-                { state: ViewModelState? ->
-                    if (state is ViewModelState.Loaded<*>) {
-                        homeViewModel.selectedTvSeries.observe(
-                            viewLifecycleOwner,
-                            { tv: TV ->
-                                updateUI(tv)
-                                launchShowingProgress {
-                                    updateCast(tv)
-                                }
-                            }
-                        )
+        homeViewModel.getWatchlistSnapshot(firebaseAuth.currentUser?.uid!!)
+            .observe(viewLifecycleOwner) { state: ViewModelState? ->
+                if (state is ViewModelState.Loaded<*>) {
+                    homeViewModel.selectedTvSeries.observe(viewLifecycleOwner) { tv: TV ->
+                        updateUI(tv)
+                        launchShowingProgress {
+                            updateCast(tv)
+                        }
                     }
                 }
-            )
+            }
 
         setErrorObserver()
 
@@ -136,8 +135,8 @@ class TVInfoFragment : Fragment() {
     }
 
     private fun updateUI(tv: TV) { // Do operations related to database
-        watchListRef = get<FirebaseFirestore>().collectionWatchdone(
-            id = get<FirebaseAuth>().currentUser?.uid.toString(),
+        watchListRef = firestore.collectionWatchdone(
+            id = firebaseAuth.currentUser?.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
         ).document(Collection.WATCHLIST)
         watchlistItemReference = watchListRef.collection(Collection.ITEMS)
@@ -298,11 +297,11 @@ class TVInfoFragment : Fragment() {
     }
 
     private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        get<TVRepository>().getFullTvInfo(id, MovieAppendableResponses.credits).toTV()
+        tvRepository.getFullTvInfo(id, MovieAppendableResponses.credits).toTV()
     }
 
     private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
-        get<TVRepository>().getTVInfo(id).toTV()
+        tvRepository.getTVInfo(id).toTV()
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
@@ -334,7 +333,7 @@ class TVInfoFragment : Fragment() {
     }
 
     private suspend fun updateCast(tv: TV) {
-        val cast = get<TVRepository>().getCredits(tv.id).cast
+        val cast = tvRepository.getCredits(tv.id).cast
         val castAdapter = CastListAdapter()
         castAdapter.submitList(cast)
         binding.castList.apply {
@@ -345,14 +344,13 @@ class TVInfoFragment : Fragment() {
 
     private fun setErrorObserver() {
         homeViewModel.error.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    hideProgress()
-                    snackBarMessage("Error: $it")
-                }
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                hideProgress()
+                snackBarMessage("Error: $it")
             }
-        )
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -370,7 +368,7 @@ class TVInfoFragment : Fragment() {
                 requireContext().email(
                     email = "afterhasroot@gmail.com",
                     subject = "Watchdone Feedback",
-                    text = get(qualifier("feedback_body"))
+                    text =feedbackBody
                 )
             }
             R.id.action_share_to_ig_story -> {

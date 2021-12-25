@@ -30,13 +30,10 @@ import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.databinding.ListItemCastBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import javax.inject.Inject
 
-class CastListAdapter :
-    BaseListAdapter<Person>(CastDiffCallback()),
-    KoinComponent {
-    val settings: Settings by inject()
+class CastListAdapter : BaseListAdapter<Person>(CastDiffCallback()) {
+    @Inject lateinit var settings: Settings
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
     }

@@ -44,12 +44,12 @@
         <item name="md_corner_radius">16dp</item>
         <item name="md_color_button_text">@color/color_primary</item>
 
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.Dialog.Alert</item>
         <item name="toolbarStyle">@style/Widget.MyTheme.Toolbar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
-    <style name="Base.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Base.AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor" tools:targetApi="lollipop">?colorPrimaryVariant</item>
         <!-- <item name="android:navigationBarColor">?android:colorBackground</item>
          <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>-->
@@ -66,5 +66,12 @@
     <style name="MyTheme.Main.Home">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="MyTheme.Main.Translucent.NoActionBar" parent="MyTheme.Main">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
+        <item name="android:windowTranslucentNavigation" tools:targetApi="kitkat">true</item>
     </style>
 </resources>
