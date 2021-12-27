@@ -35,7 +35,6 @@ import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
-import javax.inject.Inject
 
 class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Settings) :
     ListAdapter<Multi, RecyclerView.ViewHolder>(MultiDiffCallback()) {
