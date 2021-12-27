@@ -5,16 +5,50 @@ on:
     branches: [ main ]
     tags:
       - v*
+      - ci*
+    paths-ignore:
+      - '.idea/**'
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: act10ns/slack@v1
+        with:
+          status: starting
+          channel: '#watchdone'
+        if: always()
+
+      - name: Check Out
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PRIV_REPO_PAT }}
+          submodules: 'recursive'
+
+      - name: Get commit hash
+        id: commithash
+        shell: bash
+        run: |
+          sha=$( curl -u "u:${{github.token}}" https://api.github.com/repos/thesandipv/watchdone/git/ref/heads/${{ github.head_ref }} | jq .object.sha | tr -d '"' )
+          if [ $sha == "null" ] || [ $sha == "" ]; then
+            if [ ${{ github.ref_type }} == "branch" ]; then
+              sha=$( curl -u "u:${{github.token}}" https://api.github.com/repos/thesandipv/watchdone/git/ref/heads/${{ github.ref_name }} | jq .object.sha | tr -d '"' )
+            else
+              sha=$( curl -u "u:${{github.token}}" https://api.github.com/repos/thesandipv/watchdone/git/ref/tags/${{ github.ref_name }} | jq .object.sha | tr -d '"' )
+            fi
+          fi
+          echo $sha
+          short_sha=${sha:0:7}
+          echo $short_sha
+          echo ::set-output name=sha::$sha
+          echo ::set-output name=sha_short::$short_sha
+
       - name: set up JDK
         uses: actions/setup-java@v1
         with:
@@ -45,23 +79,31 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        run: ./gradlew :app:assemble :app:bundle :app:lintDebug :app:testDebug --stacktrace
+        uses: gradle/gradle-build-action@v2
         env:
+          CI: true
           GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHUSERNAME: ${{ secrets.GHUSERNAME }}
           SIGN_KEY_PW: ${{ secrets.SIGN_KEY_PW }}
           SIGN_STORE_PW: ${{ secrets.SIGN_STORE_PW }}
           TMDB_API: ${{ secrets.TMDB_API }}
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+          COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
+        with:
+          arguments: :app:assemble :app:bundle :app:lintDebug :app:testDebug --stacktrace
 
       - name: Run Tests in app module
-        run: ./gradlew :app:test
+        uses: gradle/gradle-build-action@v2
+        id: run-tests
+        with:
+          arguments: :app:test
         env:
           TMDB_API: ${{ secrets.TMDB_API }}
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+          COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
 
       - name: Publish to Play Store
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: release/serviceAccount.json
@@ -72,7 +114,7 @@ jobs:
 
       - name: Create release for tags
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
+        if: startsWith(github.ref, 'refs/tags/v')
         with:
           draft: true
           files: |
@@ -97,3 +139,19 @@ jobs:
         with:
           name: app-build-reports
           path: app/build/reports
+
+      - name: Upload to Slack
+        id: upload-to-slack
+        uses: adrey/slack-file-upload-action@1.0.5
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          path: app/build/outputs/apk/release/app-release.apk
+          channel: watchdone
+          filename: Watchdone-${{ steps.commithash.outputs.sha_short }}.apk
+
+      - uses: act10ns/slack@v1
+        if: always()
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#watchdone'
