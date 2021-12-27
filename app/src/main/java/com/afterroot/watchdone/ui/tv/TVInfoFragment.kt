@@ -368,7 +368,7 @@ class TVInfoFragment : Fragment() {
                 requireContext().email(
                     email = "afterhasroot@gmail.com",
                     subject = "Watchdone Feedback",
-                    text =feedbackBody
+                    text = feedbackBody
                 )
             }
             R.id.action_share_to_ig_story -> {

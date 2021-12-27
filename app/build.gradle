@@ -14,137 +14,137 @@
 */
 
 plugins {
-	id 'com.android.application'
-	id 'kotlin-android'
-	id 'kotlin-parcelize'
-	id 'kotlin-kapt'
-	id 'com.google.gms.google-services'
-	id 'com.google.firebase.crashlytics'
-	id 'com.google.android.gms.oss-licenses-plugin'
-	id 'androidx.navigation.safeargs'
-	id 'dagger.hilt.android.plugin'
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.android.gms.oss-licenses-plugin'
+    id 'androidx.navigation.safeargs'
+    id 'dagger.hilt.android.plugin'
 }
 
 kapt {
-	correctErrorTypes = true
-	useBuildCache = true
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
 ext {
-	ci = System.getenv("CI") == "true"
+    ci = System.getenv("CI") == "true"
 }
 
 android {
-	compileSdkVersion SDK.COMPILE
+    compileSdkVersion SDK.COMPILE
 
-	buildFeatures {
-		viewBinding true
-		dataBinding true
-		compose true
-	}
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+        compose true
+    }
 
-	defaultConfig {
-		applicationId "com.afterroot.watchdone"
-		minSdkVersion SDK.MIN
-		targetSdkVersion SDK.TARGET
-		versionCode VERSION_CODE
-		versionName VERSION_NAME
-		vectorDrawables {
-			useSupportLibrary = true
-		}
-		multiDexEnabled true
-		javaCompileOptions {
-			annotationProcessorOptions {
-				arguments += [
-						"room.schemaLocation": "$projectDir/schemas".toString(),
-						"room.incremental"   : "true"
-				]
-			}
-		}
+    defaultConfig {
+        applicationId "com.afterroot.watchdone"
+        minSdkVersion SDK.MIN
+        targetSdkVersion SDK.TARGET
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+        multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental"   : "true"
+                ]
+            }
+        }
 
-		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.afterroot.watchdone.di.HiltTestRunner"
 
-		manifestPlaceholders = [
-				hostName  : "afterroot.web.app",
-				pathPrefix: "/apps/watchdone/launch"
-		]
+        manifestPlaceholders = [
+                hostName  : "afterroot.web.app",
+                pathPrefix: "/apps/watchdone/launch"
+        ]
 
-		resConfigs "en"
+        resConfigs "en"
 
-		def tmdbPropertiesFile = rootProject.file("tmdb.properties")
-		def tmdbProperties = new Properties()
-		if (tmdbPropertiesFile.exists()) {
-			tmdbProperties.load(new FileInputStream(tmdbPropertiesFile))
-		}
-		buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbProperties["tmdbBearerToken"] ?: System.getenv("TMDB_BEARER_TOKEN")
-		buildConfigField "String", "TMDB_API", tmdbProperties["tmdbApi"] ?: System.getenv("TMDB_API")
+        def tmdbPropertiesFile = rootProject.file("tmdb.properties")
+        def tmdbProperties = new Properties()
+        if (tmdbPropertiesFile.exists()) {
+            tmdbProperties.load(new FileInputStream(tmdbPropertiesFile))
+        }
+        buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbProperties["tmdbBearerToken"] ?: System.getenv("TMDB_BEARER_TOKEN")
+        buildConfigField "String", "TMDB_API", tmdbProperties["tmdbApi"] ?: System.getenv("TMDB_API")
 
-		def commit = System.getenv("COMMIT_ID") ?: "git rev-list --max-count=1 HEAD".execute([], project.rootDir).text.substring(0, 7)
-		buildConfigField "String", "COMMIT_ID", "\"$commit\""
-	}
+        def commit = System.getenv("COMMIT_ID") ?: "git rev-list --max-count=1 HEAD".execute([], project.rootDir).text.substring(0, 7)
+        buildConfigField "String", "COMMIT_ID", "\"$commit\""
+    }
 
-	def keystorePropertiesFile = rootProject.file("keystore.properties")
-	def keystoreProperties = new Properties()
-	if (keystorePropertiesFile.exists()) {
-		keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-	}
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
 
-	signingConfigs {
-		release {
-			storeFile rootProject.file("release/keystore.jks")
-			storePassword keystoreProperties['storePassword'] ?: System.getenv("SIGN_STORE_PW")
-			keyAlias "watchdone"
-			keyPassword keystoreProperties['keyPassword'] ?: System.getenv("SIGN_KEY_PW")
-		}
-	}
+    signingConfigs {
+        release {
+            storeFile rootProject.file("release/keystore.jks")
+            storePassword keystoreProperties['storePassword'] ?: System.getenv("SIGN_STORE_PW")
+            keyAlias "watchdone"
+            keyPassword keystoreProperties['keyPassword'] ?: System.getenv("SIGN_KEY_PW")
+        }
+    }
 
-	buildTypes {
-		release {
-			shrinkResources true
-			minifyEnabled true
-			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-			multiDexKeepProguard file('proguard-rules.pro')
+    buildTypes {
+        release {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            multiDexKeepProguard file('proguard-rules.pro')
 
-			signingConfig signingConfigs.release
-		}
-		debug {
-			ext.alwaysUpdateBuildId = false
-			splits.abi.enable = false
-			splits.density.enable = false
-			crunchPngs false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            ext.alwaysUpdateBuildId = false
+            splits.abi.enable = false
+            splits.density.enable = false
+            crunchPngs false
 
-			applicationIdSuffix '.debug'
-			versionNameSuffix = '-beta'
+            applicationIdSuffix '.debug'
+            versionNameSuffix = '-beta'
 
-			signingConfig signingConfigs.release
-		}
-	}
+            signingConfig signingConfigs.release
+        }
+    }
 
-	packagingOptions {
-		jniLibs {
-			excludes += ['META-INF/proguard/*']
-		}
-		resources {
-			excludes += ['META-INF/*.version', 'META-INF/proguard/*', '/*.properties', 'fabric/*.properties', 'META-INF/*.properties']
-		}
-	}
+    packagingOptions {
+        jniLibs {
+            excludes += ['META-INF/proguard/*']
+        }
+        resources {
+            excludes += ['META-INF/*.version', 'META-INF/proguard/*', '/*.properties', 'fabric/*.properties', 'META-INF/*.properties']
+        }
+    }
 
 
-	compileOptions {
-		sourceCompatibility = 1.8
-		targetCompatibility = 1.8
-	}
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 
-	lintOptions {
-		abortOnError false
-	}
+    lintOptions {
+        abortOnError false
+    }
 
-	composeOptions {
-		println("INFO: Compose Version: ${libs.versions.compose.get()}")
-		kotlinCompilerExtensionVersion = libs.versions.compose.get()
-	}
+    composeOptions {
+        println("INFO: Compose Version: ${libs.versions.compose.get()}")
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+    }
 }
 
 /*configurations.all {
@@ -153,83 +153,83 @@ android {
 }*/
 
 dependencies {
-	implementation libs.afterroot.core
+    implementation libs.afterroot.core
 
-	implementation project(':base')
-	implementation project(':data')
-	implementation project(':ui:common')
-	implementation project(':ui:common-compose')
-	implementation project(':ui:media')
-	implementation project(':ui:resources')
-	implementation project(':ui:watchlist')
+    implementation project(':base')
+    implementation project(':data')
+    implementation project(':ui:common')
+    implementation project(':ui:common-compose')
+    implementation project(':ui:media')
+    implementation project(':ui:resources')
+    implementation project(':ui:watchlist')
 
-	implementation libs.kotlin.stdLib
-	implementation libs.kotlin.anko //TODO Remove Anko
+    implementation libs.kotlin.stdLib
+    implementation libs.kotlin.anko //TODO Remove Anko
 
-	implementation libs.androidx.appCompat
-	implementation libs.androidx.billing
-	implementation libs.androidx.cardView
-	implementation libs.androidx.constraintLayout
-	implementation libs.androidx.core
-	implementation libs.androidx.fragment
-	implementation libs.bundles.lifecycle
-	implementation libs.androidx.multiDex
-	implementation libs.androidx.navigation.fragment
-	implementation libs.androidx.navigation.ui
-	implementation libs.androidx.paging
-	implementation libs.androidx.palette
-	implementation libs.androidx.preference
-	implementation libs.androidx.recyclerView
-	implementation libs.androidx.startUp
-	implementation libs.androidx.supportV13
-	implementation libs.androidx.supportV4
-	implementation libs.androidx.vectorDrawable
+    implementation libs.androidx.appCompat
+    implementation libs.androidx.billing
+    implementation libs.androidx.cardView
+    implementation libs.androidx.constraintLayout
+    implementation libs.androidx.core
+    implementation libs.androidx.fragment
+    implementation libs.bundles.lifecycle
+    implementation libs.androidx.multiDex
+    implementation libs.androidx.navigation.fragment
+    implementation libs.androidx.navigation.ui
+    implementation libs.androidx.paging
+    implementation libs.androidx.palette
+    implementation libs.androidx.preference
+    implementation libs.androidx.recyclerView
+    implementation libs.androidx.startUp
+    implementation libs.androidx.supportV13
+    implementation libs.androidx.supportV4
+    implementation libs.androidx.vectorDrawable
 
-	implementation libs.bundles.compose
+    implementation libs.bundles.compose
 
-	implementation libs.materialdialogs.input
-	implementation libs.materialdialogs.core
-	implementation libs.materialdialogs.bottomSheets
-	implementation libs.materialdialogs.color
+    implementation libs.materialdialogs.input
+    implementation libs.materialdialogs.core
+    implementation libs.materialdialogs.bottomSheets
+    implementation libs.materialdialogs.color
 
-	implementation libs.firebase.ui.auth
-	implementation libs.firebase.ui.firestore
-	implementation libs.firebase.ui.storage
+    implementation libs.firebase.ui.auth
+    implementation libs.firebase.ui.firestore
+    implementation libs.firebase.ui.storage
 
-	implementation libs.hilt.hilt
-	implementation libs.hilt.compose
-	kapt libs.hilt.compiler
+    implementation libs.hilt.hilt
+    implementation libs.hilt.compose
+    kapt libs.hilt.compiler
 
 //	implementation libs.koin.android
 //	implementation libs.koin.ext
 //	testImplementation libs.koin.test
 
-	implementation libs.google.ossLic
-	implementation libs.google.material
-	implementation libs.bundles.firebase
+    implementation libs.google.ossLic
+    implementation libs.google.material
+    implementation libs.bundles.firebase
 
-	implementation libs.commonsIo
+    implementation libs.commonsIo
 
-	implementation libs.kotlin.coroutines.android
-	testImplementation libs.kotlin.coroutines.test
+    implementation libs.kotlin.coroutines.android
+    testImplementation libs.kotlin.coroutines.test
 
-	implementation libs.materialProgress
+    implementation libs.materialProgress
 
-	testImplementation libs.test.junit
-	androidTestImplementation libs.androidx.test.junitExt
-	androidTestImplementation libs.androidx.test.espresso
+    testImplementation libs.test.junit
+    androidTestImplementation libs.androidx.test.junitExt
+    androidTestImplementation libs.androidx.test.espresso
 
-	testImplementation libs.androidx.test.core
-	testImplementation 'org.mockito:mockito-core:4.2.0'
-	androidTestImplementation 'org.mockito:mockito-android:4.2.0'
+    testImplementation libs.androidx.test.core
+    testImplementation 'org.mockito:mockito-core:4.2.0'
+    androidTestImplementation 'org.mockito:mockito-android:4.2.0'
 
-	implementation 'androidx.work:work-runtime-ktx:2.7.1'
-	implementation libs.google.auth
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+    implementation libs.google.auth
 
-	androidTestImplementation libs.androidx.test.archCore
+    androidTestImplementation libs.androidx.test.archCore
     androidTestImplementation libs.androidx.test.core
-	androidTestImplementation libs.hilt.testing
-	androidTestImplementation libs.kotlin.coroutines.test
-	androidTestImplementation libs.test.mockk
-	androidTestImplementation libs.test.robolectric
+    androidTestImplementation libs.hilt.testing
+    androidTestImplementation libs.kotlin.coroutines.test
+    androidTestImplementation libs.test.mockk
+    androidTestImplementation libs.test.robolectric
 }
