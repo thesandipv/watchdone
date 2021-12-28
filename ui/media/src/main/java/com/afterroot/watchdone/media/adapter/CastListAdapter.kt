@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.media.adapter
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
@@ -32,8 +33,7 @@ import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
 import javax.inject.Inject
 
-class CastListAdapter : BaseListAdapter<Person>(CastDiffCallback()) {
-    @Inject lateinit var settings: Settings
+class CastListAdapter(var settings: Settings) : BaseListAdapter<Person>(CastDiffCallback()) {
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
     }
@@ -70,7 +70,7 @@ class CastListAdapter : BaseListAdapter<Person>(CastDiffCallback()) {
     inner class CastListViewHolder(val binding: ListItemCastBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.castIv
         private var heightRatio: Float = 3f / 2f
-        private val context: Context = posterView.context
+        private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private val width =
             (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
                 R.dimen.padding_horizontal_list

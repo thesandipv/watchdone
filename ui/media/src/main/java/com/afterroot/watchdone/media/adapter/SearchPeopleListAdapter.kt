@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.media.adapter
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
@@ -69,7 +70,7 @@ class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>) :
 
     inner class PeopleListViewHolder(val binding: ListItemPersonBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.castIv
-        private val context: Context = posterView.context
+        private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private val width =
             (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
                 R.dimen.padding_horizontal_list

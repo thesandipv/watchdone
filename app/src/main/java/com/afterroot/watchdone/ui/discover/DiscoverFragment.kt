@@ -36,6 +36,7 @@ import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.databinding.FragmentDiscoverBinding
 import com.afterroot.watchdone.diff.MovieDiffCallback
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +52,7 @@ class DiscoverFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     @Inject @Named("feedback_body") lateinit var feedbackBody: String
     @Inject lateinit var discoverApi: DiscoverApi
+    @Inject lateinit var settings: Settings
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -65,6 +67,7 @@ class DiscoverFragment : Fragment() {
             binding.progressBarDiscover.visible(true)
             val repo = DiscoverRepository(discoverApi).getMoviesDiscover(Discover())
             val homeScreenAdapter = DelegateListAdapter(
+                settings,
                 MovieDiffCallback(),
                 object :
                     ItemSelectedCallback<Movie> {

@@ -67,3 +67,5 @@ object Constants {
     const val USERNAME_LENGTH = 15
     const val NAME_LENGTH = 30
 }
+
+const val BASE_APP_ID = "com.afterroot.watchdone"
