@@ -124,7 +124,7 @@
 
         <provider
             android:name=".providers.RecentSearchSuggestionsProvider"
-            android:authorities="com.afterroot.watchdone"
+            android:authorities="${applicationId}.provider"
             android:enabled="true"
             android:exported="false" />
 

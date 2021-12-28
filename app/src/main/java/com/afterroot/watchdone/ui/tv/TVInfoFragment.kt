@@ -334,7 +334,7 @@ class TVInfoFragment : Fragment() {
 
     private suspend fun updateCast(tv: TV) {
         val cast = tvRepository.getCredits(tv.id).cast
-        val castAdapter = CastListAdapter()
+        val castAdapter = CastListAdapter(settings)
         castAdapter.submitList(cast)
         binding.castList.apply {
             adapter = castAdapter

@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.media.adapter
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
@@ -69,7 +70,7 @@ class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>) :
 
     inner class MoviesListViewHolder(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.poster
-        private val context: Context = posterView.context
+        private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private var heightRatio: Float = 3f / 2f
         private val width =
             (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(

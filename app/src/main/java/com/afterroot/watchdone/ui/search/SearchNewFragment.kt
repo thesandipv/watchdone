@@ -91,7 +91,7 @@ class SearchNewFragment : Fragment() {
     private fun initSearch() {
         val manager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
         binding.searchView.apply {
-            setSearchableInfo(manager.getSearchableInfo(requireActivity().componentName))
+            // setSearchableInfo(manager.getSearchableInfo(requireActivity().componentName))
             requireContext().showKeyboard(this)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String): Boolean {
