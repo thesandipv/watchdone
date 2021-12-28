@@ -21,9 +21,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.Types
 import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 
 class DelegateListAdapter(
+    var settings: Settings,
     callback: DiffUtil.ItemCallback<Movie>,
     selectedCallback: ItemSelectedCallback<Movie>
 ) : ListAdapter<Movie, RecyclerView.ViewHolder>(callback) {
@@ -31,7 +33,7 @@ class DelegateListAdapter(
 
     init {
         with(delegateAdapters) {
-            put(Types.MOVIE, MovieAdapterType(selectedCallback))
+            put(Types.MOVIE, MovieAdapterType(selectedCallback, settings))
         }
         // stateRestorationPolicy = StateRestorationPolicy.PREVENT
     }

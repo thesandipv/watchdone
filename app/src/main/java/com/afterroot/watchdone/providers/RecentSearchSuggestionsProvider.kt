@@ -15,6 +15,8 @@
 package com.afterroot.watchdone.providers
 
 import android.content.SearchRecentSuggestionsProvider
+import com.afterroot.watchdone.BuildConfig
+import com.afterroot.watchdone.base.BASE_APP_ID
 
 class RecentSearchSuggestionsProvider : SearchRecentSuggestionsProvider() {
     init {
@@ -22,7 +24,7 @@ class RecentSearchSuggestionsProvider : SearchRecentSuggestionsProvider() {
     }
 
     companion object {
-        const val AUTHORITY = "com.afterroot.watchdone"
+        val AUTHORITY: String = if (BuildConfig.BUILD_TYPE != "debug") BASE_APP_ID else "$BASE_APP_ID.debug"
         const val MODE: Int = DATABASE_MODE_QUERIES
     }
 }

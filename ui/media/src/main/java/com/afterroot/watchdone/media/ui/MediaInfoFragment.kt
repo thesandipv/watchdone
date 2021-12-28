@@ -76,6 +76,8 @@ class MediaInfoFragment : Fragment() {
     @Inject lateinit var myDatabase: MyDatabase
     @Inject lateinit var settings: Settings
     @Inject lateinit var tvRepository: TVRepository
+    @Inject lateinit var castListAdapter: CastListAdapter
+    @Inject lateinit var crewListAdapter: CastListAdapter
     private lateinit var binding: FragmentMediaInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
@@ -272,8 +274,8 @@ class MediaInfoFragment : Fragment() {
             tvRepository.getCredits(mediaId)
         }
 
-        val castAdapter = CastListAdapter()
-        val crewAdapter = CastListAdapter()
+        val castAdapter = castListAdapter
+        val crewAdapter = crewListAdapter
         binding.castList.apply {
             adapter = crewAdapter
             adapter = castAdapter

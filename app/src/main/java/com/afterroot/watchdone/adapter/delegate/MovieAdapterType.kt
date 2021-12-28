@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.adapter.delegate
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
@@ -31,8 +32,7 @@ import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
 import javax.inject.Inject
 
-class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>) : AdapterType {
-    @Inject lateinit var settings: Settings
+class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>, var settings: Settings) : AdapterType {
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         MovieVH(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
 
@@ -44,8 +44,8 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>) : AdapterType
     inner class MovieVH(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.poster
         private var heightRatio: Float = 3f / 2f
-        val context: Context = posterView.context
-        val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
+        val context: Context = (binding.root.context as ContextWrapper).baseContext
+        private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
         fun bind(item: Movie) {
             binding.movieDb = item
             posterView.updateLayoutParams {

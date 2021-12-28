@@ -127,7 +127,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Sett
     inner class TVListViewHolder(val binding: ListItemTvBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.poster
         private var heightRatio: Float = 3f / 2f
-        private val context: Context = posterView.context
+        private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
         fun bind(tv: Multi) {
             binding.apply {
