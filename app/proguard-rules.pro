@@ -23,3 +23,22 @@
 -keepclassmembers class com.afterroot.watchdone.data.model.** {
   *;
 }
+
+-keep class com.afterroot.data.model.** {
+  *;
+}
+
+# For enumeration classes
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+# We only need to keep ComposeView + FragmentContainerView
+-keep public class androidx.compose.ui.platform.ComposeView {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
