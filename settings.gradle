@@ -12,6 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+plugins {
+    id "com.gradle.enterprise" version "3.8"
+    id 'de.fayard.refreshVersions' version '0.30.1'
+}
+
+gradleEnterprise {
+    buildScan {
+        // Accept the license agreement for com.gradle.build-scan plugin
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        publishOnFailure()
+    }
+}
+
 enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = 'watchdone'
 include ':app'
@@ -22,6 +36,7 @@ include ':domain'
 include ':tmdbapi'
 include ':ui:common'
 include ':ui:common-compose'
+include ':ui:discover'
 include ':ui:media'
 include ':ui:profile'
 include ':ui:resources'

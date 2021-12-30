@@ -31,7 +31,6 @@ import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.databinding.ListItemCastBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
-import javax.inject.Inject
 
 class CastListAdapter(var settings: Settings) : BaseListAdapter<Person>(CastDiffCallback()) {
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
