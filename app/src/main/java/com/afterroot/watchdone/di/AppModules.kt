@@ -69,5 +69,4 @@ object AppModules {
 
     @Provides
     fun provideCastListAdapter(settings: Settings): CastListAdapter = CastListAdapter(settings)
-
 }

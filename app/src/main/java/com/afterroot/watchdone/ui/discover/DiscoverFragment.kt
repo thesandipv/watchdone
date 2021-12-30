@@ -25,7 +25,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Discover
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi2.api.DiscoverApi

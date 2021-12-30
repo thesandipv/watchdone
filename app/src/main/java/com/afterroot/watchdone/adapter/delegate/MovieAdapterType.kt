@@ -30,7 +30,6 @@ import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
-import javax.inject.Inject
 
 class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>, var settings: Settings) : AdapterType {
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =

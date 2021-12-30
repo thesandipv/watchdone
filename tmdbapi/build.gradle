@@ -14,9 +14,9 @@
 */
 
 plugins {
-	id 'com.android.library'
-	id 'kotlin-android'
-	id 'kotlin-parcelize'
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
 }
 
 apply from: "$rootDir/gradle/common-config.gradle"
@@ -24,22 +24,22 @@ apply from: "$rootDir/gradle/common-config.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
 dependencies {
-	api libs.okhttp.okhttp
-	api libs.okhttp.logging
-	api libs.retrofit.retrofit
-	api libs.retrofit.jackson
+    api libs.okhttp.okhttp
+    api libs.okhttp.logging
+    api libs.retrofit.retrofit
+    api libs.retrofit.jackson
 
-	api libs.commonsCodec
-	implementation libs.commonsLang
+    api libs.commonsCodec
+    implementation libs.commonsLang
 
-	api "com.fasterxml.jackson.core:jackson-annotations:${libs.versions.jackson.get()}"
-	api "com.fasterxml.jackson.core:jackson-databind:${libs.versions.jackson.get()}"
+    api "com.fasterxml.jackson.core:jackson-annotations:${libs.versions.jackson.get()}"
+    api "com.fasterxml.jackson.core:jackson-databind:${libs.versions.jackson.get()}"
 
-	implementation 'com.google.guava:guava:30.1.1-jre'
+    implementation 'com.google.guava:guava:30.1.1-jre'
 
-	implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.runtime
 
-	testImplementation libs.test.junit
-	androidTestImplementation libs.androidx.test.espresso
-	androidTestImplementation libs.androidx.test.junitExt
+    testImplementation libs.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+    androidTestImplementation libs.androidx.test.junitExt
 }
