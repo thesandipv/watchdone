@@ -14,30 +14,38 @@
 */
 
 plugins {
-	id 'com.android.library'
-	id 'kotlin-android'
-	id 'kotlin-kapt'
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 apply from: "$rootDir/gradle/common-config.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
 android {
-	buildFeatures {
-		dataBinding true
-	}
+    buildFeatures {
+        dataBinding true
+    }
 }
 
 dependencies {
-	implementation project(':base')
-	implementation project(':data')
-	implementation project(':ui:resources')
+    implementation project(':base')
+    implementation project(':data')
+    implementation project(':ui:resources')
 
-	implementation libs.androidx.core
-	implementation libs.androidx.constraintLayout
-	implementation libs.androidx.transition
+    implementation libs.androidx.core
+    implementation libs.androidx.transition
+    implementation libs.bundles.lifecycle
 
-	implementation libs.afterroot.core
+    api libs.androidx.recyclerView
+    api libs.androidx.constraintLayout
 
-	implementation libs.materialdialogs.core
+    implementation libs.afterroot.core
+
+    implementation libs.materialdialogs.core
+
+    api libs.materialProgress
+
+    implementation libs.hilt.hilt
+    kapt libs.hilt.compiler
 }
