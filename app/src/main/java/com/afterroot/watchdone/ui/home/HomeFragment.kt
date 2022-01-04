@@ -30,13 +30,13 @@ import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.media.adapter.MultiAdapter
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.helpers.migrateFirestore
+import com.afterroot.watchdone.media.adapter.MultiAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.EventObserver
