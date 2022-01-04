@@ -61,7 +61,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter() //TODO Remove after removing anko
 
         maven {
             name = "github-afterroot-core"

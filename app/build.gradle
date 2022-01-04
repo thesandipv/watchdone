@@ -164,7 +164,6 @@ dependencies {
     implementation project(':ui:watchlist')
 
     implementation libs.kotlin.stdLib
-    implementation libs.kotlin.anko //TODO Remove Anko
 
     implementation libs.androidx.appCompat
     implementation libs.androidx.billing
@@ -199,10 +198,6 @@ dependencies {
     implementation libs.hilt.hilt
     implementation libs.hilt.compose
     kapt libs.hilt.compiler
-
-//	implementation libs.koin.android
-//	implementation libs.koin.ext
-//	testImplementation libs.koin.test
 
     implementation libs.google.ossLic
     implementation libs.google.material
