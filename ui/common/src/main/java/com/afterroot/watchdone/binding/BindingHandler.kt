@@ -25,7 +25,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 
 private val crossFadeFactory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
-internal val transitionOptions = DrawableTransitionOptions.with(crossFadeFactory)
+val transitionOptions = DrawableTransitionOptions.with(crossFadeFactory)
 
 @BindingAdapter("avatar")
 fun ImageView.setAvatar(email: String?) {

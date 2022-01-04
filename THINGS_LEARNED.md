@@ -3,13 +3,13 @@
 - [Searchable](app/src/main/res/xml/searchable.xml) Configuration
 - AppInitializer library
 - CircleCrop() in Glide
-- Custom Layout Views (First is [SectionalListView](app/src/main/java/com/afterroot/watchdone/view/SectionalListView.kt) )
+- Custom Layout Views (First is [SectionalListView](ui/common/src/main/java/com/afterroot/watchdone/ui/view/SectionalListView.kt) )
 - Data Binding
 - Deep-linking
 - Diff Configuration for CI Environment
 - First time maintained [TODO](TODO.md) with proper format
 - First time used '.properties' files for credentials
-- First time used [attrs.xml](app/src/main/res/values/attrs.xml)
+- First time used [attrs.xml](ui/resources/src/main/res/values/attrs.xml)
 - First time used BottomAppBar in Production App
 - First time used Configuration wise Dimens, Integers and Strings (like -land, -debug etc.)
 - First time used Kotlin top level functions
@@ -22,7 +22,7 @@
 - ListAdapter
 - Major use of DI using Koin
 - Major use of Kotlin Coroutines
-- Multiple Adapter types (First working implementation is [MultiAdapter](app/src/main/java/com/afterroot/watchdone/adapter/MultiAdapter.kt))
+- Multiple Adapter types (First working implementation is [MultiAdapter](ui/media/src/main/java/com/afterroot/watchdone/media/adapter/MultiAdapter.kt))
 - Network Monitor on Android 10
 - OkHttp and Retrofit
 - POST and GET http request using Retrofit
