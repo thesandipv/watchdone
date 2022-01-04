@@ -159,6 +159,7 @@ dependencies {
     implementation project(':data')
     implementation project(':ui:common')
     implementation project(':ui:common-compose')
+    implementation project(':ui:discover')
     implementation project(':ui:media')
     implementation project(':ui:resources')
     implementation project(':ui:watchlist')
