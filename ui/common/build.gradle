@@ -40,8 +40,6 @@ dependencies {
     api libs.androidx.recyclerView
     api libs.androidx.constraintLayout
 
-    implementation libs.afterroot.core
-
     implementation libs.materialdialogs.core
 
     api libs.materialProgress

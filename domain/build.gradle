@@ -17,6 +17,4 @@ dependencies {
     implementation libs.hilt.hilt
     implementation libs.hilt.compose
     kapt libs.hilt.compiler
-
-    implementation libs.afterroot.core
 }

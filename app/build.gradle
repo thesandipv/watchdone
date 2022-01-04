@@ -31,6 +31,7 @@ kapt {
 }
 
 apply from: "$rootDir/gradle/oss-licence.gradle"
+apply from: "$rootDir/gradle/apply-core.gradle"
 
 ext {
     ci = System.getenv("CI") == "true"
@@ -153,7 +154,6 @@ android {
 }*/
 
 dependencies {
-    implementation libs.afterroot.core
 
     implementation project(':base')
     implementation project(':data')

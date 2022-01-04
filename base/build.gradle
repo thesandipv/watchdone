@@ -24,8 +24,6 @@ apply from: "$rootDir/gradle/common-config.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
 dependencies {
-    implementation libs.afterroot.core
-
     api libs.kotlin.coroutines.core
 
     implementation libs.androidx.recyclerView
