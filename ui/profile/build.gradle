@@ -24,7 +24,5 @@ dependencies {
     implementation libs.hilt.compose
     kapt libs.hilt.compiler
 
-    implementation libs.afterroot.core
-
     implementation libs.firebase.ui.auth
 }

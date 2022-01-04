@@ -16,3 +16,5 @@ dependencies {
     implementation libs.kotlin.stdLib
     implementation libs.androidx.core
 }
+
+apply from: "$rootDir/gradle/apply-core.gradle"

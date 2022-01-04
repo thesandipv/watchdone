@@ -36,8 +36,6 @@ dependencies {
     implementation project(':ui:common')
     implementation project(':ui:resources')
 
-    implementation libs.afterroot.core
-
     implementation libs.androidx.appCompat
     implementation libs.androidx.constraintLayout
     implementation libs.androidx.fragment
