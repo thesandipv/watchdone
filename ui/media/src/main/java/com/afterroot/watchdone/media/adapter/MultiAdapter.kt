@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.adapter
+package com.afterroot.watchdone.media.adapter
 
 import android.content.Context
 import android.content.ContextWrapper
@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.binding.transitionOptions
 import com.afterroot.watchdone.data.model.Movie
@@ -34,6 +33,7 @@ import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import com.afterroot.watchdone.ui.common.R
 import com.afterroot.watchdone.utils.getScreenWidth
 
 class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Settings) :
