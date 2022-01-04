@@ -21,10 +21,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
+import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Discover
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi2.api.DiscoverApi
@@ -73,8 +76,11 @@ class DiscoverFragment : Fragment() {
                         super.onClick(position, view, item)
                         // homeViewModel.selectMovie(item)
                         // findNavController().navigate(R.id.discoverToMovieInfo)
-                        val directions = DiscoverFragmentDirections.discoverToMediaInfo(item.id, Multi.MediaType.MOVIE.name)
-                        findNavController().navigate(directions)
+                        val request = NavDeepLinkRequest.Builder
+                            .fromUri("https://watchdone.web.app/media/${Multi.MediaType.MOVIE.name}/${item.id}".toUri())
+                            .build()
+                        // val directions = DiscoverFragmentDirections.discoverToMediaInfo(item.id, Multi.MediaType.MOVIE.name)
+                        findNavController().navigate(request)
                     }
 
                     override fun onLongClick(position: Int, item: Movie) {
