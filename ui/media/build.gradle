@@ -53,7 +53,5 @@ dependencies {
 
     implementation libs.materialProgress
 
-//	implementation libs.koin.android
-
     implementation libs.materialdialogs.core
 }

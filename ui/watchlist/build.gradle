@@ -28,9 +28,6 @@ dependencies {
     implementation project(":base")
     implementation project(":data")
 
-//	implementation libs.koin.android
-//	implementation libs.koin.ext
-
     implementation libs.hilt.hilt
     implementation libs.hilt.compose
     kapt libs.hilt.compiler
