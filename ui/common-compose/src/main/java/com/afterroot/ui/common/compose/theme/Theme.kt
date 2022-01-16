@@ -18,34 +18,35 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-
-private val DarkColorPalette = darkColors(
-    primary = purple200,
-    primaryVariant = purple700,
-    secondary = teal200
-)
-
-private val LightColorPalette = lightColors(
-    primary = purple500,
-    primaryVariant = purple700,
-    secondary = teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
-)
+import androidx.compose.ui.res.colorResource
+import com.afterroot.watchdone.compose.R
 
 @Composable
 fun Theme(darkTheme: Boolean = true, content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        darkColors(
+            primary = colorResource(id = R.color.color_primary),
+            primaryVariant = colorResource(id = R.color.color_primary_variant),
+            secondary = colorResource(id = R.color.color_secondary),
+            background = colorResource(id = R.color.color_background),
+            surface = colorResource(id = R.color.color_surface),
+            onPrimary = colorResource(id = R.color.color_on_primary),
+            onSecondary = colorResource(id = R.color.color_on_secondary),
+            onBackground = colorResource(id = R.color.color_on_background),
+            onSurface = colorResource(id = R.color.color_on_surface),
+        )
     } else {
-        LightColorPalette
+        lightColors(
+            primary = colorResource(id = R.color.color_primary),
+            primaryVariant = colorResource(id = R.color.color_primary_variant),
+            secondary = colorResource(id = R.color.color_secondary),
+            background = colorResource(id = R.color.color_background),
+            surface = colorResource(id = R.color.color_surface),
+            onPrimary = colorResource(id = R.color.color_on_primary),
+            onSecondary = colorResource(id = R.color.color_on_secondary),
+            onBackground = colorResource(id = R.color.color_on_background),
+            onSurface = colorResource(id = R.color.color_on_surface),
+        )
     }
 
     MaterialTheme(
