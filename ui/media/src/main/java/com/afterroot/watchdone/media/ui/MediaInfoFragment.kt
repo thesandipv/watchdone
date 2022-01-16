@@ -99,16 +99,14 @@ class MediaInfoFragment : Fragment() {
             launchShowingProgress {
                 when (mediaType) {
                     MOVIE -> {
-                        viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId), tv = null)
+                        viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId))
                         updateCast(argMediaId, mediaType)
                     }
                     PERSON -> {
                         // TODO
                     }
                     TV_SERIES -> {
-                        viewModel.selectMedia(
-                            movie = null, tv = tvRepository.getTVInfo(argMediaId).toTV()
-                        )
+                        viewModel.selectMedia(tv = tvRepository.getTVInfo(argMediaId).toTV())
                         updateCast(argMediaId, mediaType)
                     }
                     null -> {
@@ -277,12 +275,12 @@ class MediaInfoFragment : Fragment() {
         val castAdapter = castListAdapter
         val crewAdapter = crewListAdapter
         binding.castList.apply {
-            adapter = crewAdapter
             adapter = castAdapter
             visible(true, AutoTransition())
         }
 
         binding.crewList.apply {
+            adapter = crewAdapter
             visible(true, AutoTransition())
         }
         castAdapter.submitList(credits.cast)
