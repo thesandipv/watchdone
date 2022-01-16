@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,12 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.tmdbapi2.repository
+package com.afterroot.watchdone.data.mapper
 
-import com.afterroot.tmdbapi.model.Discover
-import com.afterroot.tmdbapi2.api.DiscoverApi
+import com.afterroot.tmdbapi.TvResultsPage
+import com.afterroot.tmdbapi.model.Multi
+import com.afterroot.tmdbapi.model.core.MovieResultsPage
 
-class DiscoverRepository(val api: DiscoverApi) {
-    suspend fun getMoviesDiscover(discover: Discover) = api.getMoviesDiscover(discover.params)
-    suspend fun getTVDiscover(discover: Discover) = api.getTVDiscover(discover.params)
+fun MovieResultsPage.toMulti(): List<Multi> {
+    return this.results.mapNotNull {
+        it?.toMovie()
+    }
+}
+
+fun TvResultsPage.toMulti(): List<Multi> {
+    return this.results.mapNotNull {
+        it?.toTV()
+    }
 }
