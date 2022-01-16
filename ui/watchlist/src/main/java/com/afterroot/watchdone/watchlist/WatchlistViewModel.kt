@@ -43,7 +43,7 @@ class WatchlistViewModel : ViewModel() {
         val subs = ref.addSnapshotListener { value, error ->
             if (value == null) return@addSnapshotListener
             try {
-                offer(ViewModelState.Loaded(value))
+                trySend(ViewModelState.Loaded(value)).isSuccess
             } catch (e: Throwable) {
             }
         }
