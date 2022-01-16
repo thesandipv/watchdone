@@ -18,6 +18,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="java.util.List" />
 
         <import type="com.afterroot.tmdbapi2.model.Genre" />
@@ -29,9 +30,11 @@
         <variable
             name="posterUrl"
             type="String" />
+
         <variable
             name="title"
             type="String" />
+
         <variable
             name="description"
             type="String" />
@@ -214,7 +217,7 @@
                     android:paddingTop="@dimen/padding_vertical_half"
                     android:paddingRight="@dimen/padding_horizontal"
                     android:paddingBottom="@dimen/padding_vertical_half"
-                    android:text="@string/title_cast"
+                    android:text="@string/title_crew"
                     android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
