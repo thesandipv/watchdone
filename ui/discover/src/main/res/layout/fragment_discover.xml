@@ -24,17 +24,26 @@
         android:layout_height="match_parent"
         tools:context=".ui.discover.DiscoverFragment">
 
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_view_chip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layoutAnimation="@anim/layout_anim_fall_down"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/compose_view_chip"
             app:spanCount="@integer/grid_item_span_count"
             tools:itemCount="10"
             tools:listitem="@layout/list_item_movie" />
