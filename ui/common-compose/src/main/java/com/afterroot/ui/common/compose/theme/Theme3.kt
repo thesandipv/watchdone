@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,12 @@
  */
 package com.afterroot.ui.common.compose.theme
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
 
-val purple200 = Color(0xFFBB86FC)
-val purple500 = Color(0xFF6200EE)
-val purple700 = Color(0xFF3700B3)
-val teal200 = Color(0xFF03DAC5)
+@Composable
+fun Theme3(content: @Composable () -> Unit) {
+    val darkColorScheme = darkColorScheme()
+    MaterialTheme(colorScheme = darkColorScheme, typography = MaterialTheme.typography, content = content)
+}
