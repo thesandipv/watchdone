@@ -151,7 +151,7 @@ jobs:
         with:
           baseAppPath: app/build/outputs/apk/release/app-release.apk
           targetAppPath: app/build/outputs/apk/release/app-release.apk
-          summaryOutputPath: apkSizeComparison.md
+          summaryOutputPath: app/build/reports/apkSizeComparison.md
 
       - uses: act10ns/slack@v1
         if: always()
