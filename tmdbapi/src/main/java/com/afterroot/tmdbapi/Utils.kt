@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.lang3.StringUtils
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.ArrayList
 
 object Utils {
     /**
@@ -100,7 +99,7 @@ object Utils {
         if (StringUtils.isBlank(imagePath)) {
             return null
         }
-        val configuration = tmdb.configuration
+        @Suppress("DEPRECATION") val configuration = tmdb.configuration
         if (!configuration.isValidSize(requiredSize)) {
             throw MovieDbException("Invalid size: $requiredSize")
         }

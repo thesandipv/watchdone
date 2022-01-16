@@ -29,7 +29,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
 
 fun getGravatarUrl(email: String) =
-    "https://www.gravatar.com/avatar/${DigestUtils.md5Hex(email.toLowerCase(Locale.getDefault()))}"
+    "https://www.gravatar.com/avatar/${DigestUtils.md5Hex(email.lowercase(Locale.getDefault()))}"
 
 fun Context.showKeyboard(view: View) {
     if (view.requestFocus()) {
