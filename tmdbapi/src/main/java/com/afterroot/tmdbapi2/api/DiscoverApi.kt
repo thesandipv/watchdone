@@ -14,6 +14,7 @@
  */
 package com.afterroot.tmdbapi2.api
 
+import com.afterroot.tmdbapi.TvResultsPage
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import retrofit2.http.GET
 import retrofit2.http.QueryMap
@@ -22,4 +23,7 @@ interface DiscoverApi {
 
     @GET("3/discover/movie")
     suspend fun getMoviesDiscover(@QueryMap params: Map<String, String>): MovieResultsPage
+
+    @GET("3/discover/tv")
+    suspend fun getTVDiscover(@QueryMap params: Map<String, String>): TvResultsPage
 }

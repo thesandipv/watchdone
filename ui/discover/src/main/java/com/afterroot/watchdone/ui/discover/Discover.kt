@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,12 +12,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.tmdbapi2.repository
-
-import com.afterroot.tmdbapi.model.Discover
-import com.afterroot.tmdbapi2.api.DiscoverApi
-
-class DiscoverRepository(val api: DiscoverApi) {
-    suspend fun getMoviesDiscover(discover: Discover) = api.getMoviesDiscover(discover.params)
-    suspend fun getTVDiscover(discover: Discover) = api.getTVDiscover(discover.params)
-}
+package com.afterroot.watchdone.ui.discover
