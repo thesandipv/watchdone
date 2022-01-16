@@ -146,8 +146,8 @@ jobs:
           channel: watchdone
           filename: Watchdone-${{ steps.commithash.outputs.sha_short }}.apk
 
-      - name: Run APK size comparision
-        uses: microsoft/android-app-size-diff@v1
+      - name: Android App size difference
+        uses: microsoft/android-app-size-diff@v1.0.5
         with:
           baseAppPath: app/build/outputs/apk/release/app-release.apk
           targetAppPath: app/build/outputs/apk/release/app-release.apk
