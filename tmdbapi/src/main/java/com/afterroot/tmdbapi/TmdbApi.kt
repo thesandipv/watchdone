@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package com.afterroot.tmdbapi
 
 import android.os.AsyncTask
@@ -45,8 +47,7 @@ class TmdbApi @JvmOverloads constructor(
      */
     private var autoRetry: Boolean = true
 ) {
-    @Deprecated("Use new api from V2")
-    lateinit var configuration: ImagesConfig
+    @Deprecated("Use new api from V2") var configuration: ImagesConfig
 
     /**
      * Uses the instance's api key to request information from api.tmdb.org.
