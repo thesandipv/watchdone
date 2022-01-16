@@ -75,6 +75,7 @@
     <string name="msg_added_to_wl">Added to Watchlist</string>
     <string name="msg_limit_error">Can\'t add more movies as limit of 5</string>
     <string name="title_cast">Cast</string>
+    <string name="title_crew">Crew</string>
     <string name="dialog_msg_rewarded_ad">Movie will be added to watchlist after watching ad. This step is taken subject to support development and server costs. Thanks for your co-operation.</string>
     <string name="text_ok">OK</string>
     <string name="rate_on_play_store">Rate on Play Store</string>
