@@ -121,6 +121,14 @@ jobs:
         if: always()
         run: ./release/clean.sh
 
+      - name: Android App size difference
+        uses: microsoft/android-app-size-diff@v1.0.5
+        with:
+          baseAppPath: app/build/outputs/apk/release/app-release.apk
+          targetAppPath: app/build/outputs/apk/release/app-release.apk
+          summaryOutputPath: app/build/reports/apkSizeComparison.md
+          telemetryEnabled: false
+
       - name: Upload build outputs
         id: upload-outputs
         if: always()
