@@ -36,7 +36,7 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-annotations:${libs.versions.jackson.get()}"
     api "com.fasterxml.jackson.core:jackson-databind:${libs.versions.jackson.get()}"
 
-    implementation 'com.google.guava:guava:30.1.1-jre'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation libs.androidx.room.runtime
 
