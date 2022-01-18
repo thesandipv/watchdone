@@ -79,6 +79,7 @@
             app:fabAnimationMode="slide"
             app:fabCradleRoundedCornerRadius="@dimen/fab_cradle_radius"
             app:hideOnScroll="true"
+            app:paddingBottomSystemWindowInsets="true"
             app:layout_scrollFlags="scroll|enterAlways" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

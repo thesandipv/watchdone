@@ -32,26 +32,28 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.media.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.media.adapter.SearchTVListAdapter
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.view.SectionalListView
 import kotlinx.coroutines.launch
 
 @Composable
 fun SimilarMovies(
-    movie: Movie,
+    movieId: Int,
+    settings: Settings,
     lifecycleCoroutineScope: LifecycleCoroutineScope,
     moviesRepository: MoviesRepository,
     movieItemSelectedCallback: ItemSelectedCallback<Movie>
 ) {
     val state = remember { mutableStateOf(emptyList<Movie>()) }
-    val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback)
+    val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback, settings)
 
     AndroidView(
         factory = {
             SectionalListView(it).withTitle("Similar Movies").withLoading().apply {
                 setAdapter(moviesListAdapter)
                 lifecycleCoroutineScope.launch {
-                    state.value = moviesRepository.getSimilar(movie.id).toMovies()
+                    state.value = moviesRepository.getSimilar(movieId).toMovies()
                 }
             }
         },
@@ -68,20 +70,21 @@ fun SimilarMovies(
 
 @Composable
 fun SimilarTV(
-    tv: TV,
+    tvId: Int,
+    settings: Settings,
     lifecycleCoroutineScope: LifecycleCoroutineScope,
     tvRepository: TVRepository,
     tvItemSelectedCallback: ItemSelectedCallback<TV>
 ) {
     val state = remember { mutableStateOf(emptyList<TV>()) }
-    val tvListAdapter = SearchTVListAdapter(tvItemSelectedCallback)
+    val tvListAdapter = SearchTVListAdapter(tvItemSelectedCallback, settings)
 
     AndroidView(
         factory = {
             SectionalListView(it).withTitle("Similar Shows").withLoading().apply {
                 setAdapter(tvListAdapter)
                 lifecycleCoroutineScope.launch {
-                    state.value = tvRepository.getSimilar(tv.id).toTV()
+                    state.value = tvRepository.getSimilar(tvId).toTV()
                 }
             }
         },

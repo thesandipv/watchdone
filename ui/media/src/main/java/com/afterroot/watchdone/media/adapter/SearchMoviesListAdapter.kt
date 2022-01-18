@@ -30,11 +30,9 @@ import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
-import javax.inject.Inject
 
-class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>) :
+class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>, var settings: Settings) :
     BaseListAdapter<Movie>(MovieDiffCallback()) {
-    @Inject lateinit var settings: Settings
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
     }
