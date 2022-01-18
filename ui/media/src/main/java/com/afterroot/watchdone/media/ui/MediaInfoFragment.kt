@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Column
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -234,18 +235,28 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
 
-/*
                     composeView.setContent {
                         Column {
                             if (movie != null) {
-                                SimilarMovies(movie, lifecycleScope, moviesRepository, similarMovieItemSelectedCallback)
+                                SimilarMovies(
+                                    movie.id,
+                                    this@MediaInfoFragment.settings,
+                                    lifecycleScope,
+                                    moviesRepository,
+                                    similarMovieItemSelectedCallback
+                                )
                             }
                             if (tv != null) {
-                                SimilarTV(tv, lifecycleScope, tvRepository, similarTVItemSelectedCallback)
+                                SimilarTV(
+                                    tv.id,
+                                    this@MediaInfoFragment.settings,
+                                    lifecycleScope,
+                                    tvRepository,
+                                    similarTVItemSelectedCallback
+                                )
                             }
                         }
                     }
-*/
                 }
             }
             // menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
