@@ -45,6 +45,7 @@ import com.afterroot.watchdone.media.adapter.SearchMoviesListAdapter
 import com.afterroot.watchdone.media.adapter.SearchPeopleListAdapter
 import com.afterroot.watchdone.media.adapter.SearchTVListAdapter
 import com.afterroot.watchdone.providers.RecentSearchSuggestionsProvider
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.view.SectionalListView
 import com.afterroot.watchdone.utils.hideKeyboard
@@ -54,6 +55,7 @@ import com.afterroot.watchdone.viewmodel.ViewModelState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchNewFragment : Fragment() {
@@ -65,6 +67,7 @@ class SearchNewFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val viewModel: SearchNewViewModel by activityViewModels()
     private var searchTask: Job? = null
+    @Inject lateinit var settings: Settings
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
@@ -140,9 +143,9 @@ class SearchNewFragment : Fragment() {
         peopleSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_people)).withLoading()
 
         // Adapters
-        val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback)
-        val tvListAdapter = SearchTVListAdapter(tvItemSelectedCallback)
-        val peopleListAdapter = SearchPeopleListAdapter(peopleItemSelectedCallback)
+        val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback, settings)
+        val tvListAdapter = SearchTVListAdapter(tvItemSelectedCallback, settings)
+        val peopleListAdapter = SearchPeopleListAdapter(peopleItemSelectedCallback, settings)
 
         // Add Children
         binding.contentSearch.apply {
