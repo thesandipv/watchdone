@@ -20,9 +20,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.findNavController
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.core.extensions.getDrawableExt
@@ -144,16 +147,20 @@ class MediaInfoFragment : Fragment() {
     private val similarMovieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
         override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
-            // homeViewModel.selectMovie(item)
-            // view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
+            val request = NavDeepLinkRequest.Builder
+                .fromUri("https://watchdone.web.app/media/${MOVIE.name}/${item.id}".toUri())
+                .build()
+            view?.findNavController()?.navigate(request)
         }
     }
 
     private val similarTVItemSelectedCallback = object : ItemSelectedCallback<TV> {
         override fun onClick(position: Int, view: View?, item: TV) {
             super.onClick(position, view, item)
-            // homeViewModel.selectMovie(item)
-            // view?.findNavController()?.navigate(R.id.movieInfoToMovieInfo)
+            val request = NavDeepLinkRequest.Builder
+                .fromUri("https://watchdone.web.app/media/${TV_SERIES.name}/${item.id}".toUri())
+                .build()
+            view?.findNavController()?.navigate(request)
         }
     }
 
@@ -165,6 +172,7 @@ class MediaInfoFragment : Fragment() {
         val description = movie?.overview ?: tv?.overview
         val genres = movie?.genres ?: tv?.genres
         val genresIds = movie?.genreIds
+        val rating = movie?.voteAverage ?: tv?.voteAverage
         watchListRef = firestore.collectionWatchdone(
             id = firebaseUtils.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
@@ -189,6 +197,7 @@ class MediaInfoFragment : Fragment() {
                         }
                         selectedMediaDocId = document.id
                     }
+
                     launchShowingProgress { // Update Genres
                         updateGenres(genres, genresIds)
                         hideProgress()
@@ -257,6 +266,8 @@ class MediaInfoFragment : Fragment() {
                             }
                         }
                     }
+
+                    ratingText.text = getString(R.string.media_info_rating_text, rating.toString())
                 }
             }
             // menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
