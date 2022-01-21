@@ -15,13 +15,10 @@
 package com.afterroot.watchdone.media.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.afterroot.tmdbapi2.repository.MoviesRepository
@@ -58,9 +55,9 @@ fun SimilarMovies(
             }
         },
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 8.dp)
-            .clipToBounds(),
+            .fillMaxSize(),
+        // .padding(horizontal = 8.dp)
+        // .clipToBounds(),
         update = {
             it.isLoaded = true
             moviesListAdapter.submitList(state.value)
@@ -89,9 +86,9 @@ fun SimilarTV(
             }
         },
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 8.dp)
-            .clipToBounds(),
+            .fillMaxSize(),
+        // .padding(horizontal = 8.dp)
+        // .clipToBounds(),
         update = {
             it.isLoaded = true
             tvListAdapter.submitList(state.value)
