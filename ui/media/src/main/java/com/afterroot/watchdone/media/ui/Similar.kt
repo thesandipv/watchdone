@@ -60,6 +60,7 @@ fun SimilarMovies(
         // .clipToBounds(),
         update = {
             it.isLoaded = true
+            (it.list.adapter as SearchMoviesListAdapter).submitList(state.value)
             moviesListAdapter.submitList(state.value)
         }
     )
@@ -91,7 +92,7 @@ fun SimilarTV(
         // .clipToBounds(),
         update = {
             it.isLoaded = true
-            tvListAdapter.submitList(state.value)
+            (it.list.adapter as SearchTVListAdapter).submitList(state.value)
         }
     )
 }
