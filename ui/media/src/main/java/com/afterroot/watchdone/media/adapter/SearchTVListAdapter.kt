@@ -30,7 +30,6 @@ import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
-import javax.inject.Inject
 
 class SearchTVListAdapter(val callback: ItemSelectedCallback<TV>, var settings: Settings) :
     BaseListAdapter<TV>(TVDiffCallback()) {
