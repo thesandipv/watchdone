@@ -29,7 +29,7 @@ rootProject.name = 'watchdone'
 include ':app'
 include ':base'
 include ':data'
-include ':data_structures:lib'
+include ':ards'
 include ':domain'
 include ':tmdbapi'
 include ':ui:common'
@@ -44,3 +44,4 @@ include ':ui:watchlist'
 //AfterROOT Core
 include ':core'
 project(':core').projectDir = file('core/core')
+project(':ards').projectDir = file('ards/lib')
