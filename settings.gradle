@@ -25,7 +25,6 @@ gradleEnterprise {
     }
 }
 
-enableFeaturePreview("VERSION_CATALOGS")
 rootProject.name = 'watchdone'
 include ':app'
 include ':base'
