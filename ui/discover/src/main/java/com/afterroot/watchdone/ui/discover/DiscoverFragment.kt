@@ -137,7 +137,7 @@ class DiscoverFragment : Fragment() {
         }
 
         binding.composeViewChip.setContent {
-            Theme {
+            Theme(requireContext()) {
                 TextChipGroup(
                     modifier = Modifier.padding(vertical = 8.dp),
                     horizontalSpacing = 12.dp,
@@ -157,6 +157,7 @@ class DiscoverFragment : Fragment() {
         }
     }
 
+    //TODO - Replace with MenuHost https://developer.android.com/jetpack/androidx/releases/activity#1.4.0-alpha01
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.send_feedback) {
             requireContext().email(

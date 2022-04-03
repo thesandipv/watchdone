@@ -95,7 +95,7 @@ class SplashActivity : AppCompatActivity() {
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAuthMethodPickerLayout(pickerLayout)
-                .setTheme(R.style.MyTheme_Main_Translucent_NoActionBar)
+                .setTheme(R.style.Theme_Watchdone_NoActionBar_Translucent)
                 .setLogo(R.drawable.launch_icon)
                 .setTosAndPrivacyPolicyUrls(getString(R.string.url_tos), getString(R.string.url_privacy_policy))
                 .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)

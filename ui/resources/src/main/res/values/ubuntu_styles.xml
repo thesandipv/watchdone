@@ -15,7 +15,8 @@
 
 <resources>
 
-    <style name="TextAppearance.MdcTypographyStyles.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+    <!--TODO Update text styles to M3-->
+    <style name="TextAppearance.MdcTypographyStyles.Headline1" parent="TextAppearance.Material3.DisplayLarge">
         <item name="fontFamily">@font/ubuntu</item>
         <item name="android:fontFamily">@font/ubuntu</item>
         <item name="android:textSize">98sp</item>

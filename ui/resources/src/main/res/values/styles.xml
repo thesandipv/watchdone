@@ -16,23 +16,20 @@
 <resources>
 
     <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface" />
+    <style name="Widget.WatchDone.Toolbar" parent="Widget.Material3.Toolbar.Surface">
+        <item name="actionMenuTextColor">?attr/colorOnPrimarySurface</item>
+    </style>
 
     <style name="SeekBarButtonStyle">
-        <item name="android:tint">@color/color_primary</item>
+        <item name="android:tint">?attr/colorPrimary</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="ChipStyle.FilterChip" parent="Widget.MaterialComponents.Chip.Choice" />
+    <style name="ChipStyle.FilterChip" parent="Widget.Material3.Chip.Filter" />
 
-    <style name="ChipStyle.SortChip" parent="Widget.MaterialComponents.Chip.Action" />
+    <style name="ChipStyle.SortChip" parent="Widget.Material3.Chip.Filter" />
 
-    <style name="MyTheme.Main.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="TextAppearance.WatchDone.Title" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textColor">?attr/colorOnPrimarySurface</item>
     </style>
-
-    <style name="MyTheme.Main.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="MyTheme.Main.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
