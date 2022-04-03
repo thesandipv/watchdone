@@ -50,7 +50,7 @@ dependencies {
     api project(':tmdbapi')
     implementation project(':base')
     implementation project(':ui:resources')
-    api project(':data_structures:lib')
+    api project(':ards')
 
     implementation libs.androidx.preference
     api libs.androidx.datastore
