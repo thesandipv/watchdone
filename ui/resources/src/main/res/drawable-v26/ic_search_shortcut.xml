@@ -17,5 +17,5 @@
 
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <foreground android:drawable="@drawable/ic_search_adaptive" />
-    <background android:drawable="@color/color_secondary" />
+    <background android:drawable="@color/md_theme_dark_surface" />
 </adaptive-icon>

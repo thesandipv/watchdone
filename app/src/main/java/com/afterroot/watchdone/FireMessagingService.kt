@@ -25,7 +25,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
+import com.afterroot.core.utils.getMaterialColor
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
@@ -108,7 +108,7 @@ class FireMessagingService : FirebaseMessagingService() {
                 .setContentTitle(title ?: getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setColor(ContextCompat.getColor(this, R.color.color_secondary))
+                .setColor(this.getMaterialColor(R.attr.colorSecondary))
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
 

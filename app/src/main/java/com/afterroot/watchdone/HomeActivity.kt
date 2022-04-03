@@ -25,7 +25,7 @@ class HomeActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Theme(darkTheme = true) {
+            Theme(context = this, darkTheme = true) {
                 Home()
             }
         }

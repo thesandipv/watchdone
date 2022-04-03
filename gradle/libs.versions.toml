@@ -239,7 +239,7 @@ compose = [
     "androidx-compose-ui",
     "androidx-compose-tooling",
     "androidx-compose-foundation",
-    #    "androidx-compose-material",
+    "androidx-compose-material",
     "androidx-compose-material3",
     "androidx-compose-iconsCore",
     "androidx-compose-iconsExt",

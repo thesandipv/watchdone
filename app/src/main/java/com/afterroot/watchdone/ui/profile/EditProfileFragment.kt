@@ -20,7 +20,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.afterroot.core.extensions.getDrawableExt
+import com.afterroot.core.extensions.getTintedDrawable
+import com.afterroot.core.utils.getMaterialColor
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection
@@ -77,7 +78,12 @@ class EditProfileFragment : Fragment() {
                             }
                         } else requireContext().toast(getString(R.string.msg_no_changes))
                     }
-                    setImageDrawable(requireContext().getDrawableExt(R.drawable.ic_save, R.color.color_on_secondary))
+                    setImageDrawable(
+                        requireContext().getTintedDrawable(
+                            R.drawable.ic_save,
+                            requireContext().getMaterialColor(R.attr.colorOnSecondary)
+                        )
+                    )
                 }
                 findViewById<BottomAppBar>(R.id.toolbar).apply {
                     fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END

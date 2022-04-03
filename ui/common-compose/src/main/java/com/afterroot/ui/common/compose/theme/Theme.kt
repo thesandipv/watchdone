@@ -14,45 +14,19 @@
  */
 package com.afterroot.ui.common.compose.theme
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import android.content.Context
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.colorResource
-import com.afterroot.watchdone.compose.R
 
 @Composable
-fun Theme(darkTheme: Boolean = true, content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        darkColors(
-            primary = colorResource(id = R.color.color_primary),
-            primaryVariant = colorResource(id = R.color.color_primary_variant),
-            secondary = colorResource(id = R.color.color_secondary),
-            background = colorResource(id = R.color.color_background),
-            surface = colorResource(id = R.color.color_surface),
-            onPrimary = colorResource(id = R.color.color_on_primary),
-            onSecondary = colorResource(id = R.color.color_on_secondary),
-            onBackground = colorResource(id = R.color.color_on_background),
-            onSurface = colorResource(id = R.color.color_on_surface),
-        )
+fun Theme(context: Context, darkTheme: Boolean = true, content: @Composable () -> Unit) {
+    val colorScheme = if (darkTheme) {
+        dynamicDarkColorScheme(context)
     } else {
-        lightColors(
-            primary = colorResource(id = R.color.color_primary),
-            primaryVariant = colorResource(id = R.color.color_primary_variant),
-            secondary = colorResource(id = R.color.color_secondary),
-            background = colorResource(id = R.color.color_background),
-            surface = colorResource(id = R.color.color_surface),
-            onPrimary = colorResource(id = R.color.color_on_primary),
-            onSecondary = colorResource(id = R.color.color_on_secondary),
-            onBackground = colorResource(id = R.color.color_on_background),
-            onSurface = colorResource(id = R.color.color_on_surface),
-        )
+        dynamicLightColorScheme(context)
     }
 
-    MaterialTheme(
-        colors = colors,
-        typography = typography,
-        shapes = shapes,
-        content = content
-    )
+    MaterialTheme(colorScheme, MaterialTheme.typography, content)
 }

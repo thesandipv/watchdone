@@ -94,7 +94,7 @@
                 android:layout_height="64dp"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/padding_vertical"
-                android:tint="@color/color_secondary"
+                android:tint="?attr/colorSecondary"
                 app:srcCompat="@drawable/ic_bookmarks" />
 
             <androidx.appcompat.widget.AppCompatTextView
