@@ -12,11 +12,10 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/ards/lib" />
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/core/utils" />
             <option value="$PROJECT_DIR$/data" />
-            <option value="$PROJECT_DIR$/data_structures" />
-            <option value="$PROJECT_DIR$/data_structures/lib" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/tmdbapi" />
             <option value="$PROJECT_DIR$/ui" />
