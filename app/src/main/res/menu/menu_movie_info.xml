@@ -20,9 +20,4 @@
     <item
         android:id="@+id/action_share_to_ig_story"
         android:title="@string/action_share_to_instagram_story" />
-    <group>
-        <item
-            android:id="@+id/send_feedback"
-            android:title="@string/text_send_feedback" />
-    </group>
 </menu>

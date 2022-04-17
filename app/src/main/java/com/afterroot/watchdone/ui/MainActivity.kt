@@ -22,12 +22,14 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -35,13 +37,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afterroot.data.utils.FirebaseUtils
+import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.progress
 import com.afterroot.utils.extensions.visible
 import com.afterroot.utils.network.NetworkState
 import com.afterroot.utils.onVersionGreaterThanEqualTo
-import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection
@@ -64,7 +66,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
+import org.jetbrains.anko.email
 import javax.inject.Inject
+import javax.inject.Named
 import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
@@ -78,12 +82,33 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var configRepository: ConfigRepository
     @Inject lateinit var firestore: FirebaseFirestore
     @Inject lateinit var firebaseMessaging: FirebaseMessaging
+    @Inject @Named("feedback_body") lateinit var feedbackBody: String
     private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
+
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_common, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.send_feedback -> {
+                        email(
+                            email = "afterhasroot@gmail.com",
+                            subject = "Watchdone Feedback",
+                            text = feedbackBody
+                        )
+                        true
+                    }
+                    else -> menuItem.onNavDestinationSelected(navController)
+                }
+            }
+        })
     }
 
     override fun onStart() {
@@ -329,14 +354,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return true
     }
 
     companion object {

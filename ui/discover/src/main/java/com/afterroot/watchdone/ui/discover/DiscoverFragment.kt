@@ -16,9 +16,6 @@ package com.afterroot.watchdone.ui.discover
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.padding
@@ -31,11 +28,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
-import com.afterroot.utils.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi2.api.DiscoverApi
 import com.afterroot.ui.common.compose.components.TextChipGroup
 import com.afterroot.ui.common.compose.theme.Theme
+import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.media.adapter.MultiAdapter
@@ -47,17 +44,14 @@ import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import javax.inject.Inject
-import javax.inject.Named
 
 @AndroidEntryPoint
 class DiscoverFragment : Fragment() {
     lateinit var binding: FragmentDiscoverBinding
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val discoverViewModel: DiscoverViewModel by viewModels()
-    @Inject @Named("feedback_body") lateinit var feedbackBody: String
     @Inject lateinit var discoverApi: DiscoverApi
     @Inject lateinit var settings: Settings
     private lateinit var discoverAdapter: MultiAdapter
@@ -89,7 +83,6 @@ class DiscoverFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        setHasOptionsMenu(true)
         binding = FragmentDiscoverBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -155,23 +148,6 @@ class DiscoverFragment : Fragment() {
                 }
             }
         }
-    }
-
-    //TODO - Replace with MenuHost https://developer.android.com/jetpack/androidx/releases/activity#1.4.0-alpha01
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.send_feedback) {
-            requireContext().email(
-                email = "afterhasroot@gmail.com",
-                subject = "Watchdone Feedback",
-                text = feedbackBody
-            )
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_discover, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     companion object {

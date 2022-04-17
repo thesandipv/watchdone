@@ -89,7 +89,6 @@ class MediaInfoFragment : Fragment() {
     private var progressDialog: MaterialDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        setHasOptionsMenu(true)
         binding = FragmentMediaInfoBinding.inflate(inflater, container, false)
         return binding.root
     }
