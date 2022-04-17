@@ -41,7 +41,7 @@ include ':ui:resources'
 include ':ui:search'
 include ':ui:watchlist'
 
-//AfterROOT Core
-include ':core'
-project(':core').projectDir = file('core/core')
+//AfterROOT Utils
+include ':utils'
+project(':utils').projectDir = file('core/utils')
 project(':ards').projectDir = file('ards/lib')

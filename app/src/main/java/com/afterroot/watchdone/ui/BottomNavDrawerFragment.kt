@@ -20,8 +20,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.afterroot.core.extensions.showStaticProgressDialog
 import com.afterroot.tmdbapi2.repository.AuthRepository
+import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding

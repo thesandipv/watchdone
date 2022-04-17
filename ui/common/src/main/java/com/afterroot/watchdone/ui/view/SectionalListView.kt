@@ -21,7 +21,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
-import com.afterroot.core.extensions.visible
+import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.ui.common.R
 
 class SectionalListView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :

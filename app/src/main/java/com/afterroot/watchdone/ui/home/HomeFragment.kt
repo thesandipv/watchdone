@@ -26,9 +26,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afterroot.core.extensions.showStaticProgressDialog
-import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
+import com.afterroot.utils.extensions.showStaticProgressDialog
+import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toMulti

@@ -35,11 +35,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afterroot.core.extensions.getDrawableExt
-import com.afterroot.core.extensions.progress
-import com.afterroot.core.extensions.visible
-import com.afterroot.core.network.NetworkState
-import com.afterroot.core.onVersionGreaterThanEqualTo
+import com.afterroot.utils.extensions.getDrawableExt
+import com.afterroot.utils.extensions.progress
+import com.afterroot.utils.extensions.visible
+import com.afterroot.utils.network.NetworkState
+import com.afterroot.utils.onVersionGreaterThanEqualTo
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig

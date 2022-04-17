@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.core.extensions.visible
+import com.afterroot.utils.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.data.model.Movie

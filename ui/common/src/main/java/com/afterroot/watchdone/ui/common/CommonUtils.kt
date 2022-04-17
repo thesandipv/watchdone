@@ -16,7 +16,7 @@ package com.afterroot.watchdone.ui.common
 
 import android.content.Context
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afterroot.core.network.NetworkState
+import com.afterroot.utils.network.NetworkState
 
 fun Context.showNetworkDialog(state: NetworkState, positive: () -> Unit, negative: () -> Unit) =
     MaterialDialog(this).show {
