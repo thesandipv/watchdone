@@ -70,7 +70,6 @@ class SearchNewFragment : Fragment() {
     @Inject lateinit var settings: Settings
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        setHasOptionsMenu(true)
         binding = SearchNewFragmentBinding.inflate(layoutInflater, container, false)
         return binding.root
     }

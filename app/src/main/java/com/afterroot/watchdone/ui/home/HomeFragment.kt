@@ -21,9 +21,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.tmdbapi.model.Multi
@@ -49,7 +52,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
-import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 import javax.inject.Named
@@ -66,7 +68,6 @@ class HomeFragment : Fragment() {
     @Inject @Named("feedback_body") lateinit var feedbackBody: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        setHasOptionsMenu(true)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -75,19 +76,9 @@ class HomeFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
             if (item is Movie) {
-                /*homeViewModel.selectMovie(item)
-                findNavController().navigate(
-                    R.id.toMovieInfo,
-                    null, null,
-                    FragmentNavigatorExtras(
-                        view?.findViewById<AppCompatImageView>(R.id.poster)!! to (item).title!!
-                    )
-                )*/
                 val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
                 findNavController().navigate(directions)
             } else if (item is TV) {
-                /*homeViewModel.selectTVSeries(item)
-                findNavController().navigate(R.id.toTVInfo)*/
                 val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
                 findNavController().navigate(directions)
             }
@@ -105,6 +96,22 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.menu_main, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        else -> menuItem.onNavDestinationSelected(findNavController())
+                    }
+                }
+            },
+            viewLifecycleOwner
+        )
 
         homeScreenAdapter = MultiAdapter(itemSelectedCallback, settings)
         binding.list.adapter = homeScreenAdapter
@@ -263,23 +270,6 @@ class HomeFragment : Fragment() {
                 requireContext().toast("Via: $TAG : $it")
             }
         )
-    }
-
-    //TODO - Replace with MenuHost https://developer.android.com/jetpack/androidx/releases/activity#1.4.0-alpha01
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.send_feedback) {
-            requireContext().email(
-                email = "afterhasroot@gmail.com",
-                subject = "Watchdone Feedback",
-                text = feedbackBody
-            )
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     companion object {
