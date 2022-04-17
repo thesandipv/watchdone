@@ -31,7 +31,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
-import com.afterroot.core.extensions.visible
+import com.afterroot.utils.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi2.api.DiscoverApi
 import com.afterroot.ui.common.compose.components.TextChipGroup

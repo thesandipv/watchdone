@@ -23,8 +23,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.core.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
+import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.binding.transitionOptions
 import com.afterroot.watchdone.data.model.Movie

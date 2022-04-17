@@ -16,7 +16,7 @@ package com.afterroot.watchdone.di
 
 import android.content.Context
 import android.net.ConnectivityManager
-import com.afterroot.core.network.NetworkStateMonitor
+import com.afterroot.utils.network.NetworkStateMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

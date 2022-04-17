@@ -20,8 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.afterroot.core.extensions.getTintedDrawable
-import com.afterroot.core.utils.getMaterialColor
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection

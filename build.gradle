@@ -62,8 +62,8 @@ allprojects {
         mavenCentral()
 
         maven {
-            name = "github-afterroot-core"
-            url = uri("https://maven.pkg.github.com/afterroot/core")
+            name = "github-afterroot-utils"
+            url = uri("https://maven.pkg.github.com/afterroot/utils")
             credentials {
                 username = properties.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
                 password = properties.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
