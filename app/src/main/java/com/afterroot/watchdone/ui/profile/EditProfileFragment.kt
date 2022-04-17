@@ -21,6 +21,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.afterroot.data.utils.FirebaseUtils
+import com.afterroot.utils.extensions.getTintedDrawable
+import com.afterroot.utils.getMaterialColor
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
@@ -36,6 +38,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.toast
 import javax.inject.Inject
+import com.afterroot.watchdone.resources.R as CommonR
+import com.google.android.material.R as MaterialR
 
 @AndroidEntryPoint
 class EditProfileFragment : Fragment() {
@@ -68,18 +72,18 @@ class EditProfileFragment : Fragment() {
                                 .build()
                             user.updateProfile(request).addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    requireContext().toast(getString(R.string.msg_profile_updated))
+                                    requireContext().toast(getString(CommonR.string.msg_profile_updated))
                                     db.collection(Collection.USERS)
                                         .document(user.uid)
                                         .update(Field.NAME, newName)
                                 }
                             }
-                        } else requireContext().toast(getString(R.string.msg_no_changes))
+                        } else requireContext().toast(getString(CommonR.string.msg_no_changes))
                     }
                     setImageDrawable(
                         requireContext().getTintedDrawable(
-                            R.drawable.ic_save,
-                            requireContext().getMaterialColor(R.attr.colorOnSecondary)
+                            CommonR.drawable.ic_save,
+                            requireContext().getMaterialColor(MaterialR.attr.colorOnSecondary)
                         )
                     )
                 }

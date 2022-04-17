@@ -35,6 +35,7 @@ import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 import javax.inject.Named
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -90,7 +91,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         )
                     }
                     R.id.action_rate -> {
-                        requireContext().browse(getString(R.string.url_play_store), true)
+                        requireContext().browse(getString(CommonR.string.url_play_store), true)
                     }
                 }
                 true

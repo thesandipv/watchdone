@@ -33,8 +33,8 @@ import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.ui.common.R
 import com.afterroot.watchdone.utils.getScreenWidth
+import com.afterroot.watchdone.resources.R as CommonR
 
 class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Settings) :
     ListAdapter<Multi, RecyclerView.ViewHolder>(MultiDiffCallback()) {
@@ -96,7 +96,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Sett
         private val posterView: AppCompatImageView = binding.poster
         private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private var heightRatio: Float = 3f / 2f
-        private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
+        private val width = context.getScreenWidth() / context.resources.getInteger(CommonR.integer.grid_item_span_count)
         fun bind(movie: Multi) {
             binding.apply {
                 movieDb = movie as Movie
@@ -117,7 +117,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Sett
 
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + binding.movieDb?.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .error(R.drawable.ic_placeholder_movie)
+                .error(CommonR.drawable.ic_placeholder_movie)
                 .transition(transitionOptions)
                 .centerCrop()
                 .into(posterView)
@@ -128,7 +128,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Sett
         private val posterView: AppCompatImageView = binding.poster
         private var heightRatio: Float = 3f / 2f
         private val context: Context = (binding.root.context as ContextWrapper).baseContext
-        private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
+        private val width = context.getScreenWidth() / context.resources.getInteger(CommonR.integer.grid_item_span_count)
         fun bind(tv: Multi) {
             binding.apply {
                 tvSeries = tv as TV
@@ -149,7 +149,7 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Sett
 
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + binding.tvSeries?.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .error(R.drawable.ic_placeholder_tv)
+                .error(CommonR.drawable.ic_placeholder_tv)
                 .transition(transitionOptions)
                 .centerCrop()
                 .into(posterView)

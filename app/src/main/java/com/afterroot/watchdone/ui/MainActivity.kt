@@ -65,6 +65,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
 import javax.inject.Inject
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -235,8 +236,8 @@ class MainActivity : AppCompatActivity() {
                     grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
                 if (isPermissionNotGranted) {
                     binding.container.indefiniteSnackbar(
-                        getString(R.string.msg_grant_app_permissions),
-                        getString(R.string.text_action_grant)
+                        getString(CommonR.string.msg_grant_app_permissions),
+                        getString(CommonR.string.text_action_grant)
                     ) {
                         checkPermissions()
                     }.anchorView = binding.toolbar
@@ -262,11 +263,11 @@ class MainActivity : AppCompatActivity() {
             this.hideKeyboard(binding.root)
             when (destination.id) {
                 R.id.navigation_home -> {
-                    setTitle(getString(R.string.title_watchlist))
+                    setTitle(getString(CommonR.string.title_watchlist))
                     binding.fab.apply {
                         show()
                         setOnClickListener { navController.navigate(R.id.toSearchNew) }
-                        setImageDrawable(context.getDrawableExt(R.drawable.ic_search))
+                        setImageDrawable(context.getDrawableExt(CommonR.drawable.ic_search))
                     }
                     drawerToggle.apply {
                         if (progress == 1f) progress(1f, 0f) // As hamburger
@@ -282,17 +283,17 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_settings -> {
-                    setTitle(getString(R.string.title_settings))
+                    setTitle(getString(CommonR.string.title_settings))
                     binding.fab.hide()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
                 R.id.navigation_edit_profile -> {
-                    setTitle(getString(R.string.title_edit_profile))
+                    setTitle(getString(CommonR.string.title_edit_profile))
                     binding.fab.show()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
                 R.id.navigation_discover -> {
-                    setTitle(getString(R.string.text_discover))
+                    setTitle(getString(CommonR.string.text_discover))
                     binding.fab.hide()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }

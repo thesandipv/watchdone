@@ -19,11 +19,11 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.afterroot.watchdone.base.Constants
-import com.afterroot.watchdone.data.R
 import com.afterroot.watchdone.data.model.LocalUser
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
 import javax.inject.Inject
+import com.afterroot.watchdone.resources.R as CommonR
 
 /**
  * Helper Class for managing main preferences of App
@@ -73,7 +73,7 @@ class Settings @Inject constructor(
             ascSort = value == Query.Direction.ASCENDING
         }
     val theme: String?
-        get() = preferences.getString(Constants.PREF_KEY_THEME, context.getString(R.string.theme_device_default))
+        get() = preferences.getString(Constants.PREF_KEY_THEME, context.getString(CommonR.string.theme_device_default))
     val isUseProdDb: Boolean
         get() = preferences.getBoolean("use_prod_db", false)
 

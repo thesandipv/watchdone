@@ -34,6 +34,8 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.browse
 import javax.inject.Inject
+import com.afterroot.watchdone.resources.R as CommonR
+import com.google.android.material.R as MaterialR
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -44,13 +46,13 @@ class SplashActivity : AppCompatActivity() {
     // @Inject lateinit var settings: Settings
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val theme = getString(R.string.theme_device_default)
+        val theme = getString(CommonR.string.theme_device_default)
         AppCompatDelegate.setDefaultNightMode(
             when (theme) {
-                getString(R.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                getString(R.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-                getString(R.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
-                getString(R.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
+                getString(CommonR.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                getString(CommonR.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
+                getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
                 else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             }
         )
@@ -95,9 +97,9 @@ class SplashActivity : AppCompatActivity() {
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAuthMethodPickerLayout(pickerLayout)
-                .setTheme(R.style.Theme_Watchdone_NoActionBar_Translucent)
-                .setLogo(R.drawable.launch_icon)
-                .setTosAndPrivacyPolicyUrls(getString(R.string.url_tos), getString(R.string.url_privacy_policy))
+                .setTheme(MaterialR.style.Theme_MaterialComponents_DayNight_NoActionBar)
+                .setLogo(CommonR.drawable.launch_icon)
+                .setTosAndPrivacyPolicyUrls(getString(CommonR.string.url_tos), getString(CommonR.string.url_privacy_policy))
                 .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
                 .setAvailableProviders(
                     listOf(
@@ -116,7 +118,7 @@ class SplashActivity : AppCompatActivity() {
         if (it.resultCode == Activity.RESULT_OK) {
             launchMain()
         } else {
-            Toast.makeText(this, getString(R.string.msg_login_failed), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(CommonR.string.msg_login_failed), Toast.LENGTH_SHORT).show()
             tryLogin()
         }
     }

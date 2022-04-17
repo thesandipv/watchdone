@@ -27,6 +27,7 @@ dependencies {
     //All compose dependencies applied with compose.gradle
     implementation project(":base")
     implementation project(":data")
+    implementation project(":ui:resources")
 
     implementation libs.hilt.hilt
     implementation libs.hilt.compose

@@ -53,6 +53,7 @@ import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 import javax.inject.Named
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -117,7 +118,7 @@ class HomeFragment : Fragment() {
     private var isWatchedChecked: Boolean = false
     private lateinit var sortChip: Chip
     private fun setUpChips() {
-        sortChip = Chip(requireContext(), null, R.attr.SortChipStyle).apply {
+        sortChip = Chip(requireContext(), null, CommonR.attr.SortChipStyle).apply {
             text = if (settings.ascSort) "Sort by Ascending" else "Sort by Descending"
             setOnClickListener {
                 val curr = settings.ascSort
@@ -132,7 +133,7 @@ class HomeFragment : Fragment() {
         }
 
         val isWatchedChip = Chip(requireContext()).apply {
-            text = context.getString(R.string.text_ship_show_watched)
+            text = context.getString(CommonR.string.text_ship_show_watched)
             isCheckable = true
             setOnCheckedChangeListener { _, isChecked ->
                 isWatchedChecked = isChecked
@@ -213,8 +214,8 @@ class HomeFragment : Fragment() {
                             submitList(emptyList())
                             binding.infoNoMovies.visible(true, AutoTransition())
                             binding.infoTv.text =
-                                if (action != QueryAction.CLEAR) getString(R.string.text_info_no_movies_in_filter)
-                                else getString(R.string.text_info_no_movies)
+                                if (action != QueryAction.CLEAR) getString(CommonR.string.text_info_no_movies_in_filter)
+                                else getString(CommonR.string.text_info_no_movies)
                         } else {
                             submitList(listData.toMulti())
                         }

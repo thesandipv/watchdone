@@ -27,6 +27,7 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.startActivity
 import javax.inject.Inject
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -42,10 +43,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>(Constants.PREF_KEY_THEME)?.setOnPreferenceChangeListener { _, newValue ->
             AppCompatDelegate.setDefaultNightMode(
                 when (newValue) {
-                    getString(R.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    getString(R.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-                    getString(R.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
-                    getString(R.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
+                    getString(CommonR.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    getString(CommonR.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                    getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
+                    getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
                     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 }
             )
@@ -53,11 +54,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
-            OssLicensesMenuActivity.setActivityTitle(getString(R.string.oss_license_title))
+            OssLicensesMenuActivity.setActivityTitle(getString(com.google.android.gms.oss.licenses.R.string.oss_license_title))
             requireContext().startActivity<OssLicensesMenuActivity>()
             return@setOnPreferenceClickListener true
         }
 
-        findPreference<Preference>(getString(R.string.key_version))?.summary = "v${BuildConfig.VERSION_NAME}"
+        findPreference<Preference>(getString(CommonR.string.key_version))?.summary = "v${BuildConfig.VERSION_NAME}"
     }
 }
