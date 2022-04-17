@@ -34,6 +34,7 @@ import coil.compose.rememberImagePainter
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun Watchlist(
@@ -76,7 +77,7 @@ fun WatchlistItem(poster: String?, title: String?) {
                 data = poster,
                 builder = {
                     crossfade(true)
-                    placeholder(R.drawable.ic_placeholder_movie)
+                    placeholder(CommonR.drawable.ic_placeholder_movie)
                 }
             ),
             contentDescription = title,

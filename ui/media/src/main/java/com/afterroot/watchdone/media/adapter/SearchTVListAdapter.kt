@@ -25,11 +25,11 @@ import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.base.adapter.BaseListAdapter
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.diff.TVDiffCallback
-import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
+import com.afterroot.watchdone.resources.R as CommonR
 
 class SearchTVListAdapter(val callback: ItemSelectedCallback<TV>, var settings: Settings) :
     BaseListAdapter<TV>(TVDiffCallback()) {
@@ -71,8 +71,8 @@ class SearchTVListAdapter(val callback: ItemSelectedCallback<TV>, var settings: 
         private var heightRatio: Float = 3f / 2f
         private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private val width =
-            (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
-                R.dimen.padding_horizontal_list
+            (context.getScreenWidth() / context.resources.getInteger(CommonR.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
+                CommonR.dimen.padding_horizontal_list
             )
 
         fun bind(tvDataHolder: TV) {
@@ -94,8 +94,8 @@ class SearchTVListAdapter(val callback: ItemSelectedCallback<TV>, var settings: 
 
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + tvDataHolder.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .placeholder(R.drawable.ic_placeholder_tv)
-                .error(R.drawable.ic_placeholder_tv)
+                .placeholder(CommonR.drawable.ic_placeholder_tv)
+                .error(CommonR.drawable.ic_placeholder_tv)
                 .centerCrop()
                 .into(posterView)
         }

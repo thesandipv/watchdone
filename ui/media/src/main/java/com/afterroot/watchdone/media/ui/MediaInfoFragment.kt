@@ -49,7 +49,6 @@ import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
-import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.adapter.CastListAdapter
 import com.afterroot.watchdone.media.databinding.FragmentMediaInfoBinding
 import com.afterroot.watchdone.media.viewmodel.MediaInfoViewModel
@@ -71,6 +70,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
@@ -205,8 +205,8 @@ class MediaInfoFragment : Fragment() {
                     actionAddWlist.apply {
                         visible(true)
                         if (!isInWatchlist) {
-                            text = getString(R.string.text_add_to_watchlist)
-                            icon = requireContext().getDrawableExt(R.drawable.ic_bookmark_border)
+                            text = getString(CommonR.string.text_add_to_watchlist)
+                            icon = requireContext().getDrawableExt(CommonR.drawable.ic_bookmark_border)
                             setOnClickListener {
                                 doShowingProgress {
                                     progressDialog = requireContext().showStaticProgressDialog("Please Wait...")
@@ -214,12 +214,12 @@ class MediaInfoFragment : Fragment() {
                                 }
                             }
                         } else {
-                            text = getString(R.string.text_remove_from_watchlist)
-                            icon = requireContext().getDrawableExt(R.drawable.ic_bookmark)
+                            text = getString(CommonR.string.text_remove_from_watchlist)
+                            icon = requireContext().getDrawableExt(CommonR.drawable.ic_bookmark)
                             setOnClickListener {
                                 selectedMediaDocId?.let { id -> watchlistItemReference.document(id).delete() }
                                 watchListRef.updateTotalItemsCounter(-1)
-                                snackBarMessage(requireContext().getString(R.string.msg_removed_from_wl))
+                                snackBarMessage(requireContext().getString(CommonR.string.msg_removed_from_wl))
                             }
                         }
                     }
@@ -227,11 +227,11 @@ class MediaInfoFragment : Fragment() {
                         visible(true)
                         if (isInWatchlist && selectedMediaDocId != null) {
                             if (isWatched) {
-                                text = getString(R.string.text_mark_as_unwatched)
-                                icon = requireContext().getDrawableExt(R.drawable.ic_clear)
+                                text = getString(CommonR.string.text_mark_as_unwatched)
+                                icon = requireContext().getDrawableExt(CommonR.drawable.ic_clear)
                             } else {
-                                text = getString(R.string.text_mark_as_watched)
-                                icon = requireContext().getDrawableExt(R.drawable.ic_done)
+                                text = getString(CommonR.string.text_mark_as_watched)
+                                icon = requireContext().getDrawableExt(CommonR.drawable.ic_done)
                             }
                             setOnClickListener {
                                 watchlistItemReference.document(selectedMediaDocId)
@@ -239,7 +239,7 @@ class MediaInfoFragment : Fragment() {
                             }
                         } else {
                             setOnClickListener {
-                                snackBarMessage(requireContext().getString(R.string.msg_add_to_wl_first))
+                                snackBarMessage(requireContext().getString(CommonR.string.msg_add_to_wl_first))
                             }
                         }
                     }
@@ -267,7 +267,7 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
 
-                    ratingText.text = getString(R.string.media_info_rating_text, rating.toString())
+                    ratingText.text = getString(CommonR.string.media_info_rating_text, rating.toString())
                 }
             }
             // menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
@@ -316,7 +316,7 @@ class MediaInfoFragment : Fragment() {
             watchlistItemReference.add(tv.toDBMedia())
         }
         watchListRef.updateTotalItemsCounter(1)
-        snackBarMessage(requireContext().getString(R.string.msg_added_to_wl))
+        snackBarMessage(requireContext().getString(CommonR.string.msg_added_to_wl))
         hideProgress()
     }
 

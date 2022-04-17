@@ -34,7 +34,6 @@ import com.afterroot.tmdbapi.TvResultsPage
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.tmdbapi.model.people.Person
-import com.afterroot.watchdone.R
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.mapper.toPersons
 import com.afterroot.watchdone.data.mapper.toTV
@@ -56,6 +55,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class SearchNewFragment : Fragment() {
@@ -138,9 +138,9 @@ class SearchNewFragment : Fragment() {
 
     private fun showSearchResults(query: String): Job = lifecycleScope.launch {
         // SectionViews
-        moviesSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_movies)).withLoading()
-        tvSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_tv)).withLoading()
-        peopleSection = SectionalListView(requireContext()).withTitle(getString(R.string.text_search_people)).withLoading()
+        moviesSection = SectionalListView(requireContext()).withTitle(getString(CommonR.string.text_search_movies)).withLoading()
+        tvSection = SectionalListView(requireContext()).withTitle(getString(CommonR.string.text_search_tv)).withLoading()
+        peopleSection = SectionalListView(requireContext()).withTitle(getString(CommonR.string.text_search_people)).withLoading()
 
         // Adapters
         val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback, settings)

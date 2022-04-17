@@ -17,12 +17,13 @@ package com.afterroot.watchdone.ui.common
 import android.content.Context
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.utils.network.NetworkState
+import com.afterroot.watchdone.resources.R as CommonR
 
 fun Context.showNetworkDialog(state: NetworkState, positive: () -> Unit, negative: () -> Unit) =
     MaterialDialog(this).show {
         title(text = if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected")
         cancelable(false)
-        message(R.string.dialog_msg_no_network)
+        message(CommonR.string.dialog_msg_no_network)
         negativeButton(text = "Exit") {
             negative()
         }

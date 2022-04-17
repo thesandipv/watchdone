@@ -21,15 +21,15 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.utils.extensions.visible
 import com.afterroot.tmdbapi.model.Multi
+import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.ui.common.R
 import com.afterroot.watchdone.utils.getScreenWidth
+import com.afterroot.watchdone.resources.R as CommonR
 
 class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>, var settings: Settings) : AdapterType {
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
@@ -44,7 +44,7 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>, var settings:
         private val posterView: AppCompatImageView = binding.poster
         private var heightRatio: Float = 3f / 2f
         val context: Context = (binding.root.context as ContextWrapper).baseContext
-        private val width = context.getScreenWidth() / context.resources.getInteger(R.integer.grid_item_span_count)
+        private val width = context.getScreenWidth() / context.resources.getInteger(CommonR.integer.grid_item_span_count)
         fun bind(item: Movie) {
             binding.movieDb = item
             posterView.updateLayoutParams {
@@ -55,8 +55,8 @@ class MovieAdapterType(val callbacks: ItemSelectedCallback<Movie>, var settings:
             // if (item.posterPath != null) {
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + item.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .placeholder(R.drawable.ic_placeholder_movie)
-                .error(R.drawable.ic_broken_image)
+                .placeholder(CommonR.drawable.ic_placeholder_movie)
+                .error(CommonR.drawable.ic_broken_image)
                 .centerCrop()
                 .into(posterView)
             // } else GlideApp.with(context).load(R.drawable.ic_broken_image)

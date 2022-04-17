@@ -25,11 +25,11 @@ import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.base.adapter.BaseListAdapter
 import com.afterroot.watchdone.diff.PeopleDiffCallback
-import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.databinding.ListItemPersonBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
+import com.afterroot.watchdone.resources.R as CommonR
 
 class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>, var settings: Settings) :
     BaseListAdapter<Person>(PeopleDiffCallback()) {
@@ -70,8 +70,8 @@ class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>, var se
         private val posterView: AppCompatImageView = binding.castIv
         private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private val width =
-            (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
-                R.dimen.padding_horizontal_list
+            (context.getScreenWidth() / context.resources.getInteger(CommonR.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
+                CommonR.dimen.padding_horizontal_list
             )
 
         fun bind(person: Person) {
@@ -93,8 +93,8 @@ class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>, var se
 
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + person.profilePath)
                 .override(width)
-                .placeholder(R.drawable.ic_placeholder_person)
-                .error(R.drawable.ic_placeholder_person)
+                .placeholder(CommonR.drawable.ic_placeholder_person)
+                .error(CommonR.drawable.ic_placeholder_person)
                 .circleCrop()
                 .into(posterView)
         }

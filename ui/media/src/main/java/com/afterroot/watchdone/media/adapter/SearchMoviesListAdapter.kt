@@ -25,11 +25,11 @@ import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.base.adapter.BaseListAdapter
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.diff.MovieDiffCallback
-import com.afterroot.watchdone.media.R
 import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
+import com.afterroot.watchdone.resources.R as CommonR
 
 class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>, var settings: Settings) :
     BaseListAdapter<Movie>(MovieDiffCallback()) {
@@ -71,8 +71,8 @@ class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>, var set
         private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private var heightRatio: Float = 3f / 2f
         private val width =
-            (context.getScreenWidth() / context.resources.getInteger(R.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
-                R.dimen.padding_horizontal_list
+            (context.getScreenWidth() / context.resources.getInteger(CommonR.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
+                CommonR.dimen.padding_horizontal_list
             )
 
         fun bind(movie: Movie) {
@@ -94,8 +94,8 @@ class SearchMoviesListAdapter(val callback: ItemSelectedCallback<Movie>, var set
 
             GlideApp.with(context).load(settings.baseUrl + settings.imageSize + movie.posterPath)
                 .override(width, (width * heightRatio).toInt())
-                .placeholder(R.drawable.ic_placeholder_movie)
-                .error(R.drawable.ic_placeholder_movie)
+                .placeholder(CommonR.drawable.ic_placeholder_movie)
+                .error(CommonR.drawable.ic_placeholder_movie)
                 .centerCrop()
                 .into(posterView)
         }
