@@ -22,20 +22,26 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class NetworkViewModel @Inject constructor(val networkStateMonitor: NetworkStateMonitor) : ViewModel() {
+class NetworkViewModel @Inject constructor(private val networkStateMonitor: NetworkStateMonitor) : ViewModel() {
 
-    inline fun doIfNetworkConnected(
+    fun monitor(
         lifecycleOwner: LifecycleOwner,
-        crossinline doWhenConnected: (state: NetworkState) -> Unit,
-        noinline doWhenNotConnected: ((state: NetworkState) -> Unit)? = null
+        doInitially: (() -> Unit)? = null,
+        onConnect: (state: NetworkState) -> Unit,
+        onDisconnect: ((state: NetworkState) -> Unit)? = null
     ) {
+        if (doInitially == null) {
+            onConnect(NetworkState.CONNECTED) // Run [doWhenConnected] id [doInitially] is null
+        } else {
+            doInitially.invoke()
+        }
         networkStateMonitor.observe(lifecycleOwner) {
             when (it) {
                 NetworkState.CONNECTED -> {
-                    doWhenConnected(NetworkState.CONNECTED)
+                    onConnect(NetworkState.CONNECTED)
                 }
                 else -> {
-                    doWhenNotConnected?.invoke(it)
+                    onDisconnect?.invoke(it)
                 }
             }
         }

@@ -19,9 +19,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.ui.common.showNetworkDialog
@@ -128,14 +128,14 @@ class SplashActivity : AppCompatActivity() {
         finish()
     }
 
-    private var dialog: MaterialDialog? = null
+    private var dialog: AlertDialog? = null
     private fun setUpNetworkObserver() {
-        networkViewModel.doIfNetworkConnected(
+        networkViewModel.monitor(
             this,
-            doWhenConnected = {
+            onConnect = {
                 if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
             },
-            doWhenNotConnected = {
+            onDisconnect = {
                 dialog = showNetworkDialog(state = it, positive = { setUpNetworkObserver() }, negative = { finish() })
             }
         )
