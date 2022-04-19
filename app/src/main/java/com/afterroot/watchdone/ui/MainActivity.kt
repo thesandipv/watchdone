@@ -25,6 +25,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -36,13 +37,11 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
-import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi2.repository.ConfigRepository
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.progress
 import com.afterroot.utils.extensions.visible
-import com.afterroot.utils.network.NetworkState
 import com.afterroot.utils.onVersionGreaterThanEqualTo
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
@@ -52,6 +51,7 @@ import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
@@ -176,30 +176,22 @@ class MainActivity : AppCompatActivity() {
         setUpNetworkObserver()
     }
 
-    private var dialog: MaterialDialog? = null
+    private var dialog: AlertDialog? = null
     private fun setUpNetworkObserver() {
-        networkViewModel.doIfNetworkConnected(
+        networkViewModel.monitor(
             this,
-            doWhenConnected = {
+            onConnect = {
                 if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
             },
-            doWhenNotConnected = {
-                dialog = showNetworkDialog(it)
+            onDisconnect = {
+                dialog = showNetworkDialog(
+                    state = it,
+                    positive = { dialog?.dismiss() },
+                    negative = { finish() },
+                    isShowHide = true
+                )
             }
-        )
-    }
-
-    private fun showNetworkDialog(state: NetworkState) = MaterialDialog(this).show {
-        title = if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected"
-        cancelable(false)
-        message(text = "Please check your network connection")
-        negativeButton(text = "Exit") {
-            finish()
-        }
-        positiveButton(text = "Retry") {
-            setUpNetworkObserver()
-        }
-    }
+        )    }
 
     /**
      * Add user info in FireStore Database

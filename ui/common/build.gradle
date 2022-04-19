@@ -37,6 +37,8 @@ dependencies {
     implementation libs.androidx.transition
     implementation libs.bundles.lifecycle
 
+    implementation libs.google.material
+
     api libs.androidx.recyclerView
     api libs.androidx.constraintLayout
 

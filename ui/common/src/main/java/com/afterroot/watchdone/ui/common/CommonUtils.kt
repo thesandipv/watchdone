@@ -15,19 +15,29 @@
 package com.afterroot.watchdone.ui.common
 
 import android.content.Context
-import com.afollestad.materialdialogs.MaterialDialog
+import androidx.appcompat.app.AlertDialog
 import com.afterroot.utils.network.NetworkState
-import com.afterroot.watchdone.resources.R as CommonR
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-fun Context.showNetworkDialog(state: NetworkState, positive: () -> Unit, negative: () -> Unit) =
-    MaterialDialog(this).show {
-        title(text = if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected")
-        cancelable(false)
-        message(CommonR.string.dialog_msg_no_network)
-        negativeButton(text = "Exit") {
-            negative()
-        }
-        positiveButton(text = "Retry") {
-            positive()
+/**
+ * @return [AlertDialog] based on [NetworkState]
+ */
+fun Context.showNetworkDialog(
+    state: NetworkState,
+    positive: () -> Unit,
+    negative: () -> Unit,
+    isShowHide: Boolean = false
+): AlertDialog {
+    val dialog = MaterialAlertDialogBuilder(this).apply {
+        setTitle(if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected")
+        setCancelable(false)
+        setMessage(com.afterroot.watchdone.resources.R.string.dialog_msg_no_network)
+        setNegativeButton("Exit") { _, _ -> negative() }
+        if (isShowHide) {
+            setPositiveButton("Hide") { dialog, _ -> dialog.dismiss() }
+        } else {
+            setPositiveButton("Retry") { _, _ -> positive() }
         }
     }
+    return dialog.show()
+}
