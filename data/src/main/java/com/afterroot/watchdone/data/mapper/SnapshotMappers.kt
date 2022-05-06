@@ -20,6 +20,8 @@ import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 
 fun QuerySnapshot.toMulti(): List<Multi> {
@@ -39,6 +41,20 @@ fun QuerySnapshot.toMulti(): List<Multi> {
         list.add(multi)
     }
     return list
+}
+
+fun DocumentSnapshot.toMulti(): Multi {
+    return when (getString(Field.MEDIA_TYPE)) {
+        Multi.MediaType.MOVIE.name -> {
+            toObject(DBMedia::class.java)?.toMovie() ?: Movie()
+        }
+        Multi.MediaType.TV_SERIES.name -> {
+            toObject(DBMedia::class.java)?.toTV() ?: TV()
+        }
+        else -> {
+            Movie()
+        }
+    }
 }
 
 fun QuerySnapshot.toMovies(): List<Movie> {

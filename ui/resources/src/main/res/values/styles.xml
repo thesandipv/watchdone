@@ -27,7 +27,7 @@
 
     <style name="ChipStyle.FilterChip" parent="Widget.Material3.Chip.Filter" />
 
-    <style name="ChipStyle.SortChip" parent="Widget.Material3.Chip.Filter" />
+    <style name="ChipStyle.SortChip" parent="Widget.Material3.Chip.Assist" />
 
     <style name="TextAppearance.WatchDone.Title" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textColor">?attr/colorOnPrimarySurface</item>

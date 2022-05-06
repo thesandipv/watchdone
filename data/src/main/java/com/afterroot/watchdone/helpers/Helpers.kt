@@ -23,7 +23,9 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.collectionWatchlistItems
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.tasks.await
 
 /**
  * Migrates old structure to new structure
@@ -82,4 +84,13 @@ fun migrateFirestore(
     }.addOnSuccessListener {
         successBlock?.invoke()
     }
+}
+
+// TODO
+suspend fun FirebaseFirestore.filterWatchlist(
+    uid: String,
+    isUseProdDb: Boolean,
+    filter: Query.() -> Query
+): QuerySnapshot {
+    return collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().filter().get().await()
 }

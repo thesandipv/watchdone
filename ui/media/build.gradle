@@ -39,6 +39,7 @@ dependencies {
     implementation libs.androidx.appCompat
     implementation libs.androidx.constraintLayout
     implementation libs.androidx.fragment
+    implementation libs.androidx.paging
     implementation libs.bundles.lifecycle
     implementation libs.androidx.supportV13
 

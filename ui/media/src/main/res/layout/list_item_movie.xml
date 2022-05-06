@@ -23,6 +23,14 @@
         <variable
             name="movieDb"
             type="com.afterroot.watchdone.data.model.Movie" />
+
+        <variable
+            name="baseUrl"
+            type="String" />
+
+        <variable
+            name="posterSize"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
