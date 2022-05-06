@@ -14,28 +14,83 @@
  */
 package com.afterroot.watchdone.watchlist
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.data.QueryAction
+import com.afterroot.watchdone.data.WatchlistPagingSource
 import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
+import com.afterroot.watchdone.utils.logD
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class WatchlistViewModel : ViewModel() {
-    @Inject lateinit var db: FirebaseFirestore
-    @Inject lateinit var settings: Settings
-    val watchlistSnapshot = MutableSharedFlow<ViewModelState>()
-    @Inject lateinit var firebaseUtils: FirebaseUtils
-    val uid: String = firebaseUtils.uid.toString()
+@HiltViewModel
+class WatchlistViewModel @Inject constructor(
+    val savedStateHandle: SavedStateHandle,
+    var db: FirebaseFirestore,
+    var settings: Settings,
+    var firebaseUtils: FirebaseUtils
+) : ViewModel() {
+    private val uid: String = firebaseUtils.uid.toString()
+    private val actions = MutableSharedFlow<WatchlistActions>()
+    val uiActions = MutableSharedFlow<WatchlistActions>()
+    val flowIsLoading = MutableStateFlow(false)
 
+    val state: StateFlow<WatchlistState> = combine(flowIsLoading) { isLoading ->
+        WatchlistState(isLoading[0])
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = WatchlistState.INITIAL
+    )
+
+    init {
+        logD("WatchlistViewModel/init", "Initializing")
+
+        viewModelScope.launch {
+            actions.collect { action ->
+                logD("WatchlistViewModel/actions", "Collected action: $action")
+                when (action) {
+                    is WatchlistActions.SetQueryAction -> {
+                        savedStateHandle["QUERY_ACTION"] = action.queryAction.name
+                    }
+                    else -> {
+                        viewModelScope.launch {
+                            uiActions.emit(action)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun submitAction(action: WatchlistActions) {
+        viewModelScope.launch {
+            actions.emit(action)
+        }
+    }
+
+    @Deprecated("Use WatchlistPagingSource instead")
     fun getWatchlistSnapshot(userId: String = uid): Flow<ViewModelState> = callbackFlow {
         val ref = db.collectionWatchdone(id = userId, settings.isUseProdDb)
             .document(Collection.WATCHLIST)
@@ -51,6 +106,7 @@ class WatchlistViewModel : ViewModel() {
         awaitClose { subs.remove() }
     }
 
+    @Deprecated("Use WatchlistPagingSource instead")
     fun getWatchlistItems(userId: String = uid): Flow<List<Multi>> = callbackFlow {
         val ref = db.collectionWatchdone(id = userId, settings.isUseProdDb)
             .document(Collection.WATCHLIST)
@@ -65,4 +121,13 @@ class WatchlistViewModel : ViewModel() {
 
         awaitClose { subs.remove() }
     }
+
+    val watchlist = Pager(PagingConfig(20)) {
+        WatchlistPagingSource(
+            db,
+            settings,
+            firebaseUtils,
+            QueryAction.valueOf(savedStateHandle.get<String>("QUERY_ACTION") ?: QueryAction.CLEAR.name)
+        )
+    }.flow.cachedIn(viewModelScope)
 }

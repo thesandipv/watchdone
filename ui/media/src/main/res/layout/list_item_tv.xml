@@ -23,6 +23,14 @@
         <variable
             name="tvSeries"
             type="com.afterroot.watchdone.data.model.TV" />
+
+        <variable
+            name="baseUrl"
+            type="String" />
+
+        <variable
+            name="posterSize"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -34,7 +34,7 @@ android {
                 ]
             }
         }
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.afterroot.watchdone.data.test.DataTestRunner"
 
         def tmdbPropertiesFile = rootProject.file("tmdb.properties")
         def tmdbProperties = new Properties()
@@ -53,6 +53,7 @@ dependencies {
     api project(':ards')
 
     implementation libs.androidx.preference
+    implementation libs.androidx.paging
     api libs.androidx.datastore
 
     api libs.google.gson
@@ -85,6 +86,15 @@ dependencies {
 
     kaptTest libs.hilt.compiler
     kaptTest libs.androidx.room.compiler
+
+    androidTestImplementation libs.androidx.test.core
+    androidTestImplementation libs.androidx.test.junitExt
+    androidTestImplementation libs.androidx.test.runner
+    androidTestImplementation libs.hilt.testing
+    androidTestImplementation libs.kotlin.coroutines.test
+    androidTestImplementation libs.test.junit
+
+    kaptAndroidTest libs.hilt.compiler
 
     implementation libs.coil
 }

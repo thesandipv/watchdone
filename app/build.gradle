@@ -33,6 +33,10 @@ kapt {
 apply from: "$rootDir/gradle/oss-licence.gradle"
 apply from: "$rootDir/gradle/apply-core.gradle"
 
+hilt {
+    enableAggregatingTask = true
+}
+
 ext {
     ci = System.getenv("CI") == "true"
 }
@@ -82,7 +86,13 @@ android {
         buildConfigField "String", "TMDB_BEARER_TOKEN", tmdbProperties["tmdbBearerToken"] ?: System.getenv("TMDB_BEARER_TOKEN")
         buildConfigField "String", "TMDB_API", tmdbProperties["tmdbApi"] ?: System.getenv("TMDB_API")
 
-        def commit = System.getenv("COMMIT_ID") ?: "git rev-list --max-count=1 HEAD".execute([], project.rootDir).text.substring(0, 7)
+        def commitHash = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+            standardOutput = commitHash
+        }
+
+        def commit = System.getenv("COMMIT_ID") ?: commitHash.toString().trim()
         buildConfigField "String", "COMMIT_ID", "\"$commit\""
     }
 

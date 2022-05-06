@@ -14,12 +14,12 @@
  */
 package com.afterroot.ui.common.compose.theme
 
+import android.content.Context
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Theme3(content: @Composable () -> Unit) {
-    val darkColorScheme = darkColorScheme()
-    MaterialTheme(colorScheme = darkColorScheme, typography = MaterialTheme.typography, content = content)
+fun Theme3(context: Context, content: @Composable () -> Unit) {
+    MaterialTheme(colorScheme = dynamicDarkColorScheme(context), typography = MaterialTheme.typography, content = content)
 }

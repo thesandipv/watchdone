@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.tmdbapi.model.Multi
@@ -29,6 +28,7 @@ import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.binding.transitionOptions
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.diff.MultiDiffCallback
 import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
@@ -64,11 +64,23 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Sett
     }
 
     private fun createTVViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return TVListViewHolder(ListItemTvBinding.inflate(LayoutInflater.from(parent.context)))
+        return TVListViewHolder(
+            ListItemTvBinding.inflate(LayoutInflater.from(parent.context)).apply {
+                baseUrl = settings.baseUrl
+                posterSize = settings.imageSize
+            },
+            callback
+        )
     }
 
     private fun createMovieViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return MoviesListViewHolder(ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)))
+        return MoviesListViewHolder(
+            ListItemMovieBinding.inflate(LayoutInflater.from(parent.context)).apply {
+                baseUrl = settings.baseUrl
+                posterSize = settings.imageSize
+            },
+            callback
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -92,99 +104,78 @@ class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Sett
         holder.bind(getItem(position))
     }
 
-    inner class MoviesListViewHolder(val binding: ListItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val posterView: AppCompatImageView = binding.poster
-        private val context: Context = (binding.root.context as ContextWrapper).baseContext
-        private var heightRatio: Float = 3f / 2f
-        private val width = context.getScreenWidth() / context.resources.getInteger(CommonR.integer.grid_item_span_count)
-        fun bind(movie: Multi) {
-            binding.apply {
-                movieDb = movie as Movie
-                root.setOnClickListener {
-                    callback.onClick(bindingAdapterPosition, root)
-                    callback.onClick(bindingAdapterPosition, root, movie)
-                }
-                root.setOnLongClickListener {
-                    callback.onLongClick(bindingAdapterPosition, movie)
-                    return@setOnLongClickListener true
-                }
-                isWatched.visible(movie.isWatched)
-            }
-            posterView.updateLayoutParams {
-                this.width = this@MoviesListViewHolder.width
-                this.height = (width * heightRatio).toInt()
-            }
-
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + binding.movieDb?.posterPath)
-                .override(width, (width * heightRatio).toInt())
-                .error(CommonR.drawable.ic_placeholder_movie)
-                .transition(transitionOptions)
-                .centerCrop()
-                .into(posterView)
-        }
-    }
-
-    inner class TVListViewHolder(val binding: ListItemTvBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val posterView: AppCompatImageView = binding.poster
-        private var heightRatio: Float = 3f / 2f
-        private val context: Context = (binding.root.context as ContextWrapper).baseContext
-        private val width = context.getScreenWidth() / context.resources.getInteger(CommonR.integer.grid_item_span_count)
-        fun bind(tv: Multi) {
-            binding.apply {
-                tvSeries = tv as TV
-                root.setOnClickListener {
-                    callback.onClick(bindingAdapterPosition, root)
-                    callback.onClick(bindingAdapterPosition, root, tv)
-                }
-                root.setOnLongClickListener {
-                    callback.onLongClick(bindingAdapterPosition, tv)
-                    return@setOnLongClickListener true
-                }
-                isWatched.visible(tv.isWatched)
-            }
-            posterView.updateLayoutParams {
-                this.width = this@TVListViewHolder.width
-                this.height = (width * heightRatio).toInt()
-            }
-
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + binding.tvSeries?.posterPath)
-                .override(width, (width * heightRatio).toInt())
-                .error(CommonR.drawable.ic_placeholder_tv)
-                .transition(transitionOptions)
-                .centerCrop()
-                .into(posterView)
-        }
-    }
-
     companion object {
         const val MOVIE = 0
         const val TV = 1
     }
 }
 
-class MultiDiffCallback : DiffUtil.ItemCallback<Multi>() {
-    override fun areItemsTheSame(oldItem: Multi, newItem: Multi): Boolean {
-        return if (oldItem is Movie && newItem is Movie) {
-            oldItem.id == newItem.id
-        } else if (oldItem is TV && newItem is TV) {
-            oldItem.id == newItem.id
-        } else if (oldItem is Movie && newItem is TV) {
-            oldItem.id == newItem.id
-        } else if (oldItem is TV && newItem is Movie) {
-            oldItem.id == newItem.id
-        } else false
-    }
+class MoviesListViewHolder(
+    val binding: ListItemMovieBinding,
+    val callback: ItemSelectedCallback<Multi>
+) : RecyclerView.ViewHolder(binding.root) {
+    private val posterView: AppCompatImageView = binding.poster
+    private val context: Context = (binding.root.context as ContextWrapper).baseContext
+    private var heightRatio: Float = 3f / 2f
+    private val width = context.getScreenWidth() / context.resources.getInteger(CommonR.integer.grid_item_span_count)
+    fun bind(movie: Multi) {
+        binding.apply {
+            movieDb = movie as Movie
+            root.setOnClickListener {
+                callback.onClick(bindingAdapterPosition, root)
+                callback.onClick(bindingAdapterPosition, root, movie)
+            }
+            root.setOnLongClickListener {
+                callback.onLongClick(bindingAdapterPosition, movie)
+                return@setOnLongClickListener true
+            }
+            isWatched.visible(movie.isWatched)
+        }
+        posterView.updateLayoutParams {
+            this.width = this@MoviesListViewHolder.width
+            this.height = (width * heightRatio).toInt()
+        }
 
-    @Suppress("ReplaceCallWithBinaryOperator")
-    override fun areContentsTheSame(oldItem: Multi, newItem: Multi): Boolean {
-        return if (oldItem is Movie && newItem is Movie) {
-            oldItem.equals(newItem)
-        } else if (oldItem is TV && newItem is TV) {
-            oldItem.equals(newItem)
-        } else if (oldItem is Movie && newItem is TV) {
-            false
-        } else if (oldItem is TV && newItem is Movie) {
-            false
-        } else false
+        GlideApp.with(context).load(binding.baseUrl + binding.posterSize + binding.movieDb?.posterPath)
+            .override(width, (width * heightRatio).toInt())
+            .error(CommonR.drawable.ic_placeholder_movie)
+            .transition(transitionOptions)
+            .centerCrop()
+            .into(posterView)
+    }
+}
+
+class TVListViewHolder(
+    val binding: ListItemTvBinding,
+    val callback: ItemSelectedCallback<Multi>
+) : RecyclerView.ViewHolder(binding.root) {
+    private val posterView: AppCompatImageView = binding.poster
+    private var heightRatio: Float = 3f / 2f
+    private val context: Context = (binding.root.context as ContextWrapper).baseContext
+    private val width = context.getScreenWidth() / context.resources.getInteger(CommonR.integer.grid_item_span_count)
+    fun bind(tv: Multi) {
+        binding.apply {
+            tvSeries = tv as TV
+            root.setOnClickListener {
+                callback.onClick(bindingAdapterPosition, root)
+                callback.onClick(bindingAdapterPosition, root, tv)
+            }
+            root.setOnLongClickListener {
+                callback.onLongClick(bindingAdapterPosition, tv)
+                return@setOnLongClickListener true
+            }
+            isWatched.visible(tv.isWatched)
+        }
+        posterView.updateLayoutParams {
+            this.width = this@TVListViewHolder.width
+            this.height = (width * heightRatio).toInt()
+        }
+
+        GlideApp.with(context).load(binding.baseUrl + binding.posterSize + binding.tvSeries?.posterPath)
+            .override(width, (width * heightRatio).toInt())
+            .error(CommonR.drawable.ic_placeholder_tv)
+            .transition(transitionOptions)
+            .centerCrop()
+            .into(posterView)
     }
 }

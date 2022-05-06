@@ -37,6 +37,7 @@ object Field {
     const val MEDIA_TYPE = "mediaType"
     const val MEDIA_TYPE_MOVIE = "MOVIE"
     const val MEDIA_TYPE_TV = "TV_SERIES"
+    const val TIMESTAMP = "timestamp"
 }
 
 object Constants {
