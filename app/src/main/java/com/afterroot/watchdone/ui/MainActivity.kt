@@ -191,7 +191,8 @@ class MainActivity : AppCompatActivity() {
                     isShowHide = true
                 )
             }
-        )    }
+        )
+    }
 
     /**
      * Add user info in FireStore Database

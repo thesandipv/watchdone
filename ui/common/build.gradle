@@ -38,13 +38,14 @@ dependencies {
     implementation libs.bundles.lifecycle
 
     implementation libs.google.material
+    implementation libs.firebase.firestore
 
-    api libs.androidx.recyclerView
-    api libs.androidx.constraintLayout
+    implementation libs.androidx.recyclerView
+    implementation libs.androidx.constraintLayout
 
     implementation libs.materialdialogs.core
 
-    api libs.materialProgress
+    implementation libs.materialProgress
 
     implementation libs.hilt.hilt
     kapt libs.hilt.compiler

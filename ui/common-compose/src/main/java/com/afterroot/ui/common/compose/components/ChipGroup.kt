@@ -23,9 +23,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -58,7 +58,7 @@ fun TextChip(
     modifier: Modifier = Modifier,
     text: String? = null,
     isSelected: Boolean = false,
-    backgroundColor: Color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+    backgroundColor: Color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
     clickable: Boolean = true,
     elevation: Dp = Chip.ContainerElevation,
     shape: Shape = Chip.ContainerShape,
@@ -69,7 +69,7 @@ fun TextChip(
         modifier = Modifier
             .then(modifier)
             .defaultMinSize(minHeight = minHeight),
-        elevation = elevation,
+        shadowElevation = elevation,
         shape = shape,
         color = backgroundColor,
         border = BorderStroke(Chip.containerStyle.OutlineSize, Chip.containerStyle.OutlineColor)
@@ -91,7 +91,7 @@ fun TextChip(
                 modifier = Modifier
                     .padding(start = Chip.TextChipPaddingStart, end = Chip.TextChipPaddingEnd)
                     .placeholder(visible = text.isNullOrBlank(), highlight = PlaceholderHighlight.shimmer()),
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

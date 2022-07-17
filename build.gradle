@@ -24,8 +24,8 @@ buildscript {
 
     ext.SDK = [
             MIN    : 21,
-            COMPILE: 31,
-            TARGET : 31
+            COMPILE: 32,
+            TARGET : 32
     ]
 
     ext.VERSION_CODE = SDK.MIN * 10000000 + version.MAJOR * 10000 + version.MINOR * 100 + version.PATCH

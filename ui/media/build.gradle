@@ -34,17 +34,21 @@ dependencies {
     implementation project(':base')
     implementation project(':data')
     implementation project(':ui:common')
+    implementation project(':ui:common-compose')
     implementation project(':ui:resources')
 
     implementation libs.androidx.appCompat
     implementation libs.androidx.constraintLayout
     implementation libs.androidx.fragment
     implementation libs.androidx.paging
-    implementation libs.bundles.lifecycle
+    implementation libs.androidx.recyclerView
     implementation libs.androidx.supportV13
+    implementation libs.bundles.lifecycle
 
     implementation libs.google.material
     implementation libs.google.ads
+
+    implementation libs.firebase.firestore
 
     implementation libs.hilt.hilt
     implementation libs.hilt.compose

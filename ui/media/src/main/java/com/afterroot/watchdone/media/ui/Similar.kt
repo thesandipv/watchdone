@@ -14,6 +14,7 @@
  */
 package com.afterroot.watchdone.media.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -45,25 +46,37 @@ fun SimilarMovies(
     val state = remember { mutableStateOf(emptyList<Movie>()) }
     val moviesListAdapter = SearchMoviesListAdapter(movieItemSelectedCallback, settings)
 
-    AndroidView(
-        factory = {
-            SectionalListView(it).withTitle("Similar Movies").withLoading().apply {
-                setAdapter(moviesListAdapter)
-                lifecycleCoroutineScope.launch {
-                    state.value = moviesRepository.getSimilar(movieId).toMovies()
+    Column {
+        AndroidView(
+            factory = {
+                SectionalListView(it).withTitle("Similar Movies").withLoading().apply {
+                    setAdapter(moviesListAdapter)
+                    lifecycleCoroutineScope.launch {
+                        state.value = moviesRepository.getSimilar(movieId).toMovies()
+                    }
                 }
+            },
+            modifier = Modifier
+                .fillMaxSize(),
+            // .padding(horizontal = 8.dp)
+            // .clipToBounds(),
+            update = {
+                it.isLoaded = true
+                (it.list.adapter as SearchMoviesListAdapter).submitList(state.value)
+                moviesListAdapter.submitList(state.value)
             }
-        },
-        modifier = Modifier
-            .fillMaxSize(),
-        // .padding(horizontal = 8.dp)
-        // .clipToBounds(),
-        update = {
-            it.isLoaded = true
-            (it.list.adapter as SearchMoviesListAdapter).submitList(state.value)
-            moviesListAdapter.submitList(state.value)
+        )
+
+        Carousel(
+            items = state.value,
+            title = "Similar Movies",
+            refreshing = state.value.isEmpty(),
+            onItemClick = { movie, index ->
+                movieItemSelectedCallback.onClick(index, null, movie)
+            }
+        ) {
         }
-    )
+    }
 }
 
 @Composable

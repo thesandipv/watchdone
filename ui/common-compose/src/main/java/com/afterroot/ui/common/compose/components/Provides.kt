@@ -16,5 +16,10 @@ package com.afterroot.ui.common.compose.components
 
 import androidx.compose.runtime.compositionLocalOf
 import com.afterroot.watchdone.data.model.LocalUser
+import com.afterroot.watchdone.settings.Settings
 
 val LocalCurrentUser = compositionLocalOf { LocalUser() }
+
+val LocalTMDbBaseUrl = compositionLocalOf { "https://image.tmdb.org/t/p/" }
+val LocalPosterSize = compositionLocalOf { "w342" }
+val LocalSettings = compositionLocalOf<Settings> { throw IllegalStateException("LocalSettings is not initialized") }

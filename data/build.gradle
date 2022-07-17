@@ -21,8 +21,12 @@ plugins {
 
 apply from: "$rootDir/gradle/common-config.gradle"
 apply from: "$rootDir/gradle/common-config-library.gradle"
-//apply from: "$rootDir/gradle/compose.gradle" //Uncomment for Enabling Compose
 apply from: "$rootDir/gradle/oss-licence.gradle"
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 android {
     defaultConfig {
@@ -58,14 +62,9 @@ dependencies {
 
     api libs.google.gson
 
-    api libs.firebase.firestore
-    api libs.firebase.auth
-    api libs.firebase.config
-    api libs.firebase.messaging
+    implementation libs.bundles.firebase
 
-    api libs.kotlin.coroutines.core
-    api libs.kotlin.coroutines.android
-    api libs.kotlin.coroutines.play
+    implementation libs.bundles.coroutines
 
     api libs.androidx.room.room
     api libs.androidx.room.runtime
