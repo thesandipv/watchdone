@@ -83,12 +83,14 @@ jobs:
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
           COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
         with:
-          arguments: :app:assemble :app:bundle :app:lintDebug :app:testDebug --stacktrace
+          cache-read-only: false
+          arguments: :app:assemble :app:lintDebug :app:testDebug --stacktrace
 
       - name: Run Tests in app module
         uses: gradle/gradle-build-action@v2
         id: run-tests
         with:
+          cache-read-only: false
           arguments: :app:test
         env:
           TMDB_API: ${{ secrets.TMDB_API }}
