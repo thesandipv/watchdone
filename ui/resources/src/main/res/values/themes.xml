@@ -15,7 +15,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Watchdone.Main" parent="Theme.WatchDone.DayNight">
+    <style name="MyTheme.Watchdone.Main" parent="MyTheme.Watchdone.DayNight">
         <item name="android:fontFamily">@font/ubuntu</item>
         <item name="FilterChip">@style/ChipStyle.FilterChip</item>
         <item name="SortChipStyle">@style/ChipStyle.SortChip</item>
@@ -32,17 +32,17 @@
     </style>
 
     <!--TODO - Replace Splash with Android 12 Launch Screens-->
-    <style name="Theme.Watchdone.Launch" parent="Theme.Watchdone.NoActionBar.Translucent">
+    <style name="MyTheme.Watchdone.Launch" parent="MyTheme.Watchdone.NoActionBar.Translucent">
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 
-    <style name="Theme.Watchdone.FirebaseUI" parent="Theme.Watchdone.NoActionBar">
+    <style name="MyTheme.Watchdone.FirebaseUI" parent="MyTheme.Watchdone.NoActionBar">
         <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
     </style>
 
-    <style name="Theme.WatchDone.DayNight" parent="Theme.WatchDone" />
+    <style name="MyTheme.Watchdone.DayNight" parent="MyTheme.Watchdone" />
 
-    <style name="Theme.WatchDone" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="MyTheme.Watchdone" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -85,17 +85,17 @@
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 
-    <style name="Theme.WatchDone.ActionBar" parent="Theme.Watchdone.Main">
+    <style name="MyTheme.Watchdone.ActionBar" parent="MyTheme.Watchdone.Main">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
     </style>
 
-    <style name="Theme.Watchdone.NoActionBar" parent="Theme.WatchDone.ActionBar">
+    <style name="MyTheme.Watchdone.NoActionBar" parent="MyTheme.Watchdone.ActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Watchdone.NoActionBar.Translucent" parent="Theme.Watchdone.NoActionBar">
+    <style name="MyTheme.Watchdone.NoActionBar.Translucent" parent="MyTheme.Watchdone.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
