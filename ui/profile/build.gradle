@@ -25,4 +25,6 @@ dependencies {
     kapt libs.hilt.compiler
 
     implementation libs.firebase.ui.auth
+
+    implementation libs.bundles.coroutines
 }

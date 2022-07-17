@@ -3,10 +3,10 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-    id 'androidx.navigation.safeargs'
 }
 
 apply from: "$rootDir/gradle/common-config.gradle"
+apply from: "$rootDir/gradle/common-config-library.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
 android {
@@ -14,30 +14,27 @@ android {
         dataBinding true
         viewBinding true
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
     //All compose dependencies applied with compose.gradle
     implementation project(':base')
     implementation project(':data')
-    implementation project(':domain')
     implementation project(':ui:common')
     implementation project(':ui:common-compose')
-    implementation project(':ui:media')
     implementation project(':ui:resources')
 
-    implementation libs.androidx.constraintLayout
     implementation libs.androidx.core
-    implementation libs.androidx.fragment
     implementation libs.androidx.lifecycle.viewmodel
-    implementation libs.androidx.navigation.fragment
-    implementation libs.androidx.recyclerView
     implementation libs.androidx.transition
+    implementation libs.androidx.fragment
+    implementation libs.androidx.navigation.fragment
     implementation libs.bundles.lifecycle
 
     implementation libs.hilt.hilt
     implementation libs.hilt.compose
     kapt libs.hilt.compiler
-
-    implementation libs.materialProgress
 }

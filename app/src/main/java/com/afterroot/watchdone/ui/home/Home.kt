@@ -14,22 +14,18 @@
  */
 package com.afterroot.watchdone.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.PlaylistAddCheck
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
@@ -37,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -46,8 +41,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.afterroot.watchdone.ui.common.Screen
 import com.afterroot.watchdone.watchlist.Watchlist
-import com.google.accompanist.insets.navigationBarsPadding
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home() {
     val navController = rememberNavController()
@@ -135,52 +130,40 @@ internal fun HomeBottomNavigation(
     onNavigationSelected: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        color = MaterialTheme.colors.surface,
-        contentColor = contentColorFor(MaterialTheme.colors.surface),
-        elevation = 8.dp,
-        modifier = modifier
-    ) {
-        Row(
-            Modifier
-                .navigationBarsPadding()
-                .fillMaxWidth()
-                .height(56.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.PlaylistAddCheck,
-                        contentDescription = "Watchlist"
-                    )
-                },
-                label = { Text("Watchlist") },
-                selected = selectedNavigation == Screen.Watchlist,
-                onClick = { onNavigationSelected(Screen.Watchlist) },
-            )
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Dashboard,
-                        contentDescription = "Discover"
-                    )
-                },
-                label = { Text("Discover") },
-                selected = selectedNavigation == Screen.Discover,
-                onClick = { onNavigationSelected(Screen.Discover) },
-            )
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings"
-                    )
-                },
-                label = { Text("Settings") },
-                selected = selectedNavigation == Screen.Settings,
-                onClick = { onNavigationSelected(Screen.Settings) },
-            )
-        }
+
+    NavigationBar(modifier = modifier) {
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.PlaylistAddCheck,
+                    contentDescription = "Watchlist"
+                )
+            },
+            label = { Text("Watchlist") },
+            selected = selectedNavigation == Screen.Watchlist,
+            onClick = { onNavigationSelected(Screen.Watchlist) },
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Dashboard,
+                    contentDescription = "Discover"
+                )
+            },
+            label = { Text("Discover") },
+            selected = selectedNavigation == Screen.Discover,
+            onClick = { onNavigationSelected(Screen.Discover) },
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Settings,
+                    contentDescription = "Settings"
+                )
+            },
+            label = { Text("Settings") },
+            selected = selectedNavigation == Screen.Settings,
+            onClick = { onNavigationSelected(Screen.Settings) },
+        )
     }
 }

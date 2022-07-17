@@ -1,3 +1,10 @@
+//check project.path is in list of projects
+def composeProjects = [":data", ":ui:common-compose", ":ui:discover", ":ui:meidia", ":ui:search", ":ui:settings", ":ui:watchlist"]
+if (project.path in composeProjects) {
+    println "Compose Enabled for ${project.path}"
+    apply from: "$rootDir/gradle/compose.gradle"
+}
+
 android {
     compileSdkVersion SDK.COMPILE
 

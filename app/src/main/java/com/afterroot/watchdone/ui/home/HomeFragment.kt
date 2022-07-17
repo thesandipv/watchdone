@@ -45,7 +45,7 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.ui.common.compose.theme.Theme3
+import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.ui.common.compose.utils.CenteredRow
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.showStaticProgressDialog
@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val menuHost: MenuHost = requireActivity()
+        val menuHost: MenuHost = requireActivity() as MenuHost
         menuHost.addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -206,31 +206,32 @@ class HomeFragment : Fragment() {
         binding.chipGroup.apply {
             addView(sortChip)
 
-            addView(ComposeView(requireContext()).apply {
-                gravity = Gravity.CENTER
-                layoutParams =
-                    ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                setContent {
-                    Theme3(requireContext()) {
-                        CenteredRow {
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Divider(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(1.dp)
-                                    .padding(vertical = 8.dp)
-                            )
-                            Icon(
-                                imageVector = Icons.Rounded.FilterAlt,
-                                contentDescription = "Filter Icon",
-                                modifier = Modifier.padding(8.dp),
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-
+            addView(
+                ComposeView(requireContext()).apply {
+                    gravity = Gravity.CENTER
+                    layoutParams =
+                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    setContent {
+                        Theme(requireContext()) {
+                            CenteredRow {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp)
+                                        .padding(vertical = 8.dp)
+                                )
+                                Icon(
+                                    imageVector = Icons.Rounded.FilterAlt,
+                                    contentDescription = "Filter Icon",
+                                    modifier = Modifier.padding(8.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                         }
                     }
                 }
-            })
+            )
 
             watchStatusGroup.apply {
                 addView(isWatchedChip)
@@ -240,12 +241,12 @@ class HomeFragment : Fragment() {
         }
     }
 
-    //TODO Show loading
+    // TODO Show loading
     fun setLoading(isLoading: Boolean) {
         binding.progressBarHome.visible(isLoading)
     }
 
-    //TODO Show info message
+    // TODO Show info message
     fun infoMessage(show: Boolean, action: QueryAction = QueryAction.CLEAR) {
         binding.infoNoMovies.visible(show, AutoTransition())
         binding.infoTv.text =

@@ -23,19 +23,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Logout
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,7 +52,6 @@ import com.afterroot.data.model.NetworkUser
 import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FABSave
-import com.afterroot.ui.common.compose.components.SwipeDismissSnackbar
 import com.afterroot.ui.common.compose.components.UpActionButton
 import com.afterroot.ui.common.compose.theme.appBarTitleStyle
 import com.afterroot.ui.common.compose.utils.bottomNavigationPadding
@@ -72,7 +69,6 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -127,15 +123,15 @@ internal fun EditProfile(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = false, actions: (ProfileActions) -> Unit) {
     val profileState = viewModel.profile.collectAsState()
-    val scaffoldState = rememberScaffoldState()
     val viewState by rememberFlowWithLifecycle(viewModel.state).collectAsState(initial = ProfileViewState.Empty)
     val enteredState = remember { mutableStateOf(LocalUser()) }
     val keyboardController = LocalSoftwareKeyboardController.current
     // val networkUser = remember { mutableStateOf(NetworkUser()) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(profileState.value) {
         if (profileState.value is State.Success) {
@@ -151,7 +147,6 @@ internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = fals
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        scaffoldState = scaffoldState,
         topBar = {
             Box(
                 modifier = Modifier.statusBarsPadding(standalone)
@@ -192,19 +187,7 @@ internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = fals
                 }
             )
         },
-        snackbarHost = { snackbarHostState ->
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = { snackbarData ->
-                    SwipeDismissSnackbar(
-                        data = snackbarData,
-                        onDismiss = { viewModel.clearMessage() }
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
         Column(
             modifier = Modifier
@@ -288,16 +271,11 @@ fun UpdateProfilePrompt() {
             .padding(top = 16.dp)
             .padding(horizontal = 16.dp)
     ) {
-        CompositionLocalProvider(
-            LocalContentAlpha provides ContentAlpha.high,
-            content = {
-                Text(
-                    text = "Update LocalUser Name",
-                    textAlign = TextAlign.Center,
-                    style = appBarTitleStyle,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+        Text(
+            text = "Update LocalUser Name",
+            textAlign = TextAlign.Center,
+            style = appBarTitleStyle,
+            modifier = Modifier.fillMaxWidth()
         )
 
         TextField(

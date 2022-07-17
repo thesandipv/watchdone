@@ -19,7 +19,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.get()
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
     }
 }
 
@@ -28,4 +28,7 @@ dependencies {
     implementation libs.bundles.compose
 
     implementation libs.coil
+
+    debugImplementation "androidx.customview:customview:1.1.0"
+    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-rc01"
 }

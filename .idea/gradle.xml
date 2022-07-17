@@ -26,10 +26,10 @@
             <option value="$PROJECT_DIR$/ui/profile" />
             <option value="$PROJECT_DIR$/ui/resources" />
             <option value="$PROJECT_DIR$/ui/search" />
+            <option value="$PROJECT_DIR$/ui/settings" />
             <option value="$PROJECT_DIR$/ui/watchlist" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
