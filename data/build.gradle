@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    api project(':tmdbapi')
+    api project(':themoviedbapi')
     implementation project(':base')
     implementation project(':ui:resources')
     api project(':ards')
