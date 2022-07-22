@@ -4,3 +4,6 @@
 [submodule "core"]
 	path = core
 	url = https://github.com/afterroot/core.git
+[submodule "themoviedbapi"]
+	path = themoviedbapi
+	url = https://github.com/afterroot/themoviedbapi
