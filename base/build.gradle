@@ -33,4 +33,6 @@ dependencies {
     kapt libs.glide.compiler
 
     implementation libs.commonsCodec
+
+    api libs.timber
 }
