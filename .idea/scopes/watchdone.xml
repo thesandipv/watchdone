@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="watchdone" pattern="src[*]:com.afterroot.watchdone..*" />
+</component>

@@ -1,0 +1,9 @@
+<component name="CopyrightManager">
+  <settings>
+    <module2copyright>
+      <element module="themoviedbapi" copyright="themoviedbapi" />
+      <element module="ar-tmdbapi" copyright="ar-tmdbapi" />
+      <element module="watchdone" copyright="afterroot" />
+    </module2copyright>
+  </settings>
+</component>
