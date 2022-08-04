@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,11 +14,11 @@
  */
 package com.afterroot.watchdone.data.mapper
 
-import com.afterroot.tmdbapi.TvResultsPage
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.TV
+import info.movito.themoviedbapi.TvResultsPage
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.tv.TvSeries
 
 fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     id = id,

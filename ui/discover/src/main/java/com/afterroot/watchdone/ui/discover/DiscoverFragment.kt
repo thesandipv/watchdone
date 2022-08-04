@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,8 +28,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi2.api.DiscoverApi
+import com.afterroot.tmdbapi.api.DiscoverApi
 import com.afterroot.ui.common.compose.components.TextChipGroup
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.extensions.visible
@@ -43,6 +42,7 @@ import com.afterroot.watchdone.viewmodel.DiscoverActions
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
 import javax.inject.Inject

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,14 +16,19 @@ package com.afterroot.watchdone
 
 import androidx.annotation.Keep
 import androidx.multidex.MultiDexApplication
+import com.afterroot.watchdone.utils.whenBuildIs
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
 @Keep
 @HiltAndroidApp
 class App : MultiDexApplication() {
     override fun onCreate() {
-        super.onCreate()
         DynamicColors.applyToActivitiesIfAvailable(this)
+        super.onCreate()
+        whenBuildIs {
+            Timber.plant(Timber.DebugTree())
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,25 +14,9 @@
  */
 package com.afterroot.watchdone.di
 
-import com.afterroot.tmdbapi.TmdbApi
-import com.afterroot.tmdbapi2.Constants
-import com.afterroot.tmdbapi2.TMDbInterceptor
-import com.afterroot.tmdbapi2.api.AuthApi
-import com.afterroot.tmdbapi2.api.ConfigApi
-import com.afterroot.tmdbapi2.api.DiscoverApi
-import com.afterroot.tmdbapi2.api.GenresApi
-import com.afterroot.tmdbapi2.api.MoviesApi
-import com.afterroot.tmdbapi2.api.SearchApi
-import com.afterroot.tmdbapi2.api.TVApi
-import com.afterroot.tmdbapi2.repository.AuthRepository
-import com.afterroot.tmdbapi2.repository.ConfigRepository
-import com.afterroot.tmdbapi2.repository.DiscoverRepository
-import com.afterroot.tmdbapi2.repository.GenresRepository
-import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.tmdbapi2.repository.SearchRepository
-import com.afterroot.tmdbapi2.repository.TVRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.utils.whenBuildIs
+import com.squareup.okhttp.OkHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

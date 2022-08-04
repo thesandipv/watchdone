@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,6 @@
 package com.afterroot.watchdone.media.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,15 +28,10 @@ import androidx.navigation.findNavController
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.Multi.MediaType.MOVIE
-import com.afterroot.tmdbapi.model.Multi.MediaType.PERSON
-import com.afterroot.tmdbapi.model.Multi.MediaType.TV_SERIES
-import com.afterroot.tmdbapi.model.Multi.MediaType.valueOf
-import com.afterroot.tmdbapi2.model.Genre
-import com.afterroot.tmdbapi2.model.MovieAppendableResponses
-import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.tmdbapi2.repository.TVRepository
+import com.afterroot.tmdbapi.model.Genre
+import com.afterroot.tmdbapi.model.MovieAppendableResponses
+import com.afterroot.tmdbapi.repository.MoviesRepository
+import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.utils.extensions.visible
@@ -65,9 +59,14 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.getField
 import dagger.hilt.android.AndroidEntryPoint
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.Multi.MediaType.MOVIE
+import info.movito.themoviedbapi.model.Multi.MediaType.PERSON
+import info.movito.themoviedbapi.model.Multi.MediaType.TV_SERIES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 import com.afterroot.watchdone.resources.R as CommonR
@@ -97,7 +96,7 @@ class MediaInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val argMediaId = arguments?.getInt("mediaId")
-        val mediaType = arguments?.getString("type")?.let { valueOf(it.uppercase(Locale.getDefault())) }
+        val mediaType = arguments?.getString("type")?.let { Multi.MediaType.valueOf(it.uppercase(Locale.getDefault())) }
         if (argMediaId != null) {
             launchShowingProgress {
                 when (mediaType) {
@@ -127,11 +126,11 @@ class MediaInfoFragment : Fragment() {
                     viewModel.getSelectedMedia().observe(viewLifecycleOwner) {
                         when (it) {
                             is SelectedMedia.Movie -> {
-                                Log.d(TAG, "onViewCreated: ${it.data}")
+                                Timber.d("onViewCreated: ${it.data}")
                                 updateUI(movie = it.data)
                             }
                             is SelectedMedia.TV -> {
-                                Log.d(TAG, "onViewCreated: ${it.data}")
+                                Timber.d("onViewCreated: ${it.data}")
                                 updateUI(tv = it.data)
                             }
                         }

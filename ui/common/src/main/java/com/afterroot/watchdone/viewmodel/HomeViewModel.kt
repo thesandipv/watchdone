@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,11 +21,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.afterroot.tmdbapi.model.core.MovieResultsPage
-import com.afterroot.tmdbapi2.model.RequestBodyToken
-import com.afterroot.tmdbapi2.repository.AuthRepository
-import com.afterroot.tmdbapi2.repository.GenresRepository
-import com.afterroot.tmdbapi2.repository.MoviesRepository
+import com.afterroot.tmdbapi.model.RequestBodyToken
+import com.afterroot.tmdbapi.repository.AuthRepository
+import com.afterroot.tmdbapi.repository.GenresRepository
+import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
@@ -35,8 +33,10 @@ import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import info.movito.themoviedbapi.model.core.MovieResultsPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import com.google.firebase.firestore.Query as FirestoreQuery
 
@@ -89,7 +89,7 @@ class HomeViewModel @Inject constructor(
                 } as MutableLiveData<MovieResultsPage>
             } catch (e: Exception) {
                 error.value = Event(e.message!!)
-                Log.e("TMDbApi", "getTrendingMovies: ${e.message}")
+                Timber.e(e, "getTrendingMovies: ${e.message}")
             }
         }
         return trendingMovies
