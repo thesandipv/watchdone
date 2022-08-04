@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,19 +14,19 @@
  */
 package com.afterroot.watchdone.data.model
 
-import com.afterroot.tmdbapi.model.ContentRating
-import com.afterroot.tmdbapi.model.Credits
-import com.afterroot.tmdbapi.model.ExternalIds
-import com.afterroot.tmdbapi.model.MovieImages
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.Video
-import com.afterroot.tmdbapi.model.core.ResultsPage
-import com.afterroot.tmdbapi.model.keywords.Keyword
-import com.afterroot.tmdbapi.model.people.Person
-import com.afterroot.tmdbapi.model.tv.Network
-import com.afterroot.tmdbapi.model.tv.TvSeason
-import com.afterroot.tmdbapi.model.tv.TvSeries
-import com.afterroot.tmdbapi2.model.Genre
+import com.afterroot.tmdbapi.model.Genre
+import info.movito.themoviedbapi.model.ContentRating
+import info.movito.themoviedbapi.model.Credits
+import info.movito.themoviedbapi.model.ExternalIds
+import info.movito.themoviedbapi.model.MovieImages
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.Video
+import info.movito.themoviedbapi.model.core.ResultsPage
+import info.movito.themoviedbapi.model.keywords.Keyword
+import info.movito.themoviedbapi.model.people.Person
+import info.movito.themoviedbapi.model.tv.Network
+import info.movito.themoviedbapi.model.tv.TvSeason
+import info.movito.themoviedbapi.model.tv.TvSeries
 
 data class TV(
     // Info

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,23 +14,23 @@
  */
 package com.afterroot.watchdone.data.model
 
-import com.afterroot.tmdbapi.TmdbMovies
-import com.afterroot.tmdbapi.model.AlternativeTitle
-import com.afterroot.tmdbapi.model.Collection
-import com.afterroot.tmdbapi.model.Credits
-import com.afterroot.tmdbapi.model.Language
-import com.afterroot.tmdbapi.model.MovieImages
-import com.afterroot.tmdbapi.model.MovieList
-import com.afterroot.tmdbapi.model.MovieTranslations
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.NetworkMovie
-import com.afterroot.tmdbapi.model.ProductionCompany
-import com.afterroot.tmdbapi.model.ProductionCountry
-import com.afterroot.tmdbapi.model.Reviews
-import com.afterroot.tmdbapi.model.Video
-import com.afterroot.tmdbapi.model.core.MovieKeywords
-import com.afterroot.tmdbapi.model.core.ResultsPage
-import com.afterroot.tmdbapi2.model.Genre
+import com.afterroot.tmdbapi.model.Genre
+import info.movito.themoviedbapi.TmdbMovies
+import info.movito.themoviedbapi.model.AlternativeTitle
+import info.movito.themoviedbapi.model.Collection
+import info.movito.themoviedbapi.model.Credits
+import info.movito.themoviedbapi.model.Language
+import info.movito.themoviedbapi.model.MovieImages
+import info.movito.themoviedbapi.model.MovieList
+import info.movito.themoviedbapi.model.MovieTranslations
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.NetworkMovie
+import info.movito.themoviedbapi.model.ProductionCompany
+import info.movito.themoviedbapi.model.ProductionCountry
+import info.movito.themoviedbapi.model.Reviews
+import info.movito.themoviedbapi.model.Video
+import info.movito.themoviedbapi.model.core.MovieKeywords
+import info.movito.themoviedbapi.model.core.ResultsPage
 
 data class Movie(
     // Movie Info

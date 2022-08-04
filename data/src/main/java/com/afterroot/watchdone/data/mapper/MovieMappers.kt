@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,11 +14,11 @@
  */
 package com.afterroot.watchdone.data.mapper
 
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.NetworkMovie
-import com.afterroot.tmdbapi.model.core.MovieResultsPage
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.NetworkMovie
+import info.movito.themoviedbapi.model.core.MovieResultsPage
 
 /**
  * Maps [NetworkMovie] to [Movie]

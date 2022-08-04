@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.afterroot.tmdbapi2.repository.AuthRepository
+import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding

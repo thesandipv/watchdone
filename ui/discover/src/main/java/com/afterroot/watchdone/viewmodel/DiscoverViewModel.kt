@@ -17,13 +17,13 @@ package com.afterroot.watchdone.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.afterroot.tmdbapi.model.Discover
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi2.repository.DiscoverRepository
+import com.afterroot.tmdbapi.repository.DiscoverRepository
 import com.afterroot.watchdone.base.compose.Actions
 import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.utils.logD
 import dagger.hilt.android.lifecycle.HiltViewModel
+import info.movito.themoviedbapi.model.Discover
+import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch

@@ -212,6 +212,8 @@ dependencies {
     implementation libs.hilt.compose
     kapt libs.hilt.compiler
 
+    kapt libs.androidx.room.compiler
+
     implementation libs.google.ossLic
     implementation libs.google.material
     implementation libs.bundles.firebase

@@ -14,9 +14,9 @@
  */
 package com.afterroot.watchdone.data.mapper
 
-import com.afterroot.tmdbapi.TvResultsPage
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.core.MovieResultsPage
+import info.movito.themoviedbapi.TvResultsPage
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.core.MovieResultsPage
 
 fun MovieResultsPage.toMulti(): List<Multi> {
     return this.results.mapNotNull {

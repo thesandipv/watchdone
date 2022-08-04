@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2022 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -38,7 +39,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.tmdbapi2.repository.ConfigRepository
+import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.progress
 import com.afterroot.utils.extensions.visible
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
 
-        addMenuProvider(object : MenuProvider {
+        (this as ComponentActivity).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_common, menu)
             }
@@ -152,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                     configRepository.getConfig().imagesConfig?.posterSizes?.map {
                         set.add(it)
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                 } finally {
                     settings.posterSizes = set
                 }
