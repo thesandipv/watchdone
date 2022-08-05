@@ -15,14 +15,14 @@
 package com.afterroot.watchdone.data.mapper
 
 import com.afterroot.data.model.NetworkUser
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.NetworkMovie
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.NetworkMovie
 
 fun QuerySnapshot.toMulti(): List<Multi> {
     val list = mutableListOf<Multi>()

@@ -19,10 +19,10 @@ import androidx.collection.SparseArrayCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.Types
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import info.movito.themoviedbapi.Types
 
 class DelegateListAdapter(
     var settings: Settings,

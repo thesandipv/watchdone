@@ -22,7 +22,7 @@
 
         <variable
             name="personDetail"
-            type="com.afterroot.tmdbapi.model.people.Person" />
+            type="info.movito.themoviedbapi.model.people.Person" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

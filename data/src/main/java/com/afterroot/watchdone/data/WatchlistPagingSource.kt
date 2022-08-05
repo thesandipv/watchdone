@@ -17,7 +17,6 @@ package com.afterroot.watchdone.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toMulti
@@ -29,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.Source
+import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.tasks.await
 
 class WatchlistPagingSource(

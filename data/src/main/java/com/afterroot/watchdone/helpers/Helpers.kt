@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.helpers
 
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toDBMedia
 import com.afterroot.watchdone.data.model.DBMedia
@@ -25,6 +24,7 @@ import com.afterroot.watchdone.utils.collectionWatchlistItems
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.tasks.await
 
 /**

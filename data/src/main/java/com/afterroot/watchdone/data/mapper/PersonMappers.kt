@@ -14,7 +14,7 @@
  */
 package com.afterroot.watchdone.data.mapper
 
-import com.afterroot.tmdbapi.TmdbPeople
-import com.afterroot.tmdbapi.model.people.Person
+import info.movito.themoviedbapi.TmdbPeople
+import info.movito.themoviedbapi.model.people.Person
 
 fun TmdbPeople.PersonResultsPage.toPersons(): List<Person> = this.results

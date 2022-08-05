@@ -22,11 +22,11 @@
 
         <variable
             name="personDetail"
-            type="com.afterroot.tmdbapi.model.people.PersonCast" />
+            type="info.movito.themoviedbapi.model.people.PersonCast" />
 
         <variable
             name="personCrew"
-            type="com.afterroot.tmdbapi.model.people.PersonCrew" />
+            type="info.movito.themoviedbapi.model.people.PersonCrew" />
     </data>
 
     <androidx.cardview.widget.CardView

@@ -21,15 +21,15 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.people.Person
-import com.afterroot.tmdbapi.model.people.PersonCast
-import com.afterroot.tmdbapi.model.people.PersonCrew
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.base.adapter.BaseListAdapter
 import com.afterroot.watchdone.diff.CastDiffCallback
 import com.afterroot.watchdone.media.databinding.ListItemCastBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getScreenWidth
+import info.movito.themoviedbapi.model.people.Person
+import info.movito.themoviedbapi.model.people.PersonCast
+import info.movito.themoviedbapi.model.people.PersonCrew
 import com.afterroot.watchdone.resources.R as CommonR
 
 class CastListAdapter(var settings: Settings) : BaseListAdapter<Person>(CastDiffCallback()) {

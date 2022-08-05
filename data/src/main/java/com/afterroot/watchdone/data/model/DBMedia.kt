@@ -14,9 +14,9 @@
  */
 package com.afterroot.watchdone.data.model
 
-import com.afterroot.tmdbapi.model.Multi
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
+import info.movito.themoviedbapi.model.Multi
 
 data class DBMedia(
     val id: Int = 0,

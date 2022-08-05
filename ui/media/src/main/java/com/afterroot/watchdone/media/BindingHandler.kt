@@ -16,7 +16,7 @@ package com.afterroot.watchdone.media
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.afterroot.tmdbapi2.model.Genre
+import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.watchdone.base.GlideApp
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory

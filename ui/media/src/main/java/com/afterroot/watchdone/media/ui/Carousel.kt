@@ -48,12 +48,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.ui.common.compose.components.AutoSizedCircularProgressIndicator
 import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import info.movito.themoviedbapi.model.Multi
 
 @Composable
 fun <T : Multi> Carousel(

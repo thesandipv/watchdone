@@ -18,12 +18,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.diff.MultiDiffCallback
 import com.afterroot.watchdone.media.databinding.ListItemMovieBinding
 import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import info.movito.themoviedbapi.model.Multi
 
 class MultiPagingAdapter(private val callback: ItemSelectedCallback<Multi>, var settings: Settings) :
     PagingDataAdapter<Multi, RecyclerView.ViewHolder>(MultiDiffCallback()) {

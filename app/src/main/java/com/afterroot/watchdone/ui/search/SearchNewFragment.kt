@@ -29,11 +29,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import com.afterroot.tmdbapi.TmdbPeople
-import com.afterroot.tmdbapi.TvResultsPage
-import com.afterroot.tmdbapi.model.Multi
-import com.afterroot.tmdbapi.model.core.MovieResultsPage
-import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.mapper.toPersons
 import com.afterroot.watchdone.data.mapper.toTV
@@ -52,6 +47,11 @@ import com.afterroot.watchdone.utils.showKeyboard
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import dagger.hilt.android.AndroidEntryPoint
+import info.movito.themoviedbapi.TmdbPeople
+import info.movito.themoviedbapi.TvResultsPage
+import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.core.MovieResultsPage
+import info.movito.themoviedbapi.model.people.Person
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -21,7 +21,7 @@
 
         <import type="java.util.List" />
 
-        <import type="com.afterroot.tmdbapi2.model.Genre" />
+        <import type="com.afterroot.tmdbapi.model.Genre" />
 
         <variable
             name="tvSeries"

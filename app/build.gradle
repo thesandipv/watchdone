@@ -226,6 +226,7 @@ dependencies {
     implementation libs.materialProgress
 
     implementation libs.okhttp.okhttp
+    implementation libs.okhttp.logging
     implementation libs.retrofit.retrofit
     implementation libs.retrofit.jackson
 
