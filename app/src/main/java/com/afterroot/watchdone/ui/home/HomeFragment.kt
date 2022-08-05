@@ -44,7 +44,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.ui.common.compose.utils.CenteredRow
 import com.afterroot.utils.extensions.getDrawableExt
@@ -75,6 +74,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
+import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast

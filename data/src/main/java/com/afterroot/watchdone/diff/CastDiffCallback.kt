@@ -15,7 +15,7 @@
 package com.afterroot.watchdone.diff
 
 import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.tmdbapi.model.people.Person
+import info.movito.themoviedbapi.model.people.Person
 
 class CastDiffCallback : DiffUtil.ItemCallback<Person>() {
     override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {

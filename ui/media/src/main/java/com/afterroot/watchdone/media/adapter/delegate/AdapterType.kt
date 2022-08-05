@@ -16,7 +16,7 @@ package com.afterroot.watchdone.media.adapter.delegate
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.Multi
+import info.movito.themoviedbapi.model.Multi
 
 interface AdapterType {
     fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder

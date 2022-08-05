@@ -21,7 +21,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.WatchlistPagingSource
@@ -32,6 +31,7 @@ import com.afterroot.watchdone.utils.logD
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow

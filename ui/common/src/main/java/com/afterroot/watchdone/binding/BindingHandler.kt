@@ -16,13 +16,13 @@ package com.afterroot.watchdone.binding
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.afterroot.tmdbapi.model.NetworkMovie
-import com.afterroot.tmdbapi.model.tv.TvSeries
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
+import info.movito.themoviedbapi.model.NetworkMovie
+import info.movito.themoviedbapi.model.tv.TvSeries
 
 private val crossFadeFactory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
 val transitionOptions = DrawableTransitionOptions.with(crossFadeFactory)

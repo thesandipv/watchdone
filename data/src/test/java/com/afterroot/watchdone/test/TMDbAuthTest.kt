@@ -14,8 +14,8 @@
  */
 package com.afterroot.watchdone.test
 
-import com.afterroot.tmdbapi2.model.RequestBodyToken
-import com.afterroot.tmdbapi2.repository.AuthRepository
+import com.afterroot.tmdbapi.model.RequestBodyToken
+import com.afterroot.tmdbapi.repository.AuthRepository
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

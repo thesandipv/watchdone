@@ -22,8 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.tmdbapi2.repository.TVRepository
+import com.afterroot.tmdbapi.repository.MoviesRepository
+import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie

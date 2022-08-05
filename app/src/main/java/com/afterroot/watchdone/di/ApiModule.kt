@@ -14,13 +14,29 @@
  */
 package com.afterroot.watchdone.di
 
+import com.afterroot.tmdbapi.Constants
+import com.afterroot.tmdbapi.TMDbInterceptor
+import com.afterroot.tmdbapi.api.AuthApi
+import com.afterroot.tmdbapi.api.ConfigApi
+import com.afterroot.tmdbapi.api.DiscoverApi
+import com.afterroot.tmdbapi.api.GenresApi
+import com.afterroot.tmdbapi.api.MoviesApi
+import com.afterroot.tmdbapi.api.SearchApi
+import com.afterroot.tmdbapi.api.TVApi
+import com.afterroot.tmdbapi.repository.AuthRepository
+import com.afterroot.tmdbapi.repository.ConfigRepository
+import com.afterroot.tmdbapi.repository.DiscoverRepository
+import com.afterroot.tmdbapi.repository.GenresRepository
+import com.afterroot.tmdbapi.repository.MoviesRepository
+import com.afterroot.tmdbapi.repository.SearchRepository
+import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.utils.whenBuildIs
-import com.squareup.okhttp.OkHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import info.movito.themoviedbapi.TmdbApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

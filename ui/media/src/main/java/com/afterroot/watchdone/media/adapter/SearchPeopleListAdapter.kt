@@ -21,7 +21,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.people.Person
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.base.adapter.BaseListAdapter
 import com.afterroot.watchdone.diff.PeopleDiffCallback
@@ -29,6 +28,7 @@ import com.afterroot.watchdone.media.databinding.ListItemPersonBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
+import info.movito.themoviedbapi.model.people.Person
 import com.afterroot.watchdone.resources.R as CommonR
 
 class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>, var settings: Settings) :

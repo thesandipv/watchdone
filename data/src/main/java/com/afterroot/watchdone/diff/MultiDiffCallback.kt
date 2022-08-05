@@ -15,9 +15,9 @@
 package com.afterroot.watchdone.diff
 
 import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import info.movito.themoviedbapi.model.Multi
 
 class MultiDiffCallback : DiffUtil.ItemCallback<Multi>() {
     override fun areItemsTheSame(oldItem: Multi, newItem: Multi): Boolean {

@@ -22,7 +22,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.afterroot.tmdbapi.model.Multi
 import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.binding.transitionOptions
@@ -34,6 +33,7 @@ import com.afterroot.watchdone.media.databinding.ListItemTvBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
+import info.movito.themoviedbapi.model.Multi
 import com.afterroot.watchdone.resources.R as CommonR
 
 class MultiAdapter(val callback: ItemSelectedCallback<Multi>, var settings: Settings) :

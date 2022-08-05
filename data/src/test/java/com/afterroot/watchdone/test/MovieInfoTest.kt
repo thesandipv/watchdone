@@ -14,12 +14,11 @@
  */
 package com.afterroot.watchdone.test
 
-import com.afterroot.tmdbapi.model.ArtworkType
-import com.afterroot.tmdbapi2.model.MovieAppendableResponses.images
-import com.afterroot.tmdbapi2.model.MovieAppendableResponses.videos
-import com.afterroot.tmdbapi2.repository.MoviesRepository
-import com.afterroot.tmdbapi2.repository.SearchRepository
+import com.afterroot.tmdbapi.model.MovieAppendableResponses
+import com.afterroot.tmdbapi.repository.MoviesRepository
+import com.afterroot.tmdbapi.repository.SearchRepository
 import dagger.hilt.android.testing.HiltAndroidTest
+import info.movito.themoviedbapi.model.ArtworkType
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -42,7 +41,7 @@ class MovieInfoTest : DataTest() {
     @Test
     fun `Full Movie Info`() {
         launch {
-            val response = moviesRepository.getFullMovieInfo(550, images, videos)
+            val response = moviesRepository.getFullMovieInfo(550, MovieAppendableResponses.images, MovieAppendableResponses.videos)
             Assert.assertNotNull("Images is null", response.images(ArtworkType.POSTER))
             response.images(ArtworkType.POSTER)?.forEach {
                 println(it.toString())
