@@ -66,8 +66,10 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             android:contentDescription="@string/contentDesc"
-            app:layout_anchor="@id/toolbar"
             app:srcCompat="@drawable/ic_add" />
 
         <com.google.android.material.bottomappbar.BottomAppBar
@@ -75,11 +77,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:fabAlignmentMode="center"
-            app:fabAnimationMode="slide"
-            app:fabCradleRoundedCornerRadius="@dimen/fab_cradle_radius"
             app:hideOnScroll="true"
-            app:paddingBottomSystemWindowInsets="true"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:paddingBottomSystemWindowInsets="true">
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
