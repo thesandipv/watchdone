@@ -9,7 +9,7 @@
 
         <variable
             name="personDetail"
-            type=".Person" />
+            type="info.movito.themoviedbapi.model.people.Person" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
