@@ -20,13 +20,13 @@ import androidx.lifecycle.viewModelScope
 import com.afterroot.tmdbapi.repository.DiscoverRepository
 import com.afterroot.watchdone.base.compose.Actions
 import com.afterroot.watchdone.data.mapper.toMulti
-import com.afterroot.watchdone.utils.logD
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Discover
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +38,7 @@ class DiscoverViewModel @Inject constructor(
     private val media = MutableSharedFlow<List<Multi>>()
 
     init {
-        logD("DiscoverViewModel/Init", "Start")
+        Timber.d("init: Start")
 
         viewModelScope.launch {
             actions.collect { action ->
@@ -62,7 +62,7 @@ class DiscoverViewModel @Inject constructor(
     }
 
     internal fun submitAction(action: DiscoverActions) {
-        logD("DiscoverViewModel/submitAction", "Action: $action")
+        Timber.d("submitAction: Action $action")
         viewModelScope.launch {
             actions.emit(action)
         }

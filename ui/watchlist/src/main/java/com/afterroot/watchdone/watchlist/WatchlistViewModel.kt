@@ -27,7 +27,6 @@ import com.afterroot.watchdone.data.WatchlistPagingSource
 import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.utils.logD
 import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +41,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,11 +65,11 @@ class WatchlistViewModel @Inject constructor(
     )
 
     init {
-        logD("WatchlistViewModel/init", "Initializing")
+        Timber.d("init: Initializing")
 
         viewModelScope.launch {
             actions.collect { action ->
-                logD("WatchlistViewModel/actions", "Collected action: $action")
+                Timber.d("actions: Collected action: $action")
                 when (action) {
                     is WatchlistActions.SetQueryAction -> {
                         savedStateHandle["QUERY_ACTION"] = action.queryAction.name
