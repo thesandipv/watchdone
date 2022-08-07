@@ -22,14 +22,13 @@ import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.utils.logD
-import com.afterroot.watchdone.utils.logE
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.Source
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class WatchlistPagingSource(
     private val firestore: FirebaseFirestore,
@@ -104,7 +103,7 @@ class WatchlistPagingSource(
                 .limit(20).get(currentPageSource).await()
 
             if (currentPage.isEmpty && currentPageSource == Source.CACHE) {
-                logD("WatchlistPagingSource/load", "Cache is empty. Getting data from Server.")
+                Timber.d("load: Cache is empty. Getting data from Server.")
                 currentPage = params.key ?: baseQuery.orderBy().filterBy().limit(20).get().await()
             }
 
@@ -119,7 +118,7 @@ class WatchlistPagingSource(
 
                 if (nextPage?.isEmpty != true) {
                     if (currentPage.documents.last() == nextPage?.documents?.first()) {
-                        logD("WatchlistPagingSource/load", "No more data. End of list.")
+                        Timber.d("load: No more data. End of list.")
                         nextPage = null
                     }
                 }
@@ -131,8 +130,7 @@ class WatchlistPagingSource(
                 nextKey = nextPage
             )
         } catch (e: Exception) {
-            logE("WatchlistPagingSource/load", "Error: ${e.message}")
-            e.printStackTrace()
+            Timber.e(e, "load: ${e.message}")
             LoadResult.Error(e)
         }
     }

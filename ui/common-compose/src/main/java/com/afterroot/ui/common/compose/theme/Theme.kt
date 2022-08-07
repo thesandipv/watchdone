@@ -16,10 +16,13 @@ package com.afterroot.ui.common.compose.theme
 
 import android.content.Context
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 @Composable
@@ -30,5 +33,15 @@ fun Theme(context: Context, content: @Composable () -> Unit) {
         darkColorScheme()
     }
 
-    MaterialTheme(colorScheme = colorScheme, typography = MaterialTheme.typography, content = content)
+    val lightColorScheme: ColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        dynamicLightColorScheme(context)
+    } else {
+        lightColorScheme()
+    }
+
+    MaterialTheme(
+        colorScheme = if (isSystemInDarkTheme()) colorScheme else lightColorScheme,
+        typography = MaterialTheme.typography,
+        content = content
+    )
 }

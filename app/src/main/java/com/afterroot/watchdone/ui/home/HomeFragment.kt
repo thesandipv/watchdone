@@ -61,7 +61,6 @@ import com.afterroot.watchdone.media.adapter.MultiAdapter
 import com.afterroot.watchdone.media.adapter.MultiPagingAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.utils.logD
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -78,6 +77,7 @@ import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import com.afterroot.watchdone.resources.R as CommonR
@@ -153,7 +153,7 @@ class HomeFragment : Fragment() {
             watchlistViewModel.uiActions.collect { action ->
                 when (action) {
                     WatchlistActions.Refresh -> {
-                        logD("HomeFragment/onViewCreated/uiActions", "Refresh")
+                        Timber.d("UiAction: Refresh")
                         homeScreenPagingAdapter.refresh()
                     }
                     else -> {
@@ -170,13 +170,14 @@ class HomeFragment : Fragment() {
     private var isWatchedChecked: Boolean = false
     private lateinit var sortChip: Chip
     private fun setUpChips() {
+        // TODO Remember chip state using view model.
         sortChip = Chip(requireContext(), null, CommonR.attr.SortChipStyle).apply {
-            text = if (settings.ascSort) "Sort by Ascending" else "Sort by Descending"
+            text = if (settings.ascSort) "Ascending" else "Descending"
             chipIcon = requireContext().getDrawableExt(CommonR.drawable.ic_sort)
             setOnClickListener {
                 val curr = settings.ascSort
                 settings.ascSort = !curr
-                this.text = if (!settings.ascSort) "Sort by Ascending" else "Sort by Descending"
+                this.text = if (!settings.ascSort) "Ascending" else "Descending"
                 watchlistViewModel.submitAction(WatchlistActions.Refresh)
             }
         }
