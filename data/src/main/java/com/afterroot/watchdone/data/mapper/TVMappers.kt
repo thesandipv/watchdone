@@ -38,7 +38,7 @@ fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     posterPath = posterPath,
     numberOfEpisodes = numberOfEpisodes,
     numberOfSeasons = numberOfSeasons,
-    seasons = seasons,
+    seasons = seasons.toSeasons(),
     recommendations = recommendations,
     userRating = userRating,
     voteAverage = voteAverage,
@@ -49,8 +49,8 @@ fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     credits = credits,
     externalIds = externalIds,
     images = images,
-    videos = videos,
-    keywords = keywords,
+    videos = getVideos(),
+    keywords = getKeywords(),
     // Additional
     isWatched = isWatched
 )
