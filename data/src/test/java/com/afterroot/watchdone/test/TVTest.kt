@@ -14,8 +14,8 @@
  */
 package com.afterroot.watchdone.test
 
-import com.afterroot.tmdbapi2.repository.SearchRepository
-import com.afterroot.tmdbapi2.repository.TVRepository
+import com.afterroot.tmdbapi.repository.SearchRepository
+import com.afterroot.tmdbapi.repository.TVRepository
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -42,6 +42,14 @@ class TVTest : DataTest() {
             val result = searchRepository.searchTv("Game of Thrones")
             Assert.assertNotNull(result)
             Assert.assertNotNull(result.results)
+        }
+    }
+
+    @Test
+    fun `Get Season Info`() {
+        launch {
+            val season1 = tvRepository.getSeason(1399, 1)
+            Assert.assertEquals("Season 1", season1.name)
         }
     }
 
