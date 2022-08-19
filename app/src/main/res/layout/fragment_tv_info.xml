@@ -165,7 +165,7 @@
                     android:paddingRight="@dimen/padding_horizontal"
                     android:paddingBottom="@dimen/padding_vertical_half"
                     android:text="@string/title_cast"
-                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6"
+                    android:textAppearance="@style/TextAppearance.WatchDone.HeadlineSmall"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@{title}"
-                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6" />
+                    android:textAppearance="@style/TextAppearance.WatchDone.HeadlineSmall" />
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
 

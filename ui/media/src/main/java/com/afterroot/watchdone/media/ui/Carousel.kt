@@ -183,7 +183,7 @@ fun Header(
         Text(
             text = title,
             color = contentColorFor(MaterialTheme.colorScheme.surface),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(vertical = 8.dp)
