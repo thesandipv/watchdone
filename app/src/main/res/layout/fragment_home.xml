@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/text_info_no_movies"
-                android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Body1" />
+                android:textAppearance="@style/TextAppearance.WatchDone.HeadlineMedium" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

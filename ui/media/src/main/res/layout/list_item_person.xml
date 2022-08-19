@@ -40,7 +40,7 @@
             android:paddingEnd="@dimen/padding_horizontal_half"
             android:paddingRight="@dimen/padding_horizontal_half"
             android:text="@{personDetail.name}"
-            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
+            android:textAppearance="@style/TextAppearance.WatchDone.BodySmall"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
