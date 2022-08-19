@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,10 +36,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -120,7 +121,6 @@ internal fun <T : Multi> CarouselInt(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PosterCard(
     media: Multi,
@@ -145,7 +145,9 @@ fun PosterCard(
     }
     Card(modifier = modifier) {
         Box(
-            modifier = if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier
+            modifier = Modifier
+                .fillMaxSize()
+                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
         ) {
             Text(
                 text = title ?: "No title",
@@ -180,6 +182,7 @@ fun Header(
 
         Text(
             text = title,
+            color = contentColorFor(MaterialTheme.colorScheme.surface),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .align(Alignment.CenterVertically)

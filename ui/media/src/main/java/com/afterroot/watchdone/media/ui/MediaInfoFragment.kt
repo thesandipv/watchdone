@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,6 +33,8 @@ import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.tmdbapi.model.MovieAppendableResponses
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.TVRepository
+import com.afterroot.ui.common.compose.components.LocalPosterSize
+import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.utils.extensions.visible
@@ -243,24 +246,29 @@ class MediaInfoFragment : Fragment() {
                     }
 
                     composeView.setContent {
-                        Column {
-                            if (movie != null) {
-                                SimilarMovies(
-                                    movie.id,
-                                    this@MediaInfoFragment.settings,
-                                    lifecycleScope,
-                                    moviesRepository,
-                                    similarMovieItemSelectedCallback
-                                )
-                            }
-                            if (tv != null) {
-                                SimilarTV(
-                                    tv.id,
-                                    this@MediaInfoFragment.settings,
-                                    lifecycleScope,
-                                    tvRepository,
-                                    similarTVItemSelectedCallback
-                                )
+                        Theme(context = requireContext()) {
+                            CompositionLocalProvider(
+                                LocalPosterSize provides (
+                                    this@MediaInfoFragment.settings.imageSize
+                                        ?: this@MediaInfoFragment.settings.defaultImagesSize
+                                    )
+                            ) {
+                                Column {
+                                    if (movie != null) {
+                                        SimilarMovies(
+                                            movie.id,
+                                            moviesRepository,
+                                            similarMovieItemSelectedCallback
+                                        )
+                                    }
+                                    if (tv != null) {
+                                        SimilarTV(
+                                            tv.id,
+                                            tvRepository,
+                                            similarTVItemSelectedCallback
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
