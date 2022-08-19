@@ -79,4 +79,6 @@ data class Movie(
 ) : Multi {
     override val mediaType: Multi.MediaType
         get() = Multi.MediaType.MOVIE
+
+    fun rating(): String = String.format("%.1f", voteAverage)
 }

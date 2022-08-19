@@ -36,8 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            tools:targetApi="lollipop" />
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <View
             android:layout_width="0dp"
@@ -108,7 +107,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:text="@{movieDb.voteAverage.toString()}"
+            android:text="@{movieDb.rating()}"
             android:textColor="@android:color/white"
             app:drawableStartCompat="@drawable/ic_star"
             app:drawableTint="@android:color/white"

@@ -66,4 +66,6 @@ data class TV(
 
     // Just for Firestore
     var releaseDate = firstAirDate
+
+    fun rating(): String = String.format("%.1f", voteAverage)
 }
