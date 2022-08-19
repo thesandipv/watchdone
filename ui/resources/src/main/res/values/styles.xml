@@ -17,4 +17,7 @@
     <style name="TextAppearance.WatchDone.Title" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textColor">?attr/colorOnPrimarySurface</item>
     </style>
+
+    <style name="Watchdone.Widget.ButtonMarkWatched" parent="Widget.Material3.Button.OutlinedButton.Icon"/>
+    <style name="Watchdone.Widget.ButtonAddToWatchlist" parent="Widget.Material3.Button.Icon"/>
 </resources>

@@ -119,6 +119,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/action_add_wlist"
+                    style="@style/Watchdone.Widget.ButtonAddToWatchlist"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_horizontal"
@@ -134,7 +135,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/action_mark_watched"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Watchdone.Widget.ButtonMarkWatched"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_horizontal"

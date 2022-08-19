@@ -72,5 +72,5 @@
     <string name="text_search_tv">TV</string>
     <string name="text_search_people">People</string>
     <string name="search_hint">Search Movies, TV and People…</string>
-    <string name="media_info_rating_text">%s/10</string>
+    <string name="media_info_rating_text">%.1f/10</string>
 </resources>
