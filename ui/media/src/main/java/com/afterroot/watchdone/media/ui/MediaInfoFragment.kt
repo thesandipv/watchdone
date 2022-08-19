@@ -265,7 +265,7 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
 
-                    ratingText.text = getString(CommonR.string.media_info_rating_text, rating.toString())
+                    ratingText.text = getString(CommonR.string.media_info_rating_text, rating)
                 }
             }
             // menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
@@ -376,10 +376,5 @@ class MediaInfoFragment : Fragment() {
         this.set(hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)), SetOptions.merge()).addOnCompleteListener {
             doOnSuccess?.invoke()
         }
-    }
-
-    companion object {
-        @Suppress("unused")
-        private const val TAG = "MovieInfoFragment"
     }
 }
