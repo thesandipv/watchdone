@@ -51,6 +51,8 @@ class Settings @Inject constructor(
         putStringSet(key, value)
     }
 
+    val defaultImagesSize = DEFAULT_IMAGE_SIZE
+
     // Template
     var isFirstInstalled
         get() = preferences.getBoolean(Constants.PREF_KEY_FIRST_INSTALL, true)
@@ -62,7 +64,7 @@ class Settings @Inject constructor(
         get() = preferences.getStringSet(Constants.PREF_KEY_POSTER_SIZES, null)
         set(value) = putStringSet(Constants.PREF_KEY_POSTER_SIZES, value)
     var imageSize: String?
-        get() = preferences.getString(Constants.PREF_KEY_IMAGE_SIZE, "w342")
+        get() = preferences.getString(Constants.PREF_KEY_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
         set(value) = putString(Constants.PREF_KEY_IMAGE_SIZE, value)
     var ascSort: Boolean
         get() = preferences.getBoolean(Constants.PREF_KEY_SORT_ORDER, false)
@@ -91,5 +93,9 @@ class Settings @Inject constructor(
     fun signOut() {
         isUsernameSet = false
         putString("profile", null)
+    }
+
+    companion object {
+        const val DEFAULT_IMAGE_SIZE = "w342"
     }
 }
