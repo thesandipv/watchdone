@@ -41,7 +41,7 @@ fun Theme(context: Context, content: @Composable () -> Unit) {
 
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) colorScheme else lightColorScheme,
-        typography = MaterialTheme.typography,
+        typography = ubuntuTypography,
         content = content
     )
 }
