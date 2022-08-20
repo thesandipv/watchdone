@@ -58,7 +58,6 @@ import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -290,13 +289,10 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.apply {
                         if (progress == 1f) progress(1f, 0f) // As hamburger
                     }
-                    binding.toolbar.apply {
-                        setNavigationOnClickListener {
-                            BottomNavDrawerFragment().apply {
-                                show(supportFragmentManager, this.tag)
-                            }
+                    binding.toolbar.setNavigationOnClickListener {
+                        BottomNavDrawerFragment().apply {
+                            show(supportFragmentManager, this.tag)
                         }
-                        fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
                     }
                 }
 
