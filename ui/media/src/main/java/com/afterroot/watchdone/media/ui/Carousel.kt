@@ -67,8 +67,6 @@ fun <T : Multi> Carousel(
 ) {
     Column(modifier) {
         if (refreshing || items.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-
             Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
                 TextButton(
                     onClick = onMoreClick,
@@ -106,7 +104,7 @@ internal fun <T : Multi> CarouselInt(
         state = lazyListState,
         modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         itemsIndexed(items = items) { index, item ->
             PosterCard(
@@ -154,7 +152,7 @@ fun PosterCard(
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .padding(4.dp)
-                    .align(Alignment.CenterStart)
+                    .align(Alignment.Center)
             )
 
             if (posterPath != null) {
