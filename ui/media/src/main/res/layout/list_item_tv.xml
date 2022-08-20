@@ -36,8 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            tools:targetApi="lollipop" />
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <View
             android:layout_width="0dp"

@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.media.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -39,17 +38,15 @@ fun SimilarMovies(
         state.value = moviesRepository.getSimilar(movieId).toMovies()
     }
 
-    Column {
-        Carousel(
-            items = state.value,
-            title = "Similar Movies",
-            refreshing = state.value.isEmpty(),
-            onItemClick = { movie, index ->
-                movieItemSelectedCallback.onClick(index, null, movie)
-            }
-        ) {
-        }
-    }
+    Carousel(
+        items = state.value,
+        title = "Similar Movies",
+        refreshing = state.value.isEmpty(),
+        onItemClick = { movie, index ->
+            movieItemSelectedCallback.onClick(index, null, movie)
+        },
+        onMoreClick = {}
+    )
 }
 
 @Composable
@@ -70,7 +67,7 @@ fun SimilarTV(
         refreshing = state.value.isEmpty(),
         onItemClick = { tv, index ->
             tvItemSelectedCallback.onClick(index, null, tv)
-        }
-    ) {
-    }
+        },
+        onMoreClick = {}
+    )
 }
