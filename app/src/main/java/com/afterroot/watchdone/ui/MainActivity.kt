@@ -20,7 +20,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -68,6 +67,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.email
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import com.afterroot.watchdone.resources.R as CommonR
@@ -220,21 +220,20 @@ class MainActivity : AppCompatActivity() {
                                         fcmId = tokenTask.result
                                     )
                                     userRef.set(user).addOnCompleteListener { setUserTask ->
-                                        if (!setUserTask.isSuccessful) Log.e(
-                                            TAG,
-                                            "Can't create firebaseUser",
-                                            setUserTask.exception
+                                        if (!setUserTask.isSuccessful) Timber.e(
+                                            setUserTask.exception,
+                                            "Can't create firebaseUser"
                                         )
                                     }
                                 } else if (getUserTask.result[Field.FCM_ID] != tokenTask.result) {
                                     userRef.update(Field.FCM_ID, tokenTask.result)
                                 }
-                            } else Log.e(TAG, "Unknown Error", getUserTask.exception)
+                            } else Timber.e(getUserTask.exception, "Unknown Error")
                         }
                     }
                 )
         } catch (e: Exception) {
-            Log.e(TAG, "addUserInfoInDB: $e")
+            Timber.e("addUserInfoInDB: $e")
         }
     }
 
