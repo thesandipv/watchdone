@@ -45,18 +45,6 @@
             <nav-graph android:value="@navigation/mobile_navigation" />
         </activity>
 
-        <activity
-            android:name="com.afterroot.watchdone.HomeActivity"
-            android:exported="true"
-            android:label="WD-Home"
-            android:theme="@style/MyTheme.Watchdone.Main">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
