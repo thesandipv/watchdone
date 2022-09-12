@@ -153,8 +153,8 @@ android {
     }
 
     composeOptions {
-        println("INFO: Compose Version: ${libs.versions.compose.get()}")
-        println("INFO: Compose Compiler Version: ${libs.versions.composeCompiler.get()}")
+        println("- INFO: Compose Version: ${libs.versions.compose.get()}")
+        println("- INFO: Compose Compiler Version: ${libs.versions.composeCompiler.get()}")
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 }
