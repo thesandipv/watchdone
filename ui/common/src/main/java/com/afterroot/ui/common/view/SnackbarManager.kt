@@ -48,7 +48,7 @@ class SnackbarManager @Inject constructor() {
             // Wait for either a 6 second timeout, or a remove signal (whichever comes first)
             merge(
                 delayFlow(6000, Unit),
-                removeMessageSignal.receiveAsFlow(),
+                removeMessageSignal.receiveAsFlow()
             ).firstOrNull()
 
             // Remove the message

@@ -2,7 +2,8 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.afterroot.watchdone.media.ui.MediaInfoFragment">
 
     <data>
 
@@ -148,37 +149,19 @@
                     app:layout_constraintTop_toTopOf="@+id/action_add_wlist"
                     tools:visibility="visible" />
 
-                <TextView
-                    android:id="@+id/rating_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_horizontal"
-                    android:layout_marginTop="@dimen/padding_vertical"
-                    android:layout_marginRight="@dimen/padding_horizontal"
-                    app:drawableStartCompat="@drawable/ic_star"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/action_add_wlist"
-                    tools:text="@tools:sample/lorem[1]" />
-
-                <TextView
-                    android:id="@+id/movie_overview"
+                <com.afterroot.ui.common.compose.view.MyComposeView
+                    android:id="@+id/compose_media_overview"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_horizontal"
-                    android:layout_marginTop="@dimen/padding_vertical"
-                    android:layout_marginRight="@dimen/padding_horizontal"
-                    android:text="@{description}"
+                    app:layout_constraintBottom_toTopOf="@+id/title_cast"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rating_text"
-                    tools:text="@tools:sample/lorem[15]" />
+                    app:layout_constraintTop_toBottomOf="@id/action_add_wlist" />
 
                 <TextView
                     android:id="@+id/title_cast"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padding_vertical_half"
                     android:paddingLeft="@dimen/padding_horizontal"
                     android:paddingTop="@dimen/padding_vertical_half"
                     android:paddingRight="@dimen/padding_horizontal"
@@ -188,7 +171,7 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/movie_overview" />
+                    app:layout_constraintTop_toBottomOf="@+id/compose_media_overview" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cast_list"
@@ -242,7 +225,7 @@
                     tools:listitem="@layout/list_item_cast"
                     tools:visibility="visible" />
 
-                <androidx.compose.ui.platform.ComposeView
+                <com.afterroot.ui.common.compose.view.MyComposeView
                     android:id="@+id/compose_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

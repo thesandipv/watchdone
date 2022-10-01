@@ -40,8 +40,9 @@ val ubuntuFamily = googleFontFamily(
     listOf(
         FontWeight.Normal,
         FontWeight.Bold,
-        FontWeight.ExtraLight,
-        FontWeight.SemiBold
+        FontWeight.Medium
+        // FontWeight.ExtraLight,
+        // FontWeight.SemiBold
     )
 )
 
@@ -60,7 +61,7 @@ val ubuntuTypography = Typography(
     bodySmall = typography.bodySmall.copy(fontFamily = ubuntuFamily),
     labelLarge = typography.labelLarge.copy(fontFamily = ubuntuFamily),
     labelMedium = typography.labelMedium.copy(fontFamily = ubuntuFamily),
-    labelSmall = typography.labelSmall.copy(fontFamily = ubuntuFamily),
+    labelSmall = typography.labelSmall.copy(fontFamily = ubuntuFamily)
 )
 
 fun googleFontFamily(

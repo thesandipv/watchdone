@@ -52,7 +52,9 @@ class DiscoverFragment : Fragment() {
     lateinit var binding: FragmentDiscoverBinding
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val discoverViewModel: DiscoverViewModel by viewModels()
+
     @Inject lateinit var discoverApi: DiscoverApi
+
     @Inject lateinit var settings: Settings
     private lateinit var discoverAdapter: MultiAdapter
 

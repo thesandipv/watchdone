@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -104,7 +105,7 @@ internal fun <T : Multi> CarouselInt(
         state = lazyListState,
         modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         itemsIndexed(items = items) { index, item ->
             PosterCard(
@@ -124,7 +125,7 @@ fun PosterCard(
     media: Multi,
     modifier: Modifier = Modifier,
     type: Multi.MediaType = media.mediaType ?: Multi.MediaType.MOVIE,
-    onClick: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null
 ) {
     var title: String? = null
     var posterPath: String? = null
@@ -175,7 +176,7 @@ fun Header(
     loading: Boolean = false,
     content: @Composable RowScope.() -> Unit = {}
 ) {
-    Row(modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(Modifier.width(16.dp))
 
         Text(
@@ -202,4 +203,10 @@ fun Header(
 
         Spacer(Modifier.width(16.dp))
     }
+}
+
+@Preview
+@Composable
+fun PreviewHeader() {
+    Header(title = "Header Title", modifier = Modifier.fillMaxWidth(), loading = true)
 }

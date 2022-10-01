@@ -77,12 +77,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     @Inject lateinit var settings: Settings
+
     @Inject lateinit var firebaseUtils: FirebaseUtils
+
     @Inject lateinit var configRepository: ConfigRepository
+
     @Inject lateinit var firestore: FirebaseFirestore
+
     @Inject lateinit var firebaseMessaging: FirebaseMessaging
-    @Inject @Named("feedback_body") lateinit var feedbackBody: String
+
+    @Inject
+    @Named("feedback_body")
+    lateinit var feedbackBody: String
     private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +124,9 @@ class MainActivity : AppCompatActivity() {
         if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
             startActivity(Intent(this, SplashActivity::class.java))
             finish()
-        } else initialize()
+        } else {
+            initialize()
+        }
         firebaseUtils.auth.addAuthStateListener {
             if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
                 startActivity(Intent(applicationContext, SplashActivity::class.java))
@@ -219,15 +229,19 @@ class MainActivity : AppCompatActivity() {
                                         fcmId = tokenTask.result
                                     )
                                     userRef.set(user).addOnCompleteListener { setUserTask ->
-                                        if (!setUserTask.isSuccessful) Timber.e(
-                                            setUserTask.exception,
-                                            "Can't create firebaseUser"
-                                        )
+                                        if (!setUserTask.isSuccessful) {
+                                            Timber.e(
+                                                setUserTask.exception,
+                                                "Can't create firebaseUser"
+                                            )
+                                        }
                                     }
                                 } else if (getUserTask.result[Field.FCM_ID] != tokenTask.result) {
                                     userRef.update(Field.FCM_ID, tokenTask.result)
                                 }
-                            } else Timber.e(getUserTask.exception, "Unknown Error")
+                            } else {
+                                Timber.e(getUserTask.exception, "Unknown Error")
+                            }
                         }
                     }
                 )

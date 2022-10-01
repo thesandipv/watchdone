@@ -42,6 +42,7 @@ class SplashActivity : AppCompatActivity() {
 
     private val _tag = "SplashActivity"
     private val networkViewModel: NetworkViewModel by viewModels()
+
     @Inject lateinit var firebaseAuth: FirebaseAuth
     // @Inject lateinit var settings: Settings
 

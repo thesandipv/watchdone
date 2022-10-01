@@ -67,6 +67,7 @@ class SearchNewFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val viewModel: SearchNewViewModel by activityViewModels()
     private var searchTask: Job? = null
+
     @Inject lateinit var settings: Settings
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -113,7 +114,6 @@ class SearchNewFragment : Fragment() {
             }
             setOnSuggestionListener(object : SearchView.OnSuggestionListener {
                 override fun onSuggestionSelect(position: Int): Boolean {
-
                     return false
                 }
 

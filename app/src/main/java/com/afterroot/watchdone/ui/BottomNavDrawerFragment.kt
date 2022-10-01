@@ -42,8 +42,12 @@ import com.afterroot.watchdone.resources.R as CommonR
 class BottomNavDrawerFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomBinding
     private val homeViewModel: HomeViewModel by viewModels()
+
     @Inject lateinit var auth: FirebaseAuth
-    @Inject @Named("feedback_body") lateinit var feedbackBody: String
+
+    @Inject
+    @Named("feedback_body")
+    lateinit var feedbackBody: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentBottomBinding.inflate(inflater, container, false)
