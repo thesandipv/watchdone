@@ -27,7 +27,7 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 
 @Composable
-fun SimilarMovies(
+fun RecommendedMovies(
     movieId: Int,
     moviesRepository: MoviesRepository,
     movieItemSelectedCallback: ItemSelectedCallback<Movie>
@@ -35,12 +35,12 @@ fun SimilarMovies(
     val state = remember { mutableStateOf(emptyList<Movie>()) }
 
     LaunchedEffect(movieId) {
-        state.value = moviesRepository.getSimilar(movieId).toMovies()
+        state.value = moviesRepository.getRecommended(movieId).toMovies()
     }
 
     Carousel(
         items = state.value,
-        title = "Similar Movies",
+        title = "Recommended Movies",
         refreshing = state.value.isEmpty(),
         onItemClick = { movie, index ->
             movieItemSelectedCallback.onClick(index, null, movie)
@@ -50,7 +50,7 @@ fun SimilarMovies(
 }
 
 @Composable
-fun SimilarTV(
+fun RecommendedTV(
     tvId: Int,
     tvRepository: TVRepository,
     tvItemSelectedCallback: ItemSelectedCallback<TV>
@@ -58,12 +58,12 @@ fun SimilarTV(
     val state = remember { mutableStateOf(emptyList<TV>()) }
 
     LaunchedEffect(tvId) {
-        state.value = tvRepository.getSimilar(tvId).toTV()
+        state.value = tvRepository.getRecommended(tvId).toTV()
     }
 
     Carousel(
         items = state.value,
-        title = "Similar TV Series",
+        title = "Recommended TV Series",
         refreshing = state.value.isEmpty(),
         onItemClick = { tv, index ->
             tvItemSelectedCallback.onClick(index, null, tv)

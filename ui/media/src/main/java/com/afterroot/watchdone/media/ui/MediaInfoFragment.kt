@@ -20,7 +20,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -156,7 +155,7 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    private val similarMovieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
+    private val recommendedMovieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
         override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
             val request = NavDeepLinkRequest.Builder
@@ -166,7 +165,7 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    private val similarTVItemSelectedCallback = object : ItemSelectedCallback<TV> {
+    private val recommendedTVItemSelectedCallback = object : ItemSelectedCallback<TV> {
         override fun onClick(position: Int, view: View?, item: TV) {
             super.onClick(position, view, item)
             val request = NavDeepLinkRequest.Builder
@@ -310,17 +309,17 @@ class MediaInfoFragment : Fragment() {
                 ) {
                     Column(modifier = Modifier.padding(vertical = 12.dp)) {
                         if (movie != null) {
-                            SimilarMovies(
+                            RecommendedMovies(
                                 movie.id,
                                 moviesRepository,
-                                similarMovieItemSelectedCallback
+                                recommendedMovieItemSelectedCallback
                             )
                         }
                         if (tv != null) {
-                            SimilarTV(
+                            RecommendedTV(
                                 tv.id,
                                 tvRepository,
-                                similarTVItemSelectedCallback
+                                recommendedTVItemSelectedCallback
                             )
                         }
                     }
