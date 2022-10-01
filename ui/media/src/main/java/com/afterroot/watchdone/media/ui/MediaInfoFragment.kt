@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -80,12 +81,19 @@ import com.afterroot.watchdone.resources.R as CommonR
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
     @Inject lateinit var firebaseUtils: FirebaseUtils
+
     @Inject lateinit var firestore: FirebaseFirestore
+
     @Inject lateinit var moviesRepository: MoviesRepository
+
     @Inject lateinit var myDatabase: MyDatabase
+
     @Inject lateinit var settings: Settings
+
     @Inject lateinit var tvRepository: TVRepository
+
     @Inject lateinit var castListAdapter: CastListAdapter
+
     @Inject lateinit var crewListAdapter: CastListAdapter
     private lateinit var binding: FragmentMediaInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
@@ -176,7 +184,6 @@ class MediaInfoFragment : Fragment() {
         val description = movie?.overview ?: tv?.overview
         val genres = movie?.genres ?: tv?.genres
         val genresIds = movie?.genreIds
-        val rating = movie?.voteAverage ?: tv?.voteAverage
         watchListRef = firestore.collectionWatchdone(
             id = firebaseUtils.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
@@ -248,35 +255,7 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
 
-                    composeView.setContent {
-                        Theme(context = requireContext()) {
-                            CompositionLocalProvider(
-                                LocalPosterSize provides (
-                                    this@MediaInfoFragment.settings.imageSize
-                                        ?: this@MediaInfoFragment.settings.defaultImagesSize
-                                    )
-                            ) {
-                                Column(modifier = Modifier.padding(vertical = 12.dp)) {
-                                    if (movie != null) {
-                                        SimilarMovies(
-                                            movie.id,
-                                            moviesRepository,
-                                            similarMovieItemSelectedCallback
-                                        )
-                                    }
-                                    if (tv != null) {
-                                        SimilarTV(
-                                            tv.id,
-                                            tvRepository,
-                                            similarTVItemSelectedCallback
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    ratingText.text = getString(CommonR.string.media_info_rating_text, rating)
+                    updateComposeViews(movie, tv)
                 }
             }
             // menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
@@ -295,7 +274,6 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    // TODO Apply Same for TV
     private suspend fun updateCast(mediaId: Int, type: Multi.MediaType) {
         val credits = if (type == MOVIE) {
             moviesRepository.getCredits(mediaId)
@@ -316,6 +294,45 @@ class MediaInfoFragment : Fragment() {
         }
         castAdapter.submitList(credits.cast)
         crewAdapter.submitList(credits.crew)
+    }
+
+    private fun updateComposeViews(movie: Movie? = null, tv: TV? = null) {
+        binding.composeView.isTransitionGroup = true
+        binding.composeMediaOverview.isTransitionGroup = true
+
+        binding.composeView.setContent {
+            Theme(context = requireContext()) {
+                CompositionLocalProvider(
+                    LocalPosterSize provides (
+                        this@MediaInfoFragment.settings.imageSize
+                            ?: this@MediaInfoFragment.settings.defaultImagesSize
+                        )
+                ) {
+                    Column(modifier = Modifier.padding(vertical = 12.dp)) {
+                        if (movie != null) {
+                            SimilarMovies(
+                                movie.id,
+                                moviesRepository,
+                                similarMovieItemSelectedCallback
+                            )
+                        }
+                        if (tv != null) {
+                            SimilarTV(
+                                tv.id,
+                                tvRepository,
+                                similarTVItemSelectedCallback
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.composeMediaOverview.setContent {
+            Theme(context = requireContext()) {
+                OverviewContent(movie, tv)
+            }
+        }
     }
 
     private fun addToWatchlist(movie: Movie? = null, tv: TV? = null) {

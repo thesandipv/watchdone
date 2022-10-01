@@ -27,6 +27,7 @@ import javax.inject.Inject
 class TVTest : DataTest() {
 
     @Inject lateinit var tvRepository: TVRepository
+
     @Inject lateinit var searchRepository: SearchRepository
 
     @Test

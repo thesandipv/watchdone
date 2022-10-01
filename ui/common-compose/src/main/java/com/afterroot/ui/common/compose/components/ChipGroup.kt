@@ -63,7 +63,7 @@ fun TextChip(
     elevation: Dp = Chip.ContainerElevation,
     shape: Shape = Chip.ContainerShape,
     minHeight: Dp = Chip.ContainerHeight,
-    onSelectionChanged: (String) -> Unit = {},
+    onSelectionChanged: (String) -> Unit = {}
 ) {
     Surface(
         modifier = Modifier
@@ -116,7 +116,7 @@ fun TextChipGroup(
     elevation: Dp = Chip.ContainerElevation,
     chipShape: Shape = Chip.ContainerShape,
     selectionType: SelectionType = SelectionType.Single,
-    onSelectedChanged: (selected: String, selectedChips: List<String>) -> Unit,
+    onSelectedChanged: (selected: String, selectedChips: List<String>) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val selectedChips = MutableStateFlow(listOf<String>())
@@ -150,7 +150,7 @@ fun TextChipGroup(
                             }
                         }
                         onSelectedChanged(it, newList)
-                    },
+                    }
                 )
             }
         }
@@ -177,7 +177,7 @@ fun TextChipGroup(
     horizontalSpacing: Dp = 0.dp,
     elevation: Dp = Chip.ContainerElevation,
     shape: Shape = Chip.ContainerShape,
-    list: List<String>? = null,
+    list: List<String>? = null
 ) {
     LazyRow(modifier) {
         item {
@@ -191,7 +191,7 @@ fun TextChipGroup(
                     isSelected = false,
                     clickable = false,
                     elevation = elevation,
-                    shape = shape,
+                    shape = shape
                 )
             }
         }

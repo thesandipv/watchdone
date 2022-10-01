@@ -2,7 +2,8 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.search.SearchNewFragment">
 
     <data>
 
@@ -32,7 +33,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/til_search"
                 app:layout_constraintVertical_bias="0.0"
                 app:spanCount="@integer/grid_item_span_count"
-                tools:context=".ui.search.SearchNewFragment"
                 tools:listitem="@layout/list_item_movie"
                 tools:visibility="visible" />
 

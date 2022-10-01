@@ -279,7 +279,9 @@ fun UpdateProfilePrompt() {
         )
 
         TextField(
-            value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth(),
+            value = "",
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(),
             label = {
                 Text(text = "LocalUser Name")
             }

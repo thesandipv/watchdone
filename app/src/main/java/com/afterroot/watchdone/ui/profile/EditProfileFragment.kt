@@ -51,6 +51,7 @@ class EditProfileFragment : Fragment() {
 
     @Inject lateinit var db: FirebaseFirestore
     private lateinit var user: FirebaseUser
+
     @Inject lateinit var firebaseUtils: FirebaseUtils
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +78,9 @@ class EditProfileFragment : Fragment() {
                                         .update(Field.NAME, newName)
                                 }
                             }
-                        } else requireContext().toast(getString(CommonR.string.msg_no_changes))
+                        } else {
+                            requireContext().toast(getString(CommonR.string.msg_no_changes))
+                        }
                     }
                     setImageDrawable(
                         requireContext().getTintedDrawable(
