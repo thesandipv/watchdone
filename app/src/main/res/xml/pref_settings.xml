@@ -16,6 +16,9 @@
             android:key="image_size"
             android:title="@string/pref_title_image_size"
             app:useSimpleSummaryProvider="true" />
+        <Preference
+            android:key="key_countries"
+            android:title="Country" />
     </PreferenceCategory>
     <PreferenceCategory
         app:key="key_debug"

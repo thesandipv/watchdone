@@ -20,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import com.afterroot.tmdbapi.repository.DiscoverRepository
 import com.afterroot.watchdone.base.compose.Actions
 import com.afterroot.watchdone.data.mapper.toMulti
+import com.afterroot.watchdone.settings.Settings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Discover
 import info.movito.themoviedbapi.model.Multi
@@ -32,6 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
+    val settings: Settings,
     private val discoverRepository: DiscoverRepository
 ) : ViewModel() {
     private val actions = MutableSharedFlow<DiscoverActions>()
@@ -46,11 +48,13 @@ class DiscoverViewModel @Inject constructor(
                     is DiscoverActions.SetMediaType -> {
                         when (action.mediaType) {
                             Multi.MediaType.MOVIE -> {
-                                val list = discoverRepository.getMoviesDiscover(Discover()) // TODO add params also
+                                val discover = Discover().region(settings.country ?: "US")
+                                val list = discoverRepository.getMoviesDiscover(discover) // TODO add params also
                                 media.emit(list.toMulti())
                             }
                             Multi.MediaType.TV_SERIES -> {
-                                val list = discoverRepository.getTVDiscover(Discover()) // TODO add params also
+                                val discover = Discover().region(settings.country ?: "US")
+                                val list = discoverRepository.getTVDiscover(discover) // TODO add params also
                                 media.emit(list.toMulti())
                             }
                             else -> {}
