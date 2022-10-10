@@ -30,7 +30,6 @@ import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.getGravatarUrl
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -52,6 +51,7 @@ class EditProfileFragment : Fragment() {
 
     @Inject lateinit var db: FirebaseFirestore
     private lateinit var user: FirebaseUser
+
     @Inject lateinit var firebaseUtils: FirebaseUtils
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +78,9 @@ class EditProfileFragment : Fragment() {
                                         .update(Field.NAME, newName)
                                 }
                             }
-                        } else requireContext().toast(getString(CommonR.string.msg_no_changes))
+                        } else {
+                            requireContext().toast(getString(CommonR.string.msg_no_changes))
+                        }
                     }
                     setImageDrawable(
                         requireContext().getTintedDrawable(
@@ -86,9 +88,6 @@ class EditProfileFragment : Fragment() {
                             requireContext().getMaterialColor(MaterialR.attr.colorOnSecondary)
                         )
                     )
-                }
-                findViewById<BottomAppBar>(R.id.toolbar).apply {
-                    fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_END
                 }
                 GlideApp.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
             }

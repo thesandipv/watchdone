@@ -29,6 +29,7 @@ kapt {
 }
 
 android {
+    namespace "com.afterroot.watchdone.data"
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {

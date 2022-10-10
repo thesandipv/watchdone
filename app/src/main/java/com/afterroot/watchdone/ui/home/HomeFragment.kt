@@ -61,7 +61,6 @@ import com.afterroot.watchdone.media.adapter.MultiAdapter
 import com.afterroot.watchdone.media.adapter.MultiPagingAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.utils.logD
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState
@@ -78,6 +77,7 @@ import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import com.afterroot.watchdone.resources.R as CommonR
@@ -88,10 +88,16 @@ class HomeFragment : Fragment() {
     private lateinit var homeScreenPagingAdapter: MultiPagingAdapter
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val watchlistViewModel: WatchlistViewModel by viewModels()
+
     @Inject lateinit var settings: Settings
+
     @Inject lateinit var firebaseAuth: FirebaseAuth
+
     @Inject lateinit var firestore: FirebaseFirestore
-    @Inject @Named("feedback_body") lateinit var feedbackBody: String
+
+    @Inject
+    @Named("feedback_body")
+    lateinit var feedbackBody: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -103,10 +109,14 @@ class HomeFragment : Fragment() {
             super.onClick(position, view, item)
             if (item is Movie) {
                 val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
-                findNavController().navigate(directions)
+                if (findNavController().currentDestination?.id == R.id.navigation_home) {
+                    findNavController().navigate(directions)
+                }
             } else if (item is TV) {
                 val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
-                findNavController().navigate(directions)
+                if (findNavController().currentDestination?.id == R.id.navigation_home) {
+                    findNavController().navigate(directions)
+                }
             }
         }
 
@@ -153,7 +163,7 @@ class HomeFragment : Fragment() {
             watchlistViewModel.uiActions.collect { action ->
                 when (action) {
                     WatchlistActions.Refresh -> {
-                        logD("HomeFragment/onViewCreated/uiActions", "Refresh")
+                        Timber.d("UiAction: Refresh")
                         homeScreenPagingAdapter.refresh()
                     }
                     else -> {
@@ -170,13 +180,14 @@ class HomeFragment : Fragment() {
     private var isWatchedChecked: Boolean = false
     private lateinit var sortChip: Chip
     private fun setUpChips() {
+        // TODO Remember chip state using view model.
         sortChip = Chip(requireContext(), null, CommonR.attr.SortChipStyle).apply {
-            text = if (settings.ascSort) "Sort by Ascending" else "Sort by Descending"
+            text = if (settings.ascSort) "Ascending" else "Descending"
             chipIcon = requireContext().getDrawableExt(CommonR.drawable.ic_sort)
             setOnClickListener {
                 val curr = settings.ascSort
                 settings.ascSort = !curr
-                this.text = if (!settings.ascSort) "Sort by Ascending" else "Sort by Descending"
+                this.text = if (!settings.ascSort) "Ascending" else "Descending"
                 watchlistViewModel.submitAction(WatchlistActions.Refresh)
             }
         }
@@ -250,8 +261,11 @@ class HomeFragment : Fragment() {
     fun infoMessage(show: Boolean, action: QueryAction = QueryAction.CLEAR) {
         binding.infoNoMovies.visible(show, AutoTransition())
         binding.infoTv.text =
-            if (action != QueryAction.CLEAR) getString(CommonR.string.text_info_no_movies_in_filter)
-            else getString(CommonR.string.text_info_no_movies)
+            if (action != QueryAction.CLEAR) {
+                getString(CommonR.string.text_info_no_movies_in_filter)
+            } else {
+                getString(CommonR.string.text_info_no_movies)
+            }
     }
 
     private fun MultiAdapter.submitQuery(
@@ -287,8 +301,11 @@ class HomeFragment : Fragment() {
                             submitList(emptyList())
                             binding.infoNoMovies.visible(true, AutoTransition())
                             binding.infoTv.text =
-                                if (action != QueryAction.CLEAR) getString(CommonR.string.text_info_no_movies_in_filter)
-                                else getString(CommonR.string.text_info_no_movies)
+                                if (action != QueryAction.CLEAR) {
+                                    getString(CommonR.string.text_info_no_movies_in_filter)
+                                } else {
+                                    getString(CommonR.string.text_info_no_movies)
+                                }
                         } else {
                             submitList(listData.toMulti())
                         }

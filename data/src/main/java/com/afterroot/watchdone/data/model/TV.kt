@@ -20,12 +20,9 @@ import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.ExternalIds
 import info.movito.themoviedbapi.model.MovieImages
 import info.movito.themoviedbapi.model.Multi
-import info.movito.themoviedbapi.model.Video
 import info.movito.themoviedbapi.model.core.ResultsPage
-import info.movito.themoviedbapi.model.keywords.Keyword
 import info.movito.themoviedbapi.model.people.Person
 import info.movito.themoviedbapi.model.tv.Network
-import info.movito.themoviedbapi.model.tv.TvSeason
 import info.movito.themoviedbapi.model.tv.TvSeries
 
 data class TV(
@@ -47,7 +44,7 @@ data class TV(
     var posterPath: String? = null,
     var numberOfEpisodes: Int = 0,
     var numberOfSeasons: Int = 0,
-    var seasons: List<TvSeason>? = null,
+    var seasons: Seasons = null,
     var recommendations: ResultsPage<TvSeries>? = null,
     var userRating: Float = 0f,
     val voteAverage: Double? = null,
@@ -58,8 +55,8 @@ data class TV(
     val credits: Credits? = null,
     val externalIds: ExternalIds? = null,
     val images: MovieImages? = null,
-    val videos: List<Video>? = null,
-    val keywords: List<Keyword>? = null,
+    val videos: Videos = null,
+    val keywords: Keywords = null,
     // Additional Data
     var isWatched: Boolean = false
 ) : Multi {
@@ -69,4 +66,6 @@ data class TV(
 
     // Just for Firestore
     var releaseDate = firstAirDate
+
+    fun rating(): String = String.format("%.1f", voteAverage)
 }

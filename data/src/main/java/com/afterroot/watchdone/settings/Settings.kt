@@ -17,11 +17,13 @@ package com.afterroot.watchdone.settings
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import androidx.preference.PreferenceManager
+import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.model.LocalUser
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 import com.afterroot.watchdone.resources.R as CommonR
 
@@ -29,61 +31,102 @@ import com.afterroot.watchdone.resources.R as CommonR
  * Helper Class for managing main preferences of App
  */
 class Settings @Inject constructor(
-    private val context: Context,
-    private val gson: Gson
+    @ApplicationContext val context: Context,
+    val gson: Gson
 ) {
 
-    private fun putString(key: String, value: String?) = preferences.edit(true) {
+    init {
+        Timber.d("Initializing Settings...")
+    }
+
+    private val preferences: SharedPreferences = context.getPrefs()
+
+    fun putString(key: String, value: String?) = preferences.edit(true) {
         putString(key, value)
+    }.also {
+        Timber.d("putString: $key, $value")
     }
 
-    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    fun getString(key: String, value: String?): String? = preferences.getString(key, value).also {
+        Timber.d("getString: $key, $it")
+    }
 
-    private fun putInt(key: String, value: Int) = preferences.edit(true) {
+    fun putInt(key: String, value: Int) = preferences.edit(true) {
         putInt(key, value)
+    }.also {
+        Timber.d("putInt: $key, $value")
     }
 
-    private fun putBoolean(key: String, value: Boolean) = preferences.edit(true) {
+    fun getInt(key: String, value: Int): Int = preferences.getInt(key, value).also {
+        Timber.d("getInt: $key, $it")
+    }
+
+    fun putBoolean(key: String, value: Boolean) = preferences.edit(true) {
         putBoolean(key, value)
+    }.also {
+        Timber.d("putBoolean: $key, $value")
+    }
+
+    fun getBoolean(key: String, value: Boolean): Boolean = preferences.getBoolean(key, value).also {
+        Timber.d("getBoolean: $key, $it")
+    }
+
+    fun getStringSet(key: String, value: MutableSet<String>?) = preferences.getStringSet(key, value).also {
+        Timber.d("getStringSet: $key, $it")
     }
 
     private fun putStringSet(key: String, value: MutableSet<String>?) = preferences.edit(true) {
         putStringSet(key, value)
+    }.also {
+        Timber.d("putStringSet: $key, $value")
     }
+
+    val defaultImagesSize = "w342"
 
     // Template
     var isFirstInstalled
-        get() = preferences.getBoolean(Constants.PREF_KEY_FIRST_INSTALL, true)
+        get() = getBoolean(Constants.PREF_KEY_FIRST_INSTALL, true)
         set(value) = putBoolean(Constants.PREF_KEY_FIRST_INSTALL, value)
+
     var baseUrl
-        get() = preferences.getString(Constants.PREF_KEY_BASE_IMAGE_URL, null)
+        get() = getString(Constants.PREF_KEY_BASE_IMAGE_URL, null)
         set(value) = putString(Constants.PREF_KEY_BASE_IMAGE_URL, value)
+
     var posterSizes: MutableSet<String>?
-        get() = preferences.getStringSet(Constants.PREF_KEY_POSTER_SIZES, null)
+        get() = getStringSet(Constants.PREF_KEY_POSTER_SIZES, null)
         set(value) = putStringSet(Constants.PREF_KEY_POSTER_SIZES, value)
+
     var imageSize: String?
-        get() = preferences.getString(Constants.PREF_KEY_IMAGE_SIZE, "w342")
+        get() = getString(Constants.PREF_KEY_IMAGE_SIZE, defaultImagesSize)
         set(value) = putString(Constants.PREF_KEY_IMAGE_SIZE, value)
+
     var ascSort: Boolean
-        get() = preferences.getBoolean(Constants.PREF_KEY_SORT_ORDER, false)
+        get() = getBoolean(Constants.PREF_KEY_SORT_ORDER, false)
         set(value) = putBoolean(Constants.PREF_KEY_SORT_ORDER, value)
+
     var queryDirection: Query.Direction
         get() = if (ascSort) Query.Direction.ASCENDING else Query.Direction.DESCENDING
         set(value) {
             ascSort = value == Query.Direction.ASCENDING
         }
+
     val theme: String?
-        get() = preferences.getString(Constants.PREF_KEY_THEME, context.getString(CommonR.string.theme_device_default))
+        get() = getString(Constants.PREF_KEY_THEME, context.getString(CommonR.string.theme_device_default))
+
     val isUseProdDb: Boolean
-        get() = preferences.getBoolean("use_prod_db", false)
+        get() = getBoolean("use_prod_db", false)
 
     var isUsernameSet: Boolean
-        get() = preferences.getBoolean("is_user_name_set", false)
+        get() = getBoolean("is_user_name_set", false)
         set(value) = putBoolean("is_user_name_set", value)
 
     var userProfile: LocalUser
-        get() = gson.fromJson(preferences.getString("profile", gson.toJson(LocalUser())), LocalUser::class.java)
+        get() = gson.fromJson(getString("profile", gson.toJson(LocalUser())), LocalUser::class.java)
         set(value) = putString("profile", gson.toJson(value))
+
+    var country: String?
+        get() = getString("key_country", null)
+        set(value) = putString("key_country", value)
 
     // Helper Functions
     fun createPosterUrl(path: String) = baseUrl + imageSize + path

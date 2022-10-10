@@ -20,19 +20,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Logout
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,7 +55,6 @@ import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FABSave
 import com.afterroot.ui.common.compose.components.UpActionButton
-import com.afterroot.ui.common.compose.theme.appBarTitleStyle
 import com.afterroot.ui.common.compose.utils.bottomNavigationPadding
 import com.afterroot.ui.common.compose.utils.rememberFlowWithLifecycle
 import com.afterroot.ui.common.view.UiMessage
@@ -62,10 +63,8 @@ import com.afterroot.watchdone.data.mapper.toLocalUser
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.getLocalUser
-import com.afterroot.watchdone.utils.logD
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
 import com.firebase.ui.auth.AuthUI
-import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -73,6 +72,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 @Composable
 fun EditProfile(
@@ -95,10 +95,10 @@ internal fun EditProfile(
     EditProfile(viewModel = viewModel, standalone) { action ->
         when (action) {
             ProfileActions.SignOut -> {
-                logD("EditProfile/SignOut", "Start")
+                Timber.d("EditProfile: SignOut Start")
                 scope.launch {
                     signOut(context).collect { signOutState ->
-                        logD("EditProfile/SignOut", "SignOutState: $signOutState")
+                        Timber.d("EditProfile: SignOutState: $signOutState")
                         when (signOutState) {
                             is State.Failed -> {
                                 val showMessage = ProfileActions.ShowMessage(UiMessage("Failed Signing Out."))
@@ -132,6 +132,7 @@ internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = fals
     val keyboardController = LocalSoftwareKeyboardController.current
     // val networkUser = remember { mutableStateOf(NetworkUser()) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(profileState.value) {
         if (profileState.value is State.Success) {
@@ -147,6 +148,7 @@ internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = fals
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
         topBar = {
             Box(
                 modifier = Modifier.statusBarsPadding(standalone)
@@ -183,7 +185,6 @@ internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = fals
                 onClick = {
                     enteredState.value = enteredState.value.trim()
                     actions(ProfileActions.SaveProfile(enteredState.value))
-                    logD("NewPost", "Clicked Save")
                 }
             )
         },
@@ -259,7 +260,7 @@ val textFieldModifier = Modifier
 internal fun AppBar(
     title: String = getTitle(),
     actions: @Composable RowScope.() -> Unit = {},
-    navigationIcon: @Composable (() -> Unit)? = null
+    navigationIcon: @Composable () -> Unit = {}
 ) {
     CommonAppBar(withTitle = title, actions = actions, navigationIcon = navigationIcon)
 }
@@ -274,12 +275,13 @@ fun UpdateProfilePrompt() {
         Text(
             text = "Update LocalUser Name",
             textAlign = TextAlign.Center,
-            style = appBarTitleStyle,
             modifier = Modifier.fillMaxWidth()
         )
 
         TextField(
-            value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth(),
+            value = "",
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(),
             label = {
                 Text(text = "LocalUser Name")
             }

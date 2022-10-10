@@ -12,22 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone
+package com.afterroot.watchdone.data.model
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.fragment.app.FragmentActivity
-import com.afterroot.ui.common.compose.theme.Theme
-import com.afterroot.watchdone.ui.home.Home
+import info.movito.themoviedbapi.model.Video
+import info.movito.themoviedbapi.model.keywords.Keyword
+import info.movito.themoviedbapi.model.tv.TvEpisode
+import info.movito.themoviedbapi.model.tv.TvSeason
 
-class HomeActivity : FragmentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            Theme(context = this) {
-                Home()
-            }
-        }
-    }
-}
+typealias TVEpisodes = List<TvEpisode>?
+typealias Episodes = List<Episode>?
+typealias TVSeasons = List<TvSeason>?
+typealias Seasons = List<Season>?
+typealias Keywords = List<Keyword>?
+typealias Videos = List<Video>?

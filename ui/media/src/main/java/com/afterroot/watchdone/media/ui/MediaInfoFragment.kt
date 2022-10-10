@@ -19,6 +19,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,6 +36,8 @@ import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.tmdbapi.model.MovieAppendableResponses
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.TVRepository
+import com.afterroot.ui.common.compose.components.LocalPosterSize
+import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.utils.extensions.visible
@@ -74,12 +80,19 @@ import com.afterroot.watchdone.resources.R as CommonR
 @AndroidEntryPoint
 class MediaInfoFragment : Fragment() {
     @Inject lateinit var firebaseUtils: FirebaseUtils
+
     @Inject lateinit var firestore: FirebaseFirestore
+
     @Inject lateinit var moviesRepository: MoviesRepository
+
     @Inject lateinit var myDatabase: MyDatabase
+
     @Inject lateinit var settings: Settings
+
     @Inject lateinit var tvRepository: TVRepository
+
     @Inject lateinit var castListAdapter: CastListAdapter
+
     @Inject lateinit var crewListAdapter: CastListAdapter
     private lateinit var binding: FragmentMediaInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
@@ -142,23 +155,23 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    private val similarMovieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
+    private val recommendedMovieItemSelectedCallback = object : ItemSelectedCallback<Movie> {
         override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
             val request = NavDeepLinkRequest.Builder
                 .fromUri("https://watchdone.web.app/media/${MOVIE.name}/${item.id}".toUri())
                 .build()
-            view?.findNavController()?.navigate(request)
+            this@MediaInfoFragment.view?.findNavController()?.navigate(request)
         }
     }
 
-    private val similarTVItemSelectedCallback = object : ItemSelectedCallback<TV> {
+    private val recommendedTVItemSelectedCallback = object : ItemSelectedCallback<TV> {
         override fun onClick(position: Int, view: View?, item: TV) {
             super.onClick(position, view, item)
             val request = NavDeepLinkRequest.Builder
                 .fromUri("https://watchdone.web.app/media/${TV_SERIES.name}/${item.id}".toUri())
                 .build()
-            view?.findNavController()?.navigate(request)
+            this@MediaInfoFragment.view?.findNavController()?.navigate(request)
         }
     }
 
@@ -170,7 +183,6 @@ class MediaInfoFragment : Fragment() {
         val description = movie?.overview ?: tv?.overview
         val genres = movie?.genres ?: tv?.genres
         val genresIds = movie?.genreIds
-        val rating = movie?.voteAverage ?: tv?.voteAverage
         watchListRef = firestore.collectionWatchdone(
             id = firebaseUtils.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
@@ -242,30 +254,7 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
 
-                    composeView.setContent {
-                        Column {
-                            if (movie != null) {
-                                SimilarMovies(
-                                    movie.id,
-                                    this@MediaInfoFragment.settings,
-                                    lifecycleScope,
-                                    moviesRepository,
-                                    similarMovieItemSelectedCallback
-                                )
-                            }
-                            if (tv != null) {
-                                SimilarTV(
-                                    tv.id,
-                                    this@MediaInfoFragment.settings,
-                                    lifecycleScope,
-                                    tvRepository,
-                                    similarTVItemSelectedCallback
-                                )
-                            }
-                        }
-                    }
-
-                    ratingText.text = getString(CommonR.string.media_info_rating_text, rating.toString())
+                    updateComposeViews(movie, tv)
                 }
             }
             // menu?.findItem(R.id.action_view_imdb)?.isVisible = !binding.movie?.imdbId.isNullOrBlank()
@@ -284,7 +273,6 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    // TODO Apply Same for TV
     private suspend fun updateCast(mediaId: Int, type: Multi.MediaType) {
         val credits = if (type == MOVIE) {
             moviesRepository.getCredits(mediaId)
@@ -305,6 +293,45 @@ class MediaInfoFragment : Fragment() {
         }
         castAdapter.submitList(credits.cast)
         crewAdapter.submitList(credits.crew)
+    }
+
+    private fun updateComposeViews(movie: Movie? = null, tv: TV? = null) {
+        binding.composeView.isTransitionGroup = true
+        binding.composeMediaOverview.isTransitionGroup = true
+
+        binding.composeView.setContent {
+            Theme(context = requireContext()) {
+                CompositionLocalProvider(
+                    LocalPosterSize provides (
+                        this@MediaInfoFragment.settings.imageSize
+                            ?: this@MediaInfoFragment.settings.defaultImagesSize
+                        )
+                ) {
+                    Column(modifier = Modifier.padding(vertical = 12.dp)) {
+                        if (movie != null) {
+                            RecommendedMovies(
+                                movie.id,
+                                moviesRepository,
+                                recommendedMovieItemSelectedCallback
+                            )
+                        }
+                        if (tv != null) {
+                            RecommendedTV(
+                                tv.id,
+                                tvRepository,
+                                recommendedTVItemSelectedCallback
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.composeMediaOverview.setContent {
+            Theme(context = requireContext()) {
+                OverviewContent(movie, tv)
+            }
+        }
     }
 
     private fun addToWatchlist(movie: Movie? = null, tv: TV? = null) {
@@ -376,10 +403,5 @@ class MediaInfoFragment : Fragment() {
         this.set(hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)), SetOptions.merge()).addOnCompleteListener {
             doOnSuccess?.invoke()
         }
-    }
-
-    companion object {
-        @Suppress("unused")
-        private const val TAG = "MovieInfoFragment"
     }
 }

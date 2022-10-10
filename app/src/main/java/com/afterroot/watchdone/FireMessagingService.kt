@@ -45,7 +45,9 @@ import com.afterroot.watchdone.resources.R as CommonR
 class FireMessagingService : FirebaseMessagingService() {
 
     private val _tag = "FireMessagingService"
+
     @Inject lateinit var firebaseUtils: FirebaseUtils
+
     @Inject lateinit var firestore: FirebaseFirestore
 
     override fun onNewToken(token: String) {

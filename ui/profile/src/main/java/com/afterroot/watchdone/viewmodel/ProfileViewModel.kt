@@ -28,18 +28,17 @@ import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.profile.ProfileActions
 import com.afterroot.watchdone.ui.profile.ProfileViewState
 import com.afterroot.watchdone.utils.State
-import com.afterroot.watchdone.utils.logD
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,14 +65,14 @@ class ProfileViewModel @Inject constructor(
     internal fun getAction(): SharedFlow<ProfileActions> = actions
 
     internal fun submitAction(action: ProfileActions) {
-        logD("ProfileViewModel/submitAction", "Action: $action")
+        Timber.d("submitAction: $action")
         viewModelScope.launch {
             actions.emit(action)
         }
     }
 
     init {
-        logD("ProfileViewModel/Init", "Init ViewModel")
+        Timber.d("init: Start")
         refresh()
 
         viewModelScope.launch {
@@ -90,10 +89,7 @@ class ProfileViewModel @Inject constructor(
                     }
                     is ProfileActions.ShowMessage -> showMessageAction(action)
                     ProfileActions.Refresh -> refresh(true)
-                    else -> logD(
-                        "ProfileViewModel/submitAction",
-                        "This action not handled by ProfileViewModel. Action: $action"
-                    )
+                    else -> Timber.d("collectAction: This action not handled by ProfileViewModel. Action: $action")
                 }
             }
         }
@@ -102,10 +98,10 @@ class ProfileViewModel @Inject constructor(
     private fun getUserProfile(cached: Boolean = false) {
         viewModelScope.launch {
             if (firebaseUtils.isUserSignedIn) {
-                logD("ProfileViewModel/getUserProfile", "Getting Profile Info. Cached:$cached")
+                Timber.d("getUserProfile: Getting Profile Info. Cached:$cached")
                 getProfile(firebaseUtils.uid!!, cached).distinctUntilChanged().collect { state ->
                     profile.emit(state)
-                    logD("ProfileViewModel/getUserProfile", "State: $state")
+                    Timber.d("getUserProfile: State: $state")
                 }
             } else {
                 profile.emit(State.failed("Not Signed In."))
@@ -117,7 +113,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             if (firebaseUtils.isUserSignedIn) {
                 setProfile(firebaseUtils.uid!!, action.localUser).collect { state ->
-                    logD("ProfileViewModel/setUserProfile", "$state")
+                    Timber.d("saveProfileAction: $state")
                     when (state) {
                         is State.Success -> {
                             submitAction(ProfileActions.ShowMessage(UiMessage("Profile Saved.")))
@@ -143,7 +139,7 @@ class ProfileViewModel @Inject constructor(
         setProfile.executeSync(SetProfile.Params(uid, localUser))
 
     private fun refresh(fromUser: Boolean = false) {
-        logD("ProfileViewModel/Refresh", "Start Refresh. From User: $fromUser")
+        Timber.d("refresh: Start Refresh. From User: $fromUser")
         getUserProfile()
     }
 
