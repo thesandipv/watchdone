@@ -17,14 +17,15 @@ package com.afterroot.watchdone.ui.profile
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Logout
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.rememberScaffoldState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,11 +42,9 @@ import com.afterroot.ui.common.compose.utils.bottomNavigationPadding
 import com.afterroot.ui.common.compose.utils.rememberFlowWithLifecycle
 import com.afterroot.ui.common.view.UiMessage
 import com.afterroot.watchdone.utils.State
-import com.afterroot.watchdone.utils.logD
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
-import com.google.accompanist.insets.navigationBarsPadding
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun Profile(onSignOut: () -> Unit = {}, onEditProfile: () -> Unit) {
@@ -59,10 +58,10 @@ internal fun Profile(viewModel: ProfileViewModel, onSignOut: () -> Unit = {}, on
     Profile(viewModel = viewModel) { action ->
         when (action) {
             ProfileActions.SignOut -> {
-                logD("Profile/SignOut", "Start")
+                Timber.d("Profile: SignOut Start")
                 scope.launch {
                     signOut(context).collect { signOutState ->
-                        logD("Profile/SignOut", "SignOutState: $signOutState")
+                        Timber.d("Profile: SignOutState: $signOutState")
                         when (signOutState) {
                             is State.Failed -> {
                                 val showMessage = ProfileActions.ShowMessage(UiMessage("Failed Signing Out."))
@@ -123,7 +122,6 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
                     .navigationBarsPadding(),
                 onClick = {
                     actions(ProfileActions.EditProfile)
-                    logD("Profile", "Action: Edit Profile")
                 }
             )
         },

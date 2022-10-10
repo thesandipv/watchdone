@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,16 +36,17 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -66,8 +68,6 @@ fun <T : Multi> Carousel(
 ) {
     Column(modifier) {
         if (refreshing || items.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-
             Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
                 TextButton(
                     onClick = onMoreClick,
@@ -105,7 +105,7 @@ internal fun <T : Multi> CarouselInt(
         state = lazyListState,
         modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         itemsIndexed(items = items) { index, item ->
             PosterCard(
@@ -120,13 +120,12 @@ internal fun <T : Multi> CarouselInt(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PosterCard(
     media: Multi,
     modifier: Modifier = Modifier,
     type: Multi.MediaType = media.mediaType ?: Multi.MediaType.MOVIE,
-    onClick: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null
 ) {
     var title: String? = null
     var posterPath: String? = null
@@ -145,14 +144,16 @@ fun PosterCard(
     }
     Card(modifier = modifier) {
         Box(
-            modifier = if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier
+            modifier = Modifier
+                .fillMaxSize()
+                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
         ) {
             Text(
                 text = title ?: "No title",
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .padding(4.dp)
-                    .align(Alignment.CenterStart)
+                    .align(Alignment.Center)
             )
 
             if (posterPath != null) {
@@ -175,12 +176,13 @@ fun Header(
     loading: Boolean = false,
     content: @Composable RowScope.() -> Unit = {}
 ) {
-    Row(modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(Modifier.width(16.dp))
 
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall,
+            color = contentColorFor(MaterialTheme.colorScheme.surface),
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(vertical = 8.dp)
@@ -201,4 +203,10 @@ fun Header(
 
         Spacer(Modifier.width(16.dp))
     }
+}
+
+@Preview
+@Composable
+fun PreviewHeader() {
+    Header(title = "Header Title", modifier = Modifier.fillMaxWidth(), loading = true)
 }

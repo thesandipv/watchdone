@@ -20,7 +20,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -31,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.os.ConfigurationCompat
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
@@ -59,7 +59,6 @@ import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -68,6 +67,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.email
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import com.afterroot.watchdone.resources.R as CommonR
@@ -78,12 +78,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private val manifestPermissions = arrayOf(Manifest.permission.INTERNET, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     @Inject lateinit var settings: Settings
+
     @Inject lateinit var firebaseUtils: FirebaseUtils
+
     @Inject lateinit var configRepository: ConfigRepository
+
     @Inject lateinit var firestore: FirebaseFirestore
+
     @Inject lateinit var firebaseMessaging: FirebaseMessaging
-    @Inject @Named("feedback_body") lateinit var feedbackBody: String
+
+    @Inject
+    @Named("feedback_body")
+    lateinit var feedbackBody: String
     private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,7 +125,9 @@ class MainActivity : AppCompatActivity() {
         if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
             startActivity(Intent(this, SplashActivity::class.java))
             finish()
-        } else initialize()
+        } else {
+            initialize()
+        }
         firebaseUtils.auth.addAuthStateListener {
             if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
                 startActivity(Intent(applicationContext, SplashActivity::class.java))
@@ -159,6 +169,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        // TODO Use Dialog from Settings
+        if (settings.country == null) {
+            val country = ConfigurationCompat.getLocales(resources.configuration).get(0)?.country
+            settings.country = country
+        }
+
         // Initialize AdMob SDK
         MobileAds.initialize(this) {
         }
@@ -220,21 +237,24 @@ class MainActivity : AppCompatActivity() {
                                         fcmId = tokenTask.result
                                     )
                                     userRef.set(user).addOnCompleteListener { setUserTask ->
-                                        if (!setUserTask.isSuccessful) Log.e(
-                                            TAG,
-                                            "Can't create firebaseUser",
-                                            setUserTask.exception
-                                        )
+                                        if (!setUserTask.isSuccessful) {
+                                            Timber.e(
+                                                setUserTask.exception,
+                                                "Can't create firebaseUser"
+                                            )
+                                        }
                                     }
                                 } else if (getUserTask.result[Field.FCM_ID] != tokenTask.result) {
                                     userRef.update(Field.FCM_ID, tokenTask.result)
                                 }
-                            } else Log.e(TAG, "Unknown Error", getUserTask.exception)
+                            } else {
+                                Timber.e(getUserTask.exception, "Unknown Error")
+                            }
                         }
                     }
                 )
         } catch (e: Exception) {
-            Log.e(TAG, "addUserInfoInDB: $e")
+            Timber.e("addUserInfoInDB: $e")
         }
     }
 
@@ -291,13 +311,10 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.apply {
                         if (progress == 1f) progress(1f, 0f) // As hamburger
                     }
-                    binding.toolbar.apply {
-                        setNavigationOnClickListener {
-                            BottomNavDrawerFragment().apply {
-                                show(supportFragmentManager, this.tag)
-                            }
+                    binding.toolbar.setNavigationOnClickListener {
+                        BottomNavDrawerFragment().apply {
+                            show(supportFragmentManager, this.tag)
                         }
-                        fabAlignmentMode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
                     }
                 }
 

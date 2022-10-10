@@ -14,13 +14,11 @@
  */
 package com.afterroot.watchdone.base
 
-import com.afterroot.watchdone.utils.logD
-import com.afterroot.watchdone.utils.logE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed class InvokeStatus
 object InvokeStarted : InvokeStatus()
@@ -43,18 +41,18 @@ fun Flow<InvokeStatus>.watchStatus(scope: CoroutineScope, tag: String = "", onSu
  * @param onSuccess Lambda to Execute when [InvokeStatus] is [InvokeSuccess]
  */
 private suspend fun Flow<InvokeStatus>.collectStatus(tag: String = "", onSuccess: () -> Unit = {}) = collect { status ->
-    val logTag = if (tag != "") "$tag/" else tag
+    val logTag = if (tag != "") tag else tag
 
     when (status) {
         InvokeStarted -> {
-            logD("${logTag}InvokeStatus/collectStatus", "Start")
+            Timber.tag(logTag).d("collectStatus: Start")
         }
         InvokeSuccess -> {
-            logD("${logTag}InvokeStatus/collectStatus", "Success")
+            Timber.tag(logTag).d("collectStatus: Success")
             onSuccess()
         }
         is InvokeError -> {
-            logE("${logTag}InvokeStatus/collectStatus", "Error: ${status.throwable}")
+            Timber.tag(logTag).e(status.throwable, "collectStatus: Error: ${status.throwable.message}")
         }
     }
 }

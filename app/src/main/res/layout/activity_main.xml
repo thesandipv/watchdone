@@ -1,18 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2020-2021 Sandip Vaghela
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~         http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-<layout>
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.afterroot.watchdone.ui.MainActivity">
 
     <data>
 
@@ -23,14 +14,11 @@
             type="String" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        tools:context=".ui.MainActivity">
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"
@@ -58,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@{title}"
-                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6" />
+                    android:textAppearance="@style/TextAppearance.WatchDone.HeadlineSmall" />
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -66,20 +54,22 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             android:contentDescription="@string/contentDesc"
-            app:layout_anchor="@id/toolbar"
             app:srcCompat="@drawable/ic_add" />
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/toolbar"
+            style="@style/Widget.Material3.BottomAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:fabAlignmentMode="center"
-            app:fabAnimationMode="slide"
-            app:fabCradleRoundedCornerRadius="@dimen/fab_cradle_radius"
             app:hideOnScroll="true"
-            app:paddingBottomSystemWindowInsets="true"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:paddingBottomSystemWindowInsets="true">
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

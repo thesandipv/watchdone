@@ -29,7 +29,9 @@ class MultiDiffCallback : DiffUtil.ItemCallback<Multi>() {
             oldItem.id == newItem.id
         } else if (oldItem is TV && newItem is Movie) {
             oldItem.id == newItem.id
-        } else false
+        } else {
+            false
+        }
     }
 
     @Suppress("ReplaceCallWithBinaryOperator")
@@ -42,6 +44,8 @@ class MultiDiffCallback : DiffUtil.ItemCallback<Multi>() {
             false
         } else if (oldItem is TV && newItem is Movie) {
             false
-        } else false
+        } else {
+            false
+        }
     }
 }

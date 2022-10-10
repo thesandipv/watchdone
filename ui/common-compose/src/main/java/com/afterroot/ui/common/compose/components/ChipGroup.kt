@@ -14,189 +14,142 @@
  */
 package com.afterroot.ui.common.compose.components
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.afterroot.ui.common.compose.theme.tokens.Chip
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.placeholder
-import com.google.accompanist.placeholder.material.shimmer
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * Chip of [String]
  * @param text text to display
- * @param isSelected Show as selected or not
- * @param backgroundColor background color of chip.
- * Defaults to primary color if chip is selected otherwise surface color.
+ * @param selected Show as selected or not
  * @param onSelectionChanged callback to be invoked when a chip is clicked.
  * The lambda carries out [String], of which state is changed.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextChip(
+fun CommonFilterChip(
     modifier: Modifier = Modifier,
     text: String? = null,
-    isSelected: Boolean = false,
-    backgroundColor: Color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-    clickable: Boolean = true,
-    elevation: Dp = Chip.ContainerElevation,
-    shape: Shape = Chip.ContainerShape,
-    minHeight: Dp = Chip.ContainerHeight,
-    onSelectionChanged: (String) -> Unit = {},
+    leadingIcon: (@Composable () -> Unit)? = null,
+    selected: Boolean = false,
+    onSelectionChanged: (label: String, selected: Boolean) -> Unit = { _, _ -> }
 ) {
-    Surface(
-        modifier = Modifier
-            .then(modifier)
-            .defaultMinSize(minHeight = minHeight),
-        shadowElevation = elevation,
-        shape = shape,
-        color = backgroundColor,
-        border = BorderStroke(Chip.containerStyle.OutlineSize, Chip.containerStyle.OutlineColor)
-    ) {
-        Row(
-            modifier = Modifier
-                .toggleable(
-                    value = isSelected,
-                    enabled = clickable,
-                    role = Role.Checkbox,
-                    onValueChange = {
-                        onSelectionChanged(text ?: "")
-                    }
-                ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = text ?: "",
-                modifier = Modifier
-                    .padding(start = Chip.TextChipPaddingStart, end = Chip.TextChipPaddingEnd)
-                    .placeholder(visible = text.isNullOrBlank(), highlight = PlaceholderHighlight.shimmer()),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
+    FilterChip(
+        modifier = modifier,
+        selected = selected,
+        onClick = {
+            onSelectionChanged(text ?: "", !selected)
+        },
+        label = {
+            Text(text = text ?: "")
+        },
+        leadingIcon = leadingIcon
+    )
 }
 
 /**
- * Toggleable ChipGroup of String. Use another overload if selection not required.
+ * Toggleable ChipGroup of String.
  * @param modifier the modifier to apply to this layout
  * @param list the list of String to display
- * @param horizontalSpacing Spacing on both side of ChipGroup
+ * @param chipSpacing Spacing between chips
+ * @param horizontalPadding Spacing on both side of ChipGroup
  * @param onSelectedChanged callback to be invoked when a chip is clicked.
  * The lambda carries out two parameters,
  * 1. selected - the [String] that state changed
  * 2. selectedChips - List of Selected [String] objects
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextChipGroup(
+fun FilterChipGroup(
     modifier: Modifier = Modifier,
     chipModifier: Modifier = Modifier,
-    horizontalSpacing: Dp = 0.dp,
+    chipSpacing: Dp = 0.dp,
+    horizontalPadding: Dp = 0.dp,
+    icons: List<ImageVector?> = emptyList(),
     list: List<String>? = null,
-    elevation: Dp = Chip.ContainerElevation,
-    chipShape: Shape = Chip.ContainerShape,
+    preSelect: List<String> = emptyList(),
     selectionType: SelectionType = SelectionType.Single,
-    onSelectedChanged: (selected: String, selectedChips: List<String>) -> Unit,
+    onSelectedChanged: (selected: String, selectedChips: List<String>) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    val selectedChips = MutableStateFlow(listOf<String>())
-    val selectedState: State<List<String>> = selectedChips.collectAsState()
+    val selectedChips = remember { mutableStateListOf<String>() }
 
-    LazyRow(modifier) {
-        item {
-            Spacer(Modifier.size(horizontalSpacing))
-        }
-        list?.let { list1 ->
-            items(list1) { s ->
-                TextChip(
+    if (preSelect.isNotEmpty()) {
+        selectedChips.addAll(preSelect)
+    }
+
+    Column(horizontalAlignment = Alignment.Start, modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = horizontalPadding),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            list?.forEachIndexed { index, it ->
+                if (index != 0) {
+                    Spacer(modifier = Modifier.width(chipSpacing))
+                }
+                CommonFilterChip(
                     modifier = chipModifier,
-                    text = s,
-                    isSelected = selectedState.value.contains(s),
-                    elevation = elevation,
-                    shape = chipShape,
-                    onSelectionChanged = {
-                        val newList = when (selectionType) {
+                    text = it,
+                    selected = selectedChips.contains(it),
+                    leadingIcon = {
+                        if (icons[index] != null) {
+                            icons[index]?.let { icon ->
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = "$it Icon",
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        }
+                    },
+                    onSelectionChanged = { label, selected ->
+                        Timber.d("MyChipGroup: Selected State: $label - $selected")
+
+                        when (selectionType) {
                             SelectionType.Single -> {
-                                mutableListOf(it)
+                                selectedChips.apply {
+                                    clear()
+                                    add(label)
+                                }
                             }
                             SelectionType.Multiple -> {
-                                selectedState.value.toMutableList() // Convert to MutableList
+                                if (selectedChips.contains(label)) {
+                                    selectedChips.remove(label)
+                                } else {
+                                    selectedChips.add(label)
+                                }
                             }
                         }
-                        if (!selectedState.value.contains(s)) {
-                            newList.add(s)
-                            scope.launch {
-                                selectedChips.emit(newList)
-                            }
-                        }
-                        onSelectedChanged(it, newList)
-                    },
+
+                        onSelectedChanged(label, selectedChips)
+                    }
                 )
             }
-        }
-        item {
-            Spacer(Modifier.size(horizontalSpacing))
         }
     }
 }
 
 enum class SelectionType {
     Single, Multiple
-}
-
-/**
- * Not Clickable ChipGroup of String
- * @param modifier the modifier to apply to this layout
- * @param list the list of String to display
- * @param horizontalSpacing Spacing on both side of ChipGroup
- */
-@Composable
-fun TextChipGroup(
-    modifier: Modifier = Modifier,
-    chipModifier: Modifier = Modifier,
-    horizontalSpacing: Dp = 0.dp,
-    elevation: Dp = Chip.ContainerElevation,
-    shape: Shape = Chip.ContainerShape,
-    list: List<String>? = null,
-) {
-    LazyRow(modifier) {
-        item {
-            Spacer(Modifier.size(horizontalSpacing))
-        }
-        list?.let { list1 ->
-            items(list1) { s ->
-                TextChip(
-                    modifier = chipModifier,
-                    text = s,
-                    isSelected = false,
-                    clickable = false,
-                    elevation = elevation,
-                    shape = shape,
-                )
-            }
-        }
-        item {
-            Spacer(Modifier.size(horizontalSpacing))
-        }
-    }
 }

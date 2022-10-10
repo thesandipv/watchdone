@@ -29,6 +29,7 @@ import javax.inject.Inject
 class MovieInfoTest : DataTest() {
 
     @Inject lateinit var moviesRepository: MoviesRepository
+
     @Inject lateinit var searchRepository: SearchRepository
 
     @Test

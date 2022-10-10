@@ -16,11 +16,17 @@ package com.afterroot.ui.common.compose.theme
 
 import android.content.Context
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
 fun Theme(context: Context, content: @Composable () -> Unit) {
@@ -30,5 +36,36 @@ fun Theme(context: Context, content: @Composable () -> Unit) {
         darkColorScheme()
     }
 
-    MaterialTheme(colorScheme = colorScheme, typography = MaterialTheme.typography, content = content)
+    val lightColorScheme: ColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        dynamicLightColorScheme(context)
+    } else {
+        lightColorScheme()
+    }
+
+    val finalColorScheme = if (isSystemInDarkTheme()) colorScheme else lightColorScheme
+
+    MaterialTheme(
+        colorScheme = finalColorScheme,
+        typography = ubuntuTypography,
+        content = {
+            CompositionLocalProvider(
+                LocalContentColor provides contentColorFor(backgroundColor = finalColorScheme.background),
+                content = content
+            )
+        }
+    )
+}
+
+@Composable
+fun PreviewTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = darkColorScheme(),
+        typography = ubuntuTypography,
+        content = {
+            CompositionLocalProvider(
+                LocalContentColor provides contentColorFor(backgroundColor = darkColorScheme().background),
+                content = content
+            )
+        }
+    )
 }
