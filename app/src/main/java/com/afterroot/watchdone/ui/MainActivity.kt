@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.os.ConfigurationCompat
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
@@ -168,6 +169,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        // TODO Use Dialog from Settings
+        if (settings.country == null) {
+            val country = ConfigurationCompat.getLocales(resources.configuration).get(0)?.country
+            settings.country = country
+        }
+
         // Initialize AdMob SDK
         MobileAds.initialize(this) {
         }

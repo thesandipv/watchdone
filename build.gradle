@@ -102,11 +102,11 @@ subprojects {
             target '**/*.kt'
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
-            ktlint(libs.versions.ktlint.get())
-                    .editorConfigOverride(Map.of(
-                            "ktlint_disabled_rules", "enum-entry-name-case,annotation",
-                            "disabled_rules", "enum-entry-name-case,annotation"
-                    ))
+            ktlint(libs.versions.ktlint.get()).editorConfigOverride(
+                    [ktlint_disabled_rules: "enum-entry-name-case,annotation",
+                     disabled_rules       : "enum-entry-name-case,annotation"]
+            )
+
         }
     }
 }

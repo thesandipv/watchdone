@@ -16,6 +16,7 @@ package com.afterroot.watchdone.di
 
 import android.content.Context
 import androidx.room.Room
+import com.afterroot.watchdone.database.CountriesDao
 import com.afterroot.watchdone.database.GenreDao
 import com.afterroot.watchdone.database.MyDatabase
 import dagger.Module
@@ -31,9 +32,13 @@ object RoomModule {
     @Provides
     @Singleton
     fun provideMyDatabase(@ApplicationContext context: Context): MyDatabase =
-        Room.databaseBuilder(context, MyDatabase::class.java, "watchdone-db").build()
+        Room.databaseBuilder(context, MyDatabase::class.java, "watchdone-db").fallbackToDestructiveMigration().build()
 
     @Provides
     @Singleton
     fun provideGenreDao(database: MyDatabase): GenreDao = database.genreDao()
+
+    @Provides
+    @Singleton
+    fun provideCountriesDao(database: MyDatabase): CountriesDao = database.countriesDao()
 }
