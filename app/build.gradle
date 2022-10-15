@@ -51,6 +51,7 @@ android {
     }
 
     defaultConfig {
+        namespace 'com.afterroot.watchdone'
         applicationId "com.afterroot.watchdone"
         minSdkVersion SDK.MIN
         targetSdkVersion SDK.TARGET
@@ -148,7 +149,7 @@ android {
         targetCompatibility = 1.8
     }
 
-    lintOptions {
+    lint {
         abortOnError false
     }
 

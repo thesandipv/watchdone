@@ -18,6 +18,10 @@ apply plugin: 'com.android.library'
 apply from: "$rootDir/gradle/common-config.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
+android {
+    namespace 'com.afterroot.watchdone.resources'
+}
+
 dependencies {
     implementation libs.google.material
     implementation libs.androidx.preference

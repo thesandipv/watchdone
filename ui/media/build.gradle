@@ -25,6 +25,7 @@ apply from: "$rootDir/gradle/compose.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
 android {
+    namespace 'com.afterroot.watchdone.media'
     buildFeatures {
         dataBinding true
     }

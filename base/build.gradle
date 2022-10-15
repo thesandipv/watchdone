@@ -22,6 +22,10 @@ plugins {
 apply from: "$rootDir/gradle/common-config.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
+android {
+    namespace 'com.afterroot.watchdone.base'
+}
+
 dependencies {
     api libs.kotlin.coroutines.core
 
