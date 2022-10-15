@@ -22,6 +22,10 @@ plugins {
 apply from: "$rootDir/gradle/common-config.gradle"
 apply from: "$rootDir/gradle/oss-licence.gradle"
 
+android {
+    namespace 'com.afterroot.watchdone.watchlist'
+}
+
 dependencies {
     //All compose dependencies applied with compose.gradle
     implementation project(":base")
