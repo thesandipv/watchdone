@@ -31,6 +31,7 @@ import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.BuildConfig
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.whenBuildIs
 import dagger.Module
 import dagger.Provides
@@ -65,8 +66,12 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideTMDbInterceptor(): TMDbInterceptor =
-        TMDbInterceptor(key = BuildConfig.TMDB_API, v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN)
+    fun provideTMDbInterceptor(settings: Settings): TMDbInterceptor =
+        TMDbInterceptor(
+            key = BuildConfig.TMDB_API,
+            v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN,
+            region = settings.country ?: Constants.DEFAULT_REGION
+        )
 
     @Provides
     @Singleton
