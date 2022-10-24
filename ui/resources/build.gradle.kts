@@ -14,22 +14,18 @@
 */
 
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    alias(libs.plugins.android.library)
 }
 
-apply from: "$rootDir/gradle/common-config.gradle"
-apply from: "$rootDir/gradle/oss-licence.gradle"
+apply(from = "$rootDir/gradle/common-config.gradle.kts")
+apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
-    namespace 'com.afterroot.watchdone.compose'
+    namespace = "com.afterroot.watchdone.resources"
 }
 
 dependencies {
-    //All compose dependencies applied with compose.gradle
-    implementation project(":base")
-    implementation project(":data")
-    implementation project(":ui:resources")
-
-    implementation libs.androidx.lifecycle.runtime
+    implementation(libs.google.material)
+    implementation(libs.androidx.preference)
+    implementation(libs.materialdialogs.core)
 }

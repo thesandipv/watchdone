@@ -13,17 +13,28 @@
 * limitations under the License.
 */
 
-apply plugin: 'com.android.library'
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
+}
 
-apply from: "$rootDir/gradle/common-config.gradle"
-apply from: "$rootDir/gradle/oss-licence.gradle"
+apply(from = "$rootDir/gradle/common-config.gradle.kts")
+apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
-    namespace 'com.afterroot.watchdone.resources'
+    namespace = "com.afterroot.watchdone.watchlist"
 }
 
 dependencies {
-    implementation libs.google.material
-    implementation libs.androidx.preference
-    implementation libs.materialdialogs.core
+    //All compose dependencies applied with compose.gradle
+    implementation(projects.base)
+    implementation(projects.data)
+    implementation(projects.ui.resources)
+
+    implementation(libs.firebase.firestore)
+
+    implementation(libs.hilt.hilt)
+    implementation(libs.hilt.compose)
+    kapt(libs.hilt.compiler)
 }
