@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
     id("androidx.navigation.safeargs")
-    id("kotlin-kapt")
 }
 
 apply(from = "$rootDir/gradle/common-config.gradle.kts")

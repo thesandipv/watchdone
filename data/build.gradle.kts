@@ -19,19 +19,13 @@ import java.io.FileInputStream
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
-
 }
 
 apply(from = "$rootDir/gradle/common-config.gradle.kts")
 apply(from = "$rootDir/gradle/common-config-library.gradle")
 apply(from = "$rootDir/gradle/oss-licence.gradle")
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 android {
     namespace = "com.afterroot.watchdone.data"

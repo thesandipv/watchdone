@@ -23,9 +23,9 @@ plugins {
     alias(libs.plugins.gms.googleServices)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
     id("androidx.navigation.safeargs")
     id("com.google.android.gms.oss-licenses-plugin")
-    id("kotlin-kapt")
     id("kotlin-parcelize")
 }
 

@@ -85,7 +85,7 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 gms-googleServices = "com.google.gms.google-services:4.3.14"
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-napt = "com.sergei-lapin.napt:1.17"
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ksp = "com.google.devtools.ksp:1.7.20-1.0.7"
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 

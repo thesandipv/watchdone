@@ -41,6 +41,7 @@ plugins {
     alias(libs.plugins.gms.googleServices) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.spotless)
 }
@@ -135,8 +136,13 @@ subprojects {
     }
 
     plugins.withId(rootProject.libs.plugins.hilt.get().pluginId) {
-        // Had to turn this off for napt to work
-        extensions.getByType<HiltExtension>().enableAggregatingTask = false
+        extensions.getByType<HiltExtension>().enableAggregatingTask = true
+    }
+    plugins.withId(rootProject.libs.plugins.kotlin.kapt.get().pluginId) {
+        extensions.getByType<org.jetbrains.kotlin.gradle.plugin.KaptExtension>().apply {
+            correctErrorTypes = true
+            useBuildCache = true
+        }
     }
     plugins.withType<BasePlugin>().configureEach {
         extensions.configure<BaseExtension> {
