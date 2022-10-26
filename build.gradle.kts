@@ -158,3 +158,5 @@ subprojects {
         }
     }
 }
+
+apply(from = "$rootDir/gradle/dependencyGraph.gradle")

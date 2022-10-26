@@ -143,7 +143,7 @@ android {
     }
 
     composeOptions {
-        println("- INFO: Compose Version: ${libs.versions.compose.get()}")
+        println("- INFO: Compose BOM Version: ${libs.versions.composeBom.get()}")
         println("- INFO: Compose Compiler Version: ${libs.versions.composeCompiler.get()}")
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
@@ -182,6 +182,7 @@ dependencies {
     implementation(libs.androidx.supportV4)
     implementation(libs.androidx.vectorDrawable)
 
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
     debugImplementation(libs.androidx.compose.tooling)
 
