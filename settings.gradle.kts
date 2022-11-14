@@ -51,6 +51,7 @@ include(
     ":ui:media",
     ":ui:profile",
     ":ui:resources",
+    ":ui:recommended",
     ":ui:search",
     ":ui:settings",
     ":ui:watchlist"

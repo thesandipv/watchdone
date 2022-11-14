@@ -102,5 +102,23 @@
         <argument
             android:name="type"
             app:argType="string" />
+        <action
+            android:id="@+id/toRecommended"
+            app:destination="@id/navigation_recommended" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_recommended"
+        android:name="com.afterroot.watchdone.recommended.ui.RecommendedFragment"
+        android:label="Recommended">
+        <argument
+            android:name="mediaId"
+            app:argType="integer" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="https://watchdone.web.app/recommended/{type}/{mediaId}"
+            tools:targetApi="m" />
     </fragment>
 </navigation>

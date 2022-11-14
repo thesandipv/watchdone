@@ -134,7 +134,8 @@ android {
             "META-INF/proguard/*",
             "/*.properties",
             "fabric/*.properties",
-            "META-INF/*.properties"
+            "META-INF/*.properties",
+            "META-INF/LICENSE*.md"
         )
     }
 
@@ -157,6 +158,7 @@ dependencies {
     implementation(projects.ui.commonCompose)
     implementation(projects.ui.discover)
     implementation(projects.ui.media)
+    implementation(projects.ui.recommended)
     implementation(projects.ui.resources)
     implementation(projects.ui.watchlist)
 

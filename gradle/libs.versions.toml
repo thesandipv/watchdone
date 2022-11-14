@@ -95,7 +95,7 @@ commonsCodec = "commons-codec:commons-codec:1.15"
 commonsIo = { module = "org.apache.commons:commons-io", version.ref = "commonsIo" }
 commonsLang = "org.apache.commons:commons-lang3:3.12.0"
 materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
-store = "com.dropbox.mobile.store:store4:4.0.4-KT15"
+store = "com.dropbox.mobile.store:store4:4.0.5"
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 

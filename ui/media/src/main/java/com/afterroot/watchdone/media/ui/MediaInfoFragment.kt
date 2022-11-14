@@ -33,7 +33,6 @@ import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.model.Genre
-import com.afterroot.tmdbapi.model.MovieAppendableResponses
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.ui.common.compose.components.LocalPosterSize
@@ -73,6 +72,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.Collections.emptyList
 import java.util.Locale
 import javax.inject.Inject
 import com.afterroot.watchdone.resources.R as CommonR
@@ -117,13 +117,16 @@ class MediaInfoFragment : Fragment() {
                         viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId))
                         updateCast(argMediaId, mediaType)
                     }
+
                     PERSON -> {
                         // TODO
                     }
+
                     TV_SERIES -> {
                         viewModel.selectMedia(tv = tvRepository.getTVInfo(argMediaId).toTV())
                         updateCast(argMediaId, mediaType)
                     }
+
                     null -> {
                     }
                 }
@@ -135,6 +138,7 @@ class MediaInfoFragment : Fragment() {
             when (state) {
                 is State.Error<*> -> {
                 }
+
                 is State.Loaded<*> -> {
                     viewModel.getSelectedMedia().observe(viewLifecycleOwner) {
                         when (it) {
@@ -142,6 +146,7 @@ class MediaInfoFragment : Fragment() {
                                 Timber.d("onViewCreated: ${it.data}")
                                 updateUI(movie = it.data)
                             }
+
                             is SelectedMedia.TV -> {
                                 Timber.d("onViewCreated: ${it.data}")
                                 updateUI(tv = it.data)
@@ -149,6 +154,7 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
                 }
+
                 else -> {
                 }
             }
@@ -320,7 +326,12 @@ class MediaInfoFragment : Fragment() {
                                 tv.id,
                                 tvRepository,
                                 recommendedTVItemSelectedCallback
-                            )
+                            ) {
+                                val request = NavDeepLinkRequest.Builder
+                                    .fromUri("https://watchdone.web.app/recommended/${TV_SERIES.name}/${arguments?.getInt("mediaId")}".toUri())
+                                    .build()
+                                this@MediaInfoFragment.view?.findNavController()?.navigate(request)
+                            }
                         }
                     }
                 }
@@ -343,10 +354,6 @@ class MediaInfoFragment : Fragment() {
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(CommonR.string.msg_added_to_wl))
         hideProgress()
-    }
-
-    private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        moviesRepository.getFullMovieInfo(id, MovieAppendableResponses.credits).toMovie()
     }
 
     private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {

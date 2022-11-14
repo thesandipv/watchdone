@@ -63,6 +63,8 @@ dependencies {
 
     api(libs.google.gson)
 
+    api(libs.store)
+
     implementation(libs.okhttp.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.retrofit.retrofit)

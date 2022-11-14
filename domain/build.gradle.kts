@@ -22,4 +22,7 @@ dependencies {
     implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
     kapt(libs.hilt.compiler)
+
+    api(libs.androidx.paging.common)
+    implementation(libs.androidx.paging)
 }

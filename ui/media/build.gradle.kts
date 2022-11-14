@@ -34,9 +34,11 @@ android {
 dependencies {
     implementation(projects.base)
     implementation(projects.data)
+    implementation(projects.domain)
     implementation(projects.ui.common)
     implementation(projects.ui.commonCompose)
     implementation(projects.ui.resources)
+    implementation(projects.ui.recommended)
 
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.constraintLayout)

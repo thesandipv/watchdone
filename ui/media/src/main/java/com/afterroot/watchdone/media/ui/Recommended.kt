@@ -53,7 +53,8 @@ fun RecommendedMovies(
 fun RecommendedTV(
     tvId: Int,
     tvRepository: TVRepository,
-    tvItemSelectedCallback: ItemSelectedCallback<TV>
+    tvItemSelectedCallback: ItemSelectedCallback<TV>,
+    onMoreClick: () -> Unit
 ) {
     val state = remember { mutableStateOf(emptyList<TV>()) }
 
@@ -68,6 +69,6 @@ fun RecommendedTV(
         onItemClick = { tv, index ->
             tvItemSelectedCallback.onClick(index, null, tv)
         },
-        onMoreClick = {}
+        onMoreClick = onMoreClick
     )
 }
