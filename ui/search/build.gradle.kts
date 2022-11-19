@@ -14,22 +14,24 @@
 */
 
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
 }
 
-apply from: "$rootDir/gradle/common-config.gradle"
-apply from: "$rootDir/gradle/oss-licence.gradle"
+apply(from = "$rootDir/gradle/common-config.gradle.kts")
+apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
-    namespace 'com.afterroot.watchdone.compose'
+    namespace = "com.afterroot.watchdone.search"
 }
 
 dependencies {
     //All compose dependencies applied with compose.gradle
-    implementation project(":base")
-    implementation project(":data")
-    implementation project(":ui:resources")
+    implementation(projects.base)
+    implementation(projects.data)
 
-    implementation libs.androidx.lifecycle.runtime
+    implementation(libs.hilt.hilt)
+    implementation(libs.hilt.compose)
+    kapt(libs.hilt.compiler)
 }

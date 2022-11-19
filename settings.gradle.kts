@@ -12,37 +12,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
 plugins {
-    id "com.gradle.enterprise" version "3.11.2"
+    id("com.gradle.enterprise") version "3.11.2"
 }
 
 gradleEnterprise {
     buildScan {
-        // Accept the license agreement for com.gradle.build-scan plugin
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
-        publishOnFailure()
+        publishAlways()
     }
 }
 
-rootProject.name = 'watchdone'
-include ':app'
-include ':base'
-include ':data'
-include ':ards'
-include ':domain'
-include ':themoviedbapi'
-include ':ui:common'
-include ':ui:common-compose'
-include ':ui:discover'
-include ':ui:media'
-include ':ui:profile'
-include ':ui:resources'
-include ':ui:search'
-include ':ui:settings'
-include ':ui:watchlist'
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+rootProject.name = "watchdone"
+
+include(
+    ":app",
+    ":base",
+    ":data",
+    ":ards",
+    ":domain",
+    ":themoviedbapi",
+    ":ui:common",
+    ":ui:common-compose",
+    ":ui:discover",
+    ":ui:media",
+    ":ui:profile",
+    ":ui:resources",
+    ":ui:recommended",
+    ":ui:search",
+    ":ui:settings",
+    ":ui:watchlist"
+)
 
 //AfterROOT Utils
-include ':utils'
-project(':utils').projectDir = file('core/utils')
-project(':ards').projectDir = file('ards/lib')
+include(":utils")
+project(":utils").projectDir = file("core/utils")
+project(":ards").projectDir = file("ards/lib")

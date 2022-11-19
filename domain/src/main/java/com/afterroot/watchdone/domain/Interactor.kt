@@ -28,6 +28,8 @@ package com.afterroot.watchdone.domain
  * limitations under the License.
  */
 
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.afterroot.watchdone.base.InvokeError
 import com.afterroot.watchdone.base.InvokeStarted
 import com.afterroot.watchdone.base.InvokeStatus
@@ -94,4 +96,10 @@ abstract class SubjectInteractor<P : Any, T> {
     }
 
     protected abstract fun createObservable(params: P): Flow<T>
+}
+
+abstract class PagingInteractor<P : PagingInteractor.Parameters<T>, T : Any> : SubjectInteractor<P, PagingData<T>>() {
+    interface Parameters<T : Any> {
+        val pagingConfig: PagingConfig
+    }
 }
