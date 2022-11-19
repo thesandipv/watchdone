@@ -13,17 +13,19 @@
 * limitations under the License.
 */
 
-apply plugin: 'com.android.library'
+plugins {
+    alias(libs.plugins.android.library)
+}
 
-apply from: "$rootDir/gradle/common-config.gradle"
-apply from: "$rootDir/gradle/oss-licence.gradle"
+apply(from = "$rootDir/gradle/common-config.gradle.kts")
+apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
-    namespace 'com.afterroot.watchdone.resources'
+    namespace = "com.afterroot.watchdone.resources"
 }
 
 dependencies {
-    implementation libs.google.material
-    implementation libs.androidx.preference
-    implementation libs.materialdialogs.core
+    implementation(libs.google.material)
+    implementation(libs.androidx.preference)
+    implementation(libs.materialdialogs.core)
 }

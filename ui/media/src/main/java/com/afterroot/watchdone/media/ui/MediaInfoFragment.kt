@@ -33,7 +33,6 @@ import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.model.Genre
-import com.afterroot.tmdbapi.model.MovieAppendableResponses
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.ui.common.compose.components.LocalPosterSize
@@ -54,6 +53,8 @@ import com.afterroot.watchdone.media.databinding.FragmentMediaInfoBinding
 import com.afterroot.watchdone.media.viewmodel.MediaInfoViewModel
 import com.afterroot.watchdone.media.viewmodel.SelectedMedia
 import com.afterroot.watchdone.media.viewmodel.State
+import com.afterroot.watchdone.recommended.ui.RecommendedMoviesPaged
+import com.afterroot.watchdone.recommended.ui.RecommendedTVPaged
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.collectionWatchdone
@@ -73,6 +74,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.Collections.emptyList
 import java.util.Locale
 import javax.inject.Inject
 import com.afterroot.watchdone.resources.R as CommonR
@@ -117,13 +119,16 @@ class MediaInfoFragment : Fragment() {
                         viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId))
                         updateCast(argMediaId, mediaType)
                     }
+
                     PERSON -> {
                         // TODO
                     }
+
                     TV_SERIES -> {
                         viewModel.selectMedia(tv = tvRepository.getTVInfo(argMediaId).toTV())
                         updateCast(argMediaId, mediaType)
                     }
+
                     null -> {
                     }
                 }
@@ -135,6 +140,7 @@ class MediaInfoFragment : Fragment() {
             when (state) {
                 is State.Error<*> -> {
                 }
+
                 is State.Loaded<*> -> {
                     viewModel.getSelectedMedia().observe(viewLifecycleOwner) {
                         when (it) {
@@ -142,6 +148,7 @@ class MediaInfoFragment : Fragment() {
                                 Timber.d("onViewCreated: ${it.data}")
                                 updateUI(movie = it.data)
                             }
+
                             is SelectedMedia.TV -> {
                                 Timber.d("onViewCreated: ${it.data}")
                                 updateUI(tv = it.data)
@@ -149,6 +156,7 @@ class MediaInfoFragment : Fragment() {
                         }
                     }
                 }
+
                 else -> {
                 }
             }
@@ -309,18 +317,13 @@ class MediaInfoFragment : Fragment() {
                 ) {
                     Column(modifier = Modifier.padding(vertical = 12.dp)) {
                         if (movie != null) {
-                            RecommendedMovies(
-                                movie.id,
-                                moviesRepository,
-                                recommendedMovieItemSelectedCallback
+                            RecommendedMoviesPaged(
+                                movieId = movie.id,
+                                movieItemSelectedCallback = recommendedMovieItemSelectedCallback
                             )
                         }
                         if (tv != null) {
-                            RecommendedTV(
-                                tv.id,
-                                tvRepository,
-                                recommendedTVItemSelectedCallback
-                            )
+                            RecommendedTVPaged(tvId = tv.id, tvItemSelectedCallback = recommendedTVItemSelectedCallback)
                         }
                     }
                 }
@@ -343,10 +346,6 @@ class MediaInfoFragment : Fragment() {
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(CommonR.string.msg_added_to_wl))
         hideProgress()
-    }
-
-    private suspend fun getInfoFromServer(id: Int) = withContext(Dispatchers.IO) {
-        moviesRepository.getFullMovieInfo(id, MovieAppendableResponses.credits).toMovie()
     }
 
     private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
