@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.media.ui
+package com.afterroot.ui.common.compose.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -31,35 +30,38 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.afterroot.ui.common.compose.components.Header
-import com.afterroot.ui.common.compose.components.PosterCard
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemsIndexed
+import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import info.movito.themoviedbapi.model.Multi
 
 @Composable
-fun <T : Multi> Carousel(
-    items: List<T>,
+fun <T : Multi> PagingCarousel(
+    items: LazyPagingItems<T>,
     title: String,
     refreshing: Boolean,
     modifier: Modifier = Modifier,
     onItemClick: (T, Int) -> Unit,
-    onMoreClick: () -> Unit
+    onMoreClick: (() -> Unit)? = null
 ) {
     Column(modifier) {
-        if (refreshing || items.isNotEmpty()) {
+        if (refreshing || items.itemCount != 0) {
             Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
-                TextButton(
-                    onClick = onMoreClick,
-                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
-                    modifier = Modifier.alignBy(FirstBaseline)
-                ) {
-                    Text(text = "More")
+                if (onMoreClick != null) {
+                    TextButton(
+                        onClick = onMoreClick,
+                        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
+                        modifier = Modifier.alignBy(FirstBaseline)
+                    ) {
+                        Text(text = "More")
+                    }
                 }
             }
 
-            if (items.isNotEmpty()) {
-                CarouselInt(
+            if (items.itemCount != 0) {
+                PagingCarouselInt(
                     items = items,
                     onItemClick = onItemClick,
                     modifier = Modifier
@@ -73,8 +75,8 @@ fun <T : Multi> Carousel(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun <T : Multi> CarouselInt(
-    items: List<T>,
+internal fun <T : Multi> PagingCarouselInt(
+    items: LazyPagingItems<T>,
     onItemClick: (T, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -87,21 +89,31 @@ internal fun <T : Multi> CarouselInt(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        itemsIndexed(items = items) { index, item ->
-            PosterCard(
-                media = item,
-                onClick = { onItemClick(item, index) },
-                modifier = Modifier
-                    .animateItemPlacement()
-                    .fillParentMaxHeight()
-                    .aspectRatio(2 / 3f)
-            )
-        }
-    }
-}
+        itemsIndexed(items = items, key = { index: Int, item: T ->
+            when (item) {
+                is TV -> {
+                    item.id
+                }
 
-@Preview
-@Composable
-fun PreviewHeader() {
-    Header(title = "Header Title", modifier = Modifier.fillMaxWidth(), loading = true)
+                is Movie -> {
+                    item.id
+                }
+
+                else -> {
+                    index
+                }
+            }
+        }, itemContent = { index, item ->
+                if (item != null) {
+                    PosterCard(
+                        media = item,
+                        onClick = { onItemClick(item, index) },
+                        modifier = Modifier
+                            .animateItemPlacement()
+                            .fillParentMaxHeight()
+                            .aspectRatio(2 / 3f)
+                    )
+                }
+            })
+    }
 }

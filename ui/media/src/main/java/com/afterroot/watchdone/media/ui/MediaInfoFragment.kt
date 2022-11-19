@@ -53,6 +53,8 @@ import com.afterroot.watchdone.media.databinding.FragmentMediaInfoBinding
 import com.afterroot.watchdone.media.viewmodel.MediaInfoViewModel
 import com.afterroot.watchdone.media.viewmodel.SelectedMedia
 import com.afterroot.watchdone.media.viewmodel.State
+import com.afterroot.watchdone.recommended.ui.RecommendedMoviesPaged
+import com.afterroot.watchdone.recommended.ui.RecommendedTVPaged
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.collectionWatchdone
@@ -315,23 +317,13 @@ class MediaInfoFragment : Fragment() {
                 ) {
                     Column(modifier = Modifier.padding(vertical = 12.dp)) {
                         if (movie != null) {
-                            RecommendedMovies(
-                                movie.id,
-                                moviesRepository,
-                                recommendedMovieItemSelectedCallback
+                            RecommendedMoviesPaged(
+                                movieId = movie.id,
+                                movieItemSelectedCallback = recommendedMovieItemSelectedCallback
                             )
                         }
                         if (tv != null) {
-                            RecommendedTV(
-                                tv.id,
-                                tvRepository,
-                                recommendedTVItemSelectedCallback
-                            ) {
-                                val request = NavDeepLinkRequest.Builder
-                                    .fromUri("https://watchdone.web.app/recommended/${TV_SERIES.name}/${arguments?.getInt("mediaId")}".toUri())
-                                    .build()
-                                this@MediaInfoFragment.view?.findNavController()?.navigate(request)
-                            }
+                            RecommendedTVPaged(tvId = tv.id, tvItemSelectedCallback = recommendedTVItemSelectedCallback)
                         }
                     }
                 }

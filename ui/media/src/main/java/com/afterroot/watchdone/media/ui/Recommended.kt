@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.TVRepository
+import com.afterroot.ui.common.compose.components.Carousel
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie
@@ -27,6 +28,7 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 
 @Composable
+@Deprecated("Use new paged version")
 fun RecommendedMovies(
     movieId: Int,
     moviesRepository: MoviesRepository,
@@ -50,6 +52,7 @@ fun RecommendedMovies(
 }
 
 @Composable
+@Deprecated("Use new paged version")
 fun RecommendedTV(
     tvId: Int,
     tvRepository: TVRepository,

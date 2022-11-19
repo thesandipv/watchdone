@@ -20,8 +20,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.domain.interactors.UpdateRecommendedMovies
 import com.afterroot.watchdone.domain.interactors.UpdateRecommendedShows
+import com.afterroot.watchdone.domain.observers.RecommendedMoviePagingSource
 import com.afterroot.watchdone.domain.observers.RecommendedShowPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -29,9 +32,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecommendedViewModel @Inject constructor(
-    val updateRecommendedShows: UpdateRecommendedShows
+    private val updateRecommendedShows: UpdateRecommendedShows,
+    private val updateRecommendedMovies: UpdateRecommendedMovies
 ) : ViewModel() {
-    val recommendedShows: Flow<PagingData<TV>> = Pager(PagingConfig(pageSize = 10, initialLoadSize = 30)) {
-        RecommendedShowPagingSource(updateRecommendedShows)
+
+    fun getRecommendedShows(mediaId: Int): Flow<PagingData<TV>> = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+        RecommendedShowPagingSource(mediaId, updateRecommendedShows)
     }.flow.cachedIn(viewModelScope)
+
+    fun getRecommendedMovies(mediaId: Int): Flow<PagingData<Movie>> =
+        Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+            RecommendedMoviePagingSource(mediaId, updateRecommendedMovies)
+        }.flow.cachedIn(viewModelScope)
 }

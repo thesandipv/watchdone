@@ -32,7 +32,5 @@ dependencies {
 
     implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
-    implementation("androidx.core:core-ktx:+")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     kapt(libs.hilt.compiler)
 }
