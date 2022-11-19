@@ -224,7 +224,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso)
 
     testImplementation(libs.androidx.test.core)
-    testImplementation("org.mockito:mockito-core:4.8.0")
+    testImplementation("org.mockito:mockito-core:4.9.0")
     androidTestImplementation("org.mockito:mockito-android:4.8.0")
 
     implementation("androidx.work:work-runtime-ktx:2.7.1")
