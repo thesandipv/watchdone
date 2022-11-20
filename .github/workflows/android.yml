@@ -104,7 +104,8 @@ jobs:
         with:
           serviceAccountJson: release/serviceAccount.json
           packageName: com.afterroot.watchdone
-          track: internal
+          track: production
+          status: inProgress
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           mappingFile: app/build/outputs/mapping/release/mapping.txt
 
