@@ -101,7 +101,7 @@ jobs:
       - name: Publish to Play Store
         id: publish-to-play-store
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: r0adkll/upload-google-play@v1.0.18
+        uses: r0adkll/upload-google-play@v1.0.19
         with:
           serviceAccountJson: release/serviceAccount.json
           packageName: com.afterroot.watchdone
