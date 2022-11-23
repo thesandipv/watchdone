@@ -19,7 +19,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@v2
         with:
           status: starting
           channel: '#watchdone'
@@ -159,7 +159,7 @@ jobs:
           channel: watchdone
           filename: Watchdone-${{ steps.commithash.outputs.sha_short }}.apk
 
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@v2
         if: always()
         with:
           status: ${{ job.status }}
