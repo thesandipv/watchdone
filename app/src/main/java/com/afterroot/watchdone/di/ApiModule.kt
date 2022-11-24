@@ -67,11 +67,7 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideTMDbInterceptor(settings: Settings): TMDbInterceptor =
-        TMDbInterceptor(
-            key = BuildConfig.TMDB_API,
-            v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN,
-            region = settings.country ?: Constants.DEFAULT_REGION
-        )
+        TMDbInterceptor(key = BuildConfig.TMDB_API, v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN)
 
     @Provides
     @Singleton
