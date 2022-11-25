@@ -18,7 +18,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -30,6 +29,7 @@ import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.media.adapter.MultiAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
@@ -59,12 +59,12 @@ class DiscoverFragment : Fragment() {
             super.onClick(position, view, item)
             if (item is Movie) {
                 val request = NavDeepLinkRequest.Builder
-                    .fromUri("https://watchdone.web.app/media/${Multi.MediaType.MOVIE.name}/${item.id}".toUri())
+                    .fromUri(Deeplink.media(item.id, Multi.MediaType.MOVIE))
                     .build()
                 findNavController().navigate(request)
             } else if (item is TV) {
                 val request = NavDeepLinkRequest.Builder
-                    .fromUri("https://watchdone.web.app/media/${Multi.MediaType.TV_SERIES.name}/${item.id}".toUri())
+                    .fromUri(Deeplink.media(item.id, Multi.MediaType.TV_SERIES))
                     .build()
                 findNavController().navigate(request)
             }
@@ -94,33 +94,7 @@ class DiscoverFragment : Fragment() {
 
         lifecycleScope.launch {
             binding.progressBarDiscover.visible(true)
-            // val repo = DiscoverRepository(discoverApi).getMoviesDiscover(Discover())
-/*
-            val homeScreenAdapter = DelegateListAdapter(
-                settings,
-                MovieDiffCallback(),
-                object :
-                    ItemSelectedCallback<Movie> {
-                    override fun onClick(position: Int, view: View?, item: Movie) {
-                        super.onClick(position, view, item)
-                        // homeViewModel.selectMovie(item)
-                        // findNavController().navigate(R.id.discoverToMovieInfo)
-                        val request = NavDeepLinkRequest.Builder
-                            .fromUri("https://watchdone.web.app/media/${Multi.MediaType.MOVIE.name}/${item.id}".toUri())
-                            .build()
-                        // val directions = DiscoverFragmentDirections.discoverToMediaInfo(item.id, Multi.MediaType.MOVIE.name)
-                        findNavController().navigate(request)
-                    }
-
-                    override fun onLongClick(position: Int, item: Movie) {
-                        super.onLongClick(position, item)
-                        requireContext().toast(item.title.toString())
-                    }
-                }
-            )
-*/
             binding.list.adapter = discoverAdapter
-            // homeScreenAdapter.submitList(repo.toMovies())
             binding.progressBarDiscover.visible(false)
             discoverViewModel.getMedia().collect {
                 discoverAdapter.submitList(it)
