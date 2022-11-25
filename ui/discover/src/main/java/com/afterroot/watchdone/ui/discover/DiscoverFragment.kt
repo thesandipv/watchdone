@@ -18,13 +18,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Movie
-import androidx.compose.material.icons.outlined.Tv
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -33,7 +26,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.afterroot.tmdbapi.api.DiscoverApi
-import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.data.model.Movie
@@ -50,7 +42,6 @@ import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
 import javax.inject.Inject
-import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class DiscoverFragment : Fragment() {
@@ -138,23 +129,7 @@ class DiscoverFragment : Fragment() {
 
         binding.composeViewChip.setContent {
             Theme(requireContext()) {
-                FilterChipGroup(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    chipSpacing = 12.dp,
-                    horizontalPadding = dimensionResource(id = CommonR.dimen.padding_horizontal),
-                    icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-                    list = listOf("Movies", "TV"),
-                    preSelect = listOf("Movies")
-                ) { selected, _ ->
-                    when (selected) {
-                        "Movies" -> {
-                            discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.MOVIE))
-                        }
-                        "TV" -> {
-                            discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.TV_SERIES))
-                        }
-                    }
-                }
+                DiscoverChips(discoverViewModel = discoverViewModel)
             }
         }
     }

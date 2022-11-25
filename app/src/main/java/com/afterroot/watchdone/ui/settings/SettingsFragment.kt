@@ -131,8 +131,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             countriesDao.getByName(countryArray[which]).flowOn(Dispatchers.IO).collectLatest {
                                 settings.country = it?.iso
                                 findPreference<Preference>("key_countries")?.summary = it?.englishName
+                                dialog.dismiss()
                             }
-                            dialog.dismiss()
                         }
                     }
                 dialog?.show()
