@@ -41,8 +41,8 @@ import com.afterroot.watchdone.data.model.TV
 import info.movito.themoviedbapi.model.Multi
 
 @Composable
-fun PosterCard(
-    media: Multi,
+fun <T : Multi> PosterCard(
+    media: T,
     modifier: Modifier = Modifier,
     type: Multi.MediaType = media.mediaType ?: Multi.MediaType.MOVIE,
     onClick: (() -> Unit)? = null
@@ -64,6 +64,26 @@ fun PosterCard(
 
         else -> {}
     }
+    BasePosterCard(title = title, posterPath = posterPath, modifier = modifier, onClick = onClick)
+}
+
+@Composable
+fun MovieCard(movie: Movie, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
+    BasePosterCard(title = movie.title, posterPath = movie.posterPath, modifier = modifier, onClick = onClick)
+}
+
+@Composable
+fun TVCard(tv: TV, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
+    BasePosterCard(title = tv.name, posterPath = tv.posterPath, modifier = modifier, onClick = onClick)
+}
+
+@Composable
+fun BasePosterCard(
+    modifier: Modifier = Modifier,
+    title: String? = null,
+    posterPath: String? = null,
+    onClick: (() -> Unit)? = null
+) {
     Card(modifier = modifier) {
         Box(
             modifier = Modifier
