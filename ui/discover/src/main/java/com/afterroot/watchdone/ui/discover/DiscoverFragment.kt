@@ -18,15 +18,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.afterroot.tmdbapi.api.DiscoverApi
 import com.afterroot.ui.common.compose.theme.Theme
-import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.helpers.Deeplink
@@ -34,12 +33,10 @@ import com.afterroot.watchdone.media.adapter.MultiAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.discover.databinding.FragmentDiscoverBinding
-import com.afterroot.watchdone.viewmodel.DiscoverActions
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Multi
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 
@@ -82,12 +79,18 @@ class DiscoverFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDiscoverBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Theme(context = requireContext()) {
+                    Discover(itemSelectedCallback = itemSelectedCallback)
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+/*
         discoverAdapter = MultiAdapter(itemSelectedCallback, settings)
 
         discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.MOVIE))
@@ -105,7 +108,7 @@ class DiscoverFragment : Fragment() {
             Theme(requireContext()) {
                 DiscoverChips(discoverViewModel = discoverViewModel)
             }
-        }
+        }*/
     }
 
     companion object {
