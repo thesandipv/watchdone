@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.tivi.common.compose.ui.AutoSizedCircularProgressIndicator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.afterroot.watchdone.data.model.Movie

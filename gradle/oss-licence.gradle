@@ -4,7 +4,5 @@ spotless {
         target '**/*.kt'
         targetExclude("$buildDir/**/*.kt")
         targetExclude('bin/**/*.kt')
-
-        licenseHeaderFile rootProject.file('copyright.kt')
     }
 }
