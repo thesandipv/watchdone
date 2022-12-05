@@ -41,7 +41,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -60,25 +59,23 @@ import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverActions
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import info.movito.themoviedbapi.model.Multi
-import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
-fun DiscoverChips(discoverViewModel: DiscoverViewModel = hiltViewModel()) {
+fun DiscoverChips(
+    onMovieSelected: () -> Unit,
+    onTVSelected: () -> Unit
+) {
     FilterChipGroup(
         modifier = Modifier.padding(vertical = 8.dp),
         chipSpacing = 12.dp,
-        horizontalPadding = dimensionResource(id = CommonR.dimen.padding_horizontal),
+        horizontalPadding = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         list = listOf("Movies", "TV"),
         preSelect = listOf("Movies")
     ) { selected, _ ->
         when (selected) {
-            "Movies" -> {
-                discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.MOVIE))
-            }
-            "TV" -> {
-                discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.TV_SERIES))
-            }
+            "Movies" -> onMovieSelected()
+            "TV" -> onTVSelected()
         }
     }
 }
@@ -96,7 +93,13 @@ fun Discover(
         state = viewState.copy(isLoading = movieItems.loadState.refresh is LoadState.Loading || tvItems.loadState.refresh is LoadState.Loading),
         movieItems = movieItems,
         tvItems = tvItems,
-        itemSelectedCallback = itemSelectedCallback
+        itemSelectedCallback = itemSelectedCallback,
+        onMovieChipSelected = {
+            discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.MOVIE))
+        },
+        onTVChipSelected = {
+            discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.TV_SERIES))
+        }
     ) {
         if (viewState.mediaType == Multi.MediaType.MOVIE) {
             movieItems.refresh()
@@ -113,6 +116,8 @@ internal fun Discover(
     movieItems: LazyPagingItems<Movie>,
     tvItems: LazyPagingItems<TV>,
     itemSelectedCallback: ItemSelectedCallback<Multi>,
+    onMovieChipSelected: () -> Unit,
+    onTVChipSelected: () -> Unit,
     refresh: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -139,7 +144,7 @@ internal fun Discover(
                     .fillMaxHeight()
             ) {
                 fullSpanItem {
-                    DiscoverChips()
+                    DiscoverChips(onMovieSelected = { onMovieChipSelected() }, onTVSelected = { onTVChipSelected() })
                 }
                 if (state.mediaType == Multi.MediaType.MOVIE) {
                     gridItems(items = movieItems, key = { it.id }) { movie ->
