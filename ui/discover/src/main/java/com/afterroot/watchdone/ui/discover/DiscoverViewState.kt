@@ -19,7 +19,8 @@ import info.movito.themoviedbapi.model.Multi
 
 @Immutable
 data class DiscoverViewState(
-    val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE
+    val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
+    val isLoading: Boolean = false
 ) {
     companion object {
         val Empty = DiscoverViewState()
