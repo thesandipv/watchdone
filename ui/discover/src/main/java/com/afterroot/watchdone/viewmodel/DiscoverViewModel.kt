@@ -20,12 +20,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.afterroot.watchdone.base.compose.Actions
 import com.afterroot.watchdone.domain.interactors.GetDiscoverMovies
 import com.afterroot.watchdone.domain.interactors.GetDiscoverTV
 import com.afterroot.watchdone.domain.observers.DiscoverMoviePagingSource
 import com.afterroot.watchdone.domain.observers.DiscoverTVPagingSource
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.discover.DiscoverActions
 import com.afterroot.watchdone.ui.discover.DiscoverViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Discover
@@ -88,8 +88,4 @@ class DiscoverViewModel @Inject constructor(
     }
 
     internal fun getAction() = actions
-}
-
-sealed class DiscoverActions : Actions() {
-    data class SetMediaType(val mediaType: Multi.MediaType) : DiscoverActions()
 }
