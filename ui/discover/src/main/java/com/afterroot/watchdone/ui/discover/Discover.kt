@@ -56,7 +56,6 @@ import com.afterroot.ui.common.compose.components.TVCard
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.viewmodel.DiscoverActions
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import info.movito.themoviedbapi.model.Multi
 
@@ -136,7 +135,7 @@ internal fun Discover(
         Box(modifier = Modifier.pullRefresh(state = refreshState)) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                contentPadding = paddingValues + PaddingValues(horizontal = 8.dp),
+                contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier

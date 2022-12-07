@@ -32,7 +32,7 @@ fun RecommendedMoviesPaged(
     val pagingItems = recommendedViewModel.getRecommendedMovies(movieId).collectAsLazyPagingItems()
     PagingCarousel(
         items = pagingItems,
-        title = "Recommended TV Series",
+        title = "Recommended Movies",
         refreshing = false,
         onItemClick = { movie, index ->
             movieItemSelectedCallback.onClick(index, null, movie)
