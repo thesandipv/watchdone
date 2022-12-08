@@ -4,6 +4,7 @@
       <element module="themoviedbapi" copyright="themoviedbapi" />
       <element module="ar-tmdbapi" copyright="ar-tmdbapi" />
       <element module="watchdone" copyright="afterroot" />
+      <element module="tivi" copyright="tivi" />
     </module2copyright>
   </settings>
 </component>

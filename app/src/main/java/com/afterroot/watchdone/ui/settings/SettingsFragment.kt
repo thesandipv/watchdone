@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.afterroot.tmdbapi.model.config.Country
 import com.afterroot.tmdbapi.repository.ConfigRepository
@@ -76,6 +77,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceChangeListener true
         }
 
+        findPreference<PreferenceCategory>("key_debug")?.isVisible = BuildConfig.DEBUG
+
         findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
             OssLicensesMenuActivity.setActivityTitle(getString(com.google.android.gms.oss.licenses.R.string.oss_license_title))
             requireContext().startActivity<OssLicensesMenuActivity>()
@@ -128,8 +131,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             countriesDao.getByName(countryArray[which]).flowOn(Dispatchers.IO).collectLatest {
                                 settings.country = it?.iso
                                 findPreference<Preference>("key_countries")?.summary = it?.englishName
+                                dialog.dismiss()
                             }
-                            dialog.dismiss()
                         }
                     }
                 dialog?.show()

@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="tivi" pattern="src[*]:app.tivi..*" />
+</component>
