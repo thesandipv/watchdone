@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -48,6 +47,7 @@ import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.media.adapter.CastListAdapter
 import com.afterroot.watchdone.media.databinding.FragmentMediaInfoBinding
 import com.afterroot.watchdone.media.viewmodel.MediaInfoViewModel
@@ -167,7 +167,7 @@ class MediaInfoFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: Movie) {
             super.onClick(position, view, item)
             val request = NavDeepLinkRequest.Builder
-                .fromUri("https://watchdone.web.app/media/${MOVIE.name}/${item.id}".toUri())
+                .fromUri(Deeplink.media(item.id, MOVIE))
                 .build()
             this@MediaInfoFragment.view?.findNavController()?.navigate(request)
         }
@@ -177,7 +177,7 @@ class MediaInfoFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: TV) {
             super.onClick(position, view, item)
             val request = NavDeepLinkRequest.Builder
-                .fromUri("https://watchdone.web.app/media/${TV_SERIES.name}/${item.id}".toUri())
+                .fromUri(Deeplink.media(item.id, TV_SERIES))
                 .build()
             this@MediaInfoFragment.view?.findNavController()?.navigate(request)
         }

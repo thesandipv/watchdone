@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import timber.log.Timber
 
 /**
  * Chip of [String]
@@ -93,7 +92,7 @@ fun FilterChipGroup(
 ) {
     val selectedChips = remember { mutableStateListOf<String>() }
 
-    if (preSelect.isNotEmpty()) {
+    if (preSelect.isNotEmpty() && selectedChips.isEmpty()) {
         selectedChips.addAll(preSelect)
     }
 
@@ -123,8 +122,7 @@ fun FilterChipGroup(
                             }
                         }
                     },
-                    onSelectionChanged = { label, selected ->
-                        Timber.d("MyChipGroup: Selected State: $label - $selected")
+                    onSelectionChanged = { label, _ ->
 
                         when (selectionType) {
                             SelectionType.Single -> {

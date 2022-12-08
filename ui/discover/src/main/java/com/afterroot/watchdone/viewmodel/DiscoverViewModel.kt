@@ -17,15 +17,24 @@ package com.afterroot.watchdone.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.afterroot.tmdbapi.repository.DiscoverRepository
-import com.afterroot.watchdone.base.compose.Actions
-import com.afterroot.watchdone.data.mapper.toMulti
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.afterroot.watchdone.domain.interactors.GetDiscoverMovies
+import com.afterroot.watchdone.domain.interactors.GetDiscoverTV
+import com.afterroot.watchdone.domain.observers.DiscoverMoviePagingSource
+import com.afterroot.watchdone.domain.observers.DiscoverTVPagingSource
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.discover.DiscoverActions
+import com.afterroot.watchdone.ui.discover.DiscoverViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Discover
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,10 +43,28 @@ import javax.inject.Inject
 class DiscoverViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
     val settings: Settings,
-    private val discoverRepository: DiscoverRepository
+    private val getDiscoverMovies: GetDiscoverMovies,
+    private val getDiscoverTV: GetDiscoverTV
 ) : ViewModel() {
     private val actions = MutableSharedFlow<DiscoverActions>()
-    private val media = MutableSharedFlow<List<Multi>>()
+    private val mediaType = MutableSharedFlow<Multi.MediaType>()
+    private val discover = Discover()
+
+    val state: StateFlow<DiscoverViewState> = combine(mediaType) { it ->
+        DiscoverViewState(it[0])
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = DiscoverViewState.Empty
+    )
+
+    val discoverMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
+        DiscoverMoviePagingSource(discover, getDiscoverMovies)
+    }.flow.cachedIn(viewModelScope)
+
+    val discoverTV = Pager(PagingConfig(20, initialLoadSize = 40)) {
+        DiscoverTVPagingSource(discover, getDiscoverTV)
+    }.flow.cachedIn(viewModelScope)
 
     init {
         Timber.d("init: Start")
@@ -46,19 +73,7 @@ class DiscoverViewModel @Inject constructor(
             actions.collect { action ->
                 when (action) {
                     is DiscoverActions.SetMediaType -> {
-                        when (action.mediaType) {
-                            Multi.MediaType.MOVIE -> {
-                                val discover = Discover().region(settings.country ?: "US")
-                                val list = discoverRepository.getMoviesDiscover(discover) // TODO add params also
-                                media.emit(list.toMulti())
-                            }
-                            Multi.MediaType.TV_SERIES -> {
-                                val discover = Discover().region(settings.country ?: "US")
-                                val list = discoverRepository.getTVDiscover(discover) // TODO add params also
-                                media.emit(list.toMulti())
-                            }
-                            else -> {}
-                        }
+                        mediaType.emit(action.mediaType)
                     }
                 }
             }
@@ -73,10 +88,4 @@ class DiscoverViewModel @Inject constructor(
     }
 
     internal fun getAction() = actions
-
-    fun getMedia(): SharedFlow<List<Multi>> = media
-}
-
-sealed class DiscoverActions : Actions() {
-    data class SetMediaType(val mediaType: Multi.MediaType) : DiscoverActions()
 }

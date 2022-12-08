@@ -25,7 +25,6 @@ import com.afterroot.tmdbapi.api.SearchApi
 import com.afterroot.tmdbapi.api.TVApi
 import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.tmdbapi.repository.ConfigRepository
-import com.afterroot.tmdbapi.repository.DiscoverRepository
 import com.afterroot.tmdbapi.repository.GenresRepository
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
@@ -67,11 +66,7 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideTMDbInterceptor(settings: Settings): TMDbInterceptor =
-        TMDbInterceptor(
-            key = BuildConfig.TMDB_API,
-            v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN,
-            region = settings.country ?: Constants.DEFAULT_REGION
-        )
+        TMDbInterceptor(key = BuildConfig.TMDB_API, v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN)
 
     @Provides
     @Singleton
@@ -97,10 +92,6 @@ object RepositoriesModule {
     @Provides
     @Singleton
     fun provideAuthRepository(authApi: AuthApi) = AuthRepository(authApi)
-
-    @Provides
-    @Singleton
-    fun provideDiscoverRepository(discoverApi: DiscoverApi) = DiscoverRepository(discoverApi)
 
     @Provides
     @Singleton

@@ -329,7 +329,8 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
                 R.id.navigation_discover -> {
-                    setTitle(getString(CommonR.string.text_discover))
+                    binding.titleLayout.visible(false, AutoTransition())
+                    setTitle(null)
                     binding.fab.hide()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
