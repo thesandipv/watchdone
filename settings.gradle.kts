@@ -54,10 +54,9 @@ include(
     ":ui:recommended",
     ":ui:search",
     ":ui:settings",
-    ":ui:watchlist"
+    ":ui:watchlist",
+    ":utils"
 )
 
-//AfterROOT Utils
-include(":utils")
-project(":utils").projectDir = file("core/utils")
-project(":ards").projectDir = file("ards/lib")
+project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
+project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure
