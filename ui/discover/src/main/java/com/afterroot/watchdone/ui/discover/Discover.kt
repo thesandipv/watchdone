@@ -98,14 +98,15 @@ fun Discover(
         },
         onTVChipSelected = {
             discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.TV_SERIES))
+        },
+        refresh = {
+            if (viewState.mediaType == Multi.MediaType.MOVIE) {
+                movieItems.refresh()
+            } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+                tvItems.refresh()
+            }
         }
-    ) {
-        if (viewState.mediaType == Multi.MediaType.MOVIE) {
-            movieItems.refresh()
-        } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-            tvItems.refresh()
-        }
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)

@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -58,6 +59,65 @@ fun TextInput(
     var error by remember { mutableStateOf(false) }
     Column {
         TextField(
+            value = value,
+            onValueChange = {
+                value = it // always update state
+                when {
+                    validate(it) || it.isBlank() -> {
+                        error = false
+                        onChange(it)
+                    }
+                    else -> {
+                        error = true
+                        onError(it)
+                    }
+                }
+            },
+            isError = error,
+            label = { Text(text = label) },
+            maxLines = maxLines,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp),
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions
+        )
+        AnimatedVisibility(visible = error) {
+            Text(
+                text = errorText,
+                modifier = Modifier
+                    .paddingFromBaseline(top = 16.dp)
+                    .padding(horizontal = (16.dp * 2)),
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+/**
+ * [OutlinedTextField] with Validation
+ */
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun OutlinedTextInput(
+    modifier: Modifier = Modifier,
+    label: String,
+    maxLines: Int = 1,
+    errorText: String = "",
+    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+    keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+    validate: (String) -> Boolean = { true },
+    onChange: (String) -> Unit,
+    onError: (String) -> Unit = {}
+) {
+    var value by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf(false) }
+    Column {
+        OutlinedTextField(
             value = value,
             onValueChange = {
                 value = it // always update state

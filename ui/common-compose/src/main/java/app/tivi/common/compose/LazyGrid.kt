@@ -61,6 +61,42 @@ fun <T : Any> LazyGridScope.gridItems(
     }
 }
 
+fun <T : Any> LazyGridScope.gridItemsIndexed(
+    items: LazyPagingItems<T>,
+    key: ((index: Int, item: T) -> Any)? = null,
+    span: (LazyGridItemSpanScope.(index: Int, item: T) -> GridItemSpan)? = null,
+    contentType: (item: T) -> Any? = { null },
+    itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit
+) {
+    items(
+        count = items.itemCount,
+        span = { index ->
+            val item = items.peek(index)
+            when {
+                item != null && span != null -> span(index, item)
+                else -> GridItemSpan(0)
+            }
+        },
+        contentType = { index ->
+            items.peek(index)?.let { contentType(it) }
+        },
+        key = if (key == null) {
+            null
+        } else {
+            { index ->
+                val item = items.peek(index)
+                if (item == null) {
+                    PagingPlaceholderKey(index)
+                } else {
+                    key(index, item)
+                }
+            }
+        }
+    ) { index ->
+        itemContent(index, items[index])
+    }
+}
+
 @SuppressLint("BanParcelableUsage")
 internal data class PagingPlaceholderKey(private val index: Int) : Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) = parcel.writeInt(index)
