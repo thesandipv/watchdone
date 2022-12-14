@@ -113,8 +113,13 @@ class Settings @Inject constructor(
     val theme: String?
         get() = getString(Constants.PREF_KEY_THEME, context.getString(CommonR.string.theme_device_default))
 
+    @DebugPref
     val isUseProdDb: Boolean
         get() = getBoolean("use_prod_db", false)
+
+    @DebugPref
+    val isHttpLogging: Boolean
+        get() = getBoolean("http_logging", false)
 
     var isUsernameSet: Boolean
         get() = getBoolean("is_user_name_set", false)

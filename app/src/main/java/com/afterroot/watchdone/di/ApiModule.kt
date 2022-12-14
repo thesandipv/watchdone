@@ -57,11 +57,18 @@ object ApiModule {
     }
 
     @Provides
-    fun provideOkHttpClient(tmdbInterceptor: TMDbInterceptor, httpLoggingInterceptor: HttpLoggingInterceptor) =
-        OkHttpClient().newBuilder()
+    fun provideOkHttpClient(
+        tmdbInterceptor: TMDbInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        settings: Settings
+    ): OkHttpClient {
+        val client = OkHttpClient().newBuilder()
             .addInterceptor(tmdbInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
+        if (settings.isHttpLogging) {
+            client.addInterceptor(httpLoggingInterceptor)
+        }
+        return client.build()
+    }
 
     @Provides
     @Singleton
