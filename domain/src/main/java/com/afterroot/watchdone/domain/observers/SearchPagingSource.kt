@@ -19,8 +19,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.data.mapper.toMovies
+import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.domain.interactors.SearchMovieInteractor
+import com.afterroot.watchdone.domain.interactors.SearchTVInteractor
 import com.afterroot.watchdone.utils.State
 import timber.log.Timber
 
@@ -31,7 +34,6 @@ class SearchMoviePagingSource(private val query: Query, private val searchMovieI
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         try {
             var nextPage = params.key ?: 1
-            val oldPage = nextPage
             Timber.d("load: Page $nextPage, Query: $query")
             val response = searchMovieInteractor.executeSync(SearchMovieInteractor.Params(query.page(nextPage)))
             var loadResult: LoadResult<Int, Movie>? = null
@@ -48,6 +50,51 @@ class SearchMoviePagingSource(private val query: Query, private val searchMovieI
                         Timber.d("load: Success, Next page: $nextPage")
                         loadResult = LoadResult.Page(
                             data = it.data.toMovies(),
+                            prevKey = null,
+                            nextKey = if (nextPage <= it.data.totalPages) nextPage else null
+                        )
+                    }
+
+                    is State.Loading -> {
+                        Timber.d("load: Loading Page $nextPage")
+                    }
+
+                    is State.Failed -> {
+                        Timber.d("load: Failed loading page")
+                    }
+                }
+            }
+            return loadResult!!
+        } catch (e: Exception) {
+            Timber.e("load: Load Error")
+            return LoadResult.Error(e)
+        }
+    }
+}
+
+class SearchTVPagingSource(private val query: Query, private val searchTVInteractor: SearchTVInteractor) :
+    PagingSource<Int, TV>() {
+    override fun getRefreshKey(state: PagingState<Int, TV>): Int? = null
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TV> {
+        try {
+            var nextPage = params.key ?: 1
+            Timber.d("load: Page $nextPage, Query: $query")
+            val response = searchTVInteractor.executeSync(SearchTVInteractor.Params(query.page(nextPage)))
+            var loadResult: LoadResult<Int, TV>? = null
+
+            if (!query.validateForSearch()) {
+                loadResult = LoadResult.Error(IllegalArgumentException("Query is Empty"))
+                return loadResult
+            }
+
+            response.collect {
+                when (it) {
+                    is State.Success -> {
+                        nextPage = it.data.page + 1
+                        Timber.d("load: Success, Next page: $nextPage")
+                        loadResult = LoadResult.Page(
+                            data = it.data.toTV(),
                             prevKey = null,
                             nextKey = if (nextPage <= it.data.totalPages) nextPage else null
                         )
