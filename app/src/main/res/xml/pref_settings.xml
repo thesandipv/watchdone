@@ -27,6 +27,10 @@
             android:defaultValue="false"
             app:key="use_prod_db"
             app:title="Use Prod Database" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:key="http_logging"
+            app:title="HTTP Request Logging" />
     </PreferenceCategory>
     <PreferenceCategory app:title="About">
         <Preference
