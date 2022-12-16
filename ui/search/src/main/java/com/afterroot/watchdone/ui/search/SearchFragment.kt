@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.ui.discover
+package com.afterroot.watchdone.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,7 +32,17 @@ import info.movito.themoviedbapi.model.Multi
 import org.jetbrains.anko.toast
 
 @AndroidEntryPoint
-class DiscoverFragment : Fragment() {
+class SearchFragment : Fragment() {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Theme(context = requireContext()) {
+                    Search(itemSelectedCallback = itemSelectedCallback)
+                }
+            }
+        }
+    }
 
     private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
         override fun onClick(position: Int, view: View?, item: Multi) {
@@ -58,19 +68,5 @@ class DiscoverFragment : Fragment() {
                 requireContext().toast((item).name.toString())
             }
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                Theme(context = requireContext()) {
-                    Discover(itemSelectedCallback = itemSelectedCallback)
-                }
-            }
-        }
-    }
-
-    companion object {
-        private const val TAG = "DiscoverFragment"
     }
 }

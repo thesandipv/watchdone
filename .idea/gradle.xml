@@ -14,7 +14,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/ards/lib" />
             <option value="$PROJECT_DIR$/base" />
-            <option value="$PROJECT_DIR$/core/utils" />
+            <option value="$PROJECT_DIR$/utils/lib" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/themoviedbapi" />

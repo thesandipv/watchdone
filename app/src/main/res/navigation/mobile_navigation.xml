@@ -71,9 +71,9 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_search_new"
-        android:name="com.afterroot.watchdone.ui.search.SearchNewFragment"
-        android:label="SearchNewFragment"
-        tools:layout="@layout/search_new_fragment">
+        android:name="com.afterroot.watchdone.ui.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/search_fragment">
         <deepLink
             android:id="@+id/deep_link_search"
             android:autoVerify="true"

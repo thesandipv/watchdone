@@ -21,6 +21,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import com.afterroot.tmdbapi.model.config.Country
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.watchdone.BuildConfig
@@ -30,6 +31,7 @@ import com.afterroot.watchdone.database.CountriesDao
 import com.afterroot.watchdone.settings.Settings
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.jakewharton.processphoenix.ProcessPhoenix
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -78,6 +80,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<PreferenceCategory>("key_debug")?.isVisible = BuildConfig.DEBUG
+
+        findPreference<SwitchPreferenceCompat>("http_logging")?.setOnPreferenceChangeListener { _, _ ->
+            ProcessPhoenix.triggerRebirth(requireContext())
+            true
+        }
 
         findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
             OssLicensesMenuActivity.setActivityTitle(getString(com.google.android.gms.oss.licenses.R.string.oss_license_title))
