@@ -101,9 +101,11 @@ fun Search(
     when (viewState.mediaType) {
         Multi.MediaType.MOVIE -> {
             viewModel.setLoading(movieItems.loadState.refresh == LoadState.Loading)
+            viewModel.setEmpty(movieItems.itemCount == 0 || viewState.query.getQuery().isBlank())
         }
         Multi.MediaType.TV_SERIES -> {
             viewModel.setLoading(tvItems.loadState.refresh == LoadState.Loading)
+            viewModel.setEmpty(tvItems.itemCount == 0 || viewState.query.getQuery().isBlank())
         }
         else -> {}
     }
@@ -114,7 +116,9 @@ fun Search(
         movieItems = movieItems,
         tvItems = tvItems,
         onSearch = {
-            viewModel.search(query = viewState.query.query(it))
+            if (it.isNotBlank()) {
+                viewModel.search(query = viewState.query.query(it))
+            }
         },
         onMovieSelected = {
             viewModel.setMediaType(Multi.MediaType.MOVIE)
@@ -163,11 +167,11 @@ internal fun Search(
         }
     }, modifier = Modifier.fillMaxSize()) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-            AnimatedVisibility(visible = state.isLoading, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(visible = state.isLoading && !state.empty, enter = fadeIn(), exit = fadeOut()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-            AnimatedVisibility(visible = !state.isLoading, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(visible = !state.isLoading && !state.empty, enter = fadeIn(), exit = fadeOut()) {
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(3),
@@ -179,7 +183,11 @@ internal fun Search(
                         .fillMaxHeight()
                 ) {
                     fullSpanItem {
-                        SearchChips(onMovieSelected = onMovieSelected, onTVSelected = onTVSelected)
+                        SearchChips(
+                            preselect = state.mediaType ?: Multi.MediaType.MOVIE,
+                            onMovieSelected = onMovieSelected,
+                            onTVSelected = onTVSelected
+                        )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
                         gridItemsIndexed(items = movieItems, key = { index, _ ->
@@ -230,7 +238,7 @@ fun SearchBar(modifier: Modifier = Modifier, onChange: (String) -> Unit = {}) {
             modifier = Modifier,
             label = "Search",
             hint = "Search movie or tv show...",
-            showLabel = false,
+            showLabel = true,
             onChange = onChange
         )
     }
@@ -291,19 +299,20 @@ fun SearchTextInput(
 
 @Composable
 fun SearchChips(
+    preselect: Multi.MediaType,
     onMovieSelected: () -> Unit,
     onTVSelected: () -> Unit
 ) {
     FilterChipGroup(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier,
         chipSpacing = 12.dp,
         horizontalPadding = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-        list = listOf("Movies", "TV"),
-        preSelect = listOf("Movies")
+        list = listOf("Movie", "TV"),
+        preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV")
     ) { selected, _ ->
         when (selected) {
-            "Movies" -> onMovieSelected()
+            "Movie" -> onMovieSelected()
             "TV" -> onTVSelected()
         }
     }
