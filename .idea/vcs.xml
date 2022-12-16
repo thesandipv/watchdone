@@ -3,7 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ards" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/core" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/utils" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/themoviedbapi" vcs="Git" />
   </component>
 </project>

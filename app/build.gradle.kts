@@ -160,6 +160,8 @@ dependencies {
     implementation(projects.ui.media)
     implementation(projects.ui.recommended)
     implementation(projects.ui.resources)
+    implementation(projects.ui.search)
+    implementation(projects.ui.settings)
     implementation(projects.ui.watchlist)
 
     implementation(libs.kotlin.stdLib)

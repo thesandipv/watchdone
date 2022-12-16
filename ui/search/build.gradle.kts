@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 apply(from = "$rootDir/gradle/common-config.gradle.kts")
@@ -30,6 +31,15 @@ dependencies {
     //All compose dependencies applied with compose.gradle
     implementation(projects.base)
     implementation(projects.data)
+    implementation(projects.domain)
+    implementation(projects.ui.common)
+    implementation(projects.ui.commonCompose)
+    implementation(projects.ui.media)
+    implementation(projects.ui.resources)
+
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.navigation.fragment)
 
     implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)

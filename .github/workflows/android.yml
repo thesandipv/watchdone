@@ -111,6 +111,17 @@ jobs:
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           mappingFile: app/build/outputs/mapping/release/mapping.txt
 
+      - name: Publish to Internal Track Play Store
+        id: publish-to-play-store-internal
+        if: github.ref == 'refs/heads/main'
+        uses: r0adkll/upload-google-play@v1.0.19
+        with:
+          serviceAccountJson: release/serviceAccount.json
+          packageName: com.afterroot.watchdone
+          track: internal
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          mappingFile: app/build/outputs/mapping/release/mapping.txt
+
       - name: Create release for tags
         id: create-release
         uses: softprops/action-gh-release@v1

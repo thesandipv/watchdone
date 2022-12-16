@@ -1,9 +1,9 @@
 [submodule "ards"]
 	path = ards
 	url = https://github.com/afterroot/ards.git
-[submodule "core"]
-	path = core
-	url = https://github.com/afterroot/core.git
+[submodule "utils"]
+    path = "utils"
+	url = https://github.com/afterroot/utils.git
 [submodule "themoviedbapi"]
 	path = themoviedbapi
 	url = https://github.com/afterroot/themoviedbapi
