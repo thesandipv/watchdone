@@ -54,10 +54,23 @@ class SearchViewModel @Inject constructor(
     private var _query = MutableSharedFlow<Query>()
     private var isRefresh = MutableStateFlow(false)
     private var isLoading = MutableStateFlow(false)
+    private var isEmpty = MutableStateFlow(true)
 
     val state: StateFlow<SearchViewState> =
-        combine(mediaType, searchQuery, isRefresh, isLoading) { mediaType, searchQuery, isRefresh, isLoading ->
-            SearchViewState(mediaType = mediaType, query = searchQuery, refresh = isRefresh, isLoading = isLoading).apply {
+        combine(
+            mediaType,
+            searchQuery,
+            isRefresh,
+            isLoading,
+            isEmpty
+        ) { mediaType, searchQuery, isRefresh, isLoading, isEmpty ->
+            SearchViewState(
+                mediaType = mediaType,
+                query = searchQuery,
+                refresh = isRefresh,
+                isLoading = isLoading,
+                empty = isEmpty
+            ).apply {
                 Timber.d("load: State: $this")
             }
         }.stateIn(
@@ -101,6 +114,10 @@ class SearchViewModel @Inject constructor(
     fun setLoading(loading: Boolean) {
         isLoading.value = loading
     }
+
+    fun setEmpty(empty: Boolean) {
+        isEmpty.value = empty
+    }
 }
 
 @Immutable
@@ -108,7 +125,8 @@ data class SearchViewState(
     val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
     val query: Query = Query(),
     val isLoading: Boolean = false,
-    val refresh: Boolean = false
+    val refresh: Boolean = false,
+    val empty: Boolean = true
 ) : ViewState() {
     companion object {
         val Empty = SearchViewState()
