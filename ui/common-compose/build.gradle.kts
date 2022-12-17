@@ -31,5 +31,7 @@ dependencies {
     implementation(projects.data)
     implementation(projects.ui.resources)
 
+    implementation(libs.google.material)
+
     implementation(libs.androidx.lifecycle.runtime)
 }
