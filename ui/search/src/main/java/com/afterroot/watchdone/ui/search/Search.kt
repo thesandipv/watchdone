@@ -37,8 +37,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Tv
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -158,6 +162,7 @@ internal fun Search(
 
     Scaffold(topBar = {
         SearchBar(
+            prefill = searchQuery.getQuery(),
             modifier = Modifier
                 .padding(bottom = 8.dp)
                 .offset { IntOffset(x = 0, y = searchHeightOffset.value.roundToInt()) }
@@ -232,11 +237,12 @@ internal fun Search(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchBar(modifier: Modifier = Modifier, onChange: (String) -> Unit = {}) {
+fun SearchBar(prefill: String = "", modifier: Modifier = Modifier, onChange: (String) -> Unit = {}) {
     Surface(modifier = modifier) {
         SearchTextInput(
             modifier = Modifier,
             label = "Search",
+            prefillValue = prefill,
             hint = "Search movie or tv show...",
             showLabel = true,
             onChange = onChange
@@ -253,20 +259,31 @@ fun SearchTextInput(
     modifier: Modifier = Modifier,
     label: String,
     hint: String = "",
+    prefillValue: String = "",
     maxLines: Int = 1,
     errorText: String = "",
     showLabel: Boolean = true,
     keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-    keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+    keyboardActions: KeyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
     validate: (String) -> Boolean = { true },
     onChange: (String) -> Unit,
     onError: (String) -> Unit = {}
 ) {
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(prefillValue) }
     var error by remember { mutableStateOf(false) }
     Column {
         OutlinedTextField(
+            leadingIcon = {
+                Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search")
+            },
+            trailingIcon = {
+                IconButton(onClick = {
+                    value = ""
+                }) {
+                    Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
+                }
+            },
             placeholder = { Text(text = hint) },
             value = value,
             onValueChange = {
