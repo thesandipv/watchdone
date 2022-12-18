@@ -65,6 +65,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -146,7 +147,7 @@ internal fun Search(
 ) {
     var searchQuery by remember { mutableStateOf(state.query) }
     val listState = rememberLazyGridState()
-    val searchHeight = TextFieldDefaults.MinHeight + 16.dp
+    val searchHeight = TextFieldDefaults.MinHeight + 32.dp
     val searchHeightPx = with(LocalDensity.current) { searchHeight.roundToPx().toFloat() }
     val searchHeightOffset = remember { mutableStateOf(0f) }
 
@@ -164,7 +165,6 @@ internal fun Search(
         SearchBar(
             prefill = searchQuery.getQuery(),
             modifier = Modifier
-                .padding(bottom = 8.dp)
                 .offset { IntOffset(x = 0, y = searchHeightOffset.value.roundToInt()) }
         ) {
             searchQuery = searchQuery.query(it)
@@ -260,7 +260,6 @@ fun SearchTextInput(
     label: String,
     hint: String = "",
     prefillValue: String = "",
-    maxLines: Int = 1,
     errorText: String = "",
     showLabel: Boolean = true,
     keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
@@ -278,10 +277,12 @@ fun SearchTextInput(
                 Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search")
             },
             trailingIcon = {
-                IconButton(onClick = {
-                    value = ""
-                }) {
-                    Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
+                if (value.isNotBlank()) {
+                    IconButton(onClick = {
+                        value = ""
+                    }) {
+                        Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
+                    }
                 }
             },
             placeholder = { Text(text = hint) },
@@ -303,11 +304,10 @@ fun SearchTextInput(
             label = {
                 if (showLabel) Text(text = label)
             },
-            maxLines = maxLines,
+            singleLine = true,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions
         )
@@ -323,7 +323,6 @@ fun SearchChips(
     FilterChipGroup(
         modifier = Modifier,
         chipSpacing = 12.dp,
-        horizontalPadding = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         list = listOf("Movie", "TV"),
         preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV")
@@ -333,4 +332,11 @@ fun SearchChips(
             "TV" -> onTVSelected()
         }
     }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Preview
+@Composable
+fun PreviewSearchInput() {
+    SearchTextInput(label = "Search", onChange = {})
 }
