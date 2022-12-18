@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.viewmodel
 
-import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,12 +21,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.afterroot.tmdbapi.model.Query
-import com.afterroot.watchdone.base.compose.ViewState
 import com.afterroot.watchdone.domain.interactors.SearchMovieInteractor
 import com.afterroot.watchdone.domain.interactors.SearchTVInteractor
 import com.afterroot.watchdone.domain.observers.SearchMoviePagingSource
 import com.afterroot.watchdone.domain.observers.SearchTVPagingSource
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.search.SearchViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -117,18 +116,5 @@ class SearchViewModel @Inject constructor(
 
     fun setEmpty(empty: Boolean) {
         isEmpty.value = empty
-    }
-}
-
-@Immutable
-data class SearchViewState(
-    val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
-    val query: Query = Query(),
-    val isLoading: Boolean = false,
-    val refresh: Boolean = false,
-    val empty: Boolean = true
-) : ViewState() {
-    companion object {
-        val Empty = SearchViewState()
     }
 }
