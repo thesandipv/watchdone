@@ -21,6 +21,8 @@ import androidx.lifecycle.ViewModel
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.domain.interactors.TVEpisodeInteractor
+import com.afterroot.watchdone.domain.interactors.TVSeasonInteractor
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,7 +34,9 @@ import javax.inject.Inject
 class MediaInfoViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
     var db: FirebaseFirestore,
-    var settings: Settings
+    var settings: Settings,
+    val tvSeasonInteractor: TVSeasonInteractor,
+    val tvEpisodeInteractor: TVEpisodeInteractor
 ) : ViewModel() {
     private var watchlistSnapshot = MutableLiveData<State>()
     private val selectedMedia = MutableLiveData<SelectedMedia>()

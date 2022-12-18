@@ -112,7 +112,7 @@ fun FilterChipGroup(
                     text = it,
                     selected = selectedChips.contains(it),
                     leadingIcon = {
-                        if (icons[index] != null) {
+                        if (icons.isNotEmpty()) {
                             icons[index]?.let { icon ->
                                 Icon(
                                     imageVector = icon,

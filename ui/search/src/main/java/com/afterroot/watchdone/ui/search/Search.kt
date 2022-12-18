@@ -82,7 +82,6 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.SearchViewModel
-import com.afterroot.watchdone.viewmodel.SearchViewState
 import info.movito.themoviedbapi.model.Multi
 import kotlin.math.roundToInt
 
