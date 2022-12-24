@@ -87,13 +87,17 @@ fun FilterChipGroup(
     icons: List<ImageVector?> = emptyList(),
     list: List<String>? = null,
     preSelect: List<String> = emptyList(),
+    preSelectItem: String? = null,
     selectionType: SelectionType = SelectionType.Single,
     onSelectedChanged: (selected: String, selectedChips: List<String>) -> Unit
 ) {
     val selectedChips = remember { mutableStateListOf<String>() }
 
-    if (preSelect.isNotEmpty() && selectedChips.isEmpty()) {
-        selectedChips.addAll(preSelect)
+    if (selectedChips.isEmpty()) {
+        if (preSelect.isNotEmpty()) {
+            selectedChips.addAll(preSelect)
+        }
+        preSelectItem?.let { selectedChips.add(it) }
     }
 
     Column(horizontalAlignment = Alignment.Start, modifier = modifier) {

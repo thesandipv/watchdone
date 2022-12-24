@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.media.ui
+package com.afterroot.watchdone.ui.media
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween

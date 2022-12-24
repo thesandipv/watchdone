@@ -28,14 +28,14 @@ import javax.inject.Inject
 class TVRepository @Inject constructor(private val tvApi: TVApi) {
     fun season(id: Int, season: Int) = flow {
         emit(State.loading())
-        emit(State.success(tvApi.getSeason(id, season)))
+        emit(State.success(tvApi.getSeason(id, season).toSeason()))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)
 
     fun episode(id: Int, season: Int, episode: Int) = flow {
         emit(State.loading())
-        emit(State.success(tvApi.getEpisode(id, season, episode)))
+        emit(State.success(tvApi.getEpisode(id, season, episode).toEpisode()))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)

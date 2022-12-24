@@ -59,8 +59,7 @@
     <fragment
         android:id="@+id/navigation_discover"
         android:name="com.afterroot.watchdone.ui.discover.DiscoverFragment"
-        android:label="@string/text_discover"
-        tools:layout="@layout/fragment_discover">
+        android:label="@string/text_discover">
         <action
             android:id="@+id/discoverToMediaInfo"
             app:destination="@id/navigation_media_info"
@@ -89,7 +88,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_media_info"
-        android:name="com.afterroot.watchdone.media.ui.MediaInfoFragment"
+        android:name="com.afterroot.watchdone.ui.media.MediaInfoFragment"
         android:label="MediaInfoFragment">
         <deepLink
             android:autoVerify="true"
