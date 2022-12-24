@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.media.ui
+package com.afterroot.watchdone.ui.media
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -48,16 +48,16 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.helpers.Deeplink
-import com.afterroot.watchdone.media.adapter.CastListAdapter
 import com.afterroot.watchdone.media.databinding.FragmentMediaInfoBinding
-import com.afterroot.watchdone.media.viewmodel.MediaInfoViewModel
-import com.afterroot.watchdone.media.viewmodel.SelectedMedia
-import com.afterroot.watchdone.media.viewmodel.State
 import com.afterroot.watchdone.recommended.ui.RecommendedMoviesPaged
 import com.afterroot.watchdone.recommended.ui.RecommendedTVPaged
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import com.afterroot.watchdone.ui.media.adapter.CastListAdapter
+import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.collectionWatchdone
+import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
+import com.afterroot.watchdone.viewmodel.SelectedMedia
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -71,6 +71,7 @@ import info.movito.themoviedbapi.model.Multi.MediaType.MOVIE
 import info.movito.themoviedbapi.model.Multi.MediaType.PERSON
 import info.movito.themoviedbapi.model.Multi.MediaType.TV_SERIES
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -125,6 +126,7 @@ class MediaInfoFragment : Fragment() {
                     }
 
                     TV_SERIES -> {
+                        viewModel.setMediaType(TV_SERIES)
                         viewModel.selectMedia(tv = tvRepository.getTVInfo(argMediaId).toTV())
                         updateCast(argMediaId, mediaType)
                     }
@@ -136,28 +138,30 @@ class MediaInfoFragment : Fragment() {
         }
 
         // Refreshes Ui When Actions clicked
-        viewModel.getWatchlistSnapshot(firebaseUtils.uid!!).observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is State.Error<*> -> {
-                }
+        lifecycleScope.launch {
+            viewModel.observeWatchlistSnapshot(firebaseUtils.uid!!).collectLatest { state ->
+                when (state) {
+                    is State.Success -> {
+                        viewModel.getSelectedMedia().collectLatest {
+                            when (it) {
+                                is SelectedMedia.Movie -> {
+                                    Timber.d("onViewCreated: ${it.data}")
+                                    updateUI(movie = it.data)
+                                }
 
-                is State.Loaded<*> -> {
-                    viewModel.getSelectedMedia().observe(viewLifecycleOwner) {
-                        when (it) {
-                            is SelectedMedia.Movie -> {
-                                Timber.d("onViewCreated: ${it.data}")
-                                updateUI(movie = it.data)
-                            }
-
-                            is SelectedMedia.TV -> {
-                                Timber.d("onViewCreated: ${it.data}")
-                                updateUI(tv = it.data)
+                                is SelectedMedia.TV -> {
+                                    Timber.d("onViewCreated: ${it.data}")
+                                    updateUI(tv = it.data)
+                                }
+                                SelectedMedia.Empty -> {
+                                }
                             }
                         }
                     }
-                }
-
-                else -> {
+                    is State.Failed -> {
+                    }
+                    is State.Loading -> {
+                    }
                 }
             }
         }
@@ -324,6 +328,7 @@ class MediaInfoFragment : Fragment() {
                         }
                         if (tv != null) {
                             RecommendedTVPaged(tvId = tv.id, tvItemSelectedCallback = recommendedTVItemSelectedCallback)
+                            Seasons(viewModel = viewModel)
                         }
                     }
                 }
