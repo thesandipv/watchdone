@@ -14,8 +14,8 @@
  */
 package com.afterroot.watchdone.domain.interactors
 
+import app.tivi.domain.ResultInteractor
 import com.afterroot.watchdone.data.repositories.DiscoverRepository
-import com.afterroot.watchdone.domain.ResultInteractor
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.TvResultsPage
 import info.movito.themoviedbapi.model.Discover
