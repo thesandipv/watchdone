@@ -15,30 +15,30 @@
 
 package com.afterroot.watchdone.domain.interactors
 
+import app.tivi.domain.ResultInteractor
+import com.afterroot.watchdone.data.model.Episode
+import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.repositories.TVRepository
-import com.afterroot.watchdone.domain.ResultInteractor
 import com.afterroot.watchdone.utils.State
-import info.movito.themoviedbapi.model.tv.TvEpisode
-import info.movito.themoviedbapi.model.tv.TvSeason
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class TVSeasonInteractor @Inject constructor(private val tvRepository: TVRepository) :
-    ResultInteractor<TVSeasonInteractor.Params, Flow<State<TvSeason>>>() {
+    ResultInteractor<TVSeasonInteractor.Params, Flow<State<Season>>>() {
 
     data class Params(val tvId: Int, val season: Int)
 
-    override suspend fun doWork(params: Params): Flow<State<TvSeason>> {
+    override suspend fun doWork(params: Params): Flow<State<Season>> {
         return tvRepository.season(params.tvId, params.season)
     }
 }
 
 class TVEpisodeInteractor @Inject constructor(private val tvRepository: TVRepository) :
-    ResultInteractor<TVEpisodeInteractor.Params, Flow<State<TvEpisode>>>() {
+    ResultInteractor<TVEpisodeInteractor.Params, Flow<State<Episode>>>() {
 
     data class Params(val tvId: Int, val season: Int, val episode: Int)
 
-    override suspend fun doWork(params: Params): Flow<State<TvEpisode>> {
+    override suspend fun doWork(params: Params): Flow<State<Episode>> {
         return tvRepository.episode(params.tvId, params.season, params.episode)
     }
 }
