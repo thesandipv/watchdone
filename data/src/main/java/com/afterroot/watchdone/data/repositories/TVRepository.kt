@@ -16,6 +16,8 @@
 package com.afterroot.watchdone.data.repositories
 
 import com.afterroot.tmdbapi.api.TVApi
+import com.afterroot.watchdone.data.mapper.toEpisode
+import com.afterroot.watchdone.data.mapper.toSeason
 import com.afterroot.watchdone.utils.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
