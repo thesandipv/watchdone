@@ -114,6 +114,7 @@ jobs:
       - name: Publish to Internal Track Play Store
         id: publish-to-play-store-internal
         if: github.ref == 'refs/heads/main'
+        continue-on-error: true
         uses: r0adkll/upload-google-play@v1.0.19
         with:
           serviceAccountJson: release/serviceAccount.json
