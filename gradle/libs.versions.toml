@@ -54,7 +54,7 @@ lifecycle = "2.5.1"
 materialDialogs = "3.3.0"
 multidex = "2.0.1"
 navigation = "2.5.3"
-okhttp = "5.0.0-alpha.10"
+okhttp = "5.0.0-alpha.11"
 paging = "3.2.0-alpha02"
 palette = "1.0.0"
 preference = "1.2.0"
@@ -241,7 +241,7 @@ accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeho
 
 test-junit = "junit:junit:4.13.2"
 test-mockk = "io.mockk:mockk:1.13.3"
-test-robolectric = "org.robolectric:robolectric:4.9"
+test-robolectric = "org.robolectric:robolectric:4.9.1"
 
 [bundles]
 firebase = [
