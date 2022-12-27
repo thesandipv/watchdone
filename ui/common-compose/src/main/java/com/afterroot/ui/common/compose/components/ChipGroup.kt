@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.afterroot.data.utils.valueOrBlank
 
 /**
  * Chip of [String]
@@ -57,10 +58,10 @@ fun CommonFilterChip(
         modifier = modifier,
         selected = selected,
         onClick = {
-            onSelectionChanged(text ?: "", !selected)
+            onSelectionChanged(text.valueOrBlank(), !selected)
         },
         label = {
-            Text(text = text ?: "")
+            Text(text = text.valueOrBlank())
         },
         leadingIcon = leadingIcon
     )
@@ -89,7 +90,8 @@ fun FilterChipGroup(
     preSelect: List<String> = emptyList(),
     preSelectItem: String? = null,
     selectionType: SelectionType = SelectionType.Single,
-    onSelectedChanged: (selected: String, selectedChips: List<String>) -> Unit
+    onSelectedChanged: ((selected: String, selectedChips: List<String>) -> Unit)? = null,
+    onSelectedChangedIndexed: ((index: Int, selected: String, selectedChips: List<String>) -> Unit)? = null
 ) {
     val selectedChips = remember { mutableStateListOf<String>() }
 
@@ -144,7 +146,8 @@ fun FilterChipGroup(
                             }
                         }
 
-                        onSelectedChanged(label, selectedChips)
+                        onSelectedChanged?.invoke(label, selectedChips)
+                        onSelectedChangedIndexed?.invoke(index, label, selectedChips)
                     }
                 )
             }

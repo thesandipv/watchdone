@@ -324,13 +324,14 @@ fun SearchChips(
         chipSpacing = 12.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         list = listOf("Movie", "TV"),
-        preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV")
-    ) { selected, _ ->
-        when (selected) {
-            "Movie" -> onMovieSelected()
-            "TV" -> onTVSelected()
+        preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV"),
+        onSelectedChanged = { selected, _ ->
+            when (selected) {
+                "Movie" -> onMovieSelected()
+                "TV" -> onTVSelected()
+            }
         }
-    }
+    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

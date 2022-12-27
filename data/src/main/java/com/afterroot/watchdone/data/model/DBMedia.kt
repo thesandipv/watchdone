@@ -26,5 +26,7 @@ data class DBMedia(
     var posterPath: String? = null,
     @ServerTimestamp var timestamp: Timestamp = Timestamp.now(),
     var mediaType: Multi.MediaType? = null,
-    var rating: Double? = null
+    var rating: Double? = null,
+    // TODO update in ards
+    var watchStatus: Map<Int, Boolean> = emptyMap()
 )

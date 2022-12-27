@@ -8,6 +8,7 @@
     <option name="PM_INSTALL_OPTIONS" value="" />
     <option name="ALL_USERS" value="false" />
     <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+    <option name="CLEAR_APP_STORAGE" value="false" />
     <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
     <option name="ACTIVITY_EXTRA_FLAGS" value="" />
     <option name="MODE" value="launch_deep_link" />
@@ -47,8 +48,9 @@
       <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Callstack Sample" />
       <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
       <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      <option name="PROFILING_MODE" value="NOT_SET" />
     </Profilers>
-    <option name="DEEP_LINK" value="https://watchdone.web.app/media/550" />
+    <option name="DEEP_LINK" value="https://watchdone.web.app/media/tv_series/66732" />
     <option name="ACTIVITY_CLASS" value="" />
     <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
     <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
