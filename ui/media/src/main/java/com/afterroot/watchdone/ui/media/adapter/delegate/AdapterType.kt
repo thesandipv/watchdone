@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.media.adapter.delegate
+package com.afterroot.watchdone.ui.media.adapter.delegate
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

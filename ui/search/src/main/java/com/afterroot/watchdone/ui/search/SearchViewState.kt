@@ -12,21 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.data.model
 
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.ServerTimestamp
+package com.afterroot.watchdone.ui.search
+
+import androidx.compose.runtime.Immutable
+import com.afterroot.tmdbapi.model.Query
+import com.afterroot.watchdone.base.compose.ViewState
 import info.movito.themoviedbapi.model.Multi
 
-data class DBMedia(
-    val id: Int = 0,
-    val releaseDate: String? = null,
-    val title: String? = null,
-    @field:JvmField var isWatched: Boolean? = false,
-    var posterPath: String? = null,
-    @ServerTimestamp var timestamp: Timestamp = Timestamp.now(),
-    var mediaType: Multi.MediaType? = null,
-    var rating: Double? = null,
-    // TODO update in ards
-    var watchStatus: Map<Int, Boolean> = emptyMap()
-)
+@Immutable
+data class SearchViewState(
+    val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
+    val query: Query = Query(),
+    val isLoading: Boolean = false,
+    val refresh: Boolean = false,
+    val empty: Boolean = true
+) : ViewState() {
+    companion object {
+        val Empty = SearchViewState()
+    }
+}

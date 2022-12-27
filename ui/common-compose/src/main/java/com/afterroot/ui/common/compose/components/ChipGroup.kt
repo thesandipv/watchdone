@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.afterroot.data.utils.valueOrBlank
 
 /**
  * Chip of [String]
@@ -57,10 +58,10 @@ fun CommonFilterChip(
         modifier = modifier,
         selected = selected,
         onClick = {
-            onSelectionChanged(text ?: "", !selected)
+            onSelectionChanged(text.valueOrBlank(), !selected)
         },
         label = {
-            Text(text = text ?: "")
+            Text(text = text.valueOrBlank())
         },
         leadingIcon = leadingIcon
     )
@@ -87,13 +88,18 @@ fun FilterChipGroup(
     icons: List<ImageVector?> = emptyList(),
     list: List<String>? = null,
     preSelect: List<String> = emptyList(),
+    preSelectItem: String? = null,
     selectionType: SelectionType = SelectionType.Single,
-    onSelectedChanged: (selected: String, selectedChips: List<String>) -> Unit
+    onSelectedChanged: ((selected: String, selectedChips: List<String>) -> Unit)? = null,
+    onSelectedChangedIndexed: ((index: Int, selected: String, selectedChips: List<String>) -> Unit)? = null
 ) {
     val selectedChips = remember { mutableStateListOf<String>() }
 
-    if (preSelect.isNotEmpty() && selectedChips.isEmpty()) {
-        selectedChips.addAll(preSelect)
+    if (selectedChips.isEmpty()) {
+        if (preSelect.isNotEmpty()) {
+            selectedChips.addAll(preSelect)
+        }
+        preSelectItem?.let { selectedChips.add(it) }
     }
 
     Column(horizontalAlignment = Alignment.Start, modifier = modifier) {
@@ -112,7 +118,7 @@ fun FilterChipGroup(
                     text = it,
                     selected = selectedChips.contains(it),
                     leadingIcon = {
-                        if (icons[index] != null) {
+                        if (icons.isNotEmpty()) {
                             icons[index]?.let { icon ->
                                 Icon(
                                     imageVector = icon,
@@ -140,7 +146,8 @@ fun FilterChipGroup(
                             }
                         }
 
-                        onSelectedChanged(label, selectedChips)
+                        onSelectedChanged?.invoke(label, selectedChips)
+                        onSelectedChangedIndexed?.invoke(index, label, selectedChips)
                     }
                 )
             }

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.media.adapter
+package com.afterroot.watchdone.ui.media.adapter
 
 import android.content.Context
 import android.content.ContextWrapper
@@ -23,22 +23,22 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.base.adapter.BaseListAdapter
-import com.afterroot.watchdone.diff.PeopleDiffCallback
-import com.afterroot.watchdone.media.databinding.ListItemPersonBinding
+import com.afterroot.watchdone.diff.CastDiffCallback
+import com.afterroot.watchdone.media.databinding.ListItemCastBinding
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.getScreenWidth
 import info.movito.themoviedbapi.model.people.Person
+import info.movito.themoviedbapi.model.people.PersonCast
+import info.movito.themoviedbapi.model.people.PersonCrew
 import com.afterroot.watchdone.resources.R as CommonR
 
-class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>, var settings: Settings) :
-    BaseListAdapter<Person>(PeopleDiffCallback()) {
+class CastListAdapter(var settings: Settings) : BaseListAdapter<Person>(CastDiffCallback()) {
     override fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
         return null
     }
 
     override fun createItemViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return PeopleListViewHolder(ListItemPersonBinding.inflate(LayoutInflater.from(parent.context)))
+        return CastListViewHolder(ListItemCastBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
     override fun createFooterViewHolder(parent: ViewGroup): RecyclerView.ViewHolder? {
@@ -49,7 +49,7 @@ class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>, var se
     }
 
     override fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        viewHolder as PeopleListViewHolder
+        viewHolder as CastListViewHolder
         viewHolder.bind(getItem(position))
     }
 
@@ -66,36 +66,35 @@ class SearchPeopleListAdapter(val callback: ItemSelectedCallback<Person>, var se
         return ITEM
     }
 
-    inner class PeopleListViewHolder(val binding: ListItemPersonBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CastListViewHolder(val binding: ListItemCastBinding) : RecyclerView.ViewHolder(binding.root) {
         private val posterView: AppCompatImageView = binding.castIv
+        private var heightRatio: Float = 3f / 2f
         private val context: Context = (binding.root.context as ContextWrapper).baseContext
         private val width =
             (context.getScreenWidth() / context.resources.getInteger(CommonR.integer.horizontal_grid_max_visible)) - context.resources.getDimensionPixelSize(
                 CommonR.dimen.padding_horizontal_list
             )
 
-        fun bind(person: Person) {
-            binding.apply {
-                personDetail = person
-                root.setOnClickListener {
-                    callback.onClick(adapterPosition, root)
-                    callback.onClick(adapterPosition, root, person)
-                }
-                root.setOnLongClickListener {
-                    callback.onLongClick(adapterPosition, person)
-                    return@setOnLongClickListener true
-                }
+        fun bind(personCast: Person) {
+            if (personCast is PersonCast) {
+                binding.personDetail = personCast
+            } else if (personCast is PersonCrew) {
+                binding.personCrew = personCast
             }
             posterView.updateLayoutParams {
-                this.width = this@PeopleListViewHolder.width
-                this.height = this@PeopleListViewHolder.width
+                this.width = this@CastListViewHolder.width
+                this.height = (width * heightRatio).toInt()
             }
 
-            GlideApp.with(context).load(settings.baseUrl + settings.imageSize + person.profilePath)
-                .override(width)
-                .placeholder(CommonR.drawable.ic_placeholder_person)
-                .error(CommonR.drawable.ic_placeholder_person)
-                .circleCrop()
+            var imageUrl: String? = null
+            if (personCast.profilePath != null) {
+                imageUrl = settings.baseUrl + settings.imageSize + personCast.profilePath
+            }
+            GlideApp.with(context).load(imageUrl)
+                .override(width, (width * heightRatio).toInt())
+                .placeholder(CommonR.drawable.ic_person)
+                .error(CommonR.drawable.ic_person)
+                .centerCrop()
                 .into(posterView)
         }
     }

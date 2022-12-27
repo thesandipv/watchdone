@@ -57,10 +57,10 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.helpers.migrateFirestore
-import com.afterroot.watchdone.media.adapter.MultiAdapter
-import com.afterroot.watchdone.media.adapter.MultiPagingAdapter
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import com.afterroot.watchdone.ui.media.adapter.MultiAdapter
+import com.afterroot.watchdone.ui.media.adapter.MultiPagingAdapter
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.ViewModelState

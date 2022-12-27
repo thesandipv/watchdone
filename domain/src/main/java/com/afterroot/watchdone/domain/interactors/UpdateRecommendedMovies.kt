@@ -14,8 +14,8 @@
  */
 package com.afterroot.watchdone.domain.interactors
 
+import app.tivi.domain.ResultInteractor
 import com.afterroot.watchdone.data.repositories.RecommendedMoviesRepository
-import com.afterroot.watchdone.domain.ResultInteractor
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.core.MovieResultsPage
 import kotlinx.coroutines.flow.Flow
