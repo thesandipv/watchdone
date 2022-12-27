@@ -15,8 +15,9 @@
 
 package com.afterroot.watchdone.data.repositories
 
-import com.afterroot.tmdbapi.api.SearchApi
-import com.afterroot.tmdbapi.model.Query
+import com.afterroot.tmdbapi.api.TVApi
+import com.afterroot.watchdone.data.mapper.toEpisode
+import com.afterroot.watchdone.data.mapper.toSeason
 import com.afterroot.watchdone.utils.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -24,24 +25,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class SearchRepository @Inject constructor(private val searchApi: SearchApi) {
-    fun searchMovie(query: Query) = flow {
+class TVRepository @Inject constructor(private val tvApi: TVApi) {
+    fun season(id: Int, season: Int) = flow {
         emit(State.loading())
-        emit(State.success(searchApi.searchMovie(query.forSearch().params)))
+        emit(State.success(tvApi.getSeason(id, season).toSeason()))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)
 
-    fun searchTV(query: Query) = flow {
+    fun episode(id: Int, season: Int, episode: Int) = flow {
         emit(State.loading())
-        emit(State.success(searchApi.searchTv(query.forSearch().params)))
-    }.catch {
-        emit(State.failed("TODO")) // TODO
-    }.flowOn(Dispatchers.IO)
-
-    fun searchPerson(query: Query) = flow {
-        emit(State.loading())
-        emit(State.success(searchApi.searchPerson(query.forSearch().params)))
+        emit(State.success(tvApi.getEpisode(id, season, episode).toEpisode()))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)

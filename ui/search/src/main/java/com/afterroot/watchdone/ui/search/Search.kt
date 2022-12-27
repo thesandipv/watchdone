@@ -82,7 +82,6 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.SearchViewModel
-import com.afterroot.watchdone.viewmodel.SearchViewState
 import info.movito.themoviedbapi.model.Multi
 import kotlin.math.roundToInt
 
@@ -325,13 +324,14 @@ fun SearchChips(
         chipSpacing = 12.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         list = listOf("Movie", "TV"),
-        preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV")
-    ) { selected, _ ->
-        when (selected) {
-            "Movie" -> onMovieSelected()
-            "TV" -> onTVSelected()
+        preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV"),
+        onSelectedChanged = { selected, _ ->
+            when (selected) {
+                "Movie" -> onMovieSelected()
+                "TV" -> onTVSelected()
+            }
         }
-    }
+    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

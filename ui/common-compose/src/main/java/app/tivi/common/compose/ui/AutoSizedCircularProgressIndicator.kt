@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import kotlin.math.roundToInt
 
 @Composable
 fun AutoSizedCircularProgressIndicator(
@@ -42,7 +43,9 @@ fun AutoSizedCircularProgressIndicator(
         }
 
         CircularProgressIndicator(
-            strokeWidth = (diameter * StrokeDiameterFraction).coerceAtLeast(1.dp),
+            strokeWidth = (diameter.value * StrokeDiameterFraction)
+                .roundToInt().dp
+                .coerceAtLeast(1.dp),
             color = color
         )
     }

@@ -70,13 +70,14 @@ fun DiscoverChips(
         horizontalPadding = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         list = listOf("Movies", "TV"),
-        preSelect = listOf("Movies")
-    ) { selected, _ ->
-        when (selected) {
-            "Movies" -> onMovieSelected()
-            "TV" -> onTVSelected()
+        preSelect = listOf("Movies"),
+        onSelectedChanged = { selected, _ ->
+            when (selected) {
+                "Movies" -> onMovieSelected()
+                "TV" -> onTVSelected()
+            }
         }
-    }
+    )
 }
 
 @Composable

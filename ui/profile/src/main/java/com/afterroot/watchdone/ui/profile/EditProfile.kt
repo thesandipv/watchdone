@@ -189,11 +189,12 @@ internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = fals
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
+                .padding(paddingValues)
         ) {
             TextField(
                 modifier = textFieldModifier,
@@ -256,6 +257,7 @@ val textFieldModifier = Modifier
     .padding(horizontal = 16.dp)
     .padding(top = 8.dp)
 
+@ExperimentalMaterial3Api
 @Composable
 internal fun AppBar(
     title: String = getTitle(),
