@@ -28,5 +28,5 @@ data class DBMedia(
     var mediaType: Multi.MediaType? = null,
     var rating: Double? = null,
     // TODO update in ards
-    var watchStatus: Map<Int, Boolean> = emptyMap()
+    var watchStatus: Map<String, Boolean> = emptyMap()
 )

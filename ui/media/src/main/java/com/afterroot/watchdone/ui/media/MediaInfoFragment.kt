@@ -115,7 +115,7 @@ class MediaInfoFragment : Fragment() {
             launchShowingProgress {
                 when (mediaType) {
                     MOVIE -> {
-                        viewModel.selectMedia(movie = moviesRepository.getMovieInfo(id).toMovie())
+                        viewModel.selectMedia(movie = moviesRepository.getMovieInfo(argMediaId).toMovie())
                         updateCast(argMediaId, mediaType)
                     }
 
