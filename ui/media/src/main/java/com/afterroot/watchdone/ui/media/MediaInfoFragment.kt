@@ -70,10 +70,8 @@ import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.Multi.MediaType.MOVIE
 import info.movito.themoviedbapi.model.Multi.MediaType.PERSON
 import info.movito.themoviedbapi.model.Multi.MediaType.TV_SERIES
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Collections.emptyList
 import java.util.Locale
@@ -117,7 +115,7 @@ class MediaInfoFragment : Fragment() {
             launchShowingProgress {
                 when (mediaType) {
                     MOVIE -> {
-                        viewModel.selectMedia(movie = getInfoFromServerForCompare(argMediaId))
+                        viewModel.selectMedia(movie = moviesRepository.getMovieInfo(id).toMovie())
                         updateCast(argMediaId, mediaType)
                     }
 
@@ -187,6 +185,7 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
+    // TODO this function is too messy. Simplify it.
     private fun updateUI(movie: Movie? = null, tv: TV? = null) { // Do operations related to database
         val id = movie?.id ?: tv?.id
         val posterPath = movie?.posterPath ?: tv?.posterPath
@@ -209,7 +208,7 @@ class MediaInfoFragment : Fragment() {
             // executePendingBindings()
             watchlistItemReference.whereEqualTo(Field.ID, id).get(Source.CACHE).addOnSuccessListener {
                 kotlin.runCatching { // Fix crash if user quickly press back button just after navigation
-                    val isInWatchlist = it.documents.size > 0
+                    val isInWatchlist = it.documents.size > 0 // TODO Use flow in view model to manage this.
                     var isWatched = false
                     var selectedMediaDocId: String? = null
                     if (isInWatchlist) { // Get Watching Status if in Watchlist
@@ -218,6 +217,7 @@ class MediaInfoFragment : Fragment() {
                             isWatched = watched
                         }
                         selectedMediaDocId = document.id
+                        viewModel.updateDocId(selectedMediaDocId)
                     }
 
                     launchShowingProgress { // Update Genres
@@ -327,8 +327,8 @@ class MediaInfoFragment : Fragment() {
                             )
                         }
                         if (tv != null) {
-                            RecommendedTVPaged(tvId = tv.id, tvItemSelectedCallback = recommendedTVItemSelectedCallback)
                             Seasons(viewModel = viewModel)
+                            RecommendedTVPaged(tvId = tv.id, tvItemSelectedCallback = recommendedTVItemSelectedCallback)
                         }
                     }
                 }
@@ -351,10 +351,6 @@ class MediaInfoFragment : Fragment() {
         watchListRef.updateTotalItemsCounter(1)
         snackBarMessage(requireContext().getString(CommonR.string.msg_added_to_wl))
         hideProgress()
-    }
-
-    private suspend fun getInfoFromServerForCompare(id: Int) = withContext(Dispatchers.IO) {
-        moviesRepository.getMovieInfo(id).toMovie()
     }
 
     // Helper Functions

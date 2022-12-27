@@ -17,7 +17,6 @@ package com.afterroot.watchdone.ui.media
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.theme.PreviewTheme
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.watchdone.data.model.Movie
@@ -49,64 +49,73 @@ import com.afterroot.watchdone.resources.R
 
 @Composable
 fun OverviewContent(movie: Movie? = null, tv: TV? = null) {
-    Box(modifier = Modifier.padding(16.dp)) {
-        Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Rounded.Star,
-                    contentDescription = "Rating",
-                    modifier = Modifier.size(16.dp)
-                )
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Star,
+                contentDescription = "Rating",
+                modifier = Modifier.size(16.dp)
+            )
 
-                Spacer(modifier = Modifier.padding(2.dp))
+            Spacer(modifier = Modifier.padding(2.dp))
 
-                ProvideTextStyle(value = ubuntuTypography.bodyLarge) {
-                    Text(
-                        text = stringResource(
-                            id = R.string.media_info_rating_text,
-                            movie?.voteAverage ?: tv?.voteAverage ?: 0.0
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.padding(vertical = 2.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Rounded.Event,
-                    contentDescription = "Release Date",
-                    modifier = Modifier.size(16.dp)
-                )
-
-                Spacer(modifier = Modifier.padding(2.dp))
-
-                ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-                    Text(text = (movie?.releaseDate ?: tv?.releaseDate) ?: "", fontSize = 12.sp)
-                }
-            }
-
-            Spacer(modifier = Modifier.padding(4.dp))
-
-            var maxLines by remember { mutableStateOf(4) }
-
-            ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+            ProvideTextStyle(value = ubuntuTypography.bodyLarge) {
                 Text(
-                    text = (movie?.overview ?: tv?.overview) ?: "",
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = maxLines,
-                    modifier = Modifier
-                        .animateContentSize(animationSpec = tween(100))
-                        .clickable {
-                            maxLines = if (maxLines == 4) {
-                                Int.MAX_VALUE
-                            } else {
-                                4
-                            }
-                        }
+                    text = stringResource(
+                        id = R.string.media_info_rating_text,
+                        movie?.voteAverage ?: tv?.voteAverage ?: 0.0
+                    )
                 )
             }
         }
+
+        Spacer(modifier = Modifier.padding(vertical = 2.dp))
+
+        Row(modifier = Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Rounded.Event,
+                contentDescription = "Release Date",
+                modifier = Modifier.size(16.dp)
+            )
+
+            Spacer(modifier = Modifier.padding(2.dp))
+
+            ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+                Text(text = (movie?.releaseDate ?: tv?.releaseDate).valueOrBlank(), fontSize = 12.sp)
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        OverviewText(
+            text = (movie?.overview ?: tv?.overview) ?: "",
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        )
+    }
+}
+
+@Composable
+fun OverviewText(text: String, modifier: Modifier = Modifier) {
+    var maxLines by remember { mutableStateOf(4) }
+    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+        Text(
+            text = text,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = maxLines,
+            modifier = Modifier
+                .animateContentSize(animationSpec = tween(100))
+                .clickable {
+                    maxLines = if (maxLines == 4) {
+                        Int.MAX_VALUE
+                    } else {
+                        4
+                    }
+                }
+                .then(modifier)
+        )
     }
 }
 
