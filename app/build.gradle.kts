@@ -226,8 +226,8 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso)
 
     testImplementation(libs.androidx.test.core)
-    testImplementation("org.mockito:mockito-core:4.10.0")
-    androidTestImplementation("org.mockito:mockito-android:4.10.0")
+    testImplementation("org.mockito:mockito-core:4.11.0")
+    androidTestImplementation("org.mockito:mockito-android:4.11.0")
 
     implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation(libs.google.auth)
