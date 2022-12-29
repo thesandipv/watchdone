@@ -21,6 +21,8 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -53,7 +55,6 @@ import com.afterroot.watchdone.recommended.ui.RecommendedMoviesPaged
 import com.afterroot.watchdone.recommended.ui.RecommendedTVPaged
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.ui.media.adapter.CastListAdapter
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
@@ -66,6 +67,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.getField
 import dagger.hilt.android.AndroidEntryPoint
+import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.Multi.MediaType.MOVIE
 import info.movito.themoviedbapi.model.Multi.MediaType.PERSON
@@ -73,7 +75,6 @@ import info.movito.themoviedbapi.model.Multi.MediaType.TV_SERIES
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Collections.emptyList
 import java.util.Locale
 import javax.inject.Inject
 import com.afterroot.watchdone.resources.R as CommonR
@@ -92,9 +93,6 @@ class MediaInfoFragment : Fragment() {
 
     @Inject lateinit var tvRepository: TVRepository
 
-    @Inject lateinit var castListAdapter: CastListAdapter
-
-    @Inject lateinit var crewListAdapter: CastListAdapter
     private lateinit var binding: FragmentMediaInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
@@ -116,7 +114,6 @@ class MediaInfoFragment : Fragment() {
                 when (mediaType) {
                     MOVIE -> {
                         viewModel.selectMedia(movie = moviesRepository.getMovieInfo(argMediaId).toMovie())
-                        updateCast(argMediaId, mediaType)
                     }
 
                     PERSON -> {
@@ -126,7 +123,6 @@ class MediaInfoFragment : Fragment() {
                     TV_SERIES -> {
                         viewModel.setMediaType(TV_SERIES)
                         viewModel.selectMedia(tv = tvRepository.getTVInfo(argMediaId).toTV())
-                        updateCast(argMediaId, mediaType)
                     }
 
                     null -> {
@@ -285,28 +281,6 @@ class MediaInfoFragment : Fragment() {
         }
     }
 
-    private suspend fun updateCast(mediaId: Int, type: Multi.MediaType) {
-        val credits = if (type == MOVIE) {
-            moviesRepository.getCredits(mediaId)
-        } else {
-            tvRepository.getCredits(mediaId)
-        }
-
-        val castAdapter = castListAdapter
-        val crewAdapter = crewListAdapter
-        binding.castList.apply {
-            adapter = castAdapter
-            visible(true, AutoTransition())
-        }
-
-        binding.crewList.apply {
-            adapter = crewAdapter
-            visible(true, AutoTransition())
-        }
-        castAdapter.submitList(credits.cast)
-        crewAdapter.submitList(credits.crew)
-    }
-
     private fun updateComposeViews(movie: Movie? = null, tv: TV? = null) {
         binding.composeView.isTransitionGroup = true
         binding.composeMediaOverview.isTransitionGroup = true
@@ -337,7 +311,26 @@ class MediaInfoFragment : Fragment() {
 
         binding.composeMediaOverview.setContent {
             Theme(context = requireContext()) {
-                OverviewContent(movie, tv)
+                Column {
+                    val state: MediaInfoViewState by viewModel.state.collectAsState()
+                    OverviewContent(movie, tv)
+
+                    when (state.credits) {
+                        is State.Failed -> {}
+                        is State.Loading -> {
+                            PersonRow(items = emptyList(), title = "Cast", refreshing = true)
+                            PersonRow(items = emptyList(), title = "Crew", refreshing = true)
+                        }
+                        is State.Success -> {
+                            (state.credits as State.Success<Credits>).data.cast?.let {
+                                PersonRow(items = it, title = "Cast", modifier = Modifier)
+                            }
+                            (state.credits as State.Success<Credits>).data.crew?.let {
+                                PersonRow(items = it, title = "Crew", modifier = Modifier)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

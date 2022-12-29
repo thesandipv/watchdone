@@ -15,9 +15,7 @@
 
 package com.afterroot.watchdone.data.repositories
 
-import com.afterroot.tmdbapi.api.TVApi
-import com.afterroot.watchdone.data.mapper.toEpisode
-import com.afterroot.watchdone.data.mapper.toSeason
+import com.afterroot.tmdbapi.api.MoviesApi
 import com.afterroot.watchdone.utils.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -25,24 +23,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class TVRepository @Inject constructor(private val tvApi: TVApi) {
-    fun season(id: Int, season: Int) = flow {
-        emit(State.loading())
-        emit(State.success(tvApi.getSeason(id, season).toSeason()))
-    }.catch {
-        emit(State.failed("TODO")) // TODO
-    }.flowOn(Dispatchers.IO)
-
-    fun episode(id: Int, season: Int, episode: Int) = flow {
-        emit(State.loading())
-        emit(State.success(tvApi.getEpisode(id, season, episode).toEpisode()))
-    }.catch {
-        emit(State.failed("TODO")) // TODO
-    }.flowOn(Dispatchers.IO)
-
+class MovieRepository @Inject constructor(private val moviesApi: MoviesApi) {
     fun credits(id: Int) = flow {
         emit(State.loading())
-        emit(State.success(tvApi.getCredits(id)))
+        emit(State.success(moviesApi.getCredits(id)))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)

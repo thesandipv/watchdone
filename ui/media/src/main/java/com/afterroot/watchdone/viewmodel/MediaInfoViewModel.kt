@@ -22,6 +22,8 @@ import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.domain.interactors.MovieCreditsInteractor
+import com.afterroot.watchdone.domain.interactors.TVCreditsInteractor
 import com.afterroot.watchdone.domain.interactors.TVEpisodeInteractor
 import com.afterroot.watchdone.domain.interactors.TVSeasonInteractor
 import com.afterroot.watchdone.settings.Settings
@@ -33,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.lifecycle.HiltViewModel
+import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -52,13 +55,16 @@ class MediaInfoViewModel @Inject constructor(
     var firebaseUtils: FirebaseUtils,
     var settings: Settings,
     val tvSeasonInteractor: TVSeasonInteractor,
-    val tvEpisodeInteractor: TVEpisodeInteractor
+    val tvEpisodeInteractor: TVEpisodeInteractor,
+    val movieCreditsInteractor: MovieCreditsInteractor,
+    val tvCreditsInteractor: TVCreditsInteractor
 ) : ViewModel() {
     private val mediaId = MutableStateFlow(0)
     private val mediaType = MutableStateFlow(Multi.MediaType.MOVIE)
     private val selectedMediaFlow = MutableStateFlow<SelectedMedia>(SelectedMedia.Empty)
     private val selectedSeason = MutableStateFlow(1)
     private val seasonInfo = MutableStateFlow<State<Season>>(State.loading())
+    private val credits = MutableStateFlow<State<Credits>>(State.loading())
     private var watchlistSnapshotFlow = MutableStateFlow<State<QuerySnapshot>>(State.loading())
 
     // TODO Verify this method is feasible.
@@ -93,12 +99,14 @@ class MediaInfoViewModel @Inject constructor(
             setMediaType(Multi.MediaType.MOVIE)
             selectedMediaFlow.value = SelectedMedia.Movie(movie)
             mediaId.value = movie.id
+            loadCredits(movie.id)
         }
         tv?.let {
             setMediaType(Multi.MediaType.TV_SERIES)
             selectedMediaFlow.value = SelectedMedia.TV(tv)
             loadSeason(it.id, selectedSeason.value)
             mediaId.value = tv.id
+            loadCredits(tv.id)
         }
     }
 
@@ -109,13 +117,15 @@ class MediaInfoViewModel @Inject constructor(
             mediaType,
             selectedMediaFlow,
             seasonInfo,
-            selectedSeason
-        ) { mediaType, selectedMedia, seasonInfo, selectedSeason ->
+            selectedSeason,
+            credits
+        ) { mediaType, selectedMedia, seasonInfo, selectedSeason, credits ->
             MediaInfoViewState(
                 mediaType = mediaType,
                 selectedMedia = selectedMedia,
                 seasonInfo = seasonInfo,
-                selectedSeason = selectedSeason
+                selectedSeason = selectedSeason,
+                credits = credits
             ).apply {
                 Timber.d("State: $this")
             }
@@ -129,10 +139,24 @@ class MediaInfoViewModel @Inject constructor(
         mediaType.value = type
     }
 
-    fun loadSeason(id: Int, season: Int) {
+    private fun loadSeason(id: Int, season: Int) {
         viewModelScope.launch {
             tvSeasonInteractor.executeSync(TVSeasonInteractor.Params(id, season)).collectLatest {
                 seasonInfo.value = it
+            }
+        }
+    }
+
+    private fun loadCredits(id: Int) {
+        viewModelScope.launch {
+            if (mediaType.value == Multi.MediaType.MOVIE) {
+                movieCreditsInteractor.executeSync(MovieCreditsInteractor.Params(id)).collectLatest {
+                    credits.value = it
+                }
+            } else if (mediaType.value == Multi.MediaType.TV_SERIES) {
+                tvCreditsInteractor.executeSync(TVCreditsInteractor.Params(id)).collectLatest {
+                    credits.value = it
+                }
             }
         }
     }
