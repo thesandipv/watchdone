@@ -20,6 +20,7 @@ import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.repositories.TVRepository
 import com.afterroot.watchdone.utils.State
+import info.movito.themoviedbapi.model.Credits
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -40,5 +41,15 @@ class TVEpisodeInteractor @Inject constructor(private val tvRepository: TVReposi
 
     override suspend fun doWork(params: Params): Flow<State<Episode>> {
         return tvRepository.episode(params.tvId, params.season, params.episode)
+    }
+}
+
+class TVCreditsInteractor @Inject constructor(private val tvRepository: TVRepository) :
+    ResultInteractor<TVCreditsInteractor.Params, Flow<State<Credits>>>() {
+
+    data class Params(val tvId: Int)
+
+    override suspend fun doWork(params: Params): Flow<State<Credits>> {
+        return tvRepository.credits(params.tvId)
     }
 }

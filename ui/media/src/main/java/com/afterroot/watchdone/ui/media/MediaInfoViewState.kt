@@ -20,6 +20,7 @@ import com.afterroot.watchdone.base.compose.ViewState
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.SelectedMedia
+import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 
 @Immutable
@@ -30,7 +31,8 @@ data class MediaInfoViewState(
     val selectedSeason: Int = 1,
     val isLoading: Boolean = false,
     val refresh: Boolean = false,
-    val empty: Boolean = true
+    val empty: Boolean = true,
+    val credits: State<Credits> = State.loading()
 ) : ViewState() {
     companion object {
         val Empty = MediaInfoViewState()
