@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
@@ -34,12 +36,14 @@ import com.afterroot.watchdone.utils.collectionWatchlistItems
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Source
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -50,14 +54,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MediaInfoViewModel @Inject constructor(
-    val savedState: SavedStateHandle? = null,
+    val savedState: SavedStateHandle,
     var db: FirebaseFirestore,
     var firebaseUtils: FirebaseUtils,
     var settings: Settings,
-    val tvSeasonInteractor: TVSeasonInteractor,
-    val tvEpisodeInteractor: TVEpisodeInteractor,
-    val movieCreditsInteractor: MovieCreditsInteractor,
-    val tvCreditsInteractor: TVCreditsInteractor
+    private val tvSeasonInteractor: TVSeasonInteractor,
+    private val tvEpisodeInteractor: TVEpisodeInteractor,
+    private val movieCreditsInteractor: MovieCreditsInteractor,
+    private val tvCreditsInteractor: TVCreditsInteractor
 ) : ViewModel() {
     private val mediaId = MutableStateFlow(0)
     private val mediaType = MutableStateFlow(Multi.MediaType.MOVIE)
@@ -66,6 +70,13 @@ class MediaInfoViewModel @Inject constructor(
     private val seasonInfo = MutableStateFlow<State<Season>>(State.loading())
     private val credits = MutableStateFlow<State<Credits>>(State.loading())
     private var watchlistSnapshotFlow = MutableStateFlow<State<QuerySnapshot>>(State.loading())
+
+    val watchlistItemsRef by lazy {
+        db.collectionWatchdone(
+            id = firebaseUtils.uid.toString(),
+            isUseOnlyProdDB = settings.isUseProdDb
+        ).document(Collection.WATCHLIST).collection(Collection.ITEMS)
+    }
 
     // TODO Verify this method is feasible.
     fun observeWatchlistSnapshot(
@@ -91,26 +102,55 @@ class MediaInfoViewModel @Inject constructor(
                 }
             }
         }
-        return watchlistSnapshotFlow
+
+        val id = savedState.get<Int>("mediaId")
+
+        return watchlistSnapshotFlow.asStateFlow()
+    }
+
+    suspend fun loadDBMedia(source: Source = Source.CACHE) {
+        val querySnapshot = watchlistItemsRef.whereEqualTo(Field.ID, mediaId.value).get(source).await()
+        if (querySnapshot.documents.isNotEmpty()) {
+            val document = querySnapshot.documents[0].toMulti()
+
+            if (document.mediaType == Multi.MediaType.MOVIE) {
+            } else if (document.mediaType == Multi.MediaType.TV_SERIES) {
+            }
+        }
+    }
+
+    fun selectMedia() {
     }
 
     fun selectMedia(movie: Movie? = null, tv: TV? = null) {
         movie?.let {
             setMediaType(Multi.MediaType.MOVIE)
             selectedMediaFlow.value = SelectedMedia.Movie(movie)
-            mediaId.value = movie.id
+            // mediaId.emit(movie.id)
             loadCredits(movie.id)
         }
         tv?.let {
             setMediaType(Multi.MediaType.TV_SERIES)
             selectedMediaFlow.value = SelectedMedia.TV(tv)
             loadSeason(it.id, selectedSeason.value)
-            mediaId.value = tv.id
+            // mediaId.emit(tv.id)
             loadCredits(tv.id)
         }
     }
 
-    fun getSelectedMedia(): StateFlow<SelectedMedia> = selectedMediaFlow
+    fun selectMedia(mediaId: Int, mediaType: Multi.MediaType) {
+    }
+
+    init {
+        viewModelScope.launch {
+            mediaId.collect {
+                Timber.d("Collect: Media Id $it")
+            }
+        }
+    }
+
+    val selectedMedia
+        get() = selectedMediaFlow.asStateFlow()
 
     val state: StateFlow<MediaInfoViewState> =
         combine(
@@ -122,7 +162,6 @@ class MediaInfoViewModel @Inject constructor(
         ) { mediaType, selectedMedia, seasonInfo, selectedSeason, credits ->
             MediaInfoViewState(
                 mediaType = mediaType,
-                selectedMedia = selectedMedia,
                 seasonInfo = seasonInfo,
                 selectedSeason = selectedSeason,
                 credits = credits

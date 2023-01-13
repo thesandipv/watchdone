@@ -15,6 +15,11 @@
 package com.afterroot.watchdone.utils
 
 import com.afterroot.data.utils.FirebaseUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlin.coroutines.CoroutineContext
 
 fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versionCode: Int): String {
     val builder = StringBuilder().apply {
@@ -26,3 +31,10 @@ fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versio
     }
     return builder.toString()
 }
+
+fun <T> resultFlow(value: T, coroutineContext: CoroutineContext = Dispatchers.IO) = flow {
+    emit(State.loading())
+    emit(State.success(value))
+}.catch { exception ->
+    emit(State.failed(exception.message.toString()))
+}.flowOn(coroutineContext)

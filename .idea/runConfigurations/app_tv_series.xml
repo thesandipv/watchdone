@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="app.deeplink" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false" singleton="true">
+  <configuration default="false" name="app.tv_series" type="AndroidRunConfigurationType" factoryName="Android App" folderName="Deeplinks" activateToolWindowBeforeRun="false" singleton="true">
     <module name="watchdone.app.main" />
     <option name="DEPLOY" value="true" />
     <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />

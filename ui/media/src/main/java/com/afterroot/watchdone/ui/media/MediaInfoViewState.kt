@@ -17,22 +17,29 @@ package com.afterroot.watchdone.ui.media
 
 import androidx.compose.runtime.Immutable
 import com.afterroot.watchdone.base.compose.ViewState
+import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.Season
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.utils.State
-import com.afterroot.watchdone.viewmodel.SelectedMedia
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 
 @Immutable
 data class MediaInfoViewState(
+    val credits: State<Credits> = State.loading(),
+    val empty: Boolean = true,
+    val isLoading: Boolean = false,
+    val mediaId: Int = 0,
+    val media: DBMedia = DBMedia.Empty,
     val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
-    val selectedMedia: SelectedMedia? = null,
+    val movie: Movie = Movie.Empty,
+    val refresh: Boolean = false,
     val seasonInfo: State<Season> = State.loading(),
     val selectedSeason: Int = 1,
-    val isLoading: Boolean = false,
-    val refresh: Boolean = false,
-    val empty: Boolean = true,
-    val credits: State<Credits> = State.loading()
+    val tv: TV = TV.Empty,
+    val isInWatchlist: Boolean = false,
+    val isWatched: Boolean = false
 ) : ViewState() {
     companion object {
         val Empty = MediaInfoViewState()

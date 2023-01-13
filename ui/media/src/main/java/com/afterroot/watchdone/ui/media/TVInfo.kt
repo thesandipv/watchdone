@@ -60,7 +60,6 @@ import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
-import com.afterroot.watchdone.viewmodel.SelectedMedia
 import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.people.Person
 import info.movito.themoviedbapi.model.people.PersonCast
@@ -72,10 +71,14 @@ fun Seasons(viewModel: MediaInfoViewModel = hiltViewModel()) {
     val viewState by viewModel.state.collectAsState()
     Timber.d("Seasons: $viewState")
     if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-        val tv = (viewState.selectedMedia as SelectedMedia.TV).data
-        Seasons(tv = tv, season = viewState.seasonInfo, onSeasonSelected = viewModel::selectSeason, onWatchClicked = {
-            viewModel.markEpisode(it.id, true)
-        })
+        Seasons(
+            tv = viewState.tv,
+            season = viewState.seasonInfo,
+            onSeasonSelected = viewModel::selectSeason,
+            onWatchClicked = {
+                viewModel.markEpisode(it.id, true)
+            }
+        )
     }
 }
 

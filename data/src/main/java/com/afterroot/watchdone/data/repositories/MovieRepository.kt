@@ -16,7 +16,9 @@
 package com.afterroot.watchdone.data.repositories
 
 import com.afterroot.tmdbapi.api.MoviesApi
+import com.afterroot.watchdone.data.mapper.toMovie
 import com.afterroot.watchdone.utils.State
+import com.afterroot.watchdone.utils.resultFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -24,10 +26,16 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(private val moviesApi: MoviesApi) {
+
+    // TODO Migrate to resultFlow()
     fun credits(id: Int) = flow {
         emit(State.loading())
         emit(State.success(moviesApi.getCredits(id)))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)
+
+    suspend fun info(id: Int) = resultFlow(moviesApi.getMovieInfo(id).toMovie())
+
+    suspend fun recommended(id: Int, page: Int) = resultFlow(moviesApi.getRecommended(id, page))
 }
