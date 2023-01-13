@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.paging.compose.LazyPagingItems
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.ui.common.compose.components.Carousel
+import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.Movie
@@ -73,5 +75,33 @@ fun RecommendedTV(
             tvItemSelectedCallback.onClick(index, null, tv)
         },
         onMoreClick = onMoreClick
+    )
+}
+
+@Composable
+fun RecommendedMoviesPaged(
+    items: LazyPagingItems<Movie>,
+    onItemClick: (Movie, Int) -> Unit
+) {
+    PagingCarousel(
+        items = items,
+        title = "Recommended Movies",
+        refreshing = false,
+        onItemClick = onItemClick,
+        onMoreClick = null
+    )
+}
+
+@Composable
+fun RecommendedTVPaged(
+    items: LazyPagingItems<TV>,
+    onItemClick: (TV, Int) -> Unit
+) {
+    PagingCarousel(
+        items = items,
+        title = "Recommended TV Series",
+        refreshing = false,
+        onItemClick = onItemClick,
+        onMoreClick = null
     )
 }

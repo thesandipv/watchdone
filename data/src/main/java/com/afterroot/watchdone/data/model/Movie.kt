@@ -81,4 +81,8 @@ data class Movie(
         get() = Multi.MediaType.MOVIE
 
     fun rating(): String = String.format("%.1f", voteAverage)
+
+    companion object {
+        val Empty = Movie()
+    }
 }

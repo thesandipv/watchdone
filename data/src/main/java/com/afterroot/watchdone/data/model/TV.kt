@@ -68,4 +68,8 @@ data class TV(
     var releaseDate = firstAirDate
 
     fun rating(): String = String.format("%.1f", voteAverage)
+
+    companion object {
+        val Empty = TV()
+    }
 }

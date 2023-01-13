@@ -18,13 +18,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.data.model.TV
-import com.afterroot.watchdone.domain.interactors.UpdateRecommendedShows
+import com.afterroot.watchdone.domain.interactors.ObserveRecommendedShows
 import com.afterroot.watchdone.utils.State
 import timber.log.Timber
 
 class RecommendedShowPagingSource(
     private val showId: Int,
-    private val updateRecommendedShows: UpdateRecommendedShows
+    private val observeRecommendedShows: ObserveRecommendedShows
 ) : PagingSource<Int, TV>() {
 
     override fun getRefreshKey(state: PagingState<Int, TV>): Int? {
@@ -34,7 +34,7 @@ class RecommendedShowPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TV> {
         try {
             var nextPage = params.key ?: 1
-            val response = updateRecommendedShows.executeSync(UpdateRecommendedShows.Params(showId, nextPage))
+            val response = observeRecommendedShows.executeSync(ObserveRecommendedShows.Params(showId, nextPage))
             var loadResult: LoadResult<Int, TV>? = null
             response.collect {
                 when (it) {

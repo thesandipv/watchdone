@@ -26,7 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.findNavController
@@ -51,8 +51,6 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.database.MyDatabase
 import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.media.databinding.FragmentMediaInfoBinding
-import com.afterroot.watchdone.recommended.ui.RecommendedMoviesPaged
-import com.afterroot.watchdone.recommended.ui.RecommendedTVPaged
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.utils.State
@@ -70,7 +68,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.Multi.MediaType.MOVIE
-import info.movito.themoviedbapi.model.Multi.MediaType.PERSON
 import info.movito.themoviedbapi.model.Multi.MediaType.TV_SERIES
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -96,7 +93,7 @@ class MediaInfoFragment : Fragment() {
     private lateinit var binding: FragmentMediaInfoBinding
     private lateinit var watchlistItemReference: CollectionReference
     private lateinit var watchListRef: DocumentReference
-    private val viewModel: MediaInfoViewModel by activityViewModels()
+    private val viewModel: MediaInfoViewModel by viewModels()
     private var progressDialog: MaterialDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -111,22 +108,11 @@ class MediaInfoFragment : Fragment() {
         val mediaType = arguments?.getString("type")?.let { Multi.MediaType.valueOf(it.uppercase(Locale.getDefault())) }
         if (argMediaId != null) {
             launchShowingProgress {
-                when (mediaType) {
-                    MOVIE -> {
-                        viewModel.selectMedia(movie = moviesRepository.getMovieInfo(argMediaId).toMovie())
-                    }
-
-                    PERSON -> {
-                        // TODO
-                    }
-
-                    TV_SERIES -> {
-                        viewModel.setMediaType(TV_SERIES)
-                        viewModel.selectMedia(tv = tvRepository.getTVInfo(argMediaId).toTV())
-                    }
-
-                    null -> {
-                    }
+                if (mediaType == MOVIE) {
+                    viewModel.selectMedia(movie = moviesRepository.getMovieInfo(argMediaId).toMovie())
+                } else if (mediaType == TV_SERIES) {
+                    viewModel.setMediaType(TV_SERIES)
+                    viewModel.selectMedia(tv = tvRepository.getTVInfo(argMediaId).toTV())
                 }
             }
         }
@@ -136,19 +122,13 @@ class MediaInfoFragment : Fragment() {
             viewModel.observeWatchlistSnapshot(firebaseUtils.uid!!).collectLatest { state ->
                 when (state) {
                     is State.Success -> {
-                        viewModel.getSelectedMedia().collectLatest {
-                            when (it) {
-                                is SelectedMedia.Movie -> {
-                                    Timber.d("onViewCreated: ${it.data}")
-                                    updateUI(movie = it.data)
-                                }
-
-                                is SelectedMedia.TV -> {
-                                    Timber.d("onViewCreated: ${it.data}")
-                                    updateUI(tv = it.data)
-                                }
-                                SelectedMedia.Empty -> {
-                                }
+                        viewModel.selectedMedia.collectLatest {
+                            if (it is SelectedMedia.Movie) {
+                                Timber.d("onViewCreated: ${it.data}")
+                                updateUI(movie = it.data)
+                            } else if (it is SelectedMedia.TV) {
+                                Timber.d("onViewCreated: ${it.data}")
+                                updateUI(tv = it.data)
                             }
                         }
                     }
@@ -295,14 +275,16 @@ class MediaInfoFragment : Fragment() {
                 ) {
                     Column(modifier = Modifier.padding(vertical = 12.dp)) {
                         if (movie != null) {
+/*
                             RecommendedMoviesPaged(
                                 movieId = movie.id,
                                 movieItemSelectedCallback = recommendedMovieItemSelectedCallback
                             )
+*/
                         }
                         if (tv != null) {
                             Seasons(viewModel = viewModel)
-                            RecommendedTVPaged(tvId = tv.id, tvItemSelectedCallback = recommendedTVItemSelectedCallback)
+                            // RecommendedTVPaged(tvId = tv.id, tvItemSelectedCallback = recommendedTVItemSelectedCallback)
                         }
                     }
                 }
@@ -313,7 +295,7 @@ class MediaInfoFragment : Fragment() {
             Theme(context = requireContext()) {
                 Column {
                     val state: MediaInfoViewState by viewModel.state.collectAsState()
-                    OverviewContent(movie, tv)
+                    OverviewContent(viewModel = viewModel)
 
                     when (state.credits) {
                         is State.Failed -> {}

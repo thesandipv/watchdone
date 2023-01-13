@@ -18,7 +18,9 @@ package com.afterroot.watchdone.data.repositories
 import com.afterroot.tmdbapi.api.TVApi
 import com.afterroot.watchdone.data.mapper.toEpisode
 import com.afterroot.watchdone.data.mapper.toSeason
+import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.utils.State
+import com.afterroot.watchdone.utils.resultFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -26,6 +28,8 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class TVRepository @Inject constructor(private val tvApi: TVApi) {
+
+    // TODO Migrate to resultFlow()
     fun season(id: Int, season: Int) = flow {
         emit(State.loading())
         emit(State.success(tvApi.getSeason(id, season).toSeason()))
@@ -33,6 +37,7 @@ class TVRepository @Inject constructor(private val tvApi: TVApi) {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)
 
+    // TODO Migrate to resultFlow()
     fun episode(id: Int, season: Int, episode: Int) = flow {
         emit(State.loading())
         emit(State.success(tvApi.getEpisode(id, season, episode).toEpisode()))
@@ -40,10 +45,15 @@ class TVRepository @Inject constructor(private val tvApi: TVApi) {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)
 
+    // TODO Migrate to resultFlow()
     fun credits(id: Int) = flow {
         emit(State.loading())
         emit(State.success(tvApi.getCredits(id)))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)
+
+    suspend fun info(id: Int) = resultFlow(tvApi.getTVInfo(id).toTV())
+
+    suspend fun recommended(id: Int, page: Int) = resultFlow(tvApi.getRecommended(id, page))
 }

@@ -16,10 +16,13 @@
 package com.afterroot.watchdone.domain.interactors
 
 import app.tivi.domain.ResultInteractor
+import app.tivi.domain.SubjectInteractor
 import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.data.model.Season
+import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.repositories.TVRepository
 import com.afterroot.watchdone.utils.State
+import info.movito.themoviedbapi.TvResultsPage
 import info.movito.themoviedbapi.model.Credits
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -51,5 +54,23 @@ class TVCreditsInteractor @Inject constructor(private val tvRepository: TVReposi
 
     override suspend fun doWork(params: Params): Flow<State<Credits>> {
         return tvRepository.credits(params.tvId)
+    }
+}
+
+class ObserveTVInfo @Inject constructor(private val tvRepository: TVRepository) :
+    SubjectInteractor<ObserveTVInfo.Params, State<TV>>() {
+    data class Params(val tvId: Int)
+
+    override suspend fun createObservable(params: Params): Flow<State<TV>> {
+        return tvRepository.info(params.tvId)
+    }
+}
+
+class ObserveRecommendedShows @Inject constructor(private val tvRepository: TVRepository) :
+    ResultInteractor<ObserveRecommendedShows.Params, Flow<State<TvResultsPage>>>() {
+    data class Params(val id: Int, val page: Int = 1)
+
+    override suspend fun doWork(params: Params): Flow<State<TvResultsPage>> {
+        return tvRepository.recommended(params.id, params.page)
     }
 }
