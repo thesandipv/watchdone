@@ -26,7 +26,7 @@ import info.movito.themoviedbapi.TvResultsPage
 import info.movito.themoviedbapi.model.Credits
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-
+@Deprecated("Use ObserveTVSeason")
 class TVSeasonInteractor @Inject constructor(private val tvRepository: TVRepository) :
     ResultInteractor<TVSeasonInteractor.Params, Flow<State<Season>>>() {
 
@@ -47,6 +47,7 @@ class TVEpisodeInteractor @Inject constructor(private val tvRepository: TVReposi
     }
 }
 
+@Deprecated("Use ObserveTVCredits")
 class TVCreditsInteractor @Inject constructor(private val tvRepository: TVRepository) :
     ResultInteractor<TVCreditsInteractor.Params, Flow<State<Credits>>>() {
 
@@ -72,5 +73,24 @@ class ObserveRecommendedShows @Inject constructor(private val tvRepository: TVRe
 
     override suspend fun doWork(params: Params): Flow<State<TvResultsPage>> {
         return tvRepository.recommended(params.id, params.page)
+    }
+}
+
+class ObserveTVCredits @Inject constructor(private val tvRepository: TVRepository) :
+    SubjectInteractor<ObserveTVCredits.Params, State<Credits>>() {
+    data class Params(val tvId: Int)
+
+    override suspend fun createObservable(params: Params): Flow<State<Credits>> {
+        return tvRepository.credits(params.tvId)
+    }
+}
+
+class ObserveTVSeason @Inject constructor(private val tvRepository: TVRepository) :
+    SubjectInteractor<ObserveTVSeason.Params, State<Season>>() {
+
+    data class Params(val tvId: Int, val season: Int)
+
+    override suspend fun createObservable(params: Params): Flow<State<Season>> {
+        return tvRepository.season(params.tvId, params.season)
     }
 }
