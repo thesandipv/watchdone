@@ -21,13 +21,19 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import app.tivi.extensions.combine
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.domain.interactors.ObserveMovieCredits
 import com.afterroot.watchdone.domain.interactors.ObserveMovieInfo
 import com.afterroot.watchdone.domain.interactors.ObserveRecommendedMovies
 import com.afterroot.watchdone.domain.interactors.ObserveRecommendedShows
+import com.afterroot.watchdone.domain.interactors.ObserveTVCredits
 import com.afterroot.watchdone.domain.interactors.ObserveTVInfo
+import com.afterroot.watchdone.domain.interactors.ObserveTVSeason
+import com.afterroot.watchdone.domain.interactors.TVEpisodeInteractor
 import com.afterroot.watchdone.domain.interactors.WatchStateInteractor
 import com.afterroot.watchdone.domain.interactors.WatchlistInteractor
 import com.afterroot.watchdone.domain.observers.RecommendedMoviePagingSource
@@ -35,6 +41,7 @@ import com.afterroot.watchdone.domain.observers.RecommendedShowPagingSource
 import com.afterroot.watchdone.ui.media.MediaInfoViewState
 import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
+import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,6 +49,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -52,10 +61,14 @@ class MediaInfoViewModel2 @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observeMovieInfo: ObserveMovieInfo,
     observeTVInfo: ObserveTVInfo,
+    observeMovieCredits: ObserveMovieCredits,
+    observeTVCredits: ObserveTVCredits,
+    observeTVSeason: ObserveTVSeason,
     private val observeRecommendedMovies: ObserveRecommendedMovies,
     private val observeRecommendedShows: ObserveRecommendedShows,
     private val watchlistInteractor: WatchlistInteractor,
-    private val watchStateInteractor: WatchStateInteractor
+    private val watchStateInteractor: WatchStateInteractor,
+    private val tvEpisodeInteractor: TVEpisodeInteractor
 ) : ViewModel() {
 
     private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
@@ -65,18 +78,26 @@ class MediaInfoViewModel2 @Inject constructor(
 
     private val isInWL = MutableStateFlow(false)
     private val isWatched = MutableStateFlow(false)
+    private val selectedSeason = MutableStateFlow(1)
+    private val seasonInfo = MutableStateFlow<State<Season>>(State.loading())
+    private val credits = MutableStateFlow<State<Credits>>(State.loading())
 
     private val stateMovie: StateFlow<MediaInfoViewState> by lazy {
-        combine(mediaId, isInWL, isWatched, observeMovieInfo.flow) { mediaId, isInWL, isWatched, movieInfo ->
+        combine(
+            mediaId,
+            isInWL,
+            isWatched,
+            observeMovieInfo.flow,
+            observeMovieCredits.flow
+        ) { mediaId, isInWL, isWatched, movieInfo, credits ->
             MediaInfoViewState(
                 mediaId = mediaId,
                 mediaType = mediaType,
                 movie = if (movieInfo is State.Success) movieInfo.data else Movie.Empty,
                 isInWatchlist = isInWL,
-                isWatched = isWatched
-            ).apply {
-                Timber.d("State: $this")
-            }
+                isWatched = isWatched,
+                credits = credits
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
@@ -85,16 +106,23 @@ class MediaInfoViewModel2 @Inject constructor(
     }
 
     private val stateTV: StateFlow<MediaInfoViewState> by lazy {
-        combine(mediaId, isInWL, isWatched, observeTVInfo.flow) { mediaId, isInWL, isWatched, tvInfo ->
+        combine(
+            mediaId,
+            isInWL,
+            isWatched,
+            observeTVInfo.flow,
+            observeTVCredits.flow,
+            observeTVSeason.flow
+        ) { mediaId, isInWL, isWatched, tvInfo, credits, season ->
             MediaInfoViewState(
                 mediaId = mediaId,
                 mediaType = mediaType,
                 tv = if (tvInfo is State.Success) tvInfo.data else TV.Empty,
                 isInWatchlist = isInWL,
-                isWatched = isWatched
-            ).apply {
-                Timber.d("State: $this")
-            }
+                isWatched = isWatched,
+                credits = credits,
+                seasonInfo = season
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
@@ -123,8 +151,14 @@ class MediaInfoViewModel2 @Inject constructor(
     init {
         if (mediaType == Multi.MediaType.MOVIE) {
             observeMovieInfo(ObserveMovieInfo.Params(mediaId.value))
+            observeMovieCredits(ObserveMovieCredits.Params(mediaId.value))
         } else if (mediaType == Multi.MediaType.TV_SERIES) {
             observeTVInfo(ObserveTVInfo.Params(mediaId.value))
+            observeTVCredits(ObserveTVCredits.Params(mediaId.value))
+
+            selectedSeason.onEach {
+                observeTVSeason(ObserveTVSeason.Params(mediaId.value, it))
+            }.launchIn(viewModelScope)
         }
         viewModelScope.launch {
             watchlistInteractor.executeSync(
@@ -150,14 +184,13 @@ class MediaInfoViewModel2 @Inject constructor(
 
     fun watchlistAction(isAdd: Boolean, media: DBMedia) {
         viewModelScope.launch {
-            val task = watchlistInteractor.executeSync(
+            watchlistInteractor.executeSync(
                 WatchlistInteractor.Params(
                     mediaId.value,
                     media,
                     if (isAdd) WatchlistInteractor.Method.ADD else WatchlistInteractor.Method.REMOVE
                 )
-            )
-            task.collect { result ->
+            ).collect { result ->
                 result.whenSuccess {
                     isInWL.value = isAdd
                 }
@@ -167,13 +200,12 @@ class MediaInfoViewModel2 @Inject constructor(
 
     fun watchStateAction(isMark: Boolean, media: DBMedia) {
         viewModelScope.launch {
-            val task = watchStateInteractor.executeSync(
+            watchStateInteractor.executeSync(
                 WatchStateInteractor.Params(
                     mediaId.value,
                     isMark
                 )
-            )
-            task.collect { result ->
+            ).collect { result ->
                 result.whenSuccess {
                     isWatched.value = it
                 }.whenFailed { message, exception ->
@@ -181,5 +213,9 @@ class MediaInfoViewModel2 @Inject constructor(
                 }
             }
         }
+    }
+
+    fun selectSeason(season: Int) {
+        selectedSeason.value = season
     }
 }

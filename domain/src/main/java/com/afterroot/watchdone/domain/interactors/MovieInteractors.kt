@@ -25,12 +25,22 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+@Deprecated("Use ObserveMovieCredits")
 class MovieCreditsInteractor @Inject constructor(private val movieRepository: MovieRepository) :
     ResultInteractor<MovieCreditsInteractor.Params, Flow<State<Credits>>>() {
 
     data class Params(val movieId: Int)
 
     override suspend fun doWork(params: Params): Flow<State<Credits>> {
+        return movieRepository.credits(params.movieId)
+    }
+}
+
+class ObserveMovieCredits @Inject constructor(private val movieRepository: MovieRepository) :
+    SubjectInteractor<ObserveMovieCredits.Params, State<Credits>>() {
+    data class Params(val movieId: Int)
+
+    override suspend fun createObservable(params: Params): Flow<State<Credits>> {
         return movieRepository.credits(params.movieId)
     }
 }

@@ -83,7 +83,7 @@ fun Seasons(viewModel: MediaInfoViewModel = hiltViewModel()) {
 }
 
 @Composable
-internal fun Seasons(tv: TV, season: State<Season>, onSeasonSelected: (Int) -> Unit, onWatchClicked: (Episode) -> Unit) {
+fun Seasons(tv: TV, season: State<Season>, onSeasonSelected: (Int) -> Unit, onWatchClicked: (Episode) -> Unit) {
     ProvideTextStyle(value = ubuntuTypography.titleMedium) {
         Text(
             text = "Seasons",

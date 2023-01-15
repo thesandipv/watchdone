@@ -77,10 +77,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    private val manifestPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(Manifest.permission.INTERNET, Manifest.permission.POST_NOTIFICATIONS)
-    } else {
-        arrayOf(Manifest.permission.INTERNET)
+    private val manifestPermissions by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.INTERNET, Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            arrayOf(Manifest.permission.INTERNET)
+        }
     }
 
     @Inject lateinit var settings: Settings
@@ -184,12 +186,7 @@ class MainActivity : AppCompatActivity() {
         MobileAds.initialize(this) {
         }
 
-        onVersionGreaterThanEqualTo(
-            Build.VERSION_CODES.M,
-            {
-                checkPermissions() // Load Fragments after checking permissions
-            }
-        )
+        onVersionGreaterThanEqualTo(Build.VERSION_CODES.M, ::checkPermissions)
 
         setUpNavigation()
 
@@ -345,6 +342,12 @@ class MainActivity : AppCompatActivity() {
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
                 R.id.navigation_media_info -> {
+                    setTitle(null)
+                    binding.titleLayout.visible(false)
+                    binding.fab.hide()
+                    drawerToggle.progress(0f, 1f) // As back arrow
+                }
+                R.id.navigation_media_info_2 -> {
                     setTitle(null)
                     binding.titleLayout.visible(false)
                     binding.fab.hide()
