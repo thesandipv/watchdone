@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -205,7 +204,7 @@ fun <T : Person> PersonRow(
         if (items.isNotEmpty()) {
             PersonRow(items = items, onItemClick = { index, item ->
                 Timber.d("PersonRow: Clicked: Index $index Item: $item")
-            }, modifier = Modifier.fillMaxHeight())
+            }, modifier = Modifier)
         }
     }
 }
@@ -231,7 +230,7 @@ private fun <T : Person> PersonRow(
                 item.id
             },
             itemContent = { index, item ->
-                PersonItem(item = item, modifier = Modifier.fillParentMaxHeight(), onClick = {
+                PersonItem(item = item, onClick = {
                     onItemClick(index, item)
                 })
             }
@@ -250,7 +249,7 @@ fun <T : Person> PersonItem(
             title = item.name,
             posterPath = item.profilePath,
             modifier = Modifier
-                .height(192.dp)
+                .aspectRatio(2 / 3f)
                 .fillMaxWidth()
                 .clickable {
                     onClick?.invoke()

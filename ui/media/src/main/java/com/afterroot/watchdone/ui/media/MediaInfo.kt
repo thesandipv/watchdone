@@ -124,29 +124,21 @@ internal fun <T : Multi> MediaInfoContent(
     modifier: Modifier
 ) {
     LazyColumn(state = listState, contentPadding = contentPadding, modifier = modifier) {
-        if (viewState.mediaType == Multi.MediaType.MOVIE) {
-            item {
-                OverviewContent(
-                    movie = viewState.movie,
-                    isInWatchlist = viewState.isInWatchlist,
-                    isWatched = viewState.isWatched,
-                    modifier = Modifier.fillMaxWidth(),
-                    onWatchlistAction = onWatchlistAction,
-                    onWatchedAction = onWatchedAction
-                )
-            }
-        } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-            item {
-                OverviewContent(
-                    tv = viewState.tv,
-                    isInWatchlist = viewState.isInWatchlist,
-                    isWatched = viewState.isWatched,
-                    modifier = Modifier.fillMaxWidth(),
-                    onWatchlistAction = onWatchlistAction,
-                    onWatchedAction = onWatchedAction
-                )
-            }
-            item {
+        item(key = "overview") {
+            OverviewContent(
+                movie = viewState.movie,
+                tv = viewState.tv,
+                isInWatchlist = viewState.isInWatchlist,
+                isWatched = viewState.isWatched,
+                modifier = Modifier.fillMaxWidth(),
+                onWatchlistAction = onWatchlistAction,
+                onWatchedAction = onWatchedAction
+            )
+
+        }
+
+        if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+            item(key = { "seasons" }) {
                 Seasons(
                     tv = viewState.tv,
                     season = viewState.seasonInfo,
@@ -157,7 +149,7 @@ internal fun <T : Multi> MediaInfoContent(
             }
         }
 
-        item {
+        item(key = "cast") {
             viewState.credits
                 .composeWhen(success = { credits ->
                     credits.cast?.let { castList ->
@@ -169,7 +161,7 @@ internal fun <T : Multi> MediaInfoContent(
                 })
         }
 
-        item {
+        item(key = "crew") {
             viewState.credits
                 .composeWhen(success = { credits ->
                     credits.crew?.let { crewList ->
@@ -182,7 +174,7 @@ internal fun <T : Multi> MediaInfoContent(
         }
 
         if (viewState.mediaType == Multi.MediaType.MOVIE) {
-            item {
+            item(key = "rec-movies") {
                 PagingCarousel(
                     items = recommended,
                     title = "Recommended Movies",
@@ -195,7 +187,7 @@ internal fun <T : Multi> MediaInfoContent(
                 )
             }
         } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-            item {
+            item(key = "rec-tv") {
                 PagingCarousel(
                     items = recommended,
                     title = "Recommended TV Series",
@@ -208,7 +200,7 @@ internal fun <T : Multi> MediaInfoContent(
                 )
             }
         }
-        item {
+        item(key = "spacer") {
             Spacer(modifier = Modifier.height(80.dp))
         }
     }
