@@ -134,11 +134,10 @@ internal fun <T : Multi> MediaInfoContent(
                 onWatchlistAction = onWatchlistAction,
                 onWatchedAction = onWatchedAction
             )
-
         }
 
         if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-            item(key = { "seasons" }) {
+            item(key = "seasons") {
                 Seasons(
                     tv = viewState.tv,
                     season = viewState.seasonInfo,
