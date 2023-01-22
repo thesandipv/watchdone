@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.ui.media
 
 import androidx.compose.runtime.Immutable
+import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.watchdone.base.compose.ViewState
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
@@ -39,7 +40,8 @@ data class MediaInfoViewState(
     val selectedSeason: Int = 1,
     val tv: TV = TV.Empty,
     val isInWatchlist: Boolean = false,
-    val isWatched: Boolean = false
+    val isWatched: Boolean = false,
+    val genres: List<Genre> = emptyList()
 ) : ViewState() {
     companion object {
         val Empty = MediaInfoViewState()

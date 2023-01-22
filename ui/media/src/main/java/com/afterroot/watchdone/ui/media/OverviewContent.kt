@@ -57,6 +57,7 @@ import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
 import com.afterroot.data.utils.valueOrBlank
+import com.afterroot.ui.common.compose.components.SuggestionChipGroup
 import com.afterroot.ui.common.compose.theme.PreviewTheme
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.watchdone.data.mapper.toDBMedia
@@ -168,7 +169,17 @@ fun OverviewContent(
             }
         }
 
-        Spacer(modifier = Modifier.padding(4.dp))
+        SuggestionChipGroup(
+            chipSpacing = 8.dp,
+            modifier = Modifier
+                .padding(horizontal = bodyMargin)
+                .padding(top = gutter / 2),
+            list = movie?.genres?.map {
+                it.name
+            } ?: tv?.genres?.map {
+                it.name
+            } ?: emptyList()
+        )
 
         OverviewText(
             text = (movie?.overview ?: tv?.overview) ?: "",

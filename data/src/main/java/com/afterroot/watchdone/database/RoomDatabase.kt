@@ -45,7 +45,10 @@ interface GenreDao {
     fun getGenres(): LiveData<List<Genre>>
 
     @Query("SELECT * from genres WHERE id IN (:genres)")
-    fun getGenres(genres: List<Int>): LiveData<List<Genre>>
+    fun getGenresLiveData(genres: List<Int>): LiveData<List<Genre>>
+
+    @Query("SELECT * from genres WHERE id IN (:genres)")
+    fun getGenres(genres: List<Int>): Flow<List<Genre>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(vararg genre: Genre)

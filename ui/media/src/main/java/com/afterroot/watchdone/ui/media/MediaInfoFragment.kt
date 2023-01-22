@@ -252,7 +252,7 @@ class MediaInfoFragment : Fragment() {
     private fun updateGenres(list: List<Genre>? = emptyList(), ids: List<Int>? = null) {
         if (list?.isEmpty() == true) {
             ids?.let {
-                myDatabase.genreDao().getGenres(it).observe(viewLifecycleOwner) { roomGenres ->
+                myDatabase.genreDao().getGenresLiveData(it).observe(viewLifecycleOwner) { roomGenres ->
                     binding.genres = roomGenres
                 }
             }
@@ -291,6 +291,7 @@ class MediaInfoFragment : Fragment() {
             }
         }
 
+        // This section has been migrated.
         binding.composeMediaOverview.setContent {
             Theme(context = requireContext()) {
                 Column {
