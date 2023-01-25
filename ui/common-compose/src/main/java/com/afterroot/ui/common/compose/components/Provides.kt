@@ -22,4 +22,5 @@ val LocalCurrentUser = compositionLocalOf { LocalUser() }
 
 val LocalTMDbBaseUrl = compositionLocalOf { "https://image.tmdb.org/t/p/" }
 val LocalPosterSize = compositionLocalOf { "w342" }
+val LocalBackdropSize = compositionLocalOf { "w780" }
 val LocalSettings = compositionLocalOf<Settings> { throw IllegalStateException("LocalSettings is not initialized") }
