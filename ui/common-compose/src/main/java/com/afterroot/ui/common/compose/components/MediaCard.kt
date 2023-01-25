@@ -26,14 +26,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.AutoSizedCircularProgressIndicator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -106,6 +110,49 @@ fun BasePosterCard(
                     contentDescription = title,
                     modifier = Modifier.matchParentSize(),
                     contentScale = ContentScale.Crop
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun Backdrop(
+    backdropPath: String?,
+    modifier: Modifier = Modifier,
+    shape: Shape = MaterialTheme.shapes.medium,
+    title: String? = null,
+    onClick: (() -> Unit)? = null
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = 0.2f)
+            .compositeOver(MaterialTheme.colorScheme.surface),
+        shape = shape,
+        modifier = modifier
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+        ) {
+            if (backdropPath != null) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(LocalTMDbBaseUrl.current + LocalBackdropSize.current + backdropPath).crossfade(true).build(),
+                    contentDescription = title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            if (title != null) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier
+                        .padding(Layout.gutter * 2)
+                        .align(Alignment.BottomStart)
                 )
             }
         }

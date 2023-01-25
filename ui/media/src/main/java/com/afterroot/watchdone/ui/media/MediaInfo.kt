@@ -17,9 +17,11 @@ package com.afterroot.watchdone.ui.media
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -36,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import app.tivi.common.compose.Layout
+import com.afterroot.ui.common.compose.components.Backdrop
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.watchdone.data.model.DBMedia
@@ -123,7 +127,30 @@ internal fun <T : Multi> MediaInfoContent(
     onSeasonSelected: (Int) -> Unit = {},
     modifier: Modifier
 ) {
+
+    val gutter = Layout.gutter
+    val bodyMargin = Layout.bodyMargin
+
     LazyColumn(state = listState, contentPadding = contentPadding, modifier = modifier) {
+        item {
+            Backdrop(
+                backdropPath = when (viewState.mediaType) {
+                    Multi.MediaType.MOVIE -> {
+                        viewState.movie.backdropPath
+                    }
+                    Multi.MediaType.TV_SERIES -> {
+                        viewState.tv.backdropPath
+                    }
+                    else -> {
+                        null
+                    }
+                },
+                modifier = Modifier
+                    .padding(horizontal = bodyMargin, vertical = gutter)
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 10)
+            )
+        }
         item(key = "overview") {
             OverviewContent(
                 movie = viewState.movie,
