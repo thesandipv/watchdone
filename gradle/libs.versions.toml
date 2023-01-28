@@ -240,7 +240,7 @@ accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiper
 accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 
 test-junit = "junit:junit:4.13.2"
-test-mockk = "io.mockk:mockk:1.13.3"
+test-mockk = "io.mockk:mockk:1.13.4"
 test-robolectric = "org.robolectric:robolectric:4.9.2"
 
 [bundles]
