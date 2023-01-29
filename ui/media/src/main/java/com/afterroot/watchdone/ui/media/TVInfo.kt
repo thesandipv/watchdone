@@ -49,7 +49,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.afterroot.data.utils.valueOrBlank
+import app.tivi.common.compose.Layout
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.Header
@@ -86,7 +86,7 @@ fun Seasons(tv: TV, season: State<Season>, onSeasonSelected: (Int) -> Unit, onWa
     ProvideTextStyle(value = ubuntuTypography.titleMedium) {
         Text(
             text = "Seasons",
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter)
         )
     }
 
@@ -119,26 +119,33 @@ fun manufactureSeasonList(numberOfSeasons: Int): List<String> = mutableListOf<St
 
 @Composable
 fun SeasonsDetail(season: State<Season>, onWatchClicked: (Episode) -> Unit) {
+    val bodyMargin = Layout.bodyMargin
+    val gutter = Layout.gutter
+
     Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.animateContentSize()) {
         when (season) {
             is State.Success -> {
-                OverviewText(
-                    text = season.data.overview.valueOrBlank(),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .padding(bottom = 4.dp)
-                )
+                season.data.overview?.let {
+                    if (it.isNotBlank()) {
+                        OverviewText(
+                            text = it,
+                            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+                        )
+                    }
+                }
 
-                Text(
-                    text = "${season.data.episodes?.count()} Episodes",
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-                )
-                season.data.episodes?.forEach {
-                    EpisodeItem(episode = it, onWatchClicked = onWatchClicked)
+                season.data.episodes?.let { episodes ->
+                    Text(
+                        text = "${episodes.count()} Episodes",
+                        modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+                    )
+                    episodes.forEach { episode ->
+                        EpisodeItem(episode = episode, onWatchClicked = onWatchClicked)
+                    }
                 }
             }
             is State.Failed -> {
-                Text(text = "Error while loading", modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
+                Text(text = "Error while loading", modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter))
             }
             is State.Loading -> {
                 EpisodeItemPlaceholder()
@@ -152,7 +159,7 @@ fun EpisodeItem(episode: Episode, onWatchClicked: (Episode) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+            .padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
