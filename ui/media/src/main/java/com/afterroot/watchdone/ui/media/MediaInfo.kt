@@ -26,8 +26,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -42,6 +45,7 @@ import app.tivi.common.compose.Layout
 import com.afterroot.ui.common.compose.components.Backdrop
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.PagingCarousel
+import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.viewmodel.MediaInfoViewModel2
 import info.movito.themoviedbapi.model.Multi
@@ -206,7 +210,7 @@ internal fun <T : Multi> MediaInfoContent(
                     title = "Recommended Movies",
                     refreshing = false,
                     modifier = Modifier.fillMaxWidth(),
-                    onItemClick = { t, i ->
+                    onItemClick = { t, _ ->
                         onRecommendedClick(t)
                     },
                     onMoreClick = null
@@ -219,10 +223,21 @@ internal fun <T : Multi> MediaInfoContent(
                     title = "Recommended TV Series",
                     refreshing = false,
                     modifier = Modifier.fillMaxWidth(),
-                    onItemClick = { t, i ->
+                    onItemClick = { t, _ ->
                         onRecommendedClick(t)
                     },
                     onMoreClick = null
+                )
+            }
+        }
+        item {
+            ProvideTextStyle(value = ubuntuTypography.titleSmall.copy(fontSize = 10.sp)) {
+                Text(
+                    text = "Media ID: ${viewState.mediaId}",
+                    modifier = Modifier.padding(
+                        horizontal = bodyMargin,
+                        vertical = gutter
+                    )
                 )
             }
         }

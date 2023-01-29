@@ -175,10 +175,9 @@ fun SuggestionChipGroup(
     Column(horizontalAlignment = Alignment.Start, modifier = modifier) {
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .horizontalScroll(scrollState)
-                .padding(horizontal = horizontalPadding)
+            modifier = Modifier.horizontalScroll(scrollState)
         ) {
+            Spacer(modifier = Modifier.width(horizontalPadding))
             list?.forEachIndexed { index, it ->
                 if (index != 0) {
                     Spacer(modifier = Modifier.width(chipSpacing))
@@ -204,6 +203,7 @@ fun SuggestionChipGroup(
                     }
                 )
             }
+            Spacer(modifier = Modifier.width(horizontalPadding))
         }
     }
 }
