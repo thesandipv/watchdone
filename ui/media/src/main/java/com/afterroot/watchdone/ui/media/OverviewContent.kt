@@ -22,7 +22,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -57,6 +59,7 @@ import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
 import com.afterroot.data.utils.valueOrBlank
+import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.SuggestionChipGroup
 import com.afterroot.ui.common.compose.theme.PreviewTheme
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
@@ -117,6 +120,71 @@ fun OverviewContent(
     val bodyMargin = Layout.bodyMargin
 
     Column(modifier = modifier) {
+        Row(modifier = Modifier.padding(vertical = gutter)) {
+            BasePosterCard(
+                title = movie?.title ?: tv?.name, posterPath = movie?.posterPath ?: tv?.posterPath, modifier = Modifier
+                    .padding(start = bodyMargin)
+                    .height(192.dp)
+                    .aspectRatio(2 / 3f)
+
+            )
+            Column {
+                // TODO Extract composable
+                Row(
+                    modifier = Modifier.padding(horizontal = bodyMargin),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Star,
+                        contentDescription = "Rating",
+                        modifier = Modifier.size(16.dp)
+                    )
+
+                    Spacer(modifier = Modifier.padding(2.dp))
+
+                    ProvideTextStyle(value = ubuntuTypography.bodyLarge) {
+                        Text(
+                            text = stringResource(
+                                id = R.string.media_info_rating_text,
+                                movie?.voteAverage ?: tv?.voteAverage ?: 0.0
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.padding(vertical = 2.dp))
+
+                Row(
+                    modifier = Modifier.padding(horizontal = bodyMargin),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Event,
+                        contentDescription = "Release Date",
+                        modifier = Modifier.size(16.dp)
+                    )
+
+                    Spacer(modifier = Modifier.padding(2.dp))
+
+                    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+                        Text(text = (movie?.releaseDate ?: tv?.releaseDate).valueOrBlank(), fontSize = 12.sp)
+                    }
+                }
+
+                SuggestionChipGroup(
+                    chipSpacing = 8.dp,
+                    horizontalPadding = bodyMargin,
+                    modifier = Modifier
+                        .padding(top = gutter / 2),
+                    list = movie?.genres?.map {
+                        it.name
+                    } ?: tv?.genres?.map {
+                        it.name
+                    } ?: emptyList()
+                )
+            }
+        }
+
         ProvideTextStyle(value = ubuntuTypography.labelMedium) {
             WatchlistActions(
                 modifier = Modifier
@@ -128,58 +196,6 @@ fun OverviewContent(
                 onWatchedAction = { onWatchedAction(it, movie?.toDBMedia() ?: tv?.toDBMedia() ?: DBMedia.Empty) }
             )
         }
-        Row(
-            modifier = Modifier.padding(horizontal = bodyMargin),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Star,
-                contentDescription = "Rating",
-                modifier = Modifier.size(16.dp)
-            )
-
-            Spacer(modifier = Modifier.padding(2.dp))
-
-            ProvideTextStyle(value = ubuntuTypography.bodyLarge) {
-                Text(
-                    text = stringResource(
-                        id = R.string.media_info_rating_text,
-                        movie?.voteAverage ?: tv?.voteAverage ?: 0.0
-                    )
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.padding(vertical = 2.dp))
-
-        Row(
-            modifier = Modifier.padding(horizontal = bodyMargin),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Event,
-                contentDescription = "Release Date",
-                modifier = Modifier.size(16.dp)
-            )
-
-            Spacer(modifier = Modifier.padding(2.dp))
-
-            ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-                Text(text = (movie?.releaseDate ?: tv?.releaseDate).valueOrBlank(), fontSize = 12.sp)
-            }
-        }
-
-        SuggestionChipGroup(
-            chipSpacing = 8.dp,
-            modifier = Modifier
-                .padding(horizontal = bodyMargin)
-                .padding(top = gutter / 2),
-            list = movie?.genres?.map {
-                it.name
-            } ?: tv?.genres?.map {
-                it.name
-            } ?: emptyList()
-        )
 
         OverviewText(
             text = (movie?.overview ?: tv?.overview) ?: "",

@@ -96,7 +96,7 @@ fun BasePosterCard(
                 .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
         ) {
             Text(
-                text = title ?: "No title",
+                text = title ?: "",
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .padding(4.dp)
