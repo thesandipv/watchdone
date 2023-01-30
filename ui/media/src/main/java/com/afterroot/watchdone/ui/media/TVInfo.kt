@@ -31,7 +31,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
@@ -73,16 +75,23 @@ fun Seasons(viewModel: MediaInfoViewModel = hiltViewModel()) {
         Seasons(
             tv = viewState.tv,
             season = viewState.seasonInfo,
+            watchedEpisodes = emptyMap(),
             onSeasonSelected = viewModel::selectSeason,
-            onWatchClicked = {
-                viewModel.markEpisode(it.id, true)
+            onWatchClicked = { episode, isWatched ->
+                viewModel.markEpisode(episode.id, isWatched)
             }
         )
     }
 }
 
 @Composable
-fun Seasons(tv: TV, season: State<Season>, onSeasonSelected: (Int) -> Unit, onWatchClicked: (Episode) -> Unit) {
+fun Seasons(
+    tv: TV,
+    season: State<Season>,
+    watchedEpisodes: Map<String, Boolean>,
+    onSeasonSelected: (Int) -> Unit,
+    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
+) {
     ProvideTextStyle(value = ubuntuTypography.titleMedium) {
         Text(
             text = "Seasons",
@@ -91,7 +100,7 @@ fun Seasons(tv: TV, season: State<Season>, onSeasonSelected: (Int) -> Unit, onWa
     }
 
     SeasonsChips(tv = tv, onSeasonSelected = onSeasonSelected)
-    SeasonsDetail(season = season, onWatchClicked = onWatchClicked)
+    SeasonsDetail(season = season, watchedEpisodes = watchedEpisodes, onWatchClicked = onWatchClicked)
 }
 
 @Composable
@@ -118,7 +127,11 @@ fun manufactureSeasonList(numberOfSeasons: Int): List<String> = mutableListOf<St
 }
 
 @Composable
-fun SeasonsDetail(season: State<Season>, onWatchClicked: (Episode) -> Unit) {
+fun SeasonsDetail(
+    season: State<Season>,
+    watchedEpisodes: Map<String, Boolean>,
+    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
+) {
     val bodyMargin = Layout.bodyMargin
     val gutter = Layout.gutter
 
@@ -140,7 +153,13 @@ fun SeasonsDetail(season: State<Season>, onWatchClicked: (Episode) -> Unit) {
                         modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
                     )
                     episodes.forEach { episode ->
-                        EpisodeItem(episode = episode, onWatchClicked = onWatchClicked)
+                        val watched = if (watchedEpisodes.containsKey(episode.id.toString())) {
+                            watchedEpisodes[episode.id.toString()] ?: false
+                        } else {
+                            false
+                        }
+
+                        EpisodeItem(episode = episode, isWatched = watched, onWatchClicked = onWatchClicked)
                     }
                 }
             }
@@ -155,7 +174,11 @@ fun SeasonsDetail(season: State<Season>, onWatchClicked: (Episode) -> Unit) {
 }
 
 @Composable
-fun EpisodeItem(episode: Episode, onWatchClicked: (Episode) -> Unit) {
+fun EpisodeItem(
+    episode: Episode,
+    isWatched: Boolean = false,
+    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -169,11 +192,17 @@ fun EpisodeItem(episode: Episode, onWatchClicked: (Episode) -> Unit) {
                 episode.airDate?.let { Text(text = it) }
             }
         }
-        Button(onClick = {
-            onWatchClicked(episode)
-        }) {
-            Text(text = "Add")
-        }
+        // TODO Make button two-state
+        TwoStateButton(
+            checked = isWatched,
+            checkedText = "",
+            uncheckedText = "",
+            checkedIcon = Icons.Rounded.Remove,
+            uncheckedIcon = Icons.Rounded.Add,
+            onClick = {
+                onWatchClicked(episode, it)
+            }
+        )
     }
 }
 

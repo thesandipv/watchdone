@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.domain.interactors
 
 import app.tivi.domain.ResultInteractor
+import app.tivi.domain.SubjectInteractor
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.repositories.FirestoreRepository
 import com.afterroot.watchdone.utils.State
@@ -47,9 +48,38 @@ class WatchlistInteractor @Inject constructor(private val firestoreRepository: F
 
 class WatchStateInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
     ResultInteractor<WatchStateInteractor.Params, Flow<State<Boolean>>>() {
-    data class Params(val id: Int, val watchState: Boolean)
+    data class Params(val id: Int, val watchState: Boolean, val episodeId: String? = null, val method: Method)
+
+    enum class Method {
+        MEDIA, EPISODE
+    }
 
     override suspend fun doWork(params: Params): Flow<State<Boolean>> {
-        return firestoreRepository.setWatchStatus(params.id, params.watchState)
+        return when (params.method) {
+            Method.MEDIA -> {
+                firestoreRepository.setWatchStatus(params.id, params.watchState)
+            }
+            Method.EPISODE -> {
+                firestoreRepository.setEpisodeWatchStatus(params.id, params.episodeId, params.watchState)
+            }
+        }
+    }
+}
+
+class ObserveMediaInfo @Inject constructor(private val firestoreRepository: FirestoreRepository) :
+    SubjectInteractor<ObserveMediaInfo.Params, State<DBMedia>>() {
+    data class Params(val id: Int)
+
+    override suspend fun createObservable(params: Params): Flow<State<DBMedia>> {
+        return firestoreRepository.getMediaInfo(params.id)
+    }
+}
+
+class MediaInfoInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
+    ResultInteractor<MediaInfoInteractor.Params, Flow<State<DBMedia>>>() {
+    data class Params(val id: Int)
+
+    override suspend fun doWork(params: Params): Flow<State<DBMedia>> {
+        return firestoreRepository.getMediaInfo(params.id)
     }
 }

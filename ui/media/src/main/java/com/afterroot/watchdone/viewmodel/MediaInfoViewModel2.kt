@@ -24,8 +24,9 @@ import androidx.paging.cachedIn
 import app.tivi.extensions.combine
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.domain.interactors.MediaInfoInteractor
+import com.afterroot.watchdone.domain.interactors.ObserveMediaInfo
 import com.afterroot.watchdone.domain.interactors.ObserveMovieCredits
 import com.afterroot.watchdone.domain.interactors.ObserveMovieInfo
 import com.afterroot.watchdone.domain.interactors.ObserveRecommendedMovies
@@ -41,13 +42,11 @@ import com.afterroot.watchdone.domain.observers.RecommendedShowPagingSource
 import com.afterroot.watchdone.ui.media.MediaInfoViewState
 import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
-import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -64,11 +63,13 @@ class MediaInfoViewModel2 @Inject constructor(
     observeMovieCredits: ObserveMovieCredits,
     observeTVCredits: ObserveTVCredits,
     observeTVSeason: ObserveTVSeason,
+    private val observeMediaInfo: ObserveMediaInfo,
     private val observeRecommendedMovies: ObserveRecommendedMovies,
     private val observeRecommendedShows: ObserveRecommendedShows,
     private val watchlistInteractor: WatchlistInteractor,
     private val watchStateInteractor: WatchStateInteractor,
-    private val tvEpisodeInteractor: TVEpisodeInteractor
+    private val tvEpisodeInteractor: TVEpisodeInteractor,
+    private val mediaInfoInteractor: MediaInfoInteractor
 ) : ViewModel() {
 
     private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
@@ -79,8 +80,7 @@ class MediaInfoViewModel2 @Inject constructor(
     private val isInWL = MutableStateFlow(false)
     private val isWatched = MutableStateFlow(false)
     private val selectedSeason = MutableStateFlow(1)
-    private val seasonInfo = MutableStateFlow<State<Season>>(State.loading())
-    private val credits = MutableStateFlow<State<Credits>>(State.loading())
+    private val dbMedia = MutableStateFlow(DBMedia.Empty)
 
     private val stateMovie: StateFlow<MediaInfoViewState> by lazy {
         combine(
@@ -88,15 +88,17 @@ class MediaInfoViewModel2 @Inject constructor(
             isInWL,
             isWatched,
             observeMovieInfo.flow,
-            observeMovieCredits.flow
-        ) { mediaId, isInWL, isWatched, movieInfo, credits ->
+            observeMovieCredits.flow,
+            dbMedia
+        ) { mediaId, isInWL, isWatched, movieInfo, credits, mediaInfo ->
             MediaInfoViewState(
                 mediaId = mediaId,
                 mediaType = mediaType,
                 movie = if (movieInfo is State.Success) movieInfo.data else Movie.Empty,
                 isInWatchlist = isInWL,
                 isWatched = isWatched,
-                credits = credits
+                credits = credits,
+                media = mediaInfo
             )
         }.stateIn(
             scope = viewModelScope,
@@ -112,8 +114,9 @@ class MediaInfoViewModel2 @Inject constructor(
             isWatched,
             observeTVInfo.flow,
             observeTVCredits.flow,
-            observeTVSeason.flow
-        ) { mediaId, isInWL, isWatched, tvInfo, credits, season ->
+            observeTVSeason.flow,
+            dbMedia
+        ) { mediaId, isInWL, isWatched, tvInfo, credits, season, mediaInfo ->
             MediaInfoViewState(
                 mediaId = mediaId,
                 mediaType = mediaType,
@@ -121,7 +124,8 @@ class MediaInfoViewModel2 @Inject constructor(
                 isInWatchlist = isInWL,
                 isWatched = isWatched,
                 credits = credits,
-                seasonInfo = season
+                seasonInfo = season,
+                media = mediaInfo
             )
         }.stateIn(
             scope = viewModelScope,
@@ -172,6 +176,8 @@ class MediaInfoViewModel2 @Inject constructor(
                 }
             }
         }
+
+        getMediaInfo()
     }
 
     fun getRecommendedShows(mediaId: Int) = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
@@ -202,14 +208,43 @@ class MediaInfoViewModel2 @Inject constructor(
         viewModelScope.launch {
             watchStateInteractor.executeSync(
                 WatchStateInteractor.Params(
-                    mediaId.value,
-                    isMark
+                    id = mediaId.value,
+                    watchState = isMark,
+                    method = WatchStateInteractor.Method.MEDIA
                 )
             ).collect { result ->
                 result.whenSuccess {
                     isWatched.value = it
                 }.whenFailed { message, exception ->
                     Timber.e(exception, "watchStateAction: $message")
+                }
+            }
+        }
+    }
+
+    fun episodeWatchStateAction(episodeId: String, isMark: Boolean) {
+        viewModelScope.launch {
+            watchStateInteractor.executeSync(
+                WatchStateInteractor.Params(
+                    id = mediaId.value,
+                    watchState = isMark,
+                    episodeId = episodeId,
+                    method = WatchStateInteractor.Method.EPISODE
+                )
+            ).collect { result ->
+                result.whenSuccess {
+                    // TODO this is costly
+                    getMediaInfo()
+                }
+            }
+        }
+    }
+
+    private fun getMediaInfo() {
+        viewModelScope.launch {
+            mediaInfoInteractor.executeSync(MediaInfoInteractor.Params(mediaId.value)).collectLatest { result ->
+                result.whenSuccess {
+                    dbMedia.value = it
                 }
             }
         }

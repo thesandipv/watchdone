@@ -16,12 +16,13 @@
 package com.afterroot.watchdone.data.repositories
 
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.collectionWatchdone
+import com.afterroot.watchdone.utils.collectionWatchlistItems
+import com.afterroot.watchdone.utils.documentWatchlist
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,11 +43,11 @@ class FirestoreRepository @Inject constructor(
         firestore.collectionWatchdone(
             id = firebaseUtils.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb
-        ).document(Collection.WATCHLIST)
+        ).documentWatchlist()
     }
 
     private val watchlistItemsRef by lazy {
-        watchListRef.collection(Collection.ITEMS)
+        watchListRef.collectionWatchlistItems()
     }
 
     fun addToWatchlist(media: DBMedia) = flow {
@@ -61,6 +62,7 @@ class FirestoreRepository @Inject constructor(
     fun removeFromWatchlist(media: DBMedia) = flow<State<Boolean>> {
         getDocumentId(media)?.let {
             watchlistItemsRef.document(it).delete().await()
+            watchListRef.updateTotalItemsCounter(-1)
             emit(State.success(false))
         }
     }.catch { exception ->
@@ -83,6 +85,32 @@ class FirestoreRepository @Inject constructor(
         getDocumentId(mediaId)?.let {
             watchlistItemsRef.document(it).update(Field.IS_WATCHED, isWatched).await()
             emit(State.success(isWatched))
+        }
+    }.catch { exception ->
+        emit(State.failed(exception.message.toString(), exception = exception))
+    }
+
+    fun setEpisodeWatchStatus(tvId: Int, episodeId: String?, isWatched: Boolean) = flow<State<Boolean>> {
+        require(episodeId != null) {
+            "EpisodeID cannot be null"
+        }
+        getDocumentId(tvId)?.let {
+            watchlistItemsRef.document(it)
+                .update("${Field.WATCH_STATUS}.$episodeId", isWatched).await()
+            emit(State.success(isWatched))
+        }
+    }.catch { exception ->
+        emit(State.failed(exception.message.toString(), exception = exception))
+    }
+
+    fun getMediaInfo(mediaId: Int) = flow<State<DBMedia>> {
+        getDocumentId(mediaId)?.let {
+            val media = watchlistItemsRef.document(it).get().await().toObject(DBMedia::class.java)
+            if (media != null) {
+                emit(State.success(media))
+            } else {
+                emit(State.failed("Media not found"))
+            }
         }
     }.catch { exception ->
         emit(State.failed(exception.message.toString(), exception = exception))
