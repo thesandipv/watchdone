@@ -122,7 +122,9 @@ fun OverviewContent(
     Column(modifier = modifier) {
         Row(modifier = Modifier.padding(vertical = gutter)) {
             BasePosterCard(
-                title = movie?.title ?: tv?.name, posterPath = movie?.posterPath ?: tv?.posterPath, modifier = Modifier
+                title = movie?.title ?: tv?.name,
+                posterPath = movie?.posterPath ?: tv?.posterPath,
+                modifier = Modifier
                     .padding(start = bodyMargin)
                     .height(192.dp)
                     .aspectRatio(2 / 3f)

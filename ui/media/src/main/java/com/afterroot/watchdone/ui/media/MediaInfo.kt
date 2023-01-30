@@ -47,6 +47,7 @@ import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.viewmodel.MediaInfoViewModel2
 import info.movito.themoviedbapi.model.Multi
 
@@ -75,7 +76,10 @@ internal fun MediaInfo(viewModel: MediaInfoViewModel2, navigateUp: () -> Unit, o
             onWatchlistAction = viewModel::watchlistAction,
             onWatchedAction = viewModel::watchStateAction,
             onRecommendedClick = onRecommendedClick,
-            onSeasonSelected = viewModel::selectSeason
+            onSeasonSelected = viewModel::selectSeason,
+            onEpisodeWatchAction = { episode, isWatched ->
+                viewModel.episodeWatchStateAction(episodeId = episode.id.toString(), isWatched)
+            }
         )
     }
 }
@@ -88,7 +92,8 @@ internal fun <T : Multi> MediaInfo(
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onRecommendedClick: (media: T) -> Unit = {},
-    onSeasonSelected: (Int) -> Unit = {}
+    onSeasonSelected: (Int) -> Unit = {},
+    onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> }
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
@@ -113,6 +118,7 @@ internal fun <T : Multi> MediaInfo(
                 onWatchedAction = onWatchedAction,
                 onRecommendedClick = onRecommendedClick,
                 onSeasonSelected = onSeasonSelected,
+                onEpisodeWatchAction = onEpisodeWatchAction,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -129,9 +135,9 @@ internal fun <T : Multi> MediaInfoContent(
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onRecommendedClick: (media: T) -> Unit = {},
     onSeasonSelected: (Int) -> Unit = {},
+    onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     modifier: Modifier
 ) {
-
     val gutter = Layout.gutter
     val bodyMargin = Layout.bodyMargin
 
@@ -172,9 +178,9 @@ internal fun <T : Multi> MediaInfoContent(
                 Seasons(
                     tv = viewState.tv,
                     season = viewState.seasonInfo,
+                    watchedEpisodes = viewState.media.watchStatus,
                     onSeasonSelected = onSeasonSelected,
-                    onWatchClicked = {
-                    }
+                    onWatchClicked = onEpisodeWatchAction
                 )
             }
         }

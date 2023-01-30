@@ -38,6 +38,14 @@ sealed class State<T> {
         return this
     }
 
+    fun successResult(): T? {
+        return if (this is Success) {
+            data
+        } else {
+            null
+        }
+    }
+
     @Composable
     fun composeWhen(success: @Composable (T) -> Unit): State<T> {
         if (this is Success) success(data)
