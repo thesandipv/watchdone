@@ -88,7 +88,7 @@ ksp = "com.google.devtools.ksp:1.8.0-1.0.9"
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
-agp = "com.android.tools.build:gradle:7.4.0"
+agp = "com.android.tools.build:gradle:7.4.1"
 
 commonsCodec = "commons-codec:commons-codec:1.15"
 commonsIo = { module = "org.apache.commons:commons-io", version.ref = "commonsIo" }
