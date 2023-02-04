@@ -12,21 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.afterroot.watchdone.data.repositories
 
-import com.afterroot.tmdbapi.api.TVApi
+import com.afterroot.tmdbapi.api.MoviesApi
+import com.afterroot.watchdone.data.mapper.toMovie
 import com.afterroot.watchdone.utils.State
+import com.afterroot.watchdone.utils.resultFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class RecommendedShowsRepository @Inject constructor(private val tvApi: TVApi) {
-    fun getRecommended(id: Int, page: Int) = flow {
+class MovieRepository @Inject constructor(private val moviesApi: MoviesApi) {
+
+    // TODO Migrate to resultFlow()
+    fun credits(id: Int) = flow {
         emit(State.loading())
-        emit(State.success(tvApi.getRecommended(id, page)))
+        emit(State.success(moviesApi.getCredits(id)))
     }.catch {
         emit(State.failed("TODO")) // TODO
     }.flowOn(Dispatchers.IO)
+
+    suspend fun info(id: Int) = resultFlow(moviesApi.getMovieInfo(id).toMovie())
+
+    suspend fun recommended(id: Int, page: Int) = resultFlow(moviesApi.getRecommended(id, page))
 }

@@ -108,12 +108,12 @@ class HomeFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
             if (item is Movie) {
-                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
+                val directions = HomeFragmentDirections.toMediaInfo2(item.id, Multi.MediaType.MOVIE.name)
                 if (findNavController().currentDestination?.id == R.id.navigation_home) {
                     findNavController().navigate(directions)
                 }
             } else if (item is TV) {
-                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
+                val directions = HomeFragmentDirections.toMediaInfo2(item.id, Multi.MediaType.TV_SERIES.name)
                 if (findNavController().currentDestination?.id == R.id.navigation_home) {
                     findNavController().navigate(directions)
                 }

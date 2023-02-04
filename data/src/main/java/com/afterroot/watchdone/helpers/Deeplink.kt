@@ -19,5 +19,5 @@ import info.movito.themoviedbapi.model.Multi
 
 object Deeplink {
     fun media(mediaId: Int, mediaType: Multi.MediaType) =
-        "https://watchdone.web.app/media/${mediaType.name}/$mediaId".toUri()
+        "https://watchdone.web.app/media2/${mediaType.name}/$mediaId".toUri()
 }
