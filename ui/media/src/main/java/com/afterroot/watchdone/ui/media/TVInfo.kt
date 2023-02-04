@@ -42,15 +42,12 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import app.tivi.common.compose.Layout
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.FilterChipGroup
@@ -60,29 +57,10 @@ import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.utils.State
-import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
-import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.people.Person
 import info.movito.themoviedbapi.model.people.PersonCast
 import info.movito.themoviedbapi.model.people.PersonCrew
 import timber.log.Timber
-
-@Composable
-fun Seasons(viewModel: MediaInfoViewModel = hiltViewModel()) {
-    val viewState by viewModel.state.collectAsState()
-    Timber.d("Seasons: $viewState")
-    if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-        Seasons(
-            tv = viewState.tv,
-            season = viewState.seasonInfo,
-            watchedEpisodes = emptyMap(),
-            onSeasonSelected = viewModel::selectSeason,
-            onWatchClicked = { episode, isWatched ->
-                viewModel.markEpisode(episode.id, isWatched)
-            }
-        )
-    }
-}
 
 @Composable
 fun Seasons(
@@ -263,7 +241,7 @@ private fun <T : Person> PersonRow(
         itemsIndexed(
             items = items,
             key = { index, item ->
-                item.id
+                item.id // TODO Use index as key
             },
             itemContent = { index, item ->
                 PersonItem(item = item, onClick = {
