@@ -17,8 +17,6 @@ package com.afterroot.watchdone.di
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.CoroutineDispatchers
-import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.ui.media.adapter.CastListAdapter
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -66,7 +64,4 @@ object AppModules {
     @Provides
     @Singleton
     fun provideGson(): Gson = GsonBuilder().create()
-
-    @Provides
-    fun provideCastListAdapter(settings: Settings): CastListAdapter = CastListAdapter(settings)
 }
