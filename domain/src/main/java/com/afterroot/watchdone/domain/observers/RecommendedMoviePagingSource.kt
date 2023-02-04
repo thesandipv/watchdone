@@ -18,13 +18,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.afterroot.watchdone.data.mapper.toMovies
 import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.domain.interactors.UpdateRecommendedMovies
+import com.afterroot.watchdone.domain.interactors.ObserveRecommendedMovies
 import com.afterroot.watchdone.utils.State
 import timber.log.Timber
 
 class RecommendedMoviePagingSource(
     private val movieId: Int,
-    private val updateRecommendedMovies: UpdateRecommendedMovies
+    private val observeRecommendedMovies: ObserveRecommendedMovies
 ) : PagingSource<Int, Movie>() {
 
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
@@ -34,7 +34,7 @@ class RecommendedMoviePagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         try {
             var nextPage = params.key ?: 1
-            val response = updateRecommendedMovies.executeSync(UpdateRecommendedMovies.Params(movieId, nextPage))
+            val response = observeRecommendedMovies.executeSync(ObserveRecommendedMovies.Params(movieId, nextPage))
             var loadResult: LoadResult<Int, Movie>? = null
             response.collect {
                 when (it) {

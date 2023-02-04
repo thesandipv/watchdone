@@ -29,4 +29,8 @@ data class DBMedia(
     var rating: Double? = null,
     // TODO update in ards
     var watchStatus: Map<String, Boolean> = emptyMap()
-)
+) {
+    companion object {
+        val Empty = DBMedia()
+    }
+}

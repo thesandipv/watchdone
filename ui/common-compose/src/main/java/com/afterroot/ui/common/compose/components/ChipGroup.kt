@@ -27,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -157,4 +158,52 @@ fun FilterChipGroup(
 
 enum class SelectionType {
     Single, Multiple
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SuggestionChipGroup(
+    modifier: Modifier = Modifier,
+    chipModifier: Modifier = Modifier,
+    chipSpacing: Dp = 0.dp,
+    horizontalPadding: Dp = 0.dp,
+    icons: List<ImageVector?> = emptyList(),
+    list: List<String>? = null,
+    onClick: ((index: Int, label: String) -> Unit)? = null
+) {
+    val scrollState = rememberScrollState()
+    Column(horizontalAlignment = Alignment.Start, modifier = modifier) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.horizontalScroll(scrollState)
+        ) {
+            Spacer(modifier = Modifier.width(horizontalPadding))
+            list?.forEachIndexed { index, it ->
+                if (index != 0) {
+                    Spacer(modifier = Modifier.width(chipSpacing))
+                }
+                SuggestionChip(
+                    modifier = chipModifier,
+                    onClick = {
+                        onClick?.invoke(index, it)
+                    },
+                    label = {
+                        Text(text = it.valueOrBlank())
+                    },
+                    icon = {
+                        if (icons.isNotEmpty()) {
+                            icons[index]?.let { icon ->
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = "$it Icon",
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.width(horizontalPadding))
+        }
+    }
 }

@@ -153,77 +153,10 @@
                     android:id="@+id/compose_media_overview"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/title_cast"
+                    app:layout_constraintBottom_toTopOf="@+id/compose_view"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/action_add_wlist" />
-
-                <TextView
-                    android:id="@+id/title_cast"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/padding_horizontal"
-                    android:paddingTop="@dimen/padding_vertical_half"
-                    android:paddingRight="@dimen/padding_horizontal"
-                    android:paddingBottom="@dimen/padding_vertical_half"
-                    android:text="@string/title_cast"
-                    android:textAppearance="@style/TextAppearance.WatchDone.HeadlineSmall"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/compose_media_overview" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/cast_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/padding_horizontal_list"
-                    android:paddingLeft="@dimen/padding_horizontal_list"
-                    android:paddingEnd="@dimen/padding_horizontal_list"
-                    android:paddingRight="@dimen/padding_horizontal_list"
-                    android:visibility="gone"
-                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title_cast"
-                    tools:listitem="@layout/list_item_cast"
-                    tools:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/title_crew"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padding_vertical_half"
-                    android:paddingLeft="@dimen/padding_horizontal"
-                    android:paddingTop="@dimen/padding_vertical_half"
-                    android:paddingRight="@dimen/padding_horizontal"
-                    android:paddingBottom="@dimen/padding_vertical_half"
-                    android:text="@string/title_crew"
-                    android:textAppearance="@style/TextAppearance.WatchDone.HeadlineSmall"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cast_list" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/crew_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/padding_horizontal_list"
-                    android:paddingLeft="@dimen/padding_horizontal_list"
-                    android:paddingEnd="@dimen/padding_horizontal_list"
-                    android:paddingRight="@dimen/padding_horizontal_list"
-                    android:visibility="gone"
-                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title_crew"
-                    tools:listitem="@layout/list_item_cast"
-                    tools:visibility="visible" />
 
                 <com.afterroot.ui.common.compose.view.MyComposeView
                     android:id="@+id/compose_view"
@@ -232,7 +165,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/adView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/crew_list" />
+                    app:layout_constraintTop_toBottomOf="@id/compose_media_overview" />
 
                 <com.google.android.gms.ads.AdView
                     android:id="@+id/adView"

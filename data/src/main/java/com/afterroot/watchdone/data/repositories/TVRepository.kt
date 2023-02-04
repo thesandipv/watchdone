@@ -18,25 +18,19 @@ package com.afterroot.watchdone.data.repositories
 import com.afterroot.tmdbapi.api.TVApi
 import com.afterroot.watchdone.data.mapper.toEpisode
 import com.afterroot.watchdone.data.mapper.toSeason
-import com.afterroot.watchdone.utils.State
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import com.afterroot.watchdone.data.mapper.toTV
+import com.afterroot.watchdone.utils.resultFlow
 import javax.inject.Inject
 
 class TVRepository @Inject constructor(private val tvApi: TVApi) {
-    fun season(id: Int, season: Int) = flow {
-        emit(State.loading())
-        emit(State.success(tvApi.getSeason(id, season).toSeason()))
-    }.catch {
-        emit(State.failed("TODO")) // TODO
-    }.flowOn(Dispatchers.IO)
 
-    fun episode(id: Int, season: Int, episode: Int) = flow {
-        emit(State.loading())
-        emit(State.success(tvApi.getEpisode(id, season, episode).toEpisode()))
-    }.catch {
-        emit(State.failed("TODO")) // TODO
-    }.flowOn(Dispatchers.IO)
+    suspend fun season(id: Int, season: Int) = resultFlow(tvApi.getSeason(id, season).toSeason())
+
+    suspend fun episode(id: Int, season: Int, episode: Int) = resultFlow(tvApi.getEpisode(id, season, episode).toEpisode())
+
+    suspend fun credits(id: Int) = resultFlow(tvApi.getCredits(id))
+
+    suspend fun info(id: Int) = resultFlow(tvApi.getTVInfo(id).toTV())
+
+    suspend fun recommended(id: Int, page: Int) = resultFlow(tvApi.getRecommended(id, page))
 }
