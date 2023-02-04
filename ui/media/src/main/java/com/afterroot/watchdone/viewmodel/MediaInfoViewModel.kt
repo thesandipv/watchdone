@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,241 +12,245 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.afterroot.watchdone.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.base.Collection
-import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.mapper.toMulti
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import app.tivi.extensions.combine
+import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
-import com.afterroot.watchdone.domain.interactors.MovieCreditsInteractor
-import com.afterroot.watchdone.domain.interactors.TVCreditsInteractor
+import com.afterroot.watchdone.domain.interactors.MediaInfoInteractor
+import com.afterroot.watchdone.domain.interactors.ObserveMediaInfo
+import com.afterroot.watchdone.domain.interactors.ObserveMovieCredits
+import com.afterroot.watchdone.domain.interactors.ObserveMovieInfo
+import com.afterroot.watchdone.domain.interactors.ObserveRecommendedMovies
+import com.afterroot.watchdone.domain.interactors.ObserveRecommendedShows
+import com.afterroot.watchdone.domain.interactors.ObserveTVCredits
+import com.afterroot.watchdone.domain.interactors.ObserveTVInfo
+import com.afterroot.watchdone.domain.interactors.ObserveTVSeason
 import com.afterroot.watchdone.domain.interactors.TVEpisodeInteractor
-import com.afterroot.watchdone.domain.interactors.TVSeasonInteractor
-import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.domain.interactors.WatchStateInteractor
+import com.afterroot.watchdone.domain.interactors.WatchlistInteractor
+import com.afterroot.watchdone.domain.observers.RecommendedMoviePagingSource
+import com.afterroot.watchdone.domain.observers.RecommendedShowPagingSource
 import com.afterroot.watchdone.ui.media.MediaInfoViewState
 import com.afterroot.watchdone.utils.State
-import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.utils.collectionWatchlistItems
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.Source
 import dagger.hilt.android.lifecycle.HiltViewModel
-import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MediaInfoViewModel @Inject constructor(
-    val savedState: SavedStateHandle,
-    var db: FirebaseFirestore,
-    var firebaseUtils: FirebaseUtils,
-    var settings: Settings,
-    private val tvSeasonInteractor: TVSeasonInteractor,
+    savedStateHandle: SavedStateHandle,
+    observeMovieInfo: ObserveMovieInfo,
+    observeTVInfo: ObserveTVInfo,
+    observeMovieCredits: ObserveMovieCredits,
+    observeTVCredits: ObserveTVCredits,
+    observeTVSeason: ObserveTVSeason,
+    private val observeMediaInfo: ObserveMediaInfo,
+    private val observeRecommendedMovies: ObserveRecommendedMovies,
+    private val observeRecommendedShows: ObserveRecommendedShows,
+    private val watchlistInteractor: WatchlistInteractor,
+    private val watchStateInteractor: WatchStateInteractor,
     private val tvEpisodeInteractor: TVEpisodeInteractor,
-    private val movieCreditsInteractor: MovieCreditsInteractor,
-    private val tvCreditsInteractor: TVCreditsInteractor
+    private val mediaInfoInteractor: MediaInfoInteractor
 ) : ViewModel() {
-    private val mediaId = MutableStateFlow(0)
-    private val mediaType = MutableStateFlow(Multi.MediaType.MOVIE)
-    private val selectedMediaFlow = MutableStateFlow<SelectedMedia>(SelectedMedia.Empty)
+
+    private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
+    private val _mediaType = savedStateHandle.getStateFlow("type", "")
+
+    val mediaType = Multi.MediaType.valueOf(_mediaType.value.uppercase())
+
+    private val isInWL = MutableStateFlow(false)
+    private val isWatched = MutableStateFlow(false)
     private val selectedSeason = MutableStateFlow(1)
-    private val seasonInfo = MutableStateFlow<State<Season>>(State.loading())
-    private val credits = MutableStateFlow<State<Credits>>(State.loading())
-    private var watchlistSnapshotFlow = MutableStateFlow<State<QuerySnapshot>>(State.loading())
+    private val dbMedia = MutableStateFlow(DBMedia.Empty)
 
-    val watchlistItemsRef by lazy {
-        db.collectionWatchdone(
-            id = firebaseUtils.uid.toString(),
-            isUseOnlyProdDB = settings.isUseProdDb
-        ).document(Collection.WATCHLIST).collection(Collection.ITEMS)
-    }
-
-    // TODO Verify this method is feasible.
-    fun observeWatchlistSnapshot(
-        userId: String,
-        isReload: Boolean = false,
-        additionQueries: (Query.() -> Query)? = null
-    ): StateFlow<State<QuerySnapshot>> {
-        watchlistSnapshotFlow.value = State.loading()
-        val ref = db.collectionWatchdone(id = userId, settings.isUseProdDb)
-            .document(Collection.WATCHLIST)
-            .collection(Collection.ITEMS)
-
-        if (additionQueries == null) {
-            ref.addSnapshotListener { querySnapshot, _ ->
-                querySnapshot?.let {
-                    watchlistSnapshotFlow.value = State.success(it)
-                }
-            }
-        } else {
-            ref.additionQueries().addSnapshotListener { querySnapshot, _ ->
-                querySnapshot?.let {
-                    watchlistSnapshotFlow.value = State.success(it)
-                }
-            }
-        }
-
-        val id = savedState.get<Int>("mediaId")
-
-        return watchlistSnapshotFlow.asStateFlow()
-    }
-
-    suspend fun loadDBMedia(source: Source = Source.CACHE) {
-        val querySnapshot = watchlistItemsRef.whereEqualTo(Field.ID, mediaId.value).get(source).await()
-        if (querySnapshot.documents.isNotEmpty()) {
-            val document = querySnapshot.documents[0].toMulti()
-
-            if (document.mediaType == Multi.MediaType.MOVIE) {
-            } else if (document.mediaType == Multi.MediaType.TV_SERIES) {
-            }
-        }
-    }
-
-    fun selectMedia() {
-    }
-
-    fun selectMedia(movie: Movie? = null, tv: TV? = null) {
-        movie?.let {
-            setMediaType(Multi.MediaType.MOVIE)
-            selectedMediaFlow.value = SelectedMedia.Movie(movie)
-            // mediaId.emit(movie.id)
-            loadCredits(movie.id)
-        }
-        tv?.let {
-            setMediaType(Multi.MediaType.TV_SERIES)
-            selectedMediaFlow.value = SelectedMedia.TV(tv)
-            loadSeason(it.id, selectedSeason.value)
-            // mediaId.emit(tv.id)
-            loadCredits(tv.id)
-        }
-    }
-
-    fun selectMedia(mediaId: Int, mediaType: Multi.MediaType) {
-    }
-
-    init {
-        viewModelScope.launch {
-            mediaId.collect {
-                Timber.d("Collect: Media Id $it")
-            }
-        }
-    }
-
-    val selectedMedia
-        get() = selectedMediaFlow.asStateFlow()
-
-    val state: StateFlow<MediaInfoViewState> =
+    private val stateMovie: StateFlow<MediaInfoViewState> by lazy {
         combine(
-            mediaType,
-            selectedMediaFlow,
-            seasonInfo,
-            selectedSeason,
-            credits
-        ) { mediaType, selectedMedia, seasonInfo, selectedSeason, credits ->
+            mediaId,
+            isInWL,
+            isWatched,
+            observeMovieInfo.flow,
+            observeMovieCredits.flow,
+            dbMedia
+        ) { mediaId, isInWL, isWatched, movieInfo, credits, mediaInfo ->
             MediaInfoViewState(
+                mediaId = mediaId,
                 mediaType = mediaType,
-                seasonInfo = seasonInfo,
-                selectedSeason = selectedSeason,
-                credits = credits
-            ).apply {
-                Timber.d("State: $this")
-            }
+                movie = if (movieInfo is State.Success) movieInfo.data else Movie.Empty,
+                isInWatchlist = isInWL,
+                isWatched = isWatched,
+                credits = credits,
+                media = mediaInfo
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = MediaInfoViewState.Empty
         )
-
-    fun setMediaType(type: Multi.MediaType) {
-        mediaType.value = type
     }
 
-    private fun loadSeason(id: Int, season: Int) {
+    private val stateTV: StateFlow<MediaInfoViewState> by lazy {
+        combine(
+            mediaId,
+            isInWL,
+            isWatched,
+            observeTVInfo.flow,
+            observeTVCredits.flow,
+            observeTVSeason.flow,
+            dbMedia
+        ) { mediaId, isInWL, isWatched, tvInfo, credits, season, mediaInfo ->
+            MediaInfoViewState(
+                mediaId = mediaId,
+                mediaType = mediaType,
+                tv = if (tvInfo is State.Success) tvInfo.data else TV.Empty,
+                isInWatchlist = isInWL,
+                isWatched = isWatched,
+                credits = credits,
+                seasonInfo = season,
+                media = mediaInfo
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = MediaInfoViewState.Empty
+        )
+    }
+
+    val state: StateFlow<MediaInfoViewState> = when (mediaType) {
+        Multi.MediaType.MOVIE -> {
+            stateMovie
+        }
+        Multi.MediaType.TV_SERIES -> {
+            stateTV
+        }
+        else -> {
+            flow {
+                emit(MediaInfoViewState.Empty)
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = MediaInfoViewState.Empty
+            )
+        }
+    }
+
+    init {
+        if (mediaType == Multi.MediaType.MOVIE) {
+            observeMovieInfo(ObserveMovieInfo.Params(mediaId.value))
+            observeMovieCredits(ObserveMovieCredits.Params(mediaId.value))
+        } else if (mediaType == Multi.MediaType.TV_SERIES) {
+            observeTVInfo(ObserveTVInfo.Params(mediaId.value))
+            observeTVCredits(ObserveTVCredits.Params(mediaId.value))
+
+            selectedSeason.onEach {
+                observeTVSeason(ObserveTVSeason.Params(mediaId.value, it))
+            }.launchIn(viewModelScope)
+        }
         viewModelScope.launch {
-            tvSeasonInteractor.executeSync(TVSeasonInteractor.Params(id, season)).collectLatest {
-                seasonInfo.value = it
+            watchlistInteractor.executeSync(
+                WatchlistInteractor.Params(
+                    mediaId.value,
+                    method = WatchlistInteractor.Method.EXIST
+                )
+            ).collectLatest {
+                if (it is State.Success) {
+                    isInWL.value = it.data
+                }
+            }
+        }
+
+        getMediaInfo()
+    }
+
+    fun getRecommendedShows(mediaId: Int) = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+        RecommendedShowPagingSource(mediaId, observeRecommendedShows)
+    }.flow.cachedIn(viewModelScope)
+
+    fun getRecommendedMovies(mediaId: Int) = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+        RecommendedMoviePagingSource(mediaId, observeRecommendedMovies)
+    }.flow.cachedIn(viewModelScope)
+
+    fun watchlistAction(isAdd: Boolean, media: DBMedia) {
+        viewModelScope.launch {
+            watchlistInteractor.executeSync(
+                WatchlistInteractor.Params(
+                    mediaId.value,
+                    media,
+                    if (isAdd) WatchlistInteractor.Method.ADD else WatchlistInteractor.Method.REMOVE
+                )
+            ).collect { result ->
+                result.whenSuccess {
+                    isInWL.value = isAdd
+                }
             }
         }
     }
 
-    private fun loadCredits(id: Int) {
+    fun watchStateAction(isMark: Boolean, media: DBMedia) {
         viewModelScope.launch {
-            if (mediaType.value == Multi.MediaType.MOVIE) {
-                movieCreditsInteractor.executeSync(MovieCreditsInteractor.Params(id)).collectLatest {
-                    credits.value = it
+            watchStateInteractor.executeSync(
+                WatchStateInteractor.Params(
+                    id = mediaId.value,
+                    watchState = isMark,
+                    method = WatchStateInteractor.Method.MEDIA
+                )
+            ).collect { result ->
+                result.whenSuccess {
+                    isWatched.value = it
+                }.whenFailed { message, exception ->
+                    Timber.e(exception, "watchStateAction: $message")
                 }
-            } else if (mediaType.value == Multi.MediaType.TV_SERIES) {
-                tvCreditsInteractor.executeSync(TVCreditsInteractor.Params(id)).collectLatest {
-                    credits.value = it
+            }
+        }
+    }
+
+    fun episodeWatchStateAction(episodeId: String, isMark: Boolean) {
+        viewModelScope.launch {
+            watchStateInteractor.executeSync(
+                WatchStateInteractor.Params(
+                    id = mediaId.value,
+                    watchState = isMark,
+                    episodeId = episodeId,
+                    method = WatchStateInteractor.Method.EPISODE
+                )
+            ).collect { result ->
+                result.whenSuccess {
+                    // TODO this is costly
+                    getMediaInfo()
+                }
+            }
+        }
+    }
+
+    private fun getMediaInfo() {
+        viewModelScope.launch {
+            mediaInfoInteractor.executeSync(MediaInfoInteractor.Params(mediaId.value)).collectLatest { result ->
+                result.whenSuccess {
+                    dbMedia.value = it
                 }
             }
         }
     }
 
     fun selectSeason(season: Int) {
-        viewModelScope.launch {
-            selectedSeason.value = season
-        }
-        loadSeason(mediaId.value, selectedSeason.value)
+        selectedSeason.value = season
     }
-
-    fun markEpisode(episodeId: Int, isWatched: Boolean) {
-        if (mediaType.value == Multi.MediaType.TV_SERIES) {
-            val selectedMedia = selectedMediaFlow.value as SelectedMedia.TV
-            val ref = selectedMedia.docId?.let {
-                db.collectionWatchdone(firebaseUtils.uid!!, settings.isUseProdDb).collectionWatchlistItems()
-                    .document(it)
-            }
-            viewModelScope.launch {
-                ref?.update("watchStatus", hashMapOf(episodeId.toString() to isWatched))?.await()
-            }
-        }
-    }
-
-    fun updateDocId(docId: String) {
-        when (mediaType.value) {
-            Multi.MediaType.MOVIE -> {
-                val media = selectedMediaFlow.value as SelectedMedia.Movie
-                selectedMediaFlow.value = media.copy(docId = docId)
-            }
-            Multi.MediaType.TV_SERIES -> {
-                val media = selectedMediaFlow.value as SelectedMedia.TV
-                selectedMediaFlow.value = media.copy(docId = docId)
-            }
-            else -> {
-            }
-        }
-    }
-}
-
-sealed class SelectedMedia {
-
-    data class Movie(
-        val data: com.afterroot.watchdone.data.model.Movie,
-        val docId: String? = null
-    ) : SelectedMedia()
-
-    data class TV(
-        val data: com.afterroot.watchdone.data.model.TV,
-        val docId: String? = null
-    ) : SelectedMedia()
-
-    object Empty : SelectedMedia()
 }

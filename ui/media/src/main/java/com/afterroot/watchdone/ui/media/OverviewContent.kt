@@ -41,7 +41,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,43 +67,6 @@ import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.resources.R
-import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
-import com.afterroot.watchdone.viewmodel.SelectedMedia
-
-@Composable
-fun OverviewContent(viewModel: MediaInfoViewModel) {
-    val selectedMedia by viewModel.selectedMedia.collectAsState()
-
-    if (selectedMedia is SelectedMedia.Movie) {
-        OverviewContent(movie = (selectedMedia as SelectedMedia.Movie).data)
-    } else if (selectedMedia is SelectedMedia.TV) {
-        OverviewContent(tv = (selectedMedia as SelectedMedia.TV).data)
-    }
-}
-
-@Composable
-fun OverviewContent(
-    selectedMedia: SelectedMedia,
-    onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit,
-    onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    if (selectedMedia is SelectedMedia.Movie) {
-        OverviewContent(
-            modifier = modifier,
-            movie = selectedMedia.data,
-            onWatchlistAction = onWatchlistAction,
-            onWatchedAction = onWatchedAction
-        )
-    } else if (selectedMedia is SelectedMedia.TV) {
-        OverviewContent(
-            modifier = modifier,
-            tv = selectedMedia.data,
-            onWatchlistAction = onWatchlistAction,
-            onWatchedAction = onWatchedAction
-        )
-    }
-}
 
 @Composable
 fun OverviewContent(

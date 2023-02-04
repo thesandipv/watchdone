@@ -50,27 +50,22 @@ import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.QueryAction
-import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
 import com.afterroot.watchdone.helpers.migrateFirestore
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.ui.media.adapter.MultiAdapter
 import com.afterroot.watchdone.ui.media.adapter.MultiPagingAdapter
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
-import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.afterroot.watchdone.watchlist.WatchlistActions
 import com.afterroot.watchdone.watchlist.WatchlistViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Multi
@@ -108,12 +103,12 @@ class HomeFragment : Fragment() {
         override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
             if (item is Movie) {
-                val directions = HomeFragmentDirections.toMediaInfo2(item.id, Multi.MediaType.MOVIE.name)
+                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
                 if (findNavController().currentDestination?.id == R.id.navigation_home) {
                     findNavController().navigate(directions)
                 }
             } else if (item is TV) {
-                val directions = HomeFragmentDirections.toMediaInfo2(item.id, Multi.MediaType.TV_SERIES.name)
+                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
                 if (findNavController().currentDestination?.id == R.id.navigation_home) {
                     findNavController().navigate(directions)
                 }
@@ -266,57 +261,6 @@ class HomeFragment : Fragment() {
             } else {
                 getString(CommonR.string.text_info_no_movies)
             }
-    }
-
-    private fun MultiAdapter.submitQuery(
-        direction: Query.Direction,
-        isReload: Boolean = false,
-        action: QueryAction = QueryAction.CLEAR,
-        additionQueries: (Query.() -> Query)? = null
-    ) {
-        val userId = firebaseAuth.currentUser?.uid!!
-        homeViewModel.getWatchlistSnapshot(userId, isReload) {
-            additionQueries?.let { it() }
-            when (action) {
-                QueryAction.CLEAR -> {
-                    orderBy(Field.RELEASE_DATE, direction)
-                }
-                QueryAction.WATCHED -> {
-                    whereEqualTo(Field.IS_WATCHED, true).orderBy(Field.RELEASE_DATE, direction)
-                }
-                QueryAction.PENDING -> {
-                    whereIn(Field.IS_WATCHED, listOf(false, null)).orderBy(Field.RELEASE_DATE, direction)
-                }
-            }
-        }.observe(viewLifecycleOwner) {
-            if (it is ViewModelState.Loading) {
-                binding.progressBarHome.visible(true)
-            } else if (it is ViewModelState.Loaded<*>) {
-                binding.progressBarHome.visible(false)
-                try { // Fixes crash when user is being logged out
-                    if (it.data != null) {
-                        binding.infoNoMovies.visible(false, AutoTransition())
-                        val listData: QuerySnapshot = it.data as QuerySnapshot
-                        if (listData.documents.isEmpty()) {
-                            submitList(emptyList())
-                            binding.infoNoMovies.visible(true, AutoTransition())
-                            binding.infoTv.text =
-                                if (action != QueryAction.CLEAR) {
-                                    getString(CommonR.string.text_info_no_movies_in_filter)
-                                } else {
-                                    getString(CommonR.string.text_info_no_movies)
-                                }
-                        } else {
-                            submitList(listData.toMulti())
-                        }
-                        // Check need migration or not
-                        runMigrations(listData, userId)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
     }
 
     /**
