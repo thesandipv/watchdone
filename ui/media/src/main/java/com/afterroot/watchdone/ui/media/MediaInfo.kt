@@ -48,7 +48,7 @@ import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Episode
-import com.afterroot.watchdone.viewmodel.MediaInfoViewModel2
+import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
 import info.movito.themoviedbapi.model.Multi
 
 @Composable
@@ -57,7 +57,7 @@ fun MediaInfo(navigateUp: () -> Unit, onRecommendedClick: (media: Multi) -> Unit
 }
 
 @Composable
-internal fun MediaInfo(viewModel: MediaInfoViewModel2, navigateUp: () -> Unit, onRecommendedClick: (media: Multi) -> Unit) {
+internal fun MediaInfo(viewModel: MediaInfoViewModel, navigateUp: () -> Unit, onRecommendedClick: (media: Multi) -> Unit) {
     val viewState by viewModel.state.collectAsState()
     if (viewState.mediaType == Multi.MediaType.MOVIE) {
         val recommended = viewModel.getRecommendedMovies(viewState.mediaId).collectAsLazyPagingItems()
