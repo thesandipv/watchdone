@@ -110,7 +110,8 @@ fun OverviewContent(
                         Text(
                             text = stringResource(
                                 id = R.string.media_info_rating_text,
-                                movie?.voteAverage ?: tv?.voteAverage ?: 0.0
+                                movie?.voteAverage ?: tv?.voteAverage ?: 0.0,
+                                movie?.voteCount ?: tv?.voteCount ?: 0
                             )
                         )
                     }
