@@ -23,13 +23,12 @@ import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.collectionWatchlistItems
 import com.afterroot.watchdone.utils.documentWatchlist
+import com.afterroot.watchdone.utils.resultFlow
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -50,70 +49,64 @@ class FirestoreRepository @Inject constructor(
         watchListRef.collectionWatchlistItems()
     }
 
-    fun addToWatchlist(media: DBMedia) = flow {
-        emit(State.loading())
+    fun addToWatchlist(media: DBMedia) = resultFlow {
+        require(media != DBMedia.Empty) {
+            "DBMedia should not be Empty"
+        }
         watchlistItemsRef.add(media).await()
         watchListRef.updateTotalItemsCounter(1)
         emit(State.success(true))
-    }.catch { exception ->
-        emit(State.failed(exception.message.toString()))
     }
 
-    fun removeFromWatchlist(media: DBMedia) = flow<State<Boolean>> {
-        getDocumentId(media)?.let {
-            watchlistItemsRef.document(it).delete().await()
+    fun removeFromWatchlist(media: DBMedia) = resultFlow {
+        val documentId = getDocumentId(media)
+        if (documentId != null) {
+            watchlistItemsRef.document(documentId).delete().await()
             watchListRef.updateTotalItemsCounter(-1)
             emit(State.success(false))
-        }
-    }.catch { exception ->
-        emit(State.failed(exception.message.toString()))
-    }
-
-    fun isInWatchlist(mediaId: Int) = flow {
-        emit(State.loading())
-
-        if (getDocumentId(mediaId) == null) {
-            emit(State.success(false))
         } else {
-            emit(State.success(true))
+            emit(State.failed("Media not found"))
         }
-    }.catch { exception ->
-        emit(State.failed(exception.message.toString()))
     }
 
-    fun setWatchStatus(mediaId: Int, isWatched: Boolean) = flow<State<Boolean>> {
-        getDocumentId(mediaId)?.let {
-            watchlistItemsRef.document(it).update(Field.IS_WATCHED, isWatched).await()
+    fun isInWatchlist(mediaId: Int) = resultFlow {
+        emit(State.success(getDocumentId(mediaId) != null))
+    }
+
+    // WatchStatus should only be changed if media is present in watchlist
+    fun setWatchStatus(mediaId: Int, isWatched: Boolean) = resultFlow {
+        val documentId = getDocumentId(mediaId)
+        if (documentId != null) {
+            watchlistItemsRef.document(documentId).update(Field.IS_WATCHED, isWatched).await()
             emit(State.success(isWatched))
+        } else {
+            emit(State.failed("Media not found"))
         }
-    }.catch { exception ->
-        emit(State.failed(exception.message.toString(), exception = exception))
     }
 
-    fun setEpisodeWatchStatus(tvId: Int, episodeId: String?, isWatched: Boolean) = flow<State<Boolean>> {
+    // EpisodeWatchStatus should only be changed if media is present in watchlist
+    fun setEpisodeWatchStatus(tvId: Int, episodeId: String?, isWatched: Boolean) = resultFlow {
         require(episodeId != null) {
             "EpisodeID cannot be null"
         }
-        getDocumentId(tvId)?.let {
-            watchlistItemsRef.document(it)
-                .update("${Field.WATCH_STATUS}.$episodeId", isWatched).await()
+        val documentId = getDocumentId(tvId)
+        if (documentId != null) {
+            watchlistItemsRef.document(documentId).update("${Field.WATCH_STATUS}.$episodeId", isWatched).await()
             emit(State.success(isWatched))
+        } else {
+            emit(State.failed("Media not found"))
         }
-    }.catch { exception ->
-        emit(State.failed(exception.message.toString(), exception = exception))
     }
 
-    fun getMediaInfo(mediaId: Int) = flow<State<DBMedia>> {
-        getDocumentId(mediaId)?.let {
-            val media = watchlistItemsRef.document(it).get().await().toObject(DBMedia::class.java)
-            if (media != null) {
-                emit(State.success(media))
-            } else {
-                emit(State.failed("Media not found"))
-            }
+    fun getMediaInfo(mediaId: Int) = resultFlow {
+        val media = getDocumentId(mediaId)?.let {
+            watchlistItemsRef.document(it).get().await().toObject(DBMedia::class.java)
         }
-    }.catch { exception ->
-        emit(State.failed(exception.message.toString(), exception = exception))
+        if (media != null) {
+            emit(State.success(media))
+        } else {
+            emit(State.failed("Media not found"))
+        }
     }
 
     private suspend fun getDocumentId(media: DBMedia, source: Source = Source.CACHE) = getDocumentId(media.id, source)

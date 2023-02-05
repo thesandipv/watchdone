@@ -175,7 +175,7 @@ internal fun Search(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-            AnimatedVisibility(visible = !state.isLoading && !state.empty, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(visible = !state.isLoading || state.empty, enter = fadeIn(), exit = fadeOut()) {
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(3),

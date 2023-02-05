@@ -199,6 +199,9 @@ class MediaInfoViewModel @Inject constructor(
             ).collect { result ->
                 result.whenSuccess {
                     isInWL.value = isAdd
+                    if (!isAdd) { // Set watched to false when media removed from watchlist
+                        isWatched.value = false
+                    }
                 }
             }
         }
