@@ -245,6 +245,7 @@ class MediaInfoViewModel @Inject constructor(
             mediaInfoInteractor.executeSync(MediaInfoInteractor.Params(mediaId.value)).collectLatest { result ->
                 result.whenSuccess {
                     dbMedia.value = it
+                    isWatched.value = it.isWatched ?: false
                 }
             }
         }

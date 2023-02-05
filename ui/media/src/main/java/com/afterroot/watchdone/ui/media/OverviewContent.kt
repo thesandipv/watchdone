@@ -150,14 +150,24 @@ fun OverviewContent(
         }
 
         ProvideTextStyle(value = ubuntuTypography.labelMedium) {
+            val media = when {
+                movie != Movie.Empty -> {
+                    movie?.toDBMedia()
+                }
+                tv != TV.Empty -> {
+                    tv?.toDBMedia()
+                }
+                else -> DBMedia.Empty
+            }
+
             WatchlistActions(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = bodyMargin, vertical = gutter),
                 isInWatchlist = isInWatchlist,
                 isWatched = isWatched,
-                onWatchlistAction = { onWatchlistAction(it, movie?.toDBMedia() ?: tv?.toDBMedia() ?: DBMedia.Empty) },
-                onWatchedAction = { onWatchedAction(it, movie?.toDBMedia() ?: tv?.toDBMedia() ?: DBMedia.Empty) }
+                onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
+                onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
             )
         }
 
