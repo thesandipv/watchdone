@@ -229,7 +229,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.1.1")
     androidTestImplementation("org.mockito:mockito-android:5.1.1")
 
-    implementation("androidx.work:work-runtime-ktx:2.7.1")
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
     implementation(libs.google.auth)
 
     androidTestImplementation(libs.androidx.test.archCore)
