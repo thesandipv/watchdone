@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Remove
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material3.FilledTonalIconToggleButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
@@ -148,17 +150,19 @@ fun EpisodeItem(
                 episode.airDate?.let { Text(text = it) }
             }
         }
-        // TODO Make button two-state
-        TwoStateButton(
+
+        FilledTonalIconToggleButton(
             checked = isWatched,
-            checkedText = "",
-            uncheckedText = "",
-            checkedIcon = Icons.Rounded.Remove,
-            uncheckedIcon = Icons.Rounded.Add,
-            onClick = {
+            onCheckedChange = {
                 onWatchClicked(episode, it)
             }
-        )
+        ) {
+            if (isWatched) {
+                Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Remove Episode from Watched")
+            } else {
+                Icon(imageVector = Icons.Rounded.Done, contentDescription = "Add Episode from Watched")
+            }
+        }
     }
 }
 
