@@ -33,6 +33,8 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.rounded.Event
+import androidx.compose.material.icons.rounded.HourglassEmpty
+import androidx.compose.material.icons.rounded.LiveTv
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -57,7 +59,6 @@ import androidx.compose.ui.unit.sp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
-import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.SuggestionChipGroup
 import com.afterroot.ui.common.compose.theme.PreviewTheme
@@ -93,60 +94,58 @@ fun OverviewContent(
 
             )
             Column {
-                // TODO Extract composable
-                Row(
-                    modifier = Modifier.padding(horizontal = bodyMargin),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Star,
-                        contentDescription = "Rating",
-                        modifier = Modifier.size(16.dp)
-                    )
-
-                    Spacer(modifier = Modifier.padding(2.dp))
-
-                    ProvideTextStyle(value = ubuntuTypography.bodyLarge) {
-                        Text(
-                            text = stringResource(
-                                id = R.string.media_info_rating_text,
-                                movie?.voteAverage ?: tv?.voteAverage ?: 0.0,
-                                movie?.voteCount ?: tv?.voteCount ?: 0
-                            )
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.padding(vertical = 2.dp))
-
-                Row(
-                    modifier = Modifier.padding(horizontal = bodyMargin),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Event,
-                        contentDescription = "Release Date",
-                        modifier = Modifier.size(16.dp)
-                    )
-
-                    Spacer(modifier = Modifier.padding(2.dp))
-
-                    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-                        Text(text = (movie?.releaseDate ?: tv?.releaseDate).valueOrBlank(), fontSize = 12.sp)
-                    }
-                }
-
                 SuggestionChipGroup(
                     chipSpacing = 8.dp,
                     horizontalPadding = bodyMargin,
-                    modifier = Modifier
-                        .padding(top = gutter / 2),
+                    modifier = Modifier,
                     list = movie?.genres?.map {
                         it.name
                     } ?: tv?.genres?.map {
                         it.name
                     } ?: emptyList()
                 )
+
+                (movie?.voteAverage ?: tv?.voteAverage)?.let {
+                    MetaText(
+                        text = stringResource(
+                            id = R.string.media_info_rating_text,
+                            it,
+                            movie?.voteCount ?: tv?.voteCount ?: 0
+                        ),
+                        icon = Icons.Rounded.Star,
+                        modifier = Modifier.padding(horizontal = Layout.bodyMargin)
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(vertical = 4.dp))
+
+                (movie?.releaseDate ?: tv?.releaseDate)?.let {
+                    MetaText(
+                        text = "Date Released: $it",
+                        modifier = Modifier.padding(horizontal = Layout.bodyMargin),
+                        icon = Icons.Rounded.Event
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(vertical = 4.dp))
+
+                (movie?.status ?: tv?.status)?.let {
+                    MetaText(
+                        text = "Status: $it",
+                        modifier = Modifier.padding(horizontal = Layout.bodyMargin),
+                        icon = Icons.Rounded.HourglassEmpty
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(vertical = 4.dp))
+
+                tv?.networks?.let {
+                    MetaText(
+                        text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
+                        modifier = Modifier.padding(horizontal = Layout.bodyMargin),
+                        icon = Icons.Rounded.LiveTv
+                    )
+                }
             }
         }
 
@@ -176,6 +175,28 @@ fun OverviewContent(
             text = (movie?.overview ?: tv?.overview) ?: "",
             modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
         )
+    }
+}
+
+@Composable
+fun MetaText(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Release Date",
+                modifier = Modifier.size(16.dp)
+            )
+
+            Spacer(modifier = Modifier.padding(2.dp))
+        }
+
+        ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+            Text(text = text, fontSize = 12.sp)
+        }
     }
 }
 
