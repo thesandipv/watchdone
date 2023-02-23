@@ -170,7 +170,7 @@ androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-gfonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 androidx-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 
-androidx-test-archCore = "androidx.arch.core:core-testing:2.1.0"
+androidx-test-archCore = "androidx.arch.core:core-testing:2.2.0"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-test-junitExt = "androidx.test.ext:junit:1.1.5"
