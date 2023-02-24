@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.util.Properties
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.firebase.crashlytics)
