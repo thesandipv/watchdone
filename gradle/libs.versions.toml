@@ -12,7 +12,7 @@ collection = "1.2.0"
 commonsIo = "1.3.2"
 compose = "1.3.0" # Stable 1.3.0 # Compose BOM Used
 composeBom = "2023.01.00"
-composeCompiler = "1.4.2"
+composeCompiler = "1.4.3"
 composePaging = "1.0.0-alpha18"
 constraintLayout = "2.1.4"
 ar-utils = "0.5.0" # AfterROOT Core
@@ -29,7 +29,7 @@ firebaseAuth = "21.1.0"
 firebaseBom = "31.2.1"
 firebaseConfig = "21.2.1"
 firebaseCore = "21.1.1"
-firebaseCrashlytics = "18.3.4"
+firebaseCrashlytics = "18.3.5"
 firebaseDatabase = "20.1.0"
 firebaseFirestore = "24.4.3"
 firebaseMessaging = "23.1.1"
@@ -170,7 +170,7 @@ androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-gfonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 androidx-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 
-androidx-test-archCore = "androidx.arch.core:core-testing:2.1.0"
+androidx-test-archCore = "androidx.arch.core:core-testing:2.2.0"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-test-junitExt = "androidx.test.ext:junit:1.1.5"
