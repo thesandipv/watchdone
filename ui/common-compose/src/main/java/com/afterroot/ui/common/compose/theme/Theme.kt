@@ -28,12 +28,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
+import com.afterroot.ui.common.compose.components.LocalSettings
 import com.afterroot.utils.getMaterialColor
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.resources.R as CommonR
 import com.google.android.material.R as MaterialR
 
 @Composable
-fun Theme(context: Context, content: @Composable () -> Unit) {
+fun Theme(context: Context, settings: Settings, content: @Composable () -> Unit) {
     val background = if (isSystemInDarkTheme()) {
         Color(ContextCompat.getColor(context, CommonR.color.md_theme_dark_background))
     } else {
@@ -94,6 +96,7 @@ fun Theme(context: Context, content: @Composable () -> Unit) {
         content = {
             CompositionLocalProvider(
                 LocalContentColor provides contentColorFor(backgroundColor = finalColorScheme.background),
+                LocalSettings provides settings,
                 content = content
             )
         }

@@ -25,6 +25,7 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.Multi
+import info.movito.themoviedbapi.model.providers.ProviderResults
 
 @Immutable
 data class MediaInfoViewState(
@@ -41,7 +42,8 @@ data class MediaInfoViewState(
     val tv: TV = TV.Empty,
     val isInWatchlist: Boolean = false,
     val isWatched: Boolean = false,
-    val genres: List<Genre> = emptyList()
+    val genres: List<Genre> = emptyList(),
+    val watchProviders: State<ProviderResults> = State.loading()
 ) : ViewState() {
     companion object {
         val Empty = MediaInfoViewState()

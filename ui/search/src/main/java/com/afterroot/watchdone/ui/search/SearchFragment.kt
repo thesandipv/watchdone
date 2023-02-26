@@ -26,18 +26,22 @@ import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.helpers.Deeplink
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Multi
 import org.jetbrains.anko.toast
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
+    @Inject lateinit var settings: Settings
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Theme(context = requireContext()) {
+                Theme(context = requireContext(), settings = settings) {
                     Search(itemSelectedCallback = itemSelectedCallback)
                 }
             }

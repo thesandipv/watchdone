@@ -24,8 +24,10 @@ import com.afterroot.watchdone.data.repositories.TVRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.TvResultsPage
 import info.movito.themoviedbapi.model.Credits
+import info.movito.themoviedbapi.model.providers.ProviderResults
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+
 @Deprecated("Use ObserveTVSeason")
 class TVSeasonInteractor @Inject constructor(private val tvRepository: TVRepository) :
     ResultInteractor<TVSeasonInteractor.Params, Flow<State<Season>>>() {
@@ -92,5 +94,14 @@ class ObserveTVSeason @Inject constructor(private val tvRepository: TVRepository
 
     override suspend fun createObservable(params: Params): Flow<State<Season>> {
         return tvRepository.season(params.tvId, params.season)
+    }
+}
+
+class ObserveTVWatchProviders @Inject constructor(private val tvRepository: TVRepository) :
+    SubjectInteractor<ObserveTVWatchProviders.Params, State<ProviderResults>>() {
+    data class Params(val tvId: Int)
+
+    override suspend fun createObservable(params: Params): Flow<State<ProviderResults>> {
+        return tvRepository.watchProviders(params.tvId)
     }
 }

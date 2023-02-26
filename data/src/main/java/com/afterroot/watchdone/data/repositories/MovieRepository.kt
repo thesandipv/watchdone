@@ -38,4 +38,6 @@ class MovieRepository @Inject constructor(private val moviesApi: MoviesApi) {
     suspend fun info(id: Int) = resultFlow(moviesApi.getMovieInfo(id).toMovie())
 
     suspend fun recommended(id: Int, page: Int) = resultFlow(moviesApi.getRecommended(id, page))
+
+    suspend fun watchProviders(id: Int) = resultFlow(moviesApi.getWatchProviders(id))
 }

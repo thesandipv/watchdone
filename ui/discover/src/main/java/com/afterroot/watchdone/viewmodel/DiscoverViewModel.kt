@@ -59,15 +59,21 @@ class DiscoverViewModel @Inject constructor(
     )
 
     val discoverMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
-        DiscoverMoviePagingSource(discover.apply {
-            settings.country?.let { region(it) }
-        }, getDiscoverMovies)
+        DiscoverMoviePagingSource(
+            discover.apply {
+                settings.country?.let { region(it) }
+            },
+            getDiscoverMovies
+        )
     }.flow.cachedIn(viewModelScope)
 
     val discoverTV = Pager(PagingConfig(20, initialLoadSize = 40)) {
-        DiscoverTVPagingSource(discover.apply {
-            settings.country?.let { region(it) }
-        }, getDiscoverTV)
+        DiscoverTVPagingSource(
+            discover.apply {
+                settings.country?.let { region(it) }
+            },
+            getDiscoverTV
+        )
     }.flow.cachedIn(viewModelScope)
 
     init {

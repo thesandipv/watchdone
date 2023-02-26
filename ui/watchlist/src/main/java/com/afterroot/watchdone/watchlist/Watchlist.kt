@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.watchlist
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -27,14 +26,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import info.movito.themoviedbapi.model.Multi
-import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun Watchlist(
@@ -68,18 +67,12 @@ fun Watchlist(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun WatchlistItem(poster: String?, title: String?) {
     Column(Modifier.fillMaxWidth()) {
-        Image(
-            painter = rememberImagePainter(
-                data = poster,
-                builder = {
-                    crossfade(true)
-                    placeholder(CommonR.drawable.ic_placeholder_movie)
-                }
-            ),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(poster).crossfade(true).build(),
             contentDescription = title,
             modifier = Modifier.aspectRatio(3f / 2f)
         )
