@@ -37,12 +37,12 @@ android {
         if (tmdbPropertiesFile.exists()) {
             tmdbProperties.load(FileInputStream(tmdbPropertiesFile))
         }
-        /*buildConfigField(
+        buildConfigField(
             "String",
             "TMDB_BEARER_TOKEN",
-            tmdbProperties["tmdbBearerToken"] ?: System.getenv("TMDB_BEARER_TOKEN")
+            tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN")
         )
-        buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] ?: System.getenv("TMDB_API"))*/
+        buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
     }
 }
 

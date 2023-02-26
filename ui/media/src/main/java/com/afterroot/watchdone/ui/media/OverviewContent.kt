@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Clear
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material.icons.rounded.HourglassEmpty
 import androidx.compose.material.icons.rounded.LiveTv
+import androidx.compose.material.icons.rounded.SmartDisplay
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -49,7 +51,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,7 +63,12 @@ import androidx.compose.ui.unit.sp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.afterroot.ui.common.compose.components.BasePosterCard
+import com.afterroot.ui.common.compose.components.LocalLogoSize
+import com.afterroot.ui.common.compose.components.LocalSettings
+import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.components.SuggestionChipGroup
 import com.afterroot.ui.common.compose.theme.PreviewTheme
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
@@ -68,6 +77,9 @@ import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.resources.R
+import com.afterroot.watchdone.utils.State
+import info.movito.themoviedbapi.model.providers.Provider
+import info.movito.themoviedbapi.model.providers.ProviderResults
 
 @Composable
 fun OverviewContent(
@@ -76,6 +88,7 @@ fun OverviewContent(
     tv: TV? = null,
     isInWatchlist: Boolean = false,
     isWatched: Boolean = false,
+    watchProviders: State<ProviderResults> = State.loading(),
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> }
 ) {
@@ -93,7 +106,7 @@ fun OverviewContent(
                     .aspectRatio(2 / 3f)
 
             )
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 SuggestionChipGroup(
                     chipSpacing = 8.dp,
                     horizontalPadding = bodyMargin,
@@ -113,39 +126,51 @@ fun OverviewContent(
                             movie?.voteCount ?: tv?.voteCount ?: 0
                         ),
                         icon = Icons.Rounded.Star,
-                        modifier = Modifier.padding(horizontal = Layout.bodyMargin)
+                        modifier = Modifier.padding(horizontal = bodyMargin)
                     )
                 }
-
-                Spacer(modifier = Modifier.padding(vertical = 4.dp))
 
                 (movie?.releaseDate ?: tv?.releaseDate)?.let {
                     MetaText(
                         text = "Date Released: $it",
-                        modifier = Modifier.padding(horizontal = Layout.bodyMargin),
+                        modifier = Modifier.padding(horizontal = bodyMargin),
                         icon = Icons.Rounded.Event
                     )
                 }
 
-                Spacer(modifier = Modifier.padding(vertical = 4.dp))
-
                 (movie?.status ?: tv?.status)?.let {
                     MetaText(
                         text = "Status: $it",
-                        modifier = Modifier.padding(horizontal = Layout.bodyMargin),
+                        modifier = Modifier.padding(horizontal = bodyMargin),
                         icon = Icons.Rounded.HourglassEmpty
                     )
                 }
 
-                Spacer(modifier = Modifier.padding(vertical = 4.dp))
-
                 tv?.networks?.let {
                     MetaText(
                         text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
-                        modifier = Modifier.padding(horizontal = Layout.bodyMargin),
+                        modifier = Modifier.padding(horizontal = bodyMargin),
                         icon = Icons.Rounded.LiveTv
                     )
                 }
+
+                watchProviders.composeWhen(success = { providers ->
+                    WatchProviders(
+                        modifier = Modifier.padding(horizontal = bodyMargin),
+                        text = "Available On",
+                        providers = providers.getProvidersForCountry(
+                            LocalSettings.current.country ?: "IN"
+                        )?.flatrateProviders
+                    )
+
+                    WatchProviders(
+                        modifier = Modifier.padding(horizontal = bodyMargin),
+                        text = "Available for Rent on",
+                        providers = providers.getProvidersForCountry(
+                            LocalSettings.current.country ?: "IN"
+                        )?.rentProviders
+                    )
+                })
             }
         }
 
@@ -154,9 +179,11 @@ fun OverviewContent(
                 movie != Movie.Empty -> {
                     movie?.toDBMedia()
                 }
+
                 tv != TV.Empty -> {
                     tv?.toDBMedia()
                 }
+
                 else -> DBMedia.Empty
             }
 
@@ -175,6 +202,29 @@ fun OverviewContent(
             text = (movie?.overview ?: tv?.overview) ?: "",
             modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
         )
+    }
+}
+
+@Composable
+fun WatchProviders(modifier: Modifier = Modifier, text: String? = null, providers: List<Provider>? = emptyList()) {
+    if (providers?.isNotEmpty() == true) {
+        Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            text?.let {
+                MetaText(text = "$text:", icon = Icons.Rounded.SmartDisplay)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                providers.forEach {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath).crossfade(true).build(),
+                        contentDescription = it.providerName,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                }
+            }
+        }
     }
 }
 

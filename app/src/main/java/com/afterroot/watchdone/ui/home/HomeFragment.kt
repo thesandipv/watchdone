@@ -218,7 +218,7 @@ class HomeFragment : Fragment() {
                     layoutParams =
                         ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     setContent {
-                        Theme(requireContext()) {
+                        Theme(context = requireContext(), settings = settings) {
                             CenteredRow {
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Divider(

@@ -33,4 +33,6 @@ class TVRepository @Inject constructor(private val tvApi: TVApi) {
     suspend fun info(id: Int) = resultFlow(tvApi.getTVInfo(id).toTV())
 
     suspend fun recommended(id: Int, page: Int) = resultFlow(tvApi.getRecommended(id, page))
+
+    suspend fun watchProviders(id: Int) = resultFlow(tvApi.getWatchProviders(id))
 }

@@ -29,11 +29,13 @@ import com.afterroot.watchdone.domain.interactors.MediaInfoInteractor
 import com.afterroot.watchdone.domain.interactors.ObserveMediaInfo
 import com.afterroot.watchdone.domain.interactors.ObserveMovieCredits
 import com.afterroot.watchdone.domain.interactors.ObserveMovieInfo
+import com.afterroot.watchdone.domain.interactors.ObserveMovieWatchProviders
 import com.afterroot.watchdone.domain.interactors.ObserveRecommendedMovies
 import com.afterroot.watchdone.domain.interactors.ObserveRecommendedShows
 import com.afterroot.watchdone.domain.interactors.ObserveTVCredits
 import com.afterroot.watchdone.domain.interactors.ObserveTVInfo
 import com.afterroot.watchdone.domain.interactors.ObserveTVSeason
+import com.afterroot.watchdone.domain.interactors.ObserveTVWatchProviders
 import com.afterroot.watchdone.domain.interactors.TVEpisodeInteractor
 import com.afterroot.watchdone.domain.interactors.WatchStateInteractor
 import com.afterroot.watchdone.domain.interactors.WatchlistInteractor
@@ -63,6 +65,8 @@ class MediaInfoViewModel @Inject constructor(
     observeMovieCredits: ObserveMovieCredits,
     observeTVCredits: ObserveTVCredits,
     observeTVSeason: ObserveTVSeason,
+    observeMovieWatchProviders: ObserveMovieWatchProviders,
+    observeTVWatchProviders: ObserveTVWatchProviders,
     private val observeMediaInfo: ObserveMediaInfo,
     private val observeRecommendedMovies: ObserveRecommendedMovies,
     private val observeRecommendedShows: ObserveRecommendedShows,
@@ -89,8 +93,9 @@ class MediaInfoViewModel @Inject constructor(
             isWatched,
             observeMovieInfo.flow,
             observeMovieCredits.flow,
+            observeMovieWatchProviders.flow,
             dbMedia
-        ) { mediaId, isInWL, isWatched, movieInfo, credits, mediaInfo ->
+        ) { mediaId, isInWL, isWatched, movieInfo, credits, watchProviders, mediaInfo ->
             MediaInfoViewState(
                 mediaId = mediaId,
                 mediaType = mediaType,
@@ -98,7 +103,8 @@ class MediaInfoViewModel @Inject constructor(
                 isInWatchlist = isInWL,
                 isWatched = isWatched,
                 credits = credits,
-                media = mediaInfo
+                media = mediaInfo,
+                watchProviders = watchProviders
             )
         }.stateIn(
             scope = viewModelScope,
@@ -115,8 +121,9 @@ class MediaInfoViewModel @Inject constructor(
             observeTVInfo.flow,
             observeTVCredits.flow,
             observeTVSeason.flow,
+            observeTVWatchProviders.flow,
             dbMedia
-        ) { mediaId, isInWL, isWatched, tvInfo, credits, season, mediaInfo ->
+        ) { mediaId, isInWL, isWatched, tvInfo, credits, season, watchProviders, mediaInfo ->
             MediaInfoViewState(
                 mediaId = mediaId,
                 mediaType = mediaType,
@@ -125,7 +132,8 @@ class MediaInfoViewModel @Inject constructor(
                 isWatched = isWatched,
                 credits = credits,
                 seasonInfo = season,
-                media = mediaInfo
+                media = mediaInfo,
+                watchProviders = watchProviders
             )
         }.stateIn(
             scope = viewModelScope,
@@ -138,9 +146,11 @@ class MediaInfoViewModel @Inject constructor(
         Multi.MediaType.MOVIE -> {
             stateMovie
         }
+
         Multi.MediaType.TV_SERIES -> {
             stateTV
         }
+
         else -> {
             flow {
                 emit(MediaInfoViewState.Empty)
@@ -156,9 +166,11 @@ class MediaInfoViewModel @Inject constructor(
         if (mediaType == Multi.MediaType.MOVIE) {
             observeMovieInfo(ObserveMovieInfo.Params(mediaId.value))
             observeMovieCredits(ObserveMovieCredits.Params(mediaId.value))
+            observeMovieWatchProviders(ObserveMovieWatchProviders.Params(mediaId.value))
         } else if (mediaType == Multi.MediaType.TV_SERIES) {
             observeTVInfo(ObserveTVInfo.Params(mediaId.value))
             observeTVCredits(ObserveTVCredits.Params(mediaId.value))
+            observeTVWatchProviders(ObserveTVWatchProviders.Params(mediaId.value))
 
             selectedSeason.onEach {
                 observeTVSeason(ObserveTVSeason.Params(mediaId.value, it))

@@ -138,6 +138,7 @@ fun FilterChipGroup(
                                     add(label)
                                 }
                             }
+
                             SelectionType.Multiple -> {
                                 if (selectedChips.contains(label)) {
                                     selectedChips.remove(label)
@@ -172,38 +173,36 @@ fun SuggestionChipGroup(
     onClick: ((index: Int, label: String) -> Unit)? = null
 ) {
     val scrollState = rememberScrollState()
-    Column(horizontalAlignment = Alignment.Start, modifier = modifier) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.horizontalScroll(scrollState)
-        ) {
-            Spacer(modifier = Modifier.width(horizontalPadding))
-            list?.forEachIndexed { index, it ->
-                if (index != 0) {
-                    Spacer(modifier = Modifier.width(chipSpacing))
-                }
-                SuggestionChip(
-                    modifier = chipModifier,
-                    onClick = {
-                        onClick?.invoke(index, it)
-                    },
-                    label = {
-                        Text(text = it.valueOrBlank())
-                    },
-                    icon = {
-                        if (icons.isNotEmpty()) {
-                            icons[index]?.let { icon ->
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = "$it Icon",
-                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
-                                )
-                            }
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.horizontalScroll(scrollState)
+    ) {
+        Spacer(modifier = Modifier.width(horizontalPadding))
+        list?.forEachIndexed { index, it ->
+            if (index != 0) {
+                Spacer(modifier = Modifier.width(chipSpacing))
+            }
+            SuggestionChip(
+                modifier = chipModifier,
+                onClick = {
+                    onClick?.invoke(index, it)
+                },
+                label = {
+                    Text(text = it.valueOrBlank())
+                },
+                icon = {
+                    if (icons.isNotEmpty()) {
+                        icons[index]?.let { icon ->
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = "$it Icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
                         }
                     }
-                )
-            }
-            Spacer(modifier = Modifier.width(horizontalPadding))
+                }
+            )
         }
+        Spacer(modifier = Modifier.width(horizontalPadding))
     }
 }

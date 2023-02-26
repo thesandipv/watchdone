@@ -148,9 +148,11 @@ internal fun <T : Multi> MediaInfoContent(
                     Multi.MediaType.MOVIE -> {
                         viewState.movie.backdropPath
                     }
+
                     Multi.MediaType.TV_SERIES -> {
                         viewState.tv.backdropPath
                     }
+
                     else -> {
                         null
                     }
@@ -168,6 +170,7 @@ internal fun <T : Multi> MediaInfoContent(
                 isInWatchlist = viewState.isInWatchlist,
                 isWatched = viewState.isWatched,
                 modifier = Modifier.fillMaxWidth(),
+                watchProviders = viewState.watchProviders,
                 onWatchlistAction = onWatchlistAction,
                 onWatchedAction = onWatchedAction
             )

@@ -43,7 +43,7 @@ class MediaInfoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Theme(context = requireContext()) {
+                Theme(context = requireContext(), settings = settings) {
                     MediaInfoContent(navigateUp = findNavController()::navigateUp, onRecommendedClick = {
                         if (it is Movie) {
                             val request = NavDeepLinkRequest.Builder

@@ -131,7 +131,6 @@ android {
 
     packagingOptions {
         packagingOptions.resources.excludes += setOf(
-            "META-INF/*.version",
             "META-INF/proguard/*",
             "/*.properties",
             "fabric/*.properties",
