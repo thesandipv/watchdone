@@ -121,6 +121,11 @@ subprojects {
                     )
                 )
         }
+        kotlinGradle {
+            target("**/*.kts")
+            targetExclude("$buildDir/**/*.kts")
+            ktlint(libs.versions.ktlint.get())
+        }
     }
 
     tasks.withType<KotlinCompile>().configureEach {
