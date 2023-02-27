@@ -33,6 +33,7 @@ import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.settings.Settings
 import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Multi
+import org.jetbrains.anko.browse
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,6 +57,8 @@ class MediaInfoFragment : Fragment() {
                                 .build()
                             findNavController().navigate(request)
                         }
+                    }, onWatchProviderClick = { link ->
+                        requireContext().browse(link, true)
                     })
                 }
             }
@@ -63,14 +66,22 @@ class MediaInfoFragment : Fragment() {
     }
 
     @Composable
-    fun MediaInfoContent(navigateUp: () -> Unit, onRecommendedClick: (media: Multi) -> Unit) {
+    fun MediaInfoContent(
+        navigateUp: () -> Unit,
+        onRecommendedClick: (media: Multi) -> Unit,
+        onWatchProviderClick: (link: String) -> Unit = { _ -> }
+    ) {
         CompositionLocalProvider(
             LocalPosterSize provides (
                 this@MediaInfoFragment.settings.imageSize
                     ?: this@MediaInfoFragment.settings.defaultImagesSize
                 )
         ) {
-            MediaInfo(navigateUp = navigateUp, onRecommendedClick = onRecommendedClick)
+            MediaInfo(
+                navigateUp = navigateUp,
+                onRecommendedClick = onRecommendedClick,
+                onWatchProviderClick = onWatchProviderClick
+            )
         }
     }
 }
