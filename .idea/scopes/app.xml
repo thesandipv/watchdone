@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="app" pattern="!lib:*..*&amp;&amp;!src[watchdone.tmdbapi]:com.afterroot.tmdbapi..*&amp;&amp;!test[watchdone.tmdbapi]:com.afterroot.tmdbapi.*&amp;&amp;!file[watchdone]:*.properties&amp;&amp;!file[watchdone]:.idea//*&amp;&amp;!file[watchdone]:graphics//*" />
-</component>

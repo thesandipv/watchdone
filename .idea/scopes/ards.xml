@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="ards" pattern="src[lib.watchdone.ards.main]:com.afterroot..*" />
+</component>
