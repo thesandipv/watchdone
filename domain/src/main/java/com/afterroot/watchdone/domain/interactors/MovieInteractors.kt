@@ -22,6 +22,7 @@ import com.afterroot.watchdone.data.repositories.MovieRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.core.MovieResultsPage
+import info.movito.themoviedbapi.model.providers.ProviderResults
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -60,5 +61,14 @@ class ObserveRecommendedMovies @Inject constructor(private val movieRepository: 
 
     override suspend fun doWork(params: Params): Flow<State<MovieResultsPage>> {
         return movieRepository.recommended(params.id, params.page)
+    }
+}
+
+class ObserveMovieWatchProviders @Inject constructor(private val movieRepository: MovieRepository) :
+    SubjectInteractor<ObserveMovieWatchProviders.Params, State<ProviderResults>>() {
+    data class Params(val id: Int)
+
+    override suspend fun createObservable(params: Params): Flow<State<ProviderResults>> {
+        return movieRepository.watchProviders(params.id)
     }
 }

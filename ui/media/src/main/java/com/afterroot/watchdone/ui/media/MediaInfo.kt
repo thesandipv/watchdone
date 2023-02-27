@@ -52,12 +52,26 @@ import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
 import info.movito.themoviedbapi.model.Multi
 
 @Composable
-fun MediaInfo(navigateUp: () -> Unit, onRecommendedClick: (media: Multi) -> Unit) {
-    MediaInfo(viewModel = hiltViewModel(), navigateUp = navigateUp, onRecommendedClick = onRecommendedClick)
+fun MediaInfo(
+    navigateUp: () -> Unit,
+    onRecommendedClick: (media: Multi) -> Unit,
+    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+) {
+    MediaInfo(
+        viewModel = hiltViewModel(),
+        navigateUp = navigateUp,
+        onRecommendedClick = onRecommendedClick,
+        onWatchProviderClick = onWatchProviderClick
+    )
 }
 
 @Composable
-internal fun MediaInfo(viewModel: MediaInfoViewModel, navigateUp: () -> Unit, onRecommendedClick: (media: Multi) -> Unit) {
+internal fun MediaInfo(
+    viewModel: MediaInfoViewModel,
+    navigateUp: () -> Unit,
+    onRecommendedClick: (media: Multi) -> Unit,
+    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+) {
     val viewState by viewModel.state.collectAsState()
     if (viewState.mediaType == Multi.MediaType.MOVIE) {
         val recommended = viewModel.getRecommendedMovies(viewState.mediaId).collectAsLazyPagingItems()
@@ -66,7 +80,8 @@ internal fun MediaInfo(viewModel: MediaInfoViewModel, navigateUp: () -> Unit, on
             recommended = recommended,
             onWatchlistAction = viewModel::watchlistAction,
             onWatchedAction = viewModel::watchStateAction,
-            onRecommendedClick = onRecommendedClick
+            onRecommendedClick = onRecommendedClick,
+            onWatchProviderClick = onWatchProviderClick
         )
     } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
         val recommended = viewModel.getRecommendedShows(viewState.mediaId).collectAsLazyPagingItems()
@@ -79,7 +94,8 @@ internal fun MediaInfo(viewModel: MediaInfoViewModel, navigateUp: () -> Unit, on
             onSeasonSelected = viewModel::selectSeason,
             onEpisodeWatchAction = { episode, isWatched ->
                 viewModel.episodeWatchStateAction(episodeId = episode.id.toString(), isWatched)
-            }
+            },
+            onWatchProviderClick = onWatchProviderClick
         )
     }
 }
@@ -93,7 +109,8 @@ internal fun <T : Multi> MediaInfo(
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onRecommendedClick: (media: T) -> Unit = {},
     onSeasonSelected: (Int) -> Unit = {},
-    onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> }
+    onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
+    onWatchProviderClick: (link: String) -> Unit = { _ -> }
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
@@ -119,6 +136,7 @@ internal fun <T : Multi> MediaInfo(
                 onRecommendedClick = onRecommendedClick,
                 onSeasonSelected = onSeasonSelected,
                 onEpisodeWatchAction = onEpisodeWatchAction,
+                onWatchProviderClick = onWatchProviderClick,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -136,6 +154,7 @@ internal fun <T : Multi> MediaInfoContent(
     onRecommendedClick: (media: T) -> Unit = {},
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
+    onWatchProviderClick: (link: String) -> Unit = { _ -> },
     modifier: Modifier
 ) {
     val gutter = Layout.gutter
@@ -148,9 +167,11 @@ internal fun <T : Multi> MediaInfoContent(
                     Multi.MediaType.MOVIE -> {
                         viewState.movie.backdropPath
                     }
+
                     Multi.MediaType.TV_SERIES -> {
                         viewState.tv.backdropPath
                     }
+
                     else -> {
                         null
                     }
@@ -168,8 +189,10 @@ internal fun <T : Multi> MediaInfoContent(
                 isInWatchlist = viewState.isInWatchlist,
                 isWatched = viewState.isWatched,
                 modifier = Modifier.fillMaxWidth(),
+                watchProviders = viewState.watchProviders,
                 onWatchlistAction = onWatchlistAction,
-                onWatchedAction = onWatchedAction
+                onWatchedAction = onWatchedAction,
+                onWatchProvidersClick = onWatchProviderClick
             )
         }
 
@@ -239,7 +262,7 @@ internal fun <T : Multi> MediaInfoContent(
         item {
             ProvideTextStyle(value = ubuntuTypography.titleSmall.copy(fontSize = 10.sp)) {
                 Text(
-                    text = "Media ID: ${viewState.mediaId}",
+                    text = "Media ID: ${viewState.mediaId} | Stream and Rent data provided by JustWatch.",
                     modifier = Modifier.padding(
                         horizontal = bodyMargin,
                         vertical = gutter

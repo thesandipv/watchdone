@@ -17,6 +17,7 @@ package com.afterroot.watchdone.test
 import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -27,6 +28,8 @@ import javax.inject.Inject
 class TVTest : DataTest() {
 
     @Inject lateinit var tvRepository: TVRepository
+
+    @Inject lateinit var tvRepository2: com.afterroot.watchdone.data.repositories.TVRepository
 
     @Inject lateinit var searchRepository: SearchRepository
 
@@ -51,6 +54,18 @@ class TVTest : DataTest() {
         launch {
             val season1 = tvRepository.getSeason(1399, 1)
             Assert.assertEquals("Season 1", season1.name)
+        }
+    }
+
+    @Test
+    fun `Get WatchProviders`() {
+        launch {
+            val wp = tvRepository2.watchProviders(66788)
+            wp.collectLatest {
+                it.whenSuccess {
+                    println("Get WatchProviders: $wp")
+                }
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,12 +31,12 @@ buildscript {
     }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.lint) apply false
     alias(libs.plugins.android.test) apply false
-    alias(libs.plugins.depUpdates)
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.gms.googleServices) apply false
     alias(libs.plugins.hilt) apply false
@@ -85,6 +85,16 @@ allprojects {
             }
         }
     }
+
+    // Configure Java to use our chosen language level. Kotlin will automatically
+    // pick this up
+    plugins.withType<JavaBasePlugin>().configureEach {
+        extensions.configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(11))
+            }
+        }
+    }
 }
 
 subprojects {
@@ -110,6 +120,11 @@ subprojects {
                         "disabled_rules" to "enum-entry-name-case,annotation"
                     )
                 )
+        }
+        kotlinGradle {
+            target("**/*.kts")
+            targetExclude("$buildDir/**/*.kts")
+            ktlint(libs.versions.ktlint.get())
         }
     }
 

@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="themoviedbapi" pattern="src[watchdone.themoviedbapi.main]:info.movito.themoviedbapi..*" />
+  <scope name="themoviedbapi" pattern="src[*]:info.movito.themoviedbapi..*" />
 </component>
