@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,4 +33,6 @@ class TVRepository @Inject constructor(private val tvApi: TVApi) {
     suspend fun info(id: Int) = resultFlow(tvApi.getTVInfo(id).toTV())
 
     suspend fun recommended(id: Int, page: Int) = resultFlow(tvApi.getRecommended(id, page))
+
+    suspend fun watchProviders(id: Int) = resultFlow(tvApi.getWatchProviders(id))
 }

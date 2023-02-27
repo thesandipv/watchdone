@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -59,11 +59,21 @@ class DiscoverViewModel @Inject constructor(
     )
 
     val discoverMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
-        DiscoverMoviePagingSource(discover, getDiscoverMovies)
+        DiscoverMoviePagingSource(
+            discover.apply {
+                settings.country?.let { region(it) }
+            },
+            getDiscoverMovies
+        )
     }.flow.cachedIn(viewModelScope)
 
     val discoverTV = Pager(PagingConfig(20, initialLoadSize = 40)) {
-        DiscoverTVPagingSource(discover, getDiscoverTV)
+        DiscoverTVPagingSource(
+            discover.apply {
+                settings.country?.let { region(it) }
+            },
+            getDiscoverTV
+        )
     }.flow.cachedIn(viewModelScope)
 
     init {

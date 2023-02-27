@@ -22,6 +22,7 @@
     <dimen name="padding_horizontal_list">8dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
     <dimen name="padding_normal_half">8dp</dimen>
+    <dimen name="padding_normal_fourth">4dp</dimen>
     <dimen name="padding_vertical">16dp</dimen>
     <dimen name="padding_vertical_half">8dp</dimen>
 

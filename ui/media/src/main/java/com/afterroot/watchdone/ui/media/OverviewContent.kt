@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 package com.afterroot.watchdone.ui.media
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -27,12 +28,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.rounded.Event
+import androidx.compose.material.icons.rounded.HourglassEmpty
+import androidx.compose.material.icons.rounded.LiveTv
+import androidx.compose.material.icons.rounded.SmartDisplay
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -47,7 +52,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,8 +64,12 @@ import androidx.compose.ui.unit.sp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
-import com.afterroot.data.utils.valueOrBlank
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.afterroot.ui.common.compose.components.BasePosterCard
+import com.afterroot.ui.common.compose.components.LocalLogoSize
+import com.afterroot.ui.common.compose.components.LocalSettings
+import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.components.SuggestionChipGroup
 import com.afterroot.ui.common.compose.theme.PreviewTheme
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
@@ -67,6 +78,9 @@ import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.resources.R
+import com.afterroot.watchdone.utils.State
+import info.movito.themoviedbapi.model.providers.Provider
+import info.movito.themoviedbapi.model.providers.ProviderResults
 
 @Composable
 fun OverviewContent(
@@ -75,8 +89,10 @@ fun OverviewContent(
     tv: TV? = null,
     isInWatchlist: Boolean = false,
     isWatched: Boolean = false,
+    watchProviders: State<ProviderResults> = State.loading(),
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> }
+    onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
+    onWatchProvidersClick: (link: String) -> Unit = { _ -> }
 ) {
     val gutter = Layout.gutter
     val bodyMargin = Layout.bodyMargin
@@ -92,79 +108,169 @@ fun OverviewContent(
                     .aspectRatio(2 / 3f)
 
             )
-            Column {
-                // TODO Extract composable
-                Row(
-                    modifier = Modifier.padding(horizontal = bodyMargin),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Star,
-                        contentDescription = "Rating",
-                        modifier = Modifier.size(16.dp)
-                    )
-
-                    Spacer(modifier = Modifier.padding(2.dp))
-
-                    ProvideTextStyle(value = ubuntuTypography.bodyLarge) {
-                        Text(
-                            text = stringResource(
-                                id = R.string.media_info_rating_text,
-                                movie?.voteAverage ?: tv?.voteAverage ?: 0.0
-                            )
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.padding(vertical = 2.dp))
-
-                Row(
-                    modifier = Modifier.padding(horizontal = bodyMargin),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Event,
-                        contentDescription = "Release Date",
-                        modifier = Modifier.size(16.dp)
-                    )
-
-                    Spacer(modifier = Modifier.padding(2.dp))
-
-                    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-                        Text(text = (movie?.releaseDate ?: tv?.releaseDate).valueOrBlank(), fontSize = 12.sp)
-                    }
-                }
-
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 SuggestionChipGroup(
                     chipSpacing = 8.dp,
                     horizontalPadding = bodyMargin,
-                    modifier = Modifier
-                        .padding(top = gutter / 2),
+                    modifier = Modifier,
                     list = movie?.genres?.map {
                         it.name
                     } ?: tv?.genres?.map {
                         it.name
                     } ?: emptyList()
                 )
+
+                (movie?.voteAverage ?: tv?.voteAverage)?.let {
+                    MetaText(
+                        text = stringResource(
+                            id = R.string.media_info_rating_text,
+                            it,
+                            movie?.voteCount ?: tv?.voteCount ?: 0
+                        ),
+                        icon = Icons.Rounded.Star,
+                        modifier = Modifier.padding(horizontal = bodyMargin)
+                    )
+                }
+
+                (movie?.releaseDate ?: tv?.releaseDate)?.let {
+                    MetaText(
+                        text = "Release Date: $it",
+                        modifier = Modifier.padding(horizontal = bodyMargin),
+                        icon = Icons.Rounded.Event
+                    )
+                }
+
+                (movie?.status ?: tv?.status)?.let {
+                    MetaText(
+                        text = "Status: $it",
+                        modifier = Modifier.padding(horizontal = bodyMargin),
+                        icon = Icons.Rounded.HourglassEmpty
+                    )
+                }
+
+                tv?.networks?.let {
+                    MetaText(
+                        text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
+                        modifier = Modifier.padding(horizontal = bodyMargin),
+                        icon = Icons.Rounded.LiveTv
+                    )
+                }
+
+                watchProviders.composeWhen(success = { providers ->
+                    val providersForCountry = providers.getProvidersForCountry(
+                        LocalSettings.current.country ?: "IN"
+                    )
+                    WatchProviders(
+                        modifier = Modifier.padding(horizontal = bodyMargin),
+                        text = "Available On",
+                        link = providersForCountry?.link,
+                        providers = providersForCountry?.flatrateProviders,
+                        onClick = {
+                            if (it != null) {
+                                onWatchProvidersClick(it)
+                            }
+                        }
+                    )
+
+                    WatchProviders(
+                        modifier = Modifier.padding(horizontal = bodyMargin),
+                        text = "Available for Rent on",
+                        link = providersForCountry?.link,
+                        providers = providersForCountry?.rentProviders,
+                        onClick = {
+                            if (it != null) {
+                                onWatchProvidersClick(it)
+                            }
+                        }
+                    )
+                })
             }
         }
 
         ProvideTextStyle(value = ubuntuTypography.labelMedium) {
-            WatchlistActions(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = bodyMargin, vertical = gutter),
-                isInWatchlist = isInWatchlist,
-                isWatched = isWatched,
-                onWatchlistAction = { onWatchlistAction(it, movie?.toDBMedia() ?: tv?.toDBMedia() ?: DBMedia.Empty) },
-                onWatchedAction = { onWatchedAction(it, movie?.toDBMedia() ?: tv?.toDBMedia() ?: DBMedia.Empty) }
-            )
+            val media = when {
+                movie != Movie.Empty -> {
+                    movie?.toDBMedia()
+                }
+
+                tv != TV.Empty -> {
+                    tv?.toDBMedia()
+                }
+
+                else -> DBMedia.Empty
+            }
+
+            AnimatedVisibility(visible = media != DBMedia.Empty) {
+                WatchlistActions(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = bodyMargin, vertical = gutter),
+                    isInWatchlist = isInWatchlist,
+                    isWatched = isWatched,
+                    onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
+                    onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
+                )
+            }
         }
 
         OverviewText(
             text = (movie?.overview ?: tv?.overview) ?: "",
             modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
         )
+    }
+}
+
+@Composable
+fun WatchProviders(
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    link: String? = null,
+    providers: List<Provider>? = emptyList(),
+    onClick: (link: String?) -> Unit = { _ -> }
+) {
+    if (providers?.isNotEmpty() == true) {
+        Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            text?.let {
+                MetaText(text = "$text:", icon = Icons.Rounded.SmartDisplay)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                providers.forEach {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath).crossfade(true).build(),
+                        contentDescription = it.providerName,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable {
+                                onClick(link)
+                            }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MetaText(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Release Date",
+                modifier = Modifier.size(16.dp)
+            )
+
+            Spacer(modifier = Modifier.padding(2.dp))
+        }
+
+        ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+            Text(text = text, fontSize = 12.sp)
+        }
     }
 }
 

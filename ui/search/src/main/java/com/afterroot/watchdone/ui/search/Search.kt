@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -175,7 +175,7 @@ internal fun Search(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-            AnimatedVisibility(visible = !state.isLoading && !state.empty, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(visible = !state.isLoading || state.empty, enter = fadeIn(), exit = fadeOut()) {
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(3),

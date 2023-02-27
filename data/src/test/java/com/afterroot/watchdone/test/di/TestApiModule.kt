@@ -25,12 +25,12 @@ import com.afterroot.tmdbapi.api.SearchApi
 import com.afterroot.tmdbapi.api.TVApi
 import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.tmdbapi.repository.ConfigRepository
-import com.afterroot.tmdbapi.repository.DiscoverRepository
 import com.afterroot.tmdbapi.repository.GenresRepository
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.data.BuildConfig
+import com.afterroot.watchdone.data.repositories.DiscoverRepository
 import com.afterroot.watchdone.utils.whenBuildIs
 import dagger.Module
 import dagger.Provides

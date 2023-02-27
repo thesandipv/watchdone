@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,13 +26,17 @@ import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.helpers.Deeplink
+import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Multi
 import org.jetbrains.anko.toast
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DiscoverFragment : Fragment() {
+
+    @Inject lateinit var settings: Settings
 
     private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
         override fun onClick(position: Int, view: View?, item: Multi) {
@@ -63,7 +67,7 @@ class DiscoverFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Theme(context = requireContext()) {
+                Theme(context = requireContext(), settings = settings) {
                     Discover(itemSelectedCallback = itemSelectedCallback)
                 }
             }

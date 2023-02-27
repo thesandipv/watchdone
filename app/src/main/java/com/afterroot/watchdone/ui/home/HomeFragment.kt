@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -218,7 +218,7 @@ class HomeFragment : Fragment() {
                     layoutParams =
                         ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     setContent {
-                        Theme(requireContext()) {
+                        Theme(context = requireContext(), settings = settings) {
                             CenteredRow {
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Divider(
