@@ -21,7 +21,7 @@ plugins {
 }
 
 apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/compose.gradle") //for Enabling Compose
+apply(from = "$rootDir/gradle/compose.gradle") // for Enabling Compose
 apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {

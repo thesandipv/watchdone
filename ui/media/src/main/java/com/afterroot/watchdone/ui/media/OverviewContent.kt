@@ -211,7 +211,6 @@ fun OverviewContent(
                     onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
                 )
             }
-
         }
 
         OverviewText(

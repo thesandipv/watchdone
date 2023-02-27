@@ -58,8 +58,8 @@ class MediaInfoFragment : Fragment() {
                             findNavController().navigate(request)
                         }
                     }, onWatchProviderClick = { link ->
-                        requireContext().browse(link, true)
-                    })
+                            requireContext().browse(link, true)
+                        })
                 }
             }
         }

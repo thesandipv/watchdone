@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    //All compose dependencies applied with compose.gradle
+    // All compose dependencies applied with compose.gradle
     implementation(projects.base)
     implementation(projects.data)
     implementation(projects.domain)
