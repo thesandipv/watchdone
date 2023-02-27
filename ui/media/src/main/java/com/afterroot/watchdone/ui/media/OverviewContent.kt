@@ -14,6 +14,7 @@
  */
 package com.afterroot.watchdone.ui.media
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -90,7 +91,8 @@ fun OverviewContent(
     isWatched: Boolean = false,
     watchProviders: State<ProviderResults> = State.loading(),
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> }
+    onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
+    onWatchProvidersClick: (link: String) -> Unit = { _ -> }
 ) {
     val gutter = Layout.gutter
     val bodyMargin = Layout.bodyMargin
@@ -132,7 +134,7 @@ fun OverviewContent(
 
                 (movie?.releaseDate ?: tv?.releaseDate)?.let {
                     MetaText(
-                        text = "Date Released: $it",
+                        text = "Release Date: $it",
                         modifier = Modifier.padding(horizontal = bodyMargin),
                         icon = Icons.Rounded.Event
                     )
@@ -155,20 +157,31 @@ fun OverviewContent(
                 }
 
                 watchProviders.composeWhen(success = { providers ->
+                    val providersForCountry = providers.getProvidersForCountry(
+                        LocalSettings.current.country ?: "IN"
+                    )
                     WatchProviders(
                         modifier = Modifier.padding(horizontal = bodyMargin),
                         text = "Available On",
-                        providers = providers.getProvidersForCountry(
-                            LocalSettings.current.country ?: "IN"
-                        )?.flatrateProviders
+                        link = providersForCountry?.link,
+                        providers = providersForCountry?.flatrateProviders,
+                        onClick = {
+                            if (it != null) {
+                                onWatchProvidersClick(it)
+                            }
+                        }
                     )
 
                     WatchProviders(
                         modifier = Modifier.padding(horizontal = bodyMargin),
                         text = "Available for Rent on",
-                        providers = providers.getProvidersForCountry(
-                            LocalSettings.current.country ?: "IN"
-                        )?.rentProviders
+                        link = providersForCountry?.link,
+                        providers = providersForCountry?.rentProviders,
+                        onClick = {
+                            if (it != null) {
+                                onWatchProvidersClick(it)
+                            }
+                        }
                     )
                 })
             }
@@ -187,15 +200,18 @@ fun OverviewContent(
                 else -> DBMedia.Empty
             }
 
-            WatchlistActions(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = bodyMargin, vertical = gutter),
-                isInWatchlist = isInWatchlist,
-                isWatched = isWatched,
-                onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
-                onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
-            )
+            AnimatedVisibility(visible = media != DBMedia.Empty) {
+                WatchlistActions(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = bodyMargin, vertical = gutter),
+                    isInWatchlist = isInWatchlist,
+                    isWatched = isWatched,
+                    onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
+                    onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
+                )
+            }
+
         }
 
         OverviewText(
@@ -206,7 +222,13 @@ fun OverviewContent(
 }
 
 @Composable
-fun WatchProviders(modifier: Modifier = Modifier, text: String? = null, providers: List<Provider>? = emptyList()) {
+fun WatchProviders(
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    link: String? = null,
+    providers: List<Provider>? = emptyList(),
+    onClick: (link: String?) -> Unit = { _ -> }
+) {
     if (providers?.isNotEmpty() == true) {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
             text?.let {
@@ -221,6 +243,9 @@ fun WatchProviders(modifier: Modifier = Modifier, text: String? = null, provider
                         modifier = Modifier
                             .size(32.dp)
                             .clip(RoundedCornerShape(8.dp))
+                            .clickable {
+                                onClick(link)
+                            }
                     )
                 }
             }
