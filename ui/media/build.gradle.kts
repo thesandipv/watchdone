@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.hilt)
