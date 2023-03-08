@@ -271,7 +271,7 @@ internal fun <T : Multi> MediaInfoContent(
             }
         }
         item(key = "spacer") {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(80.dp)) // Adjustment
         }
     }
 }

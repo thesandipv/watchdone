@@ -60,7 +60,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
@@ -261,15 +260,15 @@ fun MetaText(text: String, modifier: Modifier = Modifier, icon: ImageVector? = n
         if (icon != null) {
             Icon(
                 imageVector = icon,
-                contentDescription = "Release Date",
+                contentDescription = text,
                 modifier = Modifier.size(16.dp)
             )
 
             Spacer(modifier = Modifier.padding(2.dp))
         }
 
-        ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-            Text(text = text, fontSize = 12.sp)
+        ProvideTextStyle(value = ubuntuTypography.bodySmall) {
+            Text(text = text)
         }
     }
 }

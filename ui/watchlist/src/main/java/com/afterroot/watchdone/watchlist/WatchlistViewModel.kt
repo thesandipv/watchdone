@@ -61,7 +61,7 @@ class WatchlistViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = WatchlistState.INITIAL
+        initialValue = WatchlistState.Empty
     )
 
     init {
@@ -74,6 +74,7 @@ class WatchlistViewModel @Inject constructor(
                     is WatchlistActions.SetQueryAction -> {
                         savedStateHandle["QUERY_ACTION"] = action.queryAction.name
                     }
+
                     else -> {
                         viewModelScope.launch {
                             uiActions.emit(action)
