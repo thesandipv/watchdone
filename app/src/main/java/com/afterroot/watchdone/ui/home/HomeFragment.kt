@@ -40,6 +40,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
@@ -54,12 +55,14 @@ import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.databinding.FragmentHomeBinding
+import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.helpers.migrateFirestore
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.adapter.MultiPagingAdapter
 import com.afterroot.watchdone.viewmodel.EventObserver
 import com.afterroot.watchdone.viewmodel.HomeViewModel
+import com.afterroot.watchdone.watchlist.Watchlist
 import com.afterroot.watchdone.watchlist.WatchlistActions
 import com.afterroot.watchdone.watchlist.WatchlistViewModel
 import com.google.android.material.chip.Chip
@@ -95,23 +98,29 @@ class HomeFragment : Fragment() {
     lateinit var feedbackBody: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Theme(context = requireContext(), settings = settings) {
+                    // Discover(itemSelectedCallback = itemSelectedCallback)
+                    Watchlist(itemSelectedCallback = itemSelectedCallback)
+                }
+            }
+        }
     }
 
     private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
         override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
             if (item is Movie) {
-                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
-                if (findNavController().currentDestination?.id == R.id.navigation_home) {
-                    findNavController().navigate(directions)
-                }
+                val request = NavDeepLinkRequest.Builder
+                    .fromUri(Deeplink.media(item.id, Multi.MediaType.MOVIE))
+                    .build()
+                findNavController().navigate(request)
             } else if (item is TV) {
-                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
-                if (findNavController().currentDestination?.id == R.id.navigation_home) {
-                    findNavController().navigate(directions)
-                }
+                val request = NavDeepLinkRequest.Builder
+                    .fromUri(Deeplink.media(item.id, Multi.MediaType.TV_SERIES))
+                    .build()
+                findNavController().navigate(request)
             }
         }
 
@@ -125,9 +134,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    fun onViewCreated_old(view: View, savedInstanceState: Bundle?) {
         val menuHost: MenuHost = requireActivity() as MenuHost
         menuHost.addMenuProvider(
             object : MenuProvider {
@@ -161,6 +168,7 @@ class HomeFragment : Fragment() {
                         Timber.d("UiAction: Refresh")
                         homeScreenPagingAdapter.refresh()
                     }
+
                     else -> {
                         // do nothing
                     }
