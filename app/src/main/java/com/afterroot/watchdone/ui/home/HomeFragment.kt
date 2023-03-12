@@ -108,6 +108,26 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val menuHost: MenuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.menu_main, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        else -> menuItem.onNavDestinationSelected(findNavController())
+                    }
+                }
+            },
+            viewLifecycleOwner
+        )
+    }
+
     private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
         override fun onClick(position: Int, view: View?, item: Multi) {
             super.onClick(position, view, item)
