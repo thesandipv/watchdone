@@ -17,6 +17,7 @@ package com.afterroot.watchdone.watchlist
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,21 +30,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.LiveTv
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -61,7 +71,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
@@ -72,10 +81,15 @@ import app.tivi.common.compose.gridItemsIndexed
 import app.tivi.common.compose.ui.plus
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.afterroot.data.utils.valueOrBlank
+import com.afterroot.ui.common.compose.components.AssistChip
 import com.afterroot.ui.common.compose.components.CommonAppBar
+import com.afterroot.ui.common.compose.components.DynamicChipGroup
 import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
+import com.afterroot.ui.common.compose.utils.CenteredRow
+import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
@@ -96,6 +110,13 @@ fun Watchlist(
         itemSelectedCallback = itemSelectedCallback,
         refresh = {
             watchlist.refresh()
+        },
+        sortAction = {
+            viewModel.setSort(!state.sortAscending)
+        },
+        queryAction = {
+            viewModel.setQueryAction(it)
+            watchlist.refresh()
         }
     )
 }
@@ -106,7 +127,9 @@ private fun Watchlist(
     state: WatchlistState,
     watchlist: LazyPagingItems<Multi>,
     itemSelectedCallback: ItemSelectedCallback<Multi>,
-    refresh: () -> Unit
+    refresh: () -> Unit,
+    sortAction: () -> Unit,
+    queryAction: (QueryAction) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -121,6 +144,8 @@ private fun Watchlist(
             onRefresh = refresh
         )
 
+        val scrollState = rememberScrollState()
+
         Box(modifier = Modifier.pullRefresh(state = refreshState)) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -132,7 +157,54 @@ private fun Watchlist(
                     .fillMaxHeight()
             ) {
                 fullSpanItem {
-                    // TODO Filters here
+                    Row(
+                        modifier = Modifier.horizontalScroll(scrollState),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AssistChip(text = if (state.sortAscending) "Ascending" else "Descending", leadingIcon = {
+                            Icon(
+                                imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
+                                contentDescription = "Sort Icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+
+                        }) {
+                            sortAction()
+                            refresh()
+                        }
+
+                        Divider(
+                            modifier = Modifier
+                                .height(FilterChipDefaults.Height)
+                                .width(1.dp)
+                        )
+
+                        CenteredRow {
+                            Icon(
+                                imageVector = Icons.Rounded.FilterAlt,
+                                contentDescription = "Filter Icon",
+                                modifier = Modifier.padding(2.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            FilterChips(modifier = Modifier) { index, selectedList ->
+                                if (selectedList.isEmpty()) {
+                                    queryAction(QueryAction.CLEAR)
+                                    return@FilterChips
+                                }
+                                if (index == 0) {
+                                    queryAction(QueryAction.PENDING)
+                                } else {
+                                    queryAction(QueryAction.WATCHED)
+                                }
+                            }
+                        }
+
+                    }
                 }
                 gridItemsIndexed(items = watchlist, key = { index, item ->
                     when (item.mediaType) {
@@ -312,14 +384,31 @@ fun WatchlistItem(
     }
 }
 
-@Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreviewGradient() {
-    WatchlistItem(
-        poster = null,
-        title = "test",
-        rating = "7.5",
-        releaseDate = "2022-05-20",
-        mediaType = Multi.MediaType.MOVIE
-    )
+private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (index: Int, selectedList: List<Int>) -> Unit) {
+    DynamicChipGroup(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        list = listOf("Pending", "Watched"),
+        // icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
+        onSelectedChanged = { index, _, _, _, selectedList ->
+            onSelectionChanged(index, selectedList)
+        }
+    ) { _, title, icon, selected, onClick ->
+        FilterChip(
+            selected = selected,
+            onClick = { onClick(selected) },
+            label = { Text(text = title.valueOrBlank()) },
+            leadingIcon = {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = "$title Icon",
+                        modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            })
+    }
 }
