@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ProvideTextStyle
@@ -132,6 +133,7 @@ private fun Watchlist(
     queryAction: (QueryAction) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val listState = rememberLazyGridState()
 
     Scaffold(
         topBar = {
@@ -146,127 +148,130 @@ private fun Watchlist(
 
         val scrollState = rememberScrollState()
 
-        Box(modifier = Modifier.pullRefresh(state = refreshState)) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .fillMaxHeight()
-            ) {
-                fullSpanItem {
-                    Row(
-                        modifier = Modifier.horizontalScroll(scrollState),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AssistChip(text = if (state.sortAscending) "Ascending" else "Descending", leadingIcon = {
-                            Icon(
-                                imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
-                                contentDescription = "Sort Icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize),
-                                tint = MaterialTheme.colorScheme.onSurface
+        Box(modifier = Modifier.pullRefresh(state = refreshState).fillMaxWidth()) {
+            if (watchlist.itemCount != 0) {
+                LazyVerticalGrid(
+                    state = listState,
+                    columns = GridCells.Fixed(2),
+                    contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .fillMaxHeight()
+                ) {
+                    fullSpanItem {
+                        Row(
+                            modifier = Modifier.horizontalScroll(scrollState),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AssistChip(text = if (state.sortAscending) "Ascending" else "Descending", leadingIcon = {
+                                Icon(
+                                    imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
+                                    contentDescription = "Sort Icon",
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+
+                            }) {
+                                sortAction()
+                                refresh()
+                            }
+
+                            Divider(
+                                modifier = Modifier
+                                    .height(FilterChipDefaults.Height)
+                                    .width(1.dp)
                             )
 
-                        }) {
-                            sortAction()
-                            refresh()
-                        }
+                            CenteredRow {
+                                Icon(
+                                    imageVector = Icons.Rounded.FilterAlt,
+                                    contentDescription = "Filter Icon",
+                                    modifier = Modifier.padding(2.dp),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
 
-                        Divider(
-                            modifier = Modifier
-                                .height(FilterChipDefaults.Height)
-                                .width(1.dp)
-                        )
+                                Spacer(modifier = Modifier.width(4.dp))
 
-                        CenteredRow {
-                            Icon(
-                                imageVector = Icons.Rounded.FilterAlt,
-                                contentDescription = "Filter Icon",
-                                modifier = Modifier.padding(2.dp),
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-
-                            Spacer(modifier = Modifier.width(4.dp))
-
-                            FilterChips(modifier = Modifier) { index, selectedList ->
-                                if (selectedList.isEmpty()) {
-                                    queryAction(QueryAction.CLEAR)
-                                    return@FilterChips
-                                }
-                                if (index == 0) {
-                                    queryAction(QueryAction.PENDING)
-                                } else {
-                                    queryAction(QueryAction.WATCHED)
+                                FilterChips(modifier = Modifier) { index, selectedList ->
+                                    if (selectedList.isEmpty()) {
+                                        queryAction(QueryAction.CLEAR)
+                                        return@FilterChips
+                                    }
+                                    if (index == 0) {
+                                        queryAction(QueryAction.PENDING)
+                                    } else {
+                                        queryAction(QueryAction.WATCHED)
+                                    }
                                 }
                             }
-                        }
 
-                    }
-                }
-                gridItemsIndexed(items = watchlist, key = { index, item ->
-                    when (item.mediaType) {
-                        Multi.MediaType.MOVIE -> {
-                            (item as Movie).id
-                        }
-
-                        Multi.MediaType.TV_SERIES -> {
-                            (item as TV).id
-                        }
-
-                        else -> {
-                            index
                         }
                     }
-                }) { _, item ->
-                    when (item?.mediaType) {
-                        Multi.MediaType.MOVIE -> {
-                            item as Movie
-                            WatchlistItem(
-                                poster = item.posterPath,
-                                title = item.title,
-                                rating = item.rating(),
-                                releaseDate = item.releaseDate,
-                                modifier = Modifier
-                                    .animateItemPlacement()
-                                    .fillMaxWidth()
-                                    .aspectRatio(2 / 3f),
-                                isWatched = item.isWatched,
-                                mediaType = item.mediaType,
-                                onClick = {
-                                    itemSelectedCallback.onClick(0, null, item)
-                                }
-                            )
-                        }
+                    gridItemsIndexed(items = watchlist, key = { index, item ->
+                        when (item.mediaType) {
+                            Multi.MediaType.MOVIE -> {
+                                (item as Movie).id
+                            }
 
-                        Multi.MediaType.TV_SERIES -> {
-                            item as TV
-                            WatchlistItem(
-                                poster = item.posterPath,
-                                title = item.name,
-                                rating = item.rating(),
-                                releaseDate = item.releaseDate,
-                                modifier = Modifier
-                                    .animateItemPlacement()
-                                    .fillMaxWidth()
-                                    .aspectRatio(2 / 3f),
-                                isWatched = item.isWatched,
-                                mediaType = item.mediaType,
-                                onClick = {
-                                    itemSelectedCallback.onClick(0, null, item)
-                                }
-                            )
-                        }
+                            Multi.MediaType.TV_SERIES -> {
+                                (item as TV).id
+                            }
 
-                        else -> {
-                            // BLANK
+                            else -> {
+                                index
+                            }
+                        }
+                    }) { _, item ->
+                        when (item?.mediaType) {
+                            Multi.MediaType.MOVIE -> {
+                                item as Movie
+                                WatchlistItem(
+                                    poster = item.posterPath,
+                                    title = item.title,
+                                    rating = item.rating(),
+                                    releaseDate = item.releaseDate,
+                                    modifier = Modifier
+                                        .animateItemPlacement()
+                                        .fillMaxWidth()
+                                        .aspectRatio(2 / 3f),
+                                    isWatched = item.isWatched,
+                                    mediaType = item.mediaType,
+                                    onClick = {
+                                        itemSelectedCallback.onClick(0, null, item)
+                                    }
+                                )
+                            }
+
+                            Multi.MediaType.TV_SERIES -> {
+                                item as TV
+                                WatchlistItem(
+                                    poster = item.posterPath,
+                                    title = item.name,
+                                    rating = item.rating(),
+                                    releaseDate = item.releaseDate,
+                                    modifier = Modifier
+                                        .animateItemPlacement()
+                                        .fillMaxWidth()
+                                        .aspectRatio(2 / 3f),
+                                    isWatched = item.isWatched,
+                                    mediaType = item.mediaType,
+                                    onClick = {
+                                        itemSelectedCallback.onClick(0, null, item)
+                                    }
+                                )
+                            }
+
+                            else -> {
+                                // BLANK
+                            }
                         }
                     }
-                }
-                fullSpanItem {
-                    Spacer(modifier = Modifier.height(80.dp)) // Adjustment
+                    fullSpanItem {
+                        Spacer(modifier = Modifier.height(80.dp)) // Adjustment
+                    }
                 }
             }
 
