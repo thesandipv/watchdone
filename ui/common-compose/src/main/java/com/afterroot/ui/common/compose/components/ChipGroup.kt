@@ -238,15 +238,16 @@ fun DynamicChipGroup(
     onSelectedChanged: ((index: Int, title: String, selected: Boolean, list: List<String>, selectedList: List<Int>) -> Unit)? = null,
     chipContent: @Composable (index: Int, title: String, icon: ImageVector?, selected: Boolean, onClick: (selected: Boolean) -> Unit) -> Unit
 ) {
-
     val selectedList = remember { mutableStateListOf<Int>() }
 
     if (selectedList.isEmpty()) {
         if (list != null) {
             if (preSelect.isNotEmpty()) {
-                selectedList.addAll(preSelect.map {
-                    list.indexOf(it)
-                })
+                selectedList.addAll(
+                    preSelect.map {
+                        list.indexOf(it)
+                    }
+                )
             }
             preSelectItem?.let { selectedList.add(list.indexOf(preSelectItem)) }
         }

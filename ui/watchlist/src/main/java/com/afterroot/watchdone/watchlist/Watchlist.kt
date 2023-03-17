@@ -173,7 +173,6 @@ private fun Watchlist(
                                     modifier = Modifier.size(FilterChipDefaults.IconSize),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
-
                             }) {
                                 sortAction()
                                 refresh()
@@ -207,7 +206,6 @@ private fun Watchlist(
                                     }
                                 }
                             }
-
                         }
                     }
                     gridItemsIndexed(items = watchlist, key = { index, item ->
@@ -414,6 +412,7 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
-            })
+            }
+        )
     }
 }
