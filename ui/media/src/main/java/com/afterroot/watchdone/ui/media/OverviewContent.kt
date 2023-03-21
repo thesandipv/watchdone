@@ -91,7 +91,8 @@ fun OverviewContent(
     watchProviders: State<ProviderResults> = State.loading(),
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onWatchProvidersClick: (link: String) -> Unit = { _ -> }
+    onWatchProvidersClick: (link: String) -> Unit = { _ -> },
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
     val gutter = Layout.gutter
     val bodyMargin = Layout.bodyMargin
@@ -200,18 +201,38 @@ fun OverviewContent(
             }
 
             AnimatedVisibility(visible = media != DBMedia.Empty) {
-                WatchlistActions(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = bodyMargin, vertical = gutter),
-                    isInWatchlist = isInWatchlist,
-                    isWatched = isWatched,
-                    onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
-                    onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
-                )
+                Column {
+                    WatchlistActions(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = bodyMargin, vertical = gutter),
+                        isInWatchlist = isInWatchlist,
+                        isWatched = isWatched,
+                        onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
+                        onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
+                    )
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = bodyMargin, vertical = gutter),
+                        onClick = {
+                            if (movie != null) {
+                                movie.posterPath?.let {
+                                    shareToIG?.invoke(movie.id, it)
+                                }
+                            } else if (tv != null) {
+                                tv.posterPath?.let {
+                                    shareToIG?.invoke(tv.id, it)
+                                }
+                            }
+                        }
+                    ) {
+                        Text(text = "Share to Instagram")
+                    }
+                }
             }
         }
-
         OverviewText(
             text = (movie?.overview ?: tv?.overview) ?: "",
             modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
