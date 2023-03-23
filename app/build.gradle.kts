@@ -56,10 +56,6 @@ android {
         applicationId = "com.afterroot.watchdone"
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"].toString()
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-        multiDexEnabled = true
 
         testInstrumentationRunner = "com.afterroot.watchdone.di.HiltTestRunner"
 
@@ -239,4 +235,9 @@ dependencies {
     androidTestImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.test.mockk)
     androidTestImplementation(libs.test.robolectric)
+}
+
+
+fun propOrEnv(propName: String): String {
+    return project.properties[propName] as String? ?: System.getenv(propName)
 }
