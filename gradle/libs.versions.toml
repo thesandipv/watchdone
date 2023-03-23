@@ -1,7 +1,7 @@
 [versions]
 agp = "7.4.2"
 accompanist = "0.28.0"
-activity = "1.6.1"
+activity = "1.7.0"
 ankoCommons = "0.10.8"
 appcompat = "1.6.1"
 billing = "5.1.0"
