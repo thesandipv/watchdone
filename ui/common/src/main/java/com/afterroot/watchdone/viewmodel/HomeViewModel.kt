@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.afterroot.tmdbapi.model.RequestBodyToken
 import com.afterroot.tmdbapi.repository.AuthRepository
+import com.afterroot.watchdone.helpers.Deeplink
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -26,12 +27,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
-    private val authRepository: AuthRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {
         emit( // TODO Deeplink properly
-            authRepository.createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"))
+            authRepository.createRequestToken(RequestBodyToken(Deeplink.launch))
         )
     }
 }

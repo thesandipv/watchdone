@@ -237,7 +237,6 @@ dependencies {
     androidTestImplementation(libs.test.robolectric)
 }
 
-
 fun propOrEnv(propName: String): String {
     return project.properties[propName] as String? ?: System.getenv(propName)
 }
