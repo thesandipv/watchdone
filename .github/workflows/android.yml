@@ -83,6 +83,7 @@ jobs:
           TMDB_API: ${{ secrets.TMDB_API }}
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
           COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
+          FB_APP_ID: ${{ secrets.FB_APP_ID }}
         with:
           cache-read-only: false
           arguments: :app:assembleRelease :app:bundleRelease --stacktrace
@@ -97,6 +98,7 @@ jobs:
           TMDB_API: ${{ secrets.TMDB_API }}
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
           COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
+          FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
       - name: Publish to Play Store
         id: publish-to-play-store

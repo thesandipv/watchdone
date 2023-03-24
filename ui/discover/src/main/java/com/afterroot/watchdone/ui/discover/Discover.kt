@@ -18,13 +18,16 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Movie
@@ -122,6 +125,7 @@ internal fun Discover(
     refresh: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val listState = rememberLazyGridState()
 
     Scaffold(
         topBar = {
@@ -134,48 +138,59 @@ internal fun Discover(
             onRefresh = refresh
         )
 
-        Box(modifier = Modifier.pullRefresh(state = refreshState)) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .fillMaxHeight()
+        Box(
+            modifier = Modifier
+                .pullRefresh(state = refreshState)
+                .fillMaxWidth()
+        ) {
+            if ((state.mediaType == Multi.MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == Multi.MediaType.TV_SERIES && tvItems.itemCount != 0) || !state.isLoading
             ) {
-                fullSpanItem {
-                    DiscoverChips(onMovieSelected = { onMovieChipSelected() }, onTVSelected = { onTVChipSelected() })
-                }
-                if (state.mediaType == Multi.MediaType.MOVIE) {
-                    gridItems(items = movieItems, key = { it.id }) { movie ->
-                        if (movie != null) {
-                            MovieCard(
-                                movie = movie,
-                                onClick = {
-                                    itemSelectedCallback.onClick(0, null, movie)
-                                },
-                                modifier = Modifier
-                                    .animateItemPlacement()
-                                    .fillMaxWidth()
-                                    .aspectRatio(2 / 3f)
-                            )
+                LazyVerticalGrid(
+                    state = listState,
+                    columns = GridCells.Fixed(3),
+                    contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .fillMaxHeight()
+                ) {
+                    fullSpanItem {
+                        DiscoverChips(onMovieSelected = { onMovieChipSelected() }, onTVSelected = { onTVChipSelected() })
+                    }
+                    if (state.mediaType == Multi.MediaType.MOVIE) {
+                        gridItems(items = movieItems, key = { it.id }) { movie ->
+                            if (movie != null) {
+                                MovieCard(
+                                    movie = movie,
+                                    onClick = {
+                                        itemSelectedCallback.onClick(0, null, movie)
+                                    },
+                                    modifier = Modifier
+                                        .animateItemPlacement()
+                                        .fillMaxWidth()
+                                        .aspectRatio(2 / 3f)
+                                )
+                            }
+                        }
+                    } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
+                        gridItems(items = tvItems, key = { it.id }) { tv ->
+                            if (tv != null) {
+                                TVCard(
+                                    tv = tv,
+                                    onClick = {
+                                        itemSelectedCallback.onClick(0, null, tv)
+                                    },
+                                    modifier = Modifier
+                                        .animateItemPlacement()
+                                        .fillMaxWidth()
+                                        .aspectRatio(2 / 3f)
+                                )
+                            }
                         }
                     }
-                } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
-                    gridItems(items = tvItems, key = { it.id }) { tv ->
-                        if (tv != null) {
-                            TVCard(
-                                tv = tv,
-                                onClick = {
-                                    itemSelectedCallback.onClick(0, null, tv)
-                                },
-                                modifier = Modifier
-                                    .animateItemPlacement()
-                                    .fillMaxWidth()
-                                    .aspectRatio(2 / 3f)
-                            )
-                        }
+                    fullSpanItem {
+                        Spacer(modifier = Modifier.height(80.dp))
                     }
                 }
             }

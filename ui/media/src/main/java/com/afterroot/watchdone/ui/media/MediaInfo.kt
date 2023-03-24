@@ -55,13 +55,15 @@ import info.movito.themoviedbapi.model.Multi
 fun MediaInfo(
     navigateUp: () -> Unit,
     onRecommendedClick: (media: Multi) -> Unit,
-    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+    onWatchProviderClick: (link: String) -> Unit = { _ -> },
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
     MediaInfo(
         viewModel = hiltViewModel(),
         navigateUp = navigateUp,
         onRecommendedClick = onRecommendedClick,
-        onWatchProviderClick = onWatchProviderClick
+        onWatchProviderClick = onWatchProviderClick,
+        shareToIG = shareToIG
     )
 }
 
@@ -70,7 +72,8 @@ internal fun MediaInfo(
     viewModel: MediaInfoViewModel,
     navigateUp: () -> Unit,
     onRecommendedClick: (media: Multi) -> Unit,
-    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+    onWatchProviderClick: (link: String) -> Unit = { _ -> },
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
     val viewState by viewModel.state.collectAsState()
     if (viewState.mediaType == Multi.MediaType.MOVIE) {
@@ -81,7 +84,8 @@ internal fun MediaInfo(
             onWatchlistAction = viewModel::watchlistAction,
             onWatchedAction = viewModel::watchStateAction,
             onRecommendedClick = onRecommendedClick,
-            onWatchProviderClick = onWatchProviderClick
+            onWatchProviderClick = onWatchProviderClick,
+            shareToIG = shareToIG
         )
     } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
         val recommended = viewModel.getRecommendedShows(viewState.mediaId).collectAsLazyPagingItems()
@@ -95,7 +99,8 @@ internal fun MediaInfo(
             onEpisodeWatchAction = { episode, isWatched ->
                 viewModel.episodeWatchStateAction(episodeId = episode.id.toString(), isWatched)
             },
-            onWatchProviderClick = onWatchProviderClick
+            onWatchProviderClick = onWatchProviderClick,
+            shareToIG = shareToIG
         )
     }
 }
@@ -110,7 +115,8 @@ internal fun <T : Multi> MediaInfo(
     onRecommendedClick: (media: T) -> Unit = {},
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
-    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+    onWatchProviderClick: (link: String) -> Unit = { _ -> },
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
@@ -137,6 +143,7 @@ internal fun <T : Multi> MediaInfo(
                 onSeasonSelected = onSeasonSelected,
                 onEpisodeWatchAction = onEpisodeWatchAction,
                 onWatchProviderClick = onWatchProviderClick,
+                shareToIG = shareToIG,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -155,6 +162,7 @@ internal fun <T : Multi> MediaInfoContent(
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
     modifier: Modifier
 ) {
     val gutter = Layout.gutter
@@ -192,7 +200,8 @@ internal fun <T : Multi> MediaInfoContent(
                 watchProviders = viewState.watchProviders,
                 onWatchlistAction = onWatchlistAction,
                 onWatchedAction = onWatchedAction,
-                onWatchProvidersClick = onWatchProviderClick
+                onWatchProvidersClick = onWatchProviderClick,
+                shareToIG = shareToIG
             )
         }
 
@@ -271,7 +280,7 @@ internal fun <T : Multi> MediaInfoContent(
             }
         }
         item(key = "spacer") {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(80.dp)) // Adjustment
         }
     }
 }

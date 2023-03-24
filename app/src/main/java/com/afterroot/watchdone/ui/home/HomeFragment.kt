@@ -15,78 +15,41 @@
 package com.afterroot.watchdone.ui.home
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FilterAlt
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
-import androidx.transition.AutoTransition
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.ui.common.compose.theme.Theme
-import com.afterroot.ui.common.compose.utils.CenteredRow
-import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.showStaticProgressDialog
-import com.afterroot.utils.extensions.visible
 import com.afterroot.watchdone.R
-import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
-import com.afterroot.watchdone.databinding.FragmentHomeBinding
+import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.helpers.migrateFirestore
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.ui.media.adapter.MultiPagingAdapter
-import com.afterroot.watchdone.viewmodel.EventObserver
-import com.afterroot.watchdone.viewmodel.HomeViewModel
-import com.afterroot.watchdone.watchlist.WatchlistActions
-import com.afterroot.watchdone.watchlist.WatchlistViewModel
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
-import com.google.firebase.auth.FirebaseAuth
+import com.afterroot.watchdone.watchlist.Watchlist
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Multi
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
-import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
-    private lateinit var homeScreenPagingAdapter: MultiPagingAdapter
-    private val homeViewModel: HomeViewModel by activityViewModels()
-    private val watchlistViewModel: WatchlistViewModel by viewModels()
-
     @Inject lateinit var settings: Settings
-
-    @Inject lateinit var firebaseAuth: FirebaseAuth
 
     @Inject lateinit var firestore: FirebaseFirestore
 
@@ -95,32 +58,11 @@ class HomeFragment : Fragment() {
     lateinit var feedbackBody: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
-        override fun onClick(position: Int, view: View?, item: Multi) {
-            super.onClick(position, view, item)
-            if (item is Movie) {
-                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.MOVIE.name)
-                if (findNavController().currentDestination?.id == R.id.navigation_home) {
-                    findNavController().navigate(directions)
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Theme(context = requireContext(), settings = settings) {
+                    Watchlist(itemSelectedCallback = itemSelectedCallback)
                 }
-            } else if (item is TV) {
-                val directions = HomeFragmentDirections.toMediaInfo(item.id, Multi.MediaType.TV_SERIES.name)
-                if (findNavController().currentDestination?.id == R.id.navigation_home) {
-                    findNavController().navigate(directions)
-                }
-            }
-        }
-
-        override fun onLongClick(position: Int, item: Multi) {
-            super.onLongClick(position, item)
-            if (item is Movie) {
-                requireContext().toast((item).title.toString())
-            } else if (item is TV) {
-                requireContext().toast((item).name.toString())
             }
         }
     }
@@ -143,124 +85,32 @@ class HomeFragment : Fragment() {
             },
             viewLifecycleOwner
         )
-
-        homeScreenPagingAdapter = MultiPagingAdapter(itemSelectedCallback, settings)
-        binding.list.adapter = homeScreenPagingAdapter
-        // homeScreenAdapter.submitQuery(settings.queryDirection)
-        homeViewModel.addGenres(viewLifecycleOwner)
-
-        lifecycleScope.launch {
-            watchlistViewModel.watchlist.collectLatest {
-                homeScreenPagingAdapter.submitData(it)
-            }
-        }
-        lifecycleScope.launch {
-            watchlistViewModel.uiActions.collect { action ->
-                when (action) {
-                    WatchlistActions.Refresh -> {
-                        Timber.d("UiAction: Refresh")
-                        homeScreenPagingAdapter.refresh()
-                    }
-                    else -> {
-                        // do nothing
-                    }
-                }
-            }
-        }
-
-        setErrorObserver()
-        setUpChips()
     }
 
-    private var isWatchedChecked: Boolean = false
-    private lateinit var sortChip: Chip
-    private fun setUpChips() {
-        // TODO Remember chip state using view model.
-        sortChip = Chip(requireContext(), null, CommonR.attr.SortChipStyle).apply {
-            text = if (settings.ascSort) "Ascending" else "Descending"
-            chipIcon = requireContext().getDrawableExt(CommonR.drawable.ic_sort)
-            setOnClickListener {
-                val curr = settings.ascSort
-                settings.ascSort = !curr
-                this.text = if (!settings.ascSort) "Ascending" else "Descending"
-                watchlistViewModel.submitAction(WatchlistActions.Refresh)
+    private val itemSelectedCallback = object : ItemSelectedCallback<Multi> {
+        override fun onClick(position: Int, view: View?, item: Multi) {
+            super.onClick(position, view, item)
+            if (item is Movie) {
+                val request = NavDeepLinkRequest.Builder
+                    .fromUri(Deeplink.media(item.id, Multi.MediaType.MOVIE))
+                    .build()
+                findNavController().navigate(request)
+            } else if (item is TV) {
+                val request = NavDeepLinkRequest.Builder
+                    .fromUri(Deeplink.media(item.id, Multi.MediaType.TV_SERIES))
+                    .build()
+                findNavController().navigate(request)
             }
         }
 
-        val watchStatusGroup = ChipGroup(requireContext()).apply {
-            isSingleSelection = true
-            isSingleLine = true
-        }
-
-        val isWatchedChip = Chip(requireContext(), null, CommonR.attr.FilterChip).apply {
-            text = context.getString(CommonR.string.text_ship_show_watched)
-            isCheckable = true
-            setOnCheckedChangeListener { _, isChecked ->
-                watchlistViewModel.submitAction(WatchlistActions.SetQueryAction(if (isChecked) QueryAction.WATCHED else QueryAction.CLEAR))
-                watchlistViewModel.submitAction(WatchlistActions.Refresh)
+        override fun onLongClick(position: Int, item: Multi) {
+            super.onLongClick(position, item)
+            if (item is Movie) {
+                requireContext().toast((item).title.toString())
+            } else if (item is TV) {
+                requireContext().toast((item).name.toString())
             }
         }
-
-        val pending = Chip(requireContext(), null, CommonR.attr.FilterChip).apply {
-            text = "Pending"
-            isCheckable = true
-            setOnCheckedChangeListener { _, isChecked ->
-                watchlistViewModel.submitAction(WatchlistActions.SetQueryAction(if (isChecked) QueryAction.PENDING else QueryAction.CLEAR))
-                watchlistViewModel.submitAction(WatchlistActions.Refresh)
-            }
-        }
-        binding.chipGroup.apply {
-            addView(sortChip)
-
-            addView(
-                ComposeView(requireContext()).apply {
-                    gravity = Gravity.CENTER
-                    layoutParams =
-                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                    setContent {
-                        Theme(context = requireContext(), settings = settings) {
-                            CenteredRow {
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Divider(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .width(1.dp)
-                                        .padding(vertical = 8.dp)
-                                )
-                                Icon(
-                                    imageVector = Icons.Rounded.FilterAlt,
-                                    contentDescription = "Filter Icon",
-                                    modifier = Modifier.padding(8.dp),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        }
-                    }
-                }
-            )
-
-            watchStatusGroup.apply {
-                addView(isWatchedChip)
-                addView(pending)
-            }
-            addView(watchStatusGroup)
-        }
-    }
-
-    // TODO Show loading
-    fun setLoading(isLoading: Boolean) {
-        binding.progressBarHome.visible(isLoading)
-    }
-
-    // TODO Show info message
-    fun infoMessage(show: Boolean, action: QueryAction = QueryAction.CLEAR) {
-        binding.infoNoMovies.visible(show, AutoTransition())
-        binding.infoTv.text =
-            if (action != QueryAction.CLEAR) {
-                getString(CommonR.string.text_info_no_movies_in_filter)
-            } else {
-                getString(CommonR.string.text_info_no_movies)
-            }
     }
 
     /**
@@ -287,19 +137,5 @@ class HomeFragment : Fragment() {
                 negativeButton(text = "Later")
             }
         }
-    }
-
-    private fun setErrorObserver() {
-        homeViewModel.error.observe(
-            viewLifecycleOwner,
-            EventObserver {
-                binding.progressBarHome.visible(false, AutoTransition())
-                requireContext().toast("Via: $TAG : $it")
-            }
-        )
-    }
-
-    companion object {
-        private const val TAG = "HomeFragment"
     }
 }

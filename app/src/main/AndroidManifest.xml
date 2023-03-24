@@ -16,6 +16,13 @@
             <action android:name="android.intent.action.SENDTO" />
             <data android:scheme="mailto" />
         </intent>
+        <!--
+                <intent>
+                    <action android:name='com.instagram.share.ADD_TO_STORY' />
+                    <data android:mimeType='image/*' />
+                </intent>
+        -->
+
     </queries>
 
     <application
@@ -32,8 +39,8 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/MyTheme.Watchdone.Main">
+            android:theme="@style/MyTheme.Watchdone.Main"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -101,12 +108,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
         </provider>
-
-        <provider
-            android:name=".providers.RecentSearchSuggestionsProvider"
-            android:authorities="${applicationId}.provider"
-            android:enabled="true"
-            android:exported="false" />
 
         <service
             android:name=".FireMessagingService"

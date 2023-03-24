@@ -303,7 +303,7 @@ class MainActivity : AppCompatActivity() {
             this.hideKeyboard(binding.root)
             when (destination.id) {
                 R.id.navigation_home -> {
-                    setTitle(getString(CommonR.string.title_watchlist))
+                    setTitle(null)
                     binding.fab.apply {
                         show()
                         setOnClickListener { navController.navigate(R.id.toSearchNew) }
