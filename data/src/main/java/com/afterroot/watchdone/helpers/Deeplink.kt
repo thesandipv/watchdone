@@ -20,4 +20,6 @@ import info.movito.themoviedbapi.model.Multi
 object Deeplink {
     fun media(mediaId: Int, mediaType: Multi.MediaType) =
         "https://watchdone.web.app/media/${mediaType.name}/$mediaId".toUri()
+
+    const val launch = "https://afterroot.web.app/apps/watchdone/launch"
 }

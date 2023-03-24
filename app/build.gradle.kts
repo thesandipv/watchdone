@@ -56,10 +56,6 @@ android {
         applicationId = "com.afterroot.watchdone"
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"].toString()
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-        multiDexEnabled = true
 
         testInstrumentationRunner = "com.afterroot.watchdone.di.HiltTestRunner"
 
@@ -81,6 +77,7 @@ android {
             tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN")
         )
         buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
+        buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
 
         val commitHash = ByteArrayOutputStream()
         exec {
@@ -238,4 +235,8 @@ dependencies {
     androidTestImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.test.mockk)
     androidTestImplementation(libs.test.robolectric)
+}
+
+fun propOrEnv(propName: String): String {
+    return project.properties[propName] as String? ?: System.getenv(propName)
 }

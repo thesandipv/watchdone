@@ -21,23 +21,15 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.WatchlistPagingSource
-import com.afterroot.watchdone.data.mapper.toMulti
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.utils.collectionWatchdone
-import com.afterroot.watchdone.viewmodel.ViewModelState
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import info.movito.themoviedbapi.model.Multi
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -46,23 +38,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WatchlistViewModel @Inject constructor(
-    val savedStateHandle: SavedStateHandle,
-    var db: FirebaseFirestore,
+    private val savedStateHandle: SavedStateHandle,
+    private var db: FirebaseFirestore,
     var settings: Settings,
     var firebaseUtils: FirebaseUtils
 ) : ViewModel() {
     private val uid: String = firebaseUtils.uid.toString()
     private val actions = MutableSharedFlow<WatchlistActions>()
     val uiActions = MutableSharedFlow<WatchlistActions>()
-    val flowIsLoading = MutableStateFlow(false)
+    private val flowIsLoading = MutableStateFlow(false)
+    private val sortAscending = MutableStateFlow(settings.ascSort)
 
-    val state: StateFlow<WatchlistState> = combine(flowIsLoading) { isLoading ->
-        WatchlistState(isLoading[0])
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = WatchlistState.INITIAL
-    )
+    val state: StateFlow<WatchlistState> =
+        combine(
+            flowIsLoading,
+            sortAscending
+        ) { isLoading, sortAsc ->
+            WatchlistState(loading = isLoading, sortAscending = sortAsc)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = WatchlistState.Empty
+        )
 
     init {
         Timber.d("init: Initializing")
@@ -74,6 +71,7 @@ class WatchlistViewModel @Inject constructor(
                     is WatchlistActions.SetQueryAction -> {
                         savedStateHandle["QUERY_ACTION"] = action.queryAction.name
                     }
+
                     else -> {
                         viewModelScope.launch {
                             uiActions.emit(action)
@@ -90,36 +88,13 @@ class WatchlistViewModel @Inject constructor(
         }
     }
 
-    @Deprecated("Use WatchlistPagingSource instead")
-    fun getWatchlistSnapshot(userId: String = uid): Flow<ViewModelState> = callbackFlow {
-        val ref = db.collectionWatchdone(id = userId, settings.isUseProdDb)
-            .document(Collection.WATCHLIST)
-            .collection(Collection.ITEMS)
-        val subs = ref.addSnapshotListener { value, error ->
-            if (value == null) return@addSnapshotListener
-            try {
-                trySend(ViewModelState.Loaded(value)).isSuccess
-            } catch (e: Throwable) {
-            }
-        }
-
-        awaitClose { subs.remove() }
+    fun setSort(ascending: Boolean) {
+        settings.ascSort = ascending
+        sortAscending.value = ascending
     }
 
-    @Deprecated("Use WatchlistPagingSource instead")
-    fun getWatchlistItems(userId: String = uid): Flow<List<Multi>> = callbackFlow {
-        val ref = db.collectionWatchdone(id = userId, settings.isUseProdDb)
-            .document(Collection.WATCHLIST)
-            .collection(Collection.ITEMS)
-        val subs = ref.addSnapshotListener { value, _ ->
-            if (value == null) return@addSnapshotListener
-            try {
-                this.trySend(value.toMulti()).isSuccess
-            } catch (e: Throwable) {
-            }
-        }
-
-        awaitClose { subs.remove() }
+    fun setQueryAction(queryAction: QueryAction) {
+        savedStateHandle["QUERY_ACTION"] = queryAction.name
     }
 
     val watchlist = Pager(PagingConfig(20)) {

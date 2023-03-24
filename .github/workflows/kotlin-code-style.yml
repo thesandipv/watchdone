@@ -30,5 +30,6 @@ jobs:
           SIGN_STORE_PW: ${{ secrets.SIGN_STORE_PW }}
           TMDB_API: ${{ secrets.TMDB_API }}
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+          FB_APP_ID: ${{ secrets.FB_APP_ID }}
         with:
           arguments: spotlessKotlinCheck --stacktrace

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -61,6 +62,24 @@ fun CommonFilterChip(
         onClick = {
             onSelectionChanged(text.valueOrBlank(), !selected)
         },
+        label = {
+            Text(text = text.valueOrBlank())
+        },
+        leadingIcon = leadingIcon
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AssistChip(
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    onClick: () -> Unit
+) {
+    AssistChip(
+        modifier = modifier,
+        onClick = onClick,
         label = {
             Text(text = text.valueOrBlank())
         },
@@ -204,5 +223,64 @@ fun SuggestionChipGroup(
             )
         }
         Spacer(modifier = Modifier.width(horizontalPadding))
+    }
+}
+
+@Composable
+fun DynamicChipGroup(
+    modifier: Modifier = Modifier,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+    icons: List<ImageVector?> = emptyList(),
+    list: List<String>? = null,
+    preSelect: List<String> = emptyList(),
+    preSelectItem: String? = null,
+    selectionType: SelectionType = SelectionType.Single,
+    onSelectedChanged: ((index: Int, title: String, selected: Boolean, list: List<String>, selectedList: List<Int>) -> Unit)? = null,
+    chipContent: @Composable (index: Int, title: String, icon: ImageVector?, selected: Boolean, onClick: (selected: Boolean) -> Unit) -> Unit
+) {
+    val selectedList = remember { mutableStateListOf<Int>() }
+
+    if (selectedList.isEmpty()) {
+        if (list != null) {
+            if (preSelect.isNotEmpty()) {
+                selectedList.addAll(
+                    preSelect.map {
+                        list.indexOf(it)
+                    }
+                )
+            }
+            preSelectItem?.let { selectedList.add(list.indexOf(preSelectItem)) }
+        }
+    }
+
+    Row(modifier = modifier, horizontalArrangement = horizontalArrangement) {
+        list?.forEachIndexed { index, label ->
+            chipContent(
+                index = index,
+                title = label,
+                icon = if (icons.isNotEmpty()) icons[index] else null,
+                selected = selectedList.contains(index),
+                onClick = { selected ->
+                    when (selectionType) {
+                        SelectionType.Single -> {
+                            selectedList.apply {
+                                clear()
+                                add(index)
+                            }
+                        }
+
+                        SelectionType.Multiple -> {
+                            if (selectedList.contains(index)) {
+                                selectedList.remove(index)
+                            } else {
+                                selectedList.add(index)
+                            }
+                        }
+                    }
+
+                    onSelectedChanged?.invoke(index, label, selected, list, selectedList)
+                }
+            )
+        }
     }
 }
