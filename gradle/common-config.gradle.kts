@@ -11,7 +11,7 @@ val composeProjects =
         ":ui:watchlist",
     )
 if (project.path in composeProjects) {
-    println("- INFO: Compose Enabled")
+    println("- INFO: Compose Enabled for ${project.path}")
     apply(from = "$rootDir/gradle/compose.gradle")
 }
 
