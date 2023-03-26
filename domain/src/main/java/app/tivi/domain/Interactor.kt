@@ -1,11 +1,11 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit
 abstract class Interactor<in P> {
     operator fun invoke(
         params: P,
-        timeoutMs: Long = defaultTimeoutMs
+        timeoutMs: Long = defaultTimeoutMs,
     ): Flow<InvokeStatus> = flow {
         try {
             withTimeout(timeoutMs) {
@@ -58,6 +58,8 @@ abstract class Interactor<in P> {
     }
 }
 
+suspend inline fun Interactor<Unit>.executeSync() = executeSync(Unit)
+
 abstract class ResultInteractor<in P, R> {
     operator fun invoke(params: P): Flow<R> = flow {
         emit(doWork(params))
@@ -68,6 +70,22 @@ abstract class ResultInteractor<in P, R> {
     protected abstract suspend fun doWork(params: P): R
 }
 
+suspend inline fun <R> ResultInteractor<Unit, R>.executeSync(): R = executeSync(Unit)
+
+abstract class PagingInteractor<P : PagingInteractor.Parameters<T>, T : Any> : SubjectInteractor<P, PagingData<T>>() {
+    interface Parameters<T : Any> {
+        val pagingConfig: PagingConfig
+    }
+}
+
+abstract class SuspendingWorkInteractor<P : Any, T> : SubjectInteractor<P, T>() {
+    override suspend fun createObservable(params: P): Flow<T> = flow {
+        emit(doWork(params))
+    }
+
+    abstract suspend fun doWork(params: P): T
+}
+
 abstract class SubjectInteractor<P : Any, T> {
     // Ideally this would be buffer = 0, since we use flatMapLatest below, BUT invoke is not
     // suspending. This means that we can't suspend while flatMapLatest cancels any
@@ -76,7 +94,7 @@ abstract class SubjectInteractor<P : Any, T> {
     private val paramState = MutableSharedFlow<P>(
         replay = 1,
         extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
     val flow: Flow<T> = paramState
@@ -89,10 +107,4 @@ abstract class SubjectInteractor<P : Any, T> {
     }
 
     protected abstract suspend fun createObservable(params: P): Flow<T>
-}
-
-abstract class PagingInteractor<P : PagingInteractor.Parameters<T>, T : Any> : SubjectInteractor<P, PagingData<T>>() {
-    interface Parameters<T : Any> {
-        val pagingConfig: PagingConfig
-    }
 }
