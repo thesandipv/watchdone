@@ -20,10 +20,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -31,15 +28,13 @@ import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.os.ConfigurationCompat
-import androidx.core.view.MenuProvider
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.onNavDestinationSelected
 import androidx.transition.AutoTransition
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
+import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.extensions.getDrawableExt
 import com.afterroot.utils.extensions.progress
 import com.afterroot.utils.extensions.visible
@@ -53,6 +48,7 @@ import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.showNetworkDialog
+import com.afterroot.watchdone.ui.home.Home
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
@@ -64,9 +60,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.browse
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
-import org.jetbrains.anko.email
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -102,7 +98,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        setContent {
+            Theme(context = this, settings = settings) {
+                Home(onWatchProviderClick = { link ->
+                    browse(link, true)
+                })
+            }
+        }
+        /*binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
 
         (this as ComponentActivity).addMenuProvider(object : MenuProvider {
@@ -123,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                     else -> menuItem.onNavDestinationSelected(navController)
                 }
             }
-        })
+        })*/
     }
 
     override fun onStart() {
@@ -188,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 
         onVersionGreaterThanEqualTo(Build.VERSION_CODES.M, ::checkPermissions)
 
-        setUpNavigation()
+        // setUpNavigation()
 
         // Add user in db if not available
         addUserInfoInDB()
@@ -264,7 +268,7 @@ class MainActivity : AppCompatActivity() {
         if (permissionChecker.lacksPermissions(manifestPermissions)) { // missing permissions
             ActivityCompat.requestPermissions(this, manifestPermissions, RC_PERMISSION)
         } else { // no missing permissions
-            setUpNavigation()
+            // setUpNavigation()
         }
     }
 
@@ -282,7 +286,7 @@ class MainActivity : AppCompatActivity() {
                         checkPermissions()
                     }.anchorView = binding.toolbar
                 } else {
-                    setUpNavigation()
+                    // setUpNavigation()
                 }
             }
         }
@@ -324,23 +328,27 @@ class MainActivity : AppCompatActivity() {
                     binding.fab.hide()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
+
                 R.id.navigation_edit_profile -> {
                     setTitle(getString(CommonR.string.title_edit_profile))
                     binding.fab.show()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
+
                 R.id.navigation_discover -> {
                     binding.titleLayout.visible(false, AutoTransition())
                     setTitle(null)
                     binding.fab.hide()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
+
                 R.id.navigation_search_new -> {
                     binding.titleLayout.visible(false, AutoTransition())
                     setTitle(null)
                     binding.fab.hide()
                     drawerToggle.progress(0f, 1f) // As back arrow
                 }
+
                 R.id.navigation_media_info -> {
                     setTitle(null)
                     binding.titleLayout.visible(false)
@@ -365,11 +373,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp()
-    }
-
-    companion object {
-        private const val TAG = "MainActivity"
-    }
+    /*
+        override fun onSupportNavigateUp(): Boolean {
+            return navController.navigateUp()
+        }
+    */
 }

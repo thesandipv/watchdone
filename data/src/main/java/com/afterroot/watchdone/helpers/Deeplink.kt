@@ -15,11 +15,24 @@
 package com.afterroot.watchdone.helpers
 
 import androidx.core.net.toUri
+import com.afterroot.watchdone.base.Constants
 import info.movito.themoviedbapi.model.Multi
+import okhttp3.HttpUrl
 
 object Deeplink {
-    fun media(mediaId: Int, mediaType: Multi.MediaType) =
-        "https://watchdone.web.app/media/${mediaType.name}/$mediaId".toUri()
+    fun media(mediaId: Int, mediaType: Multi.MediaType) = HttpUrl.Builder()
+        .scheme(Constants.SCHEME_HTTPS)
+        .host(Constants.WATCHDONE_HOST)
+        .addPathSegment("media")
+        .addPathSegment(mediaType.name)
+        .addPathSegment(mediaId.toString())
+        .build().toString().toUri()
 
-    const val launch = "https://afterroot.web.app/apps/watchdone/launch"
+    val launch = HttpUrl.Builder()
+        .scheme(Constants.SCHEME_HTTPS)
+        .host(Constants.AFTERROOT_HOST)
+        .addPathSegment("apps")
+        .addPathSegment("watchdone")
+        .addPathSegment("launch")
+        .build().toString()
 }

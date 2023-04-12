@@ -80,10 +80,10 @@ class MediaInfoFragment : Fragment() {
                             findNavController().navigate(request)
                         }
                     }, onWatchProviderClick = { link ->
-                        requireContext().browse(link, true)
-                    }, shareToIG = { mediaId: Int, poster: String ->
-                        shareToInstagram(poster, mediaId)
-                    })
+                            requireContext().browse(link, true)
+                        }, shareToIG = { mediaId: Int, poster: String ->
+                            shareToInstagram(poster, mediaId)
+                        })
                 }
             }
         }
