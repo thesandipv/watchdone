@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -79,11 +78,9 @@ android {
         buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
         buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
 
-        val commitHash = ByteArrayOutputStream()
-        exec {
+        val commitHash = providers.exec {
             commandLine("git", "rev-parse", "--short", "HEAD")
-            standardOutput = commitHash
-        }
+        }.standardOutput.asText.get()
 
         val commit = System.getenv("COMMIT_ID") ?: commitHash.toString().trim()
         buildConfigField("String", "COMMIT_ID", "\"$commit\"")
