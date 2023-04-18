@@ -61,8 +61,9 @@ fun Home(onWatchProviderClick: (link: String) -> Unit = { _ -> }) {
     Scaffold(bottomBar = {
         val currentSelectedItem by navController.currentScreenAsState()
         HomeNavigationBar(
-            selectedRootScreen = currentSelectedItem, onNavigationSelected = { seleted ->
-                navController.navigate(seleted.route) {
+            selectedRootScreen = currentSelectedItem,
+            onNavigationSelected = { selected ->
+                navController.navigate(selected.route) {
                     launchSingleTop = true
                     restoreState = true
 

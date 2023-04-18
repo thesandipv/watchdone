@@ -97,26 +97,35 @@ private fun NavGraphBuilder.addMediaInfo(
     rootScreen: RootScreen,
     onWatchProviderClick: (link: String) -> Unit = { _ -> }
 ) {
-    composable(route = Screen.MediaInfo.createRoute(rootScreen), arguments = listOf(
-        navArgument("type") {
-            type = NavType.StringType
-        }, navArgument("mediaId") {
-            type = NavType.IntType
-        }
-    ), deepLinks = listOf(
-        navDeepLink {
-            uriPattern = "${Constants.SCHEME_HTTPS}://${Constants.WATCHDONE_HOST}/media/{type}/{mediaId}"
-        }
-    )) {
-        MediaInfo(navigateUp = {
-            //TODO
-        }, onRecommendedClick = {
-            if (it is Movie) {
-                navController.navigate(Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id))
-            } else if (it is TV) {
-                navController.navigate(Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id))
+    composable(
+        route = Screen.MediaInfo.createRoute(rootScreen),
+        arguments = listOf(
+            navArgument("type") {
+                type = NavType.StringType
+            },
+            navArgument("mediaId") {
+                type = NavType.IntType
             }
-        }, onWatchProviderClick = onWatchProviderClick)
+        ),
+        deepLinks = listOf(
+            navDeepLink {
+                uriPattern = "${Constants.SCHEME_HTTPS}://${Constants.WATCHDONE_HOST}/media/{type}/{mediaId}"
+            }
+        )
+    ) {
+        MediaInfo(
+            navigateUp = {
+                // TODO
+            },
+            onRecommendedClick = {
+                if (it is Movie) {
+                    navController.navigate(Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id))
+                } else if (it is TV) {
+                    navController.navigate(Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id))
+                }
+            },
+            onWatchProviderClick = onWatchProviderClick
+        )
     }
 }
 
@@ -145,11 +154,14 @@ private fun NavGraphBuilder.addSearchRoot(navController: NavHostController) {
 }
 
 private fun NavGraphBuilder.addSearch(navController: NavHostController, rootScreen: RootScreen) {
-    composable(route = Screen.Search.createRoute(rootScreen), deepLinks = listOf(
-        navDeepLink {
-            uriPattern = "${Constants.SCHEME_HTTPS}://${Constants.WATCHDONE_HOST}/search"
-        }
-    )) {
+    composable(
+        route = Screen.Search.createRoute(rootScreen),
+        deepLinks = listOf(
+            navDeepLink {
+                uriPattern = "${Constants.SCHEME_HTTPS}://${Constants.WATCHDONE_HOST}/search"
+            }
+        )
+    ) {
         Search(viewModel = hiltViewModel(), itemSelectedCallback = itemSelectedCallback(navController))
     }
 }

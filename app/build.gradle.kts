@@ -51,17 +51,13 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders += mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
         namespace = "com.afterroot.watchdone"
         applicationId = "com.afterroot.watchdone"
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"].toString()
 
         testInstrumentationRunner = "com.afterroot.watchdone.di.HiltTestRunner"
-
-        manifestPlaceholders += mapOf(
-            "hostName" to "afterroot.web.app",
-            "pathPrefix" to "/apps/watchdone/launch"
-        )
 
         resourceConfigurations.addAll(listOf("en"))
 
