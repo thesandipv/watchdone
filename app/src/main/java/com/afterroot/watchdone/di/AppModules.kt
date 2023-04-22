@@ -15,8 +15,9 @@
 package com.afterroot.watchdone.di
 
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.CoroutineDispatchers
+import com.afterroot.watchdone.di.VersionInfo.provideVersionCode
+import com.afterroot.watchdone.di.VersionInfo.provideVersionName
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -42,19 +43,6 @@ object AppModules {
     @Provides
     @Named("feedback_email")
     fun provideFeedbackEmail(): String = "afterhasroot@gmail.com"
-
-    @Provides
-    @Named("version_Code")
-    fun provideVersionCode(): Int = BuildConfig.VERSION_CODE
-
-    @Provides
-    @Named("version_name")
-    fun provideVersionName(): String = BuildConfig.VERSION_NAME
-
-    @Provides
-    @Named("version_string")
-    fun provideVersionString() =
-        "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) - ${BuildConfig.COMMIT_ID}"
 
     @Provides
     @Named("feedback_body")

@@ -73,13 +73,6 @@ android {
         )
         buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
         buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
-
-        val commitHash = providers.exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-        }.standardOutput.asText.get()
-
-        val commit = System.getenv("COMMIT_ID") ?: commitHash.toString().trim()
-        buildConfigField("String", "COMMIT_ID", "\"$commit\"")
     }
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -119,15 +112,13 @@ android {
         }
     }
 
-    packagingOptions {
-        packagingOptions.resources.excludes += setOf(
-            "META-INF/proguard/*",
-            "/*.properties",
-            "fabric/*.properties",
-            "META-INF/*.properties",
-            "META-INF/LICENSE*.md"
-        )
-    }
+    packaging.resources.excludes += setOf(
+        "META-INF/proguard/*",
+        "/*.properties",
+        "fabric/*.properties",
+        "META-INF/*.properties",
+        "META-INF/LICENSE*.md"
+    )
 
     lint {
         abortOnError = false

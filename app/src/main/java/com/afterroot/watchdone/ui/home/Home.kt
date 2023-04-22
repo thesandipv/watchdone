@@ -55,7 +55,7 @@ import com.afterroot.watchdone.resources.R as CommonR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(onWatchProviderClick: (link: String) -> Unit = { _ -> }) {
+fun Home(onWatchProviderClick: (link: String) -> Unit = { _ -> }, settingsAction: () -> Unit) {
     val navController = rememberNavController()
 
     Scaffold(bottomBar = {
@@ -78,7 +78,8 @@ fun Home(onWatchProviderClick: (link: String) -> Unit = { _ -> }) {
         AppNavigation(
             navController = navController,
             modifier = Modifier.padding(paddingValues),
-            onWatchProviderClick = onWatchProviderClick
+            onWatchProviderClick = onWatchProviderClick,
+            settingsAction = settingsAction
         )
     }
 }

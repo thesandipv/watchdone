@@ -49,6 +49,7 @@ import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.ui.home.Home
+import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
@@ -63,6 +64,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.design.snackbar
+import org.jetbrains.anko.startActivity
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -103,7 +105,9 @@ class MainActivity : AppCompatActivity() {
             Theme(context = this, settings = settings) {
                 Home(onWatchProviderClick = { link ->
                     browse(link, true)
-                })
+                }, settingsAction = {
+                        startActivity<SettingsActivity>()
+                    })
             }
         }
         /*binding = DataBindingUtil.setContentView(this, R.layout.activity_main)

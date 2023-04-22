@@ -46,6 +46,7 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.LiveTv
 import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -55,6 +56,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -100,6 +102,7 @@ import info.movito.themoviedbapi.model.Multi
 @Composable
 fun Watchlist(
     viewModel: WatchlistViewModel = viewModel(),
+    settingsAction: () -> Unit,
     itemSelectedCallback: ItemSelectedCallback<Multi>
 ) {
     val state by viewModel.state.collectAsState()
@@ -118,7 +121,8 @@ fun Watchlist(
         queryAction = {
             viewModel.setQueryAction(it)
             watchlist.refresh()
-        }
+        },
+        settingsAction = settingsAction
     )
 }
 
@@ -130,6 +134,7 @@ private fun Watchlist(
     itemSelectedCallback: ItemSelectedCallback<Multi>,
     refresh: () -> Unit,
     sortAction: () -> Unit,
+    settingsAction: () -> Unit,
     queryAction: (QueryAction) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -137,7 +142,14 @@ private fun Watchlist(
 
     Scaffold(
         topBar = {
-            CommonAppBar(withTitle = "Watchlist", scrollBehavior = scrollBehavior)
+            CommonAppBar(withTitle = "Watchlist", scrollBehavior = scrollBehavior, actions = {
+                IconButton(onClick = { settingsAction() }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Settings,
+                        contentDescription = "Settings"
+                    )
+                }
+            })
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
@@ -148,7 +160,11 @@ private fun Watchlist(
 
         val scrollState = rememberScrollState()
 
-        Box(modifier = Modifier.pullRefresh(state = refreshState).fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .pullRefresh(state = refreshState)
+                .fillMaxWidth()
+        ) {
             if (watchlist.itemCount != 0) {
                 LazyVerticalGrid(
                     state = listState,

@@ -24,8 +24,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.afterroot.tmdbapi.model.config.Country
 import com.afterroot.tmdbapi.repository.ConfigRepository
-import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.database.CountriesDao
 import com.afterroot.watchdone.settings.Settings
@@ -44,6 +42,7 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
@@ -56,8 +55,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject lateinit var countriesDao: CountriesDao
 
+    @Inject @Named("version_string") lateinit var versionString: String
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.pref_settings, rootKey)
+        setPreferencesFromResource(CommonR.xml.pref_settings, rootKey)
 
         findPreference<ListPreference>(Constants.PREF_KEY_IMAGE_SIZE)?.apply {
             with(settings.posterSizes?.toTypedArray()) {
@@ -92,7 +93,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
-        findPreference<Preference>(getString(CommonR.string.key_version))?.summary = "v${BuildConfig.VERSION_NAME}"
+        findPreference<Preference>(getString(CommonR.string.key_version))?.summary = versionString
 
         updateCountryPref()
     }

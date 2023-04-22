@@ -61,10 +61,11 @@ fun itemSelectedCallback(navController: NavHostController) = object : ItemSelect
 fun AppNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+    onWatchProviderClick: (link: String) -> Unit = { _ -> },
+    settingsAction: () -> Unit
 ) {
     NavHost(navController = navController, startDestination = RootScreen.Watchlist.route, modifier = modifier) {
-        addWatchlistRoot(navController, onWatchProviderClick)
+        addWatchlistRoot(navController, onWatchProviderClick, settingsAction)
         addDiscoverRoot(navController)
         addSearchRoot(navController)
     }
@@ -72,21 +73,27 @@ fun AppNavigation(
 
 private fun NavGraphBuilder.addWatchlistRoot(
     navController: NavHostController,
-    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+    onWatchProviderClick: (link: String) -> Unit = { _ -> },
+    settingsAction: () -> Unit
 ) {
     navigation(
         route = RootScreen.Watchlist.route,
         startDestination = Screen.Watchlist.createRoute(RootScreen.Watchlist)
     ) {
-        addWatchlist(navController, RootScreen.Watchlist)
+        addWatchlist(navController, RootScreen.Watchlist, settingsAction)
         addMediaInfo(navController, RootScreen.Watchlist, onWatchProviderClick = onWatchProviderClick)
     }
 }
 
-private fun NavGraphBuilder.addWatchlist(navController: NavHostController, rootScreen: RootScreen) {
+private fun NavGraphBuilder.addWatchlist(
+    navController: NavHostController,
+    rootScreen: RootScreen,
+    settingsAction: () -> Unit
+) {
     composable(route = Screen.Watchlist.createRoute(rootScreen)) {
         Watchlist(
             viewModel = hiltViewModel(),
+            settingsAction = settingsAction,
             itemSelectedCallback = itemSelectedCallback(navController)
         )
     }

@@ -38,7 +38,6 @@ import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.helpers.migrateFirestore
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
-import com.afterroot.watchdone.watchlist.Watchlist
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,7 +60,7 @@ class HomeFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 Theme(context = requireContext(), settings = settings) {
-                    Watchlist(itemSelectedCallback = itemSelectedCallback)
+                    // Watchlist(itemSelectedCallback = itemSelectedCallback)
                 }
             }
         }
