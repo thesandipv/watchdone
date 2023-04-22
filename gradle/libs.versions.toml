@@ -1,7 +1,7 @@
 [versions]
 agp = "8.0.0"
 accompanist = "0.30.1"
-activity = "1.7.0"
+activity = "1.7.1"
 ankoCommons = "0.10.8"
 appcompat = "1.6.1"
 billing = "5.2.0"
@@ -11,13 +11,13 @@ coil = "2.3.0"
 collection = "1.2.0"
 commonsIo = "1.3.2"
 compose = "1.3.0" # Stable 1.3.0 # Compose BOM Used
-composeBom = "2023.04.00"
-composeCompiler = "1.4.5"
+composeBom = "2023.04.01"
+composeCompiler = "1.4.6"
 composePaging = "1.0.0-alpha18"
 constraintLayout = "2.1.4"
 ar-utils = "0.5.0" # AfterROOT Core
 coreKtx = "1.10.0"
-coreSplash = "1.0.0"
+coreSplash = "1.0.1"
 crshlyticsPlugin = "2.9.5"
 dagger = "2.45"
 depUpdates = "0.46.0"
@@ -35,7 +35,7 @@ firebaseFirestore = "24.5.0"
 firebaseMessaging = "23.1.2"
 firebaseStorage = "20.1.0"
 firebaseUi = "8.0.2"
-fragmentKtx = "1.5.6"
+fragmentKtx = "1.5.7"
 glide = "4.15.1"
 googleMaterial = "1.8.0"
 googleAuth = "20.5.0"
@@ -44,7 +44,7 @@ gson = "2.10.1"
 hilt = "2.45"
 jackson = "2.13.4"
 koin = "2.2.2"
-koin3 = "3.4.3"
+koin3 = "3.4.4"
 kotlin = "1.8.20"
 kotlinxCoroutines = "1.6.4"
 ktlint = "0.47.1"
@@ -84,7 +84,7 @@ gms-googleServices = "com.google.gms.google-services:4.3.15"
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-ksp = "com.google.devtools.ksp:1.8.20-1.0.10"
+ksp = "com.google.devtools.ksp:1.8.20-1.0.11"
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
@@ -200,7 +200,7 @@ firebase-ui-storage = { module = "com.firebaseui:firebase-ui-storage", version.r
 
 google-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "googleAds" }
 google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
-google-ossLic = "com.google.android.gms:play-services-oss-licenses:17.0.0"
+google-ossLic = "com.google.android.gms:play-services-oss-licenses:17.0.1"
 google-pluginOssLic = "com.google.android.gms:oss-licenses-plugin:0.10.6"
 google-material = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
