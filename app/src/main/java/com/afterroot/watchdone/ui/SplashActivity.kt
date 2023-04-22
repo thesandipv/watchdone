@@ -14,6 +14,7 @@
  */
 package com.afterroot.watchdone.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -22,8 +23,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
+import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.firebase.ui.auth.AuthMethodPickerLayout
@@ -37,6 +40,7 @@ import javax.inject.Inject
 import com.afterroot.watchdone.resources.R as CommonR
 import com.google.android.material.R as MaterialR
 
+@SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
@@ -44,12 +48,10 @@ class SplashActivity : AppCompatActivity() {
     private val networkViewModel: NetworkViewModel by viewModels()
 
     @Inject lateinit var firebaseAuth: FirebaseAuth
-    // @Inject lateinit var settings: Settings
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val theme = getString(CommonR.string.theme_device_default)
         AppCompatDelegate.setDefaultNightMode(
-            when (theme) {
+            when (getPrefs().getString(Constants.PREF_KEY_THEME, getString(CommonR.string.theme_device_default))) {
                 getString(CommonR.string.theme_device_default) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 getString(CommonR.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
                 getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
@@ -67,6 +69,7 @@ class SplashActivity : AppCompatActivity() {
             firebaseAuth.currentUser == null -> {
                 tryLogin()
             }
+
             intent.extras != null -> {
                 intent.extras?.let {
                     val link = it.getString("link")
@@ -75,12 +78,14 @@ class SplashActivity : AppCompatActivity() {
                             browse(link, true)
                             finish()
                         }
+
                         else -> {
                             launchMain()
                         }
                     }
                 }
             }
+
             else -> {
                 launchMain()
             }
