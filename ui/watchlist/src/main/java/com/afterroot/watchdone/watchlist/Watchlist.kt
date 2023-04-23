@@ -40,13 +40,13 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.LiveTv
 import androidx.compose.material.icons.rounded.Movie
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -145,7 +145,7 @@ private fun Watchlist(
             CommonAppBar(withTitle = "Watchlist", scrollBehavior = scrollBehavior, actions = {
                 IconButton(onClick = { settingsAction() }) {
                     Icon(
-                        imageVector = Icons.Rounded.Settings,
+                        imageVector = Icons.Outlined.Settings,
                         contentDescription = "Settings"
                     )
                 }

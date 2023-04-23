@@ -62,10 +62,11 @@ fun AppNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    settingsAction: () -> Unit
+    settingsAction: () -> Unit,
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
     NavHost(navController = navController, startDestination = RootScreen.Watchlist.route, modifier = modifier) {
-        addWatchlistRoot(navController, onWatchProviderClick, settingsAction)
+        addWatchlistRoot(navController, onWatchProviderClick, settingsAction, shareToIG)
         addDiscoverRoot(navController)
         addSearchRoot(navController)
     }
@@ -74,14 +75,15 @@ fun AppNavigation(
 private fun NavGraphBuilder.addWatchlistRoot(
     navController: NavHostController,
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    settingsAction: () -> Unit
+    settingsAction: () -> Unit,
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
     navigation(
         route = RootScreen.Watchlist.route,
         startDestination = Screen.Watchlist.createRoute(RootScreen.Watchlist)
     ) {
         addWatchlist(navController, RootScreen.Watchlist, settingsAction)
-        addMediaInfo(navController, RootScreen.Watchlist, onWatchProviderClick = onWatchProviderClick)
+        addMediaInfo(navController, RootScreen.Watchlist, onWatchProviderClick = onWatchProviderClick, shareToIG = shareToIG)
     }
 }
 
@@ -102,7 +104,8 @@ private fun NavGraphBuilder.addWatchlist(
 private fun NavGraphBuilder.addMediaInfo(
     navController: NavHostController,
     rootScreen: RootScreen,
-    onWatchProviderClick: (link: String) -> Unit = { _ -> }
+    onWatchProviderClick: (link: String) -> Unit = { _ -> },
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
     composable(
         route = Screen.MediaInfo.createRoute(rootScreen),
@@ -131,7 +134,8 @@ private fun NavGraphBuilder.addMediaInfo(
                     navController.navigate(Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id))
                 }
             },
-            onWatchProviderClick = onWatchProviderClick
+            onWatchProviderClick = onWatchProviderClick,
+            shareToIG = shareToIG
         )
     }
 }

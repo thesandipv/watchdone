@@ -16,65 +16,62 @@ package com.afterroot.watchdone.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.transition.AutoTransition
+import androidx.palette.graphics.Palette
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.ui.common.compose.theme.Theme
-import com.afterroot.utils.extensions.getDrawableExt
-import com.afterroot.utils.extensions.progress
-import com.afterroot.utils.extensions.visible
 import com.afterroot.utils.onVersionGreaterThanEqualTo
 import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Collection
+import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.LocalUser
-import com.afterroot.watchdone.databinding.ActivityMainBinding
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.ui.home.Home
 import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
-import com.afterroot.watchdone.utils.hideKeyboard
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.design.indefiniteSnackbar
-import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.startActivity
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Named
-import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var navController: NavController
     private val manifestPermissions by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(Manifest.permission.INTERNET, Manifest.permission.POST_NOTIFICATIONS)
@@ -106,32 +103,12 @@ class MainActivity : AppCompatActivity() {
                 Home(onWatchProviderClick = { link ->
                     browse(link, true)
                 }, settingsAction = {
-                        startActivity<SettingsActivity>()
+                         startActivity<SettingsActivity>()
+                    }, shareToIG = { mediaId, poster ->
+                        shareToInstagram(poster, mediaId)
                     })
             }
         }
-        /*binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(binding.toolbar)
-
-        (this as ComponentActivity).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_common, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.send_feedback -> {
-                        email(
-                            email = "afterhasroot@gmail.com",
-                            subject = "Watchdone Feedback",
-                            text = feedbackBody
-                        )
-                        true
-                    }
-                    else -> menuItem.onNavDestinationSelected(navController)
-                }
-            }
-        })*/
     }
 
     override fun onStart() {
@@ -237,8 +214,7 @@ class MainActivity : AppCompatActivity() {
                         userRef.get().addOnCompleteListener { getUserTask ->
                             if (getUserTask.isSuccessful) {
                                 if (!getUserTask.result.exists()) {
-                                    binding.container.snackbar("User not available. Creating User..").anchorView =
-                                        binding.toolbar
+                                    // binding.container.snackbar("User not available. Creating User..").anchorView = binding.toolbar
                                     val user = LocalUser(
                                         name = curUser.displayName,
                                         email = curUser.email,
@@ -283,12 +259,13 @@ class MainActivity : AppCompatActivity() {
                 val isPermissionNotGranted =
                     grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
                 if (isPermissionNotGranted) {
-                    binding.container.indefiniteSnackbar(
+                    // TODO
+                    /*binding.container.indefiniteSnackbar(
                         getString(CommonR.string.msg_grant_app_permissions),
                         getString(CommonR.string.text_action_grant)
                     ) {
                         checkPermissions()
-                    }.anchorView = binding.toolbar
+                    }.anchorView = binding.toolbar*/
                 } else {
                     // setUpNavigation()
                 }
@@ -296,90 +273,145 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpNavigation() {
-        val drawerToggle = DrawerArrowDrawable(this)
-        navController = findNavController(R.id.nav_host_fragment)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.toolbar.apply {
-                performShow()
-                hideOnScroll = true
-                navigationIcon = drawerToggle
-                setNavigationOnClickListener {
-                    navController.navigateUp()
-                }
-            }
-            this.hideKeyboard(binding.root)
-            when (destination.id) {
-                R.id.navigation_home -> {
-                    setTitle(null)
-                    binding.fab.apply {
-                        show()
-                        setOnClickListener { navController.navigate(R.id.toSearchNew) }
-                        setImageDrawable(context.getDrawableExt(CommonR.drawable.ic_search))
-                    }
-                    drawerToggle.apply {
-                        if (progress == 1f) progress(1f, 0f) // As hamburger
-                    }
-                    binding.toolbar.setNavigationOnClickListener {
-                        BottomNavDrawerFragment().apply {
-                            show(supportFragmentManager, this.tag)
+    private fun shareToInstagram(poster: String, mediaId: Int) {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val loader = ImageLoader(this@MainActivity)
+                val request = ImageRequest.Builder(this@MainActivity)
+                    .data(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + poster)
+                    .allowHardware(false)
+                    .build()
+                val result = loader.execute(request).drawable
+                val resource = (result as BitmapDrawable).bitmap
+
+                val fos: FileOutputStream?
+                val file = File(
+                    this@MainActivity.cacheDir.toString(),
+                    "$mediaId.jpg"
+                )
+                fos = FileOutputStream(file)
+                resource.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                fos.flush()
+                fos.close()
+
+                Palette.from(resource).generate { palette ->
+                    val map = mapOf(
+                        "contentUrl" to HttpUrl.Builder().scheme(Constants.SCHEME_HTTPS).host(Constants.WATCHDONE_HOST)
+                            .addPathSegment("movie").addPathSegment(mediaId.toString())
+                            .build().toString(),
+                        "topBackgroundColor" to palette?.getVibrantColor(
+                            palette.getMutedColor(
+                                ContextCompat.getColor(
+                                    this@MainActivity,
+                                    com.afterroot.watchdone.resources.R.color.md_theme_dark_primary
+                                )
+                            )
+                        )?.toHex(),
+                        "bottomBackgroundColor" to palette?.getDarkVibrantColor(
+                            palette.getDarkMutedColor(
+                                ContextCompat.getColor(
+                                    this@MainActivity,
+                                    com.afterroot.watchdone.resources.R.color.md_theme_light_primaryContainer
+                                )
+                            )
+                        )?.toHex(),
+                        "backgroundAssetName" to "$mediaId.jpg"
+                    )
+
+                    val intent = createInstagramShareIntent(this@MainActivity, map)
+
+                    if (intent.isResolvable()) {
+                        Timber.d("testCoil: Launching IG")
+                        startActivity(intent)
+                    } else {
+                        Timber.d("testCoil: No Activity Resolved")
+                        try {
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            Timber.e(e, "shareToInstagram: Error while sharing")
+                            val shareIntent = createShareIntent(this@MainActivity, mapOf("mediaId" to mediaId.toString()))
+                            startActivity(Intent.createChooser(shareIntent, "Share to"))
                         }
                     }
-                }
-
-                R.id.navigation_settings -> {
-                    setTitle(getString(CommonR.string.title_settings))
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) // As back arrow
-                }
-
-                R.id.navigation_edit_profile -> {
-                    setTitle(getString(CommonR.string.title_edit_profile))
-                    binding.fab.show()
-                    drawerToggle.progress(0f, 1f) // As back arrow
-                }
-
-                R.id.navigation_discover -> {
-                    binding.titleLayout.visible(false, AutoTransition())
-                    setTitle(null)
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) // As back arrow
-                }
-
-                R.id.navigation_search_new -> {
-                    binding.titleLayout.visible(false, AutoTransition())
-                    setTitle(null)
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) // As back arrow
-                }
-
-                R.id.navigation_media_info -> {
-                    setTitle(null)
-                    binding.titleLayout.visible(false)
-                    binding.fab.hide()
-                    drawerToggle.progress(0f, 1f) // As back arrow
+                    // this@MainActivity.startActivity(Intent.createChooser(intent, "Share to"))
                 }
             }
         }
     }
 
-    private fun setTitle(title: String?) {
-        binding.apply {
-            val params = navHostFragment.layoutParams as CoordinatorLayout.LayoutParams
-            if (title.isNullOrBlank()) {
-                params.behavior = null
-                titleLayout.visible(false)
-            } else {
-                params.behavior = AppBarLayout.ScrollingViewBehavior()
-                this.title = title
-                titleLayout.visible(true)
+    private fun createInstagramShareIntent(
+        context: Context,
+        intentExtras: Map<String, String?>
+    ): Intent {
+        val shareIntent = Intent(Constants.IG_SHARE_ACTION)
+
+        val backgroundAssetName = intentExtras["backgroundAssetName"]
+        val stickerAssetName = intentExtras["stickerAssetName"]
+
+        if (backgroundAssetName == null && stickerAssetName == null) {
+            val exceptionMessage = "Background and Sticker asset should not be null"
+            val exception = IllegalArgumentException(exceptionMessage)
+            throw exception
+        }
+
+        backgroundAssetName?.let {
+            val backgroundAssetUri =
+                FileProvider.getUriForFile(context, Constants.IG_SHARE_PROVIDER, File(context.cacheDir, it))
+            Timber.d("createInstagramShareIntent: URI $backgroundAssetUri")
+            shareIntent.apply {
+                type = Constants.MIME_TYPE_JPEG
+                putExtra("interactive_asset_uri", backgroundAssetUri)
+                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
+
+            context.grantUriPermission(Constants.IG_PACKAGE_NAME, backgroundAssetUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        shareIntent.apply {
+            intentExtras["topBackgroundColor"]?.let { putExtra(Constants.IG_EXTRA_TOP_COLOR, it) }
+            intentExtras["bottomBackgroundColor"]?.let { putExtra(Constants.IG_EXTRA_BOTTOM_COLOR, it) }
+            intentExtras["contentUrl"]?.let { putExtra(Constants.IG_EXTRA_CONTENT_URL, it) }
+            putExtra(Constants.IG_EXTRA_SOURCE_APP, com.afterroot.watchdone.media.BuildConfig.FB_APP_ID)
+        }
+
+        return shareIntent
+    }
+
+    fun Intent.isResolvable(flags: Long = 0): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            this@MainActivity.packageManager.resolveActivity(
+                this,
+                PackageManager.ResolveInfoFlags.of(flags)
+            ) != null
+        } else {
+            @Suppress("DEPRECATION")
+            this@MainActivity.packageManager.resolveActivity(this, flags.toInt()) != null
         }
     }
 
-    /*
-        override fun onSupportNavigateUp(): Boolean {
-            return navController.navigateUp()
+    private fun Int.toHex() = "#${Integer.toHexString(this)}"
+
+    private fun createShareIntent(
+        context: Context,
+        intentExtras: Map<String, String?>
+    ): Intent {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+
+        val mediaId = intentExtras["mediaId"]
+
+        if (mediaId == null) {
+            val exceptionMessage = "MediaId should not be null"
+            val exception = IllegalArgumentException(exceptionMessage)
+            throw exception
         }
-    */
+
+        val uri = FileProvider.getUriForFile(context, Constants.IG_SHARE_PROVIDER, File(context.cacheDir, "$mediaId.jpg"))
+        shareIntent.apply {
+            type = Constants.MIME_TYPE_JPEG
+            putExtra(Intent.EXTRA_STREAM, uri)
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+
+        return shareIntent
+    }
 }

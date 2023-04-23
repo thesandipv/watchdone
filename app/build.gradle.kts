@@ -171,6 +171,8 @@ dependencies {
     implementation(libs.bundles.compose)
     debugImplementation(libs.androidx.compose.tooling)
 
+    implementation(libs.coil)
+
     implementation(libs.materialdialogs.input)
     implementation(libs.materialdialogs.core)
     implementation(libs.materialdialogs.bottomSheets)
