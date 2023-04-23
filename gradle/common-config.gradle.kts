@@ -15,11 +15,5 @@ if (project.path in composeProjects) {
     apply(from = "$rootDir/gradle/compose.gradle")
 }
 
-val implementation by configurations
-
-dependencies {
-    implementation(libs.kotlin.stdLib)
-    implementation(libs.androidx.core)
-}
-
+apply(from = "$rootDir/gradle/apply-common-deps.gradle")
 apply(from = "$rootDir/gradle/apply-core.gradle")

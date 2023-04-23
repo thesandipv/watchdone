@@ -284,7 +284,7 @@ private fun Watchlist(
                         }
                     }
                     fullSpanItem {
-                        Spacer(modifier = Modifier.height(80.dp)) // Adjustment
+                        Spacer(modifier = Modifier.height(8.dp)) // Adjustment
                     }
                 }
             }
