@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                 Home(onWatchProviderClick = { link ->
                     browse(link, true)
                 }, settingsAction = {
-                         startActivity<SettingsActivity>()
+                        startActivity<SettingsActivity>()
                     }, shareToIG = { mediaId, poster ->
                         shareToInstagram(poster, mediaId)
                     })
