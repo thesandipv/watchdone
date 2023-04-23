@@ -7,6 +7,7 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 - [ ] Imp - Get ig share image from cache if exists (improvedIn - ``)
 - [ ] Add - Movie Share action
 - [ ] Add - Cast info Screen
+- [ ] Imp - Migrate from `kapt` to `ksp`
 
 ### v0.0.4
 - [X] Add - Region Selection in Settings (addedIn - `fc1f3fb`)
