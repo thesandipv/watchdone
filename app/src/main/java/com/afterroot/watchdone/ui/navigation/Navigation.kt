@@ -37,6 +37,7 @@ import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.discover.Discover
 import com.afterroot.watchdone.ui.media.MediaInfo
+import com.afterroot.watchdone.ui.profile.Profile
 import com.afterroot.watchdone.ui.search.Search
 import com.afterroot.watchdone.watchlist.Watchlist
 import info.movito.themoviedbapi.model.Multi
@@ -69,6 +70,7 @@ fun AppNavigation(
         addWatchlistRoot(navController, onWatchProviderClick, settingsAction, shareToIG)
         addDiscoverRoot(navController)
         addSearchRoot(navController)
+        addProfileRoot(navController)
     }
 }
 
@@ -174,5 +176,22 @@ private fun NavGraphBuilder.addSearch(navController: NavHostController, rootScre
         )
     ) {
         Search(viewModel = hiltViewModel(), itemSelectedCallback = itemSelectedCallback(navController))
+    }
+}
+
+private fun NavGraphBuilder.addProfileRoot(navController: NavHostController) {
+    navigation(
+        route = RootScreen.Profile.route,
+        startDestination = Screen.Profile.createRoute(RootScreen.Profile)
+    ) {
+        addProfile(navController, RootScreen.Profile)
+    }
+}
+
+private fun NavGraphBuilder.addProfile(navController: NavHostController, rootScreen: RootScreen) {
+    composable(route = Screen.Profile.createRoute(rootScreen)) {
+        Profile {
+            // TODO
+        }
     }
 }

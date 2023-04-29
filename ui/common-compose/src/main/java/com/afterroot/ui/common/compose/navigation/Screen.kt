@@ -8,6 +8,7 @@ sealed class RootScreen(val route: String) {
     object Watchlist : RootScreen("watchlist")
     object Discover : RootScreen("discover")
     object Search : RootScreen("search")
+    object Profile : RootScreen("profile")
 }
 
 sealed class Screen(val route: String, @StringRes val title: Int) {
@@ -23,4 +24,6 @@ sealed class Screen(val route: String, @StringRes val title: Int) {
             return "${root.route}/media/$type/$id"
         }
     }
+
+    object Profile : Screen("profile", CommonR.string.title_profile)
 }

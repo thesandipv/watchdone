@@ -18,12 +18,17 @@ package com.afterroot.watchdone.ui.home
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DashboardCustomize
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DashboardCustomize
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Search
@@ -51,16 +56,20 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.afterroot.ui.common.compose.navigation.RootScreen
 import com.afterroot.watchdone.ui.navigation.AppNavigation
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.afterroot.watchdone.resources.R as CommonR
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
 @Composable
 fun Home(
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
     settingsAction: () -> Unit,
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
-    val navController = rememberNavController()
+    val bottomSheetNavigator = rememberBottomSheetNavigator()
+    val navController = rememberNavController(bottomSheetNavigator)
 
     Scaffold(bottomBar = {
         val currentSelectedItem by navController.currentScreenAsState()
@@ -79,13 +88,23 @@ fun Home(
             modifier = Modifier.fillMaxWidth()
         )
     }) { paddingValues ->
-        AppNavigation(
-            navController = navController,
-            modifier = Modifier.padding(paddingValues),
-            onWatchProviderClick = onWatchProviderClick,
-            settingsAction = settingsAction,
-            shareToIG = shareToIG
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
+                AppNavigation(
+                    navController = navController,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    onWatchProviderClick = onWatchProviderClick,
+                    settingsAction = settingsAction,
+                    shareToIG = shareToIG
+                )
+            }
+        }
     }
 }
 
@@ -111,6 +130,10 @@ private fun NavController.currentScreenAsState(): State<RootScreen> {
 
                 destination.hierarchy.any { it.route == RootScreen.Search.route } -> {
                     selectedItem.value = RootScreen.Search
+                }
+
+                destination.hierarchy.any { it.route == RootScreen.Profile.route } -> {
+                    selectedItem.value = RootScreen.Profile
                 }
             }
         }
@@ -185,7 +208,15 @@ private val homeNavigationItems = listOf(
         contentDescriptionResId = CommonR.string.title_search,
         iconImageVector = Icons.Outlined.Search,
         selectedImageVector = Icons.Default.Search
+    ),
+    HomeNavigationItem.ImageVectorIcon(
+        screen = RootScreen.Profile,
+        labelResId = CommonR.string.title_profile,
+        contentDescriptionResId = CommonR.string.title_profile,
+        iconImageVector = Icons.Outlined.AccountCircle,
+        selectedImageVector = Icons.Default.AccountCircle
     )
+
 )
 
 @Composable

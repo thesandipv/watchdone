@@ -17,6 +17,7 @@
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
+import com.diffplug.spotless.LineEnding
 import dagger.hilt.android.plugin.HiltExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -100,6 +101,8 @@ allprojects {
 subprojects {
     apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
     spotless {
+        // https://github.com/diffplug/spotless/issues/1644
+        lineEndings = LineEnding.PLATFORM_NATIVE // or any other except GIT_ATTRIBUTES
         format("misc") {
             // define the files to apply `misc` to
             target("*.gradle", "*.md", ".gitignore")

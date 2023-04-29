@@ -139,6 +139,7 @@ dependencies {
     implementation(projects.ui.commonCompose)
     implementation(projects.ui.discover)
     implementation(projects.ui.media)
+    implementation(projects.ui.profile)
     implementation(projects.ui.recommended)
     implementation(projects.ui.resources)
     implementation(projects.ui.search)

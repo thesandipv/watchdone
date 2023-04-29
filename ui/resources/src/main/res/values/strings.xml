@@ -40,9 +40,9 @@
     <string name="theme_device_default">Device Default</string>
     <string name="theme_light">Light</string>
     <string name="title_activity_compose">WatchDone</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_edit_profile">Edit Profile</string>
+    <string name="title_profile">Profile</string>
     <string name="title_home">WatchDone</string>
     <string name="title_search">Search</string>
     <string name="title_search_results">Search Results for %s</string>
