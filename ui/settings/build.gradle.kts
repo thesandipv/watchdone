@@ -41,14 +41,19 @@ dependencies {
     implementation(projects.ui.commonCompose)
     implementation(projects.ui.resources)
 
+    implementation(libs.androidx.appCompat)
     implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.transition)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.transition)
     implementation(libs.bundles.lifecycle)
 
     implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.google.ossLic)
+    implementation(libs.google.material)
 }

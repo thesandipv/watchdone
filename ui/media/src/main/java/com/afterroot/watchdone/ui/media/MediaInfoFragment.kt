@@ -81,6 +81,8 @@ class MediaInfoFragment : Fragment() {
                         }
                     }, onWatchProviderClick = { link ->
                             requireContext().browse(link, true)
+                        }, shareToIG = { mediaId: Int, poster: String ->
+                            shareToInstagram(poster, mediaId)
                         })
                 }
             }
@@ -91,7 +93,8 @@ class MediaInfoFragment : Fragment() {
     fun MediaInfoContent(
         navigateUp: () -> Unit,
         onRecommendedClick: (media: Multi) -> Unit,
-        onWatchProviderClick: (link: String) -> Unit = { _ -> }
+        onWatchProviderClick: (link: String) -> Unit = { _ -> },
+        shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
     ) {
         CompositionLocalProvider(
             LocalPosterSize provides (
@@ -103,9 +106,7 @@ class MediaInfoFragment : Fragment() {
                 navigateUp = navigateUp,
                 onRecommendedClick = onRecommendedClick,
                 onWatchProviderClick = onWatchProviderClick,
-                shareToIG = { mediaId: Int, poster: String ->
-                    shareToInstagram(poster, mediaId)
-                }
+                shareToIG = shareToIG
             )
         }
     }
@@ -162,6 +163,11 @@ class MediaInfoFragment : Fragment() {
                         requireActivity().startActivity(intent)
                     } else {
                         Timber.d("testCoil: No Activity Resolved")
+                        try {
+                            requireActivity().startActivity(intent)
+                        } catch (e: Exception) {
+                            Timber.e(e, "shareToInstagram: Error while sharing")
+                        }
                     }
                     // requireActivity().startActivity(Intent.createChooser(intent, "Share to"))
                 }
@@ -200,6 +206,7 @@ class MediaInfoFragment : Fragment() {
         backgroundAssetName?.let {
             val backgroundAssetUri =
                 FileProvider.getUriForFile(context, Constants.IG_SHARE_PROVIDER, File(context.cacheDir, it))
+            Timber.d("createInstagramShareIntent: URI $backgroundAssetUri")
             shareIntent.apply {
                 type = Constants.MIME_TYPE_JPEG
                 putExtra("interactive_asset_uri", backgroundAssetUri)

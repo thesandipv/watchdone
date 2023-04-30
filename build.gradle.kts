@@ -17,6 +17,7 @@
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
+import com.diffplug.spotless.LineEnding
 import dagger.hilt.android.plugin.HiltExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -58,7 +59,7 @@ val patch = versionProperties["patch"].toString().toInt()
 val versionCode: Int by extra { libs.versions.minSdk.get().toInt() * 10000000 + major * 10000 + minor * 100 + patch }
 val versionName: String by extra { "${major}.${minor}.${patch}" }
 
-println("-INFO: Build version code: $versionCode")
+println("- INFO: Build version code: $versionCode")
 
 allprojects {
     val isPublishPropertiesExists = rootProject.file("publish.properties").exists()
@@ -100,6 +101,8 @@ allprojects {
 subprojects {
     apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
     spotless {
+        // https://github.com/diffplug/spotless/issues/1644
+        lineEndings = LineEnding.PLATFORM_NATIVE // or any other except GIT_ATTRIBUTES
         format("misc") {
             // define the files to apply `misc` to
             target("*.gradle", "*.md", ".gitignore")
@@ -137,7 +140,7 @@ subprojects {
             freeCompilerArgs = freeCompilerArgs + listOf(
                 "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 "-opt-in=kotlinx.coroutines.FlowPreview",
-                "-opt-in=kotlin.Experimental"
+                // "-opt-in=kotlin.Experimental"
             )
 
             if (project.hasProperty("enableComposeCompilerReports")) {

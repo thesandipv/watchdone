@@ -34,11 +34,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.afterroot.ui.common.compose.components.FABEdit
 import com.afterroot.ui.common.compose.components.SwipeDismissSnackbar
-import com.afterroot.ui.common.compose.utils.bottomNavigationPadding
 import com.afterroot.ui.common.compose.utils.rememberFlowWithLifecycle
 import com.afterroot.ui.common.view.UiMessage
 import com.afterroot.watchdone.utils.State
@@ -67,20 +65,24 @@ internal fun Profile(viewModel: ProfileViewModel, onSignOut: () -> Unit = {}, on
                                 val showMessage = ProfileActions.ShowMessage(UiMessage("Failed Signing Out."))
                                 viewModel.submitAction(showMessage)
                             }
+
                             is State.Success -> {
                                 val showMessage = ProfileActions.ShowMessage(UiMessage("Signed Out."))
                                 viewModel.submitAction(showMessage)
                                 onSignOut()
                             }
+
                             else -> {
                             }
                         }
                     }
                 }
             }
+
             ProfileActions.EditProfile -> {
                 onEditProfile()
             }
+
             else -> viewModel.submitAction(action)
         }
     }
@@ -118,7 +120,6 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
         floatingActionButton = {
             FABEdit(
                 modifier = Modifier
-                    .bottomNavigationPadding()
                     .navigationBarsPadding(),
                 onClick = {
                     actions(ProfileActions.EditProfile)
@@ -138,13 +139,12 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
                     .fillMaxWidth()
             )
         }
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .padding(paddingValues = paddingValues)
         ) {
-            // TODO
         }
     }
 }

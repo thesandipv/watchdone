@@ -11,15 +11,9 @@ val composeProjects =
         ":ui:watchlist",
     )
 if (project.path in composeProjects) {
-    println("- INFO: Compose Enabled")
+    println("- INFO: Compose Enabled for ${project.path}")
     apply(from = "$rootDir/gradle/compose.gradle")
 }
 
-val implementation by configurations
-
-dependencies {
-    implementation(libs.kotlin.stdLib)
-    implementation(libs.androidx.core)
-}
-
+apply(from = "$rootDir/gradle/apply-common-deps.gradle")
 apply(from = "$rootDir/gradle/apply-core.gradle")

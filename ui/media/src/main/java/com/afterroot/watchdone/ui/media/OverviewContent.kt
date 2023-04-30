@@ -217,12 +217,12 @@ fun OverviewContent(
                             .fillMaxWidth()
                             .padding(horizontal = bodyMargin, vertical = gutter),
                         onClick = {
-                            if (movie != null) {
-                                movie.posterPath?.let {
+                            if (movie != Movie.Empty) {
+                                movie?.posterPath?.let {
                                     shareToIG?.invoke(movie.id, it)
                                 }
-                            } else if (tv != null) {
-                                tv.posterPath?.let {
+                            } else if (tv != TV.Empty) {
+                                tv?.posterPath?.let {
                                     shareToIG?.invoke(tv.id, it)
                                 }
                             }

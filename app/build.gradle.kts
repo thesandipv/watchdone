@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -52,17 +51,13 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders += mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
         namespace = "com.afterroot.watchdone"
         applicationId = "com.afterroot.watchdone"
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"].toString()
 
         testInstrumentationRunner = "com.afterroot.watchdone.di.HiltTestRunner"
-
-        manifestPlaceholders += mapOf(
-            "hostName" to "afterroot.web.app",
-            "pathPrefix" to "/apps/watchdone/launch"
-        )
 
         resourceConfigurations.addAll(listOf("en"))
 
@@ -78,15 +73,6 @@ android {
         )
         buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
         buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
-
-        val commitHash = ByteArrayOutputStream()
-        exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-            standardOutput = commitHash
-        }
-
-        val commit = System.getenv("COMMIT_ID") ?: commitHash.toString().trim()
-        buildConfigField("String", "COMMIT_ID", "\"$commit\"")
     }
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -126,15 +112,13 @@ android {
         }
     }
 
-    packagingOptions {
-        packagingOptions.resources.excludes += setOf(
-            "META-INF/proguard/*",
-            "/*.properties",
-            "fabric/*.properties",
-            "META-INF/*.properties",
-            "META-INF/LICENSE*.md"
-        )
-    }
+    packaging.resources.excludes += setOf(
+        "META-INF/proguard/*",
+        "/*.properties",
+        "fabric/*.properties",
+        "META-INF/*.properties",
+        "META-INF/LICENSE*.md"
+    )
 
     lint {
         abortOnError = false
@@ -155,6 +139,7 @@ dependencies {
     implementation(projects.ui.commonCompose)
     implementation(projects.ui.discover)
     implementation(projects.ui.media)
+    implementation(projects.ui.profile)
     implementation(projects.ui.recommended)
     implementation(projects.ui.resources)
     implementation(projects.ui.search)
@@ -186,6 +171,8 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
     debugImplementation(libs.androidx.compose.tooling)
+
+    implementation(libs.coil)
 
     implementation(libs.materialdialogs.input)
     implementation(libs.materialdialogs.core)
