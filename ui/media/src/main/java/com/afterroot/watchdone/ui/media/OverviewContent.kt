@@ -91,8 +91,7 @@ fun OverviewContent(
     watchProviders: State<ProviderResults> = State.loading(),
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onWatchProvidersClick: (link: String) -> Unit = { _ -> },
-    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
+    onWatchProvidersClick: (link: String) -> Unit = { _ -> }
 ) {
     val gutter = Layout.gutter
     val bodyMargin = Layout.bodyMargin
@@ -211,25 +210,6 @@ fun OverviewContent(
                         onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
                         onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
                     )
-
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = bodyMargin, vertical = gutter),
-                        onClick = {
-                            if (movie != Movie.Empty) {
-                                movie?.posterPath?.let {
-                                    shareToIG?.invoke(movie.id, it)
-                                }
-                            } else if (tv != TV.Empty) {
-                                tv?.posterPath?.let {
-                                    shareToIG?.invoke(tv.id, it)
-                                }
-                            }
-                        }
-                    ) {
-                        Text(text = "Share to Instagram")
-                    }
                 }
             }
         }

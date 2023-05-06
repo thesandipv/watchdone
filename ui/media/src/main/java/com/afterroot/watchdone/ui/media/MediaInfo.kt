@@ -25,7 +25,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.NavigateBefore
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -85,7 +90,8 @@ internal fun MediaInfo(
             onWatchedAction = viewModel::watchStateAction,
             onRecommendedClick = onRecommendedClick,
             onWatchProviderClick = onWatchProviderClick,
-            shareToIG = shareToIG
+            shareToIG = shareToIG,
+            navigateUp = navigateUp
         )
     } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
         val recommended = viewModel.getRecommendedShows(viewState.mediaId).collectAsLazyPagingItems()
@@ -100,7 +106,8 @@ internal fun MediaInfo(
                 viewModel.episodeWatchStateAction(episodeId = episode.id.toString(), isWatched)
             },
             onWatchProviderClick = onWatchProviderClick,
-            shareToIG = shareToIG
+            shareToIG = shareToIG,
+            navigateUp = navigateUp
         )
     }
 }
@@ -116,18 +123,53 @@ internal fun <T : Multi> MediaInfo(
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
+    navigateUp: () -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
 
     Scaffold(
         topBar = {
-            if (viewState.mediaType == Multi.MediaType.MOVIE) {
-                CommonAppBar(withTitle = viewState.movie.title ?: "", scrollBehavior = scrollBehavior)
-            } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-                CommonAppBar(withTitle = viewState.tv.name ?: "", scrollBehavior = scrollBehavior)
+            val title = when (viewState.mediaType) {
+                Multi.MediaType.MOVIE -> {
+                    viewState.movie.title
+                }
+
+                Multi.MediaType.TV_SERIES -> {
+                    viewState.tv.name
+                }
+
+                else -> ""
             }
+            CommonAppBar(withTitle = title ?: "", scrollBehavior = scrollBehavior, actions = {
+                IconButton(onClick = {
+                    if (viewState.mediaType == Multi.MediaType.MOVIE) {
+                        viewState.movie.posterPath?.let {
+                            shareToIG?.invoke(viewState.movie.id, it)
+                        }
+                    } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+                        viewState.tv.posterPath?.let {
+                            shareToIG?.invoke(viewState.tv.id, it)
+                        }
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Share,
+                        contentDescription = "Share"
+                    )
+                }
+            }, navigationIcon = {
+                IconButton(onClick = {
+                    navigateUp()
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.NavigateBefore,
+                        contentDescription = "Up"
+                    )
+                }
+
+            })
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { contentPadding ->
@@ -143,7 +185,6 @@ internal fun <T : Multi> MediaInfo(
                 onSeasonSelected = onSeasonSelected,
                 onEpisodeWatchAction = onEpisodeWatchAction,
                 onWatchProviderClick = onWatchProviderClick,
-                shareToIG = shareToIG,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -162,7 +203,6 @@ internal fun <T : Multi> MediaInfoContent(
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
     modifier: Modifier
 ) {
     val gutter = Layout.gutter
@@ -200,8 +240,7 @@ internal fun <T : Multi> MediaInfoContent(
                 watchProviders = viewState.watchProviders,
                 onWatchlistAction = onWatchlistAction,
                 onWatchedAction = onWatchedAction,
-                onWatchProvidersClick = onWatchProviderClick,
-                shareToIG = shareToIG
+                onWatchProvidersClick = onWatchProviderClick
             )
         }
 

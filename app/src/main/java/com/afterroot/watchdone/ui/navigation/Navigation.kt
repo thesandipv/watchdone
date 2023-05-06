@@ -127,7 +127,7 @@ private fun NavGraphBuilder.addMediaInfo(
     ) {
         MediaInfo(
             navigateUp = {
-                // TODO
+                navController.navigateUp()
             },
             onRecommendedClick = {
                 if (it is Movie) {
