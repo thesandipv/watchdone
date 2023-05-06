@@ -103,10 +103,10 @@ class MainActivity : AppCompatActivity() {
                 Home(onWatchProviderClick = { link ->
                     browse(link, true)
                 }, settingsAction = {
-                        startActivity<SettingsActivity>()
-                    }, shareToIG = { mediaId, poster ->
-                        shareToInstagram(poster, mediaId)
-                    })
+                    startActivity<SettingsActivity>()
+                }, shareToIG = { mediaId, poster ->
+                    shareToInstagram(poster, mediaId)
+                })
             }
         }
     }
@@ -321,10 +321,10 @@ class MainActivity : AppCompatActivity() {
                     val intent = createInstagramShareIntent(this@MainActivity, map)
 
                     if (intent.isResolvable()) {
-                        Timber.d("testCoil: Launching IG")
+                        Timber.d("shareToInstagram: Launching IG")
                         startActivity(intent)
                     } else {
-                        Timber.d("testCoil: No Activity Resolved")
+                        Timber.d("shareToInstagram: No Activity Resolved")
                         try {
                             startActivity(intent)
                         } catch (e: Exception) {
@@ -333,7 +333,6 @@ class MainActivity : AppCompatActivity() {
                             startActivity(Intent.createChooser(shareIntent, "Share to"))
                         }
                     }
-                    // this@MainActivity.startActivity(Intent.createChooser(intent, "Share to"))
                 }
             }
         }
@@ -361,6 +360,7 @@ class MainActivity : AppCompatActivity() {
             shareIntent.apply {
                 type = Constants.MIME_TYPE_JPEG
                 putExtra("interactive_asset_uri", backgroundAssetUri)
+                putExtra(Intent.EXTRA_STREAM, backgroundAssetUri)
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
 
