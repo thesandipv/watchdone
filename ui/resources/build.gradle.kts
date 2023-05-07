@@ -28,5 +28,4 @@ android {
 dependencies {
     implementation(libs.google.material)
     implementation(libs.androidx.preference)
-    implementation(libs.materialdialogs.core)
 }

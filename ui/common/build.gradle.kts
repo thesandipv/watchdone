@@ -45,8 +45,6 @@ dependencies {
     implementation(libs.androidx.recyclerView)
     implementation(libs.androidx.constraintLayout)
 
-    implementation(libs.materialdialogs.core)
-
     implementation(libs.materialProgress)
 
     implementation(libs.hilt.hilt)

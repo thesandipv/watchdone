@@ -25,15 +25,15 @@ emoji = "1.1.0"
 epoxy = "4.6.4"
 firebaseAds = "22.0.0"
 firebaseAnalytics = "21.2.2"
-firebaseAuth = "21.3.0"
+firebaseAuth = "22.0.0"
 firebaseBom = "32.0.0"
 firebaseConfig = "21.4.0"
 firebaseCore = "21.1.1"
 firebaseCrashlytics = "18.3.7"
-firebaseDatabase = "20.2.0"
-firebaseFirestore = "24.5.0"
+firebaseDatabase = "20.2.1"
+firebaseFirestore = "24.6.0"
 firebaseMessaging = "23.1.2"
-firebaseStorage = "20.1.0"
+firebaseStorage = "20.2.0"
 firebaseUi = "8.0.2"
 fragmentKtx = "1.5.7"
 glide = "4.15.1"
@@ -176,23 +176,18 @@ androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-test-junitExt = "androidx.test.ext:junit:1.1.5"
 androidx-test-runner = "androidx.test:runner:1.5.2"
 
-materialdialogs-input = { module = "com.afollestad.material-dialogs:input", version.ref = "materialDialogs" }
-materialdialogs-core = { module = "com.afollestad.material-dialogs:core", version.ref = "materialDialogs" }
-materialdialogs-bottomSheets = { module = "com.afollestad.material-dialogs:bottomsheets", version.ref = "materialDialogs" }
-materialdialogs-color = { module = "com.afollestad.material-dialogs:color", version.ref = "materialDialogs" }
-
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-ads = { module = "com.google.firebase:firebase-ads", version.ref = "firebaseAds" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
-firebase-auth = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuth" }
-firebase-config = { module = "com.google.firebase:firebase-config-ktx", version.ref = "firebaseConfig" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
 firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "firebaseCore" }
-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebaseCrashlytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-pluginCrashlytics = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crshlyticsPlugin" }
-firebase-database = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabase" }
-firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestore" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessaging" }
-firebase-storage = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorage" }
+firebase-database = { module = "com.google.firebase:firebase-database-ktx" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-storage = { module = "com.google.firebase:firebase-storage-ktx" }
 
 firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebaseUi" }
 firebase-ui-firestore = { module = "com.firebaseui:firebase-ui-firestore", version.ref = "firebaseUi" }

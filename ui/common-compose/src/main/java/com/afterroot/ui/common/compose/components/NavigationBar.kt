@@ -179,7 +179,7 @@ suspend fun settleAppBar(
         var lastValue = 0f
         AnimationState(
             initialValue = 0f,
-            initialVelocity = velocity,
+            initialVelocity = velocity
         )
             .animateDecay(flingAnimationSpec) {
                 val delta = value - lastValue

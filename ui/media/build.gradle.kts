@@ -68,6 +68,4 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     implementation(libs.materialProgress)
-
-    implementation(libs.materialdialogs.core)
 }

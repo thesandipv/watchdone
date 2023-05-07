@@ -21,7 +21,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.afterroot.tmdbapi.repository.AuthRepository
-import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
@@ -66,23 +65,23 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         dismiss()
                     }
                     R.id.tmdb_login -> {
-                        val dialog = requireContext().showStaticProgressDialog("Loading...")
+                        // val dialog = requireContext().showStaticProgressDialog("Loading...")
                         homeViewModel.getResponseRequestToken().observe(
                             viewLifecycleOwner
                         ) { response ->
                             if (response.success) {
                                 try {
                                     requireContext().browse(AuthRepository.getAuthVerifyUrl(response))
-                                    dialog.dismiss()
+                                    // dialog.dismiss()
                                     dismiss()
                                 } catch (e: Exception) {
                                     e.printStackTrace()
-                                    dialog.dismiss()
+                                    // dialog.dismiss()
                                     dismiss()
                                 }
                             } else {
                                 requireContext().toast(response.statusMessage)
-                                dialog.dismiss()
+                                // dialog.dismiss()
                                 dismiss()
                             }
                         }

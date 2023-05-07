@@ -28,14 +28,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
-import com.afollestad.materialdialogs.MaterialDialog
 import com.afterroot.ui.common.compose.theme.Theme
-import com.afterroot.utils.extensions.showStaticProgressDialog
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.helpers.Deeplink
-import com.afterroot.watchdone.helpers.migrateFirestore
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.google.firebase.firestore.FirebaseFirestore
@@ -124,6 +121,7 @@ class HomeFragment : Fragment() {
             doc.getDouble("voteAverage") != null
         }
         if (isRunMig) {
+/* TODO Replace with alert dialog
             MaterialDialog(requireContext()).show {
                 title(text = "Migrate Data")
                 message(text = "Migration Needed for new data structure")
@@ -135,6 +133,7 @@ class HomeFragment : Fragment() {
                 }
                 negativeButton(text = "Later")
             }
+*/
         }
     }
 }

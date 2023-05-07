@@ -109,6 +109,8 @@ android {
             versionNameSuffix = "-beta"
 
             signingConfig = signingConfigs["release"]
+
+            isMinifyEnabled = true
         }
     }
 
@@ -174,11 +176,6 @@ dependencies {
 
     implementation(libs.coil)
 
-    implementation(libs.materialdialogs.input)
-    implementation(libs.materialdialogs.core)
-    implementation(libs.materialdialogs.bottomSheets)
-    implementation(libs.materialdialogs.color)
-
     implementation(libs.firebase.ui.auth)
     implementation(libs.firebase.ui.firestore)
     implementation(libs.firebase.ui.storage)
@@ -191,6 +188,8 @@ dependencies {
 
     implementation(libs.google.ossLic)
     implementation(libs.google.material)
+
+    implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
     implementation(libs.commonsIo)

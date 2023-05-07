@@ -7,11 +7,6 @@
         <item name="FilterChip">@style/ChipStyle.FilterChip</item>
         <item name="SortChipStyle">@style/ChipStyle.SortChip</item>
 
-        <item name="md_corner_radius">16dp</item>
-        <item name="md_color_button_text">?attr/colorPrimary</item>
-        <item name="md_font_title">@font/ubuntu</item>
-        <item name="md_background_color">?attr/colorSurface</item>
-
         <item name="toolbarStyle">@style/Widget.WatchDone.Toolbar</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>

@@ -124,7 +124,7 @@ internal fun <T : Multi> MediaInfo(
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
-    navigateUp: () -> Unit = {},
+    navigateUp: () -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
@@ -160,16 +160,15 @@ internal fun <T : Multi> MediaInfo(
                     )
                 }
             }, navigationIcon = {
-                IconButton(onClick = {
-                    navigateUp()
-                }) {
-                    Icon(
-                        imageVector = Icons.Outlined.NavigateBefore,
-                        contentDescription = "Up"
-                    )
-                }
-
-            })
+                    IconButton(onClick = {
+                        navigateUp()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.NavigateBefore,
+                            contentDescription = "Up"
+                        )
+                    }
+                })
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { contentPadding ->
