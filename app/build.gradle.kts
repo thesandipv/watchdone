@@ -110,7 +110,7 @@ android {
 
             signingConfig = signingConfigs["release"]
 
-            isMinifyEnabled = true
+            isMinifyEnabled = false
         }
     }
 
