@@ -44,7 +44,6 @@ import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.helpers.Deeplink
-import com.afterroot.watchdone.media.BuildConfig
 import com.afterroot.watchdone.settings.Settings
 import dagger.hilt.android.AndroidEntryPoint
 import info.movito.themoviedbapi.model.Multi
@@ -219,7 +218,7 @@ class MediaInfoFragment : Fragment() {
             intentExtras["topBackgroundColor"]?.let { putExtra(Constants.IG_EXTRA_TOP_COLOR, it) }
             intentExtras["bottomBackgroundColor"]?.let { putExtra(Constants.IG_EXTRA_BOTTOM_COLOR, it) }
             intentExtras["contentUrl"]?.let { putExtra(Constants.IG_EXTRA_CONTENT_URL, it) }
-            putExtra(Constants.IG_EXTRA_SOURCE_APP, BuildConfig.FB_APP_ID)
+            putExtra(Constants.IG_EXTRA_SOURCE_APP, com.afterroot.watchdone.base.BuildConfig.FB_APP_ID)
         }
 
         return shareIntent

@@ -16,10 +16,10 @@ package com.afterroot.watchdone.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
@@ -29,7 +29,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
@@ -50,6 +49,8 @@ import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.ui.home.Home
 import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
+import com.afterroot.watchdone.utils.createExternalShareIntent
+import com.afterroot.watchdone.utils.toHex
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
@@ -276,23 +277,28 @@ class MainActivity : AppCompatActivity() {
     private fun shareToInstagram(poster: String, mediaId: Int) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                val loader = ImageLoader(this@MainActivity)
-                val request = ImageRequest.Builder(this@MainActivity)
-                    .data(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + poster)
-                    .allowHardware(false)
-                    .build()
-                val result = loader.execute(request).drawable
-                val resource = (result as BitmapDrawable).bitmap
-
-                val fos: FileOutputStream?
                 val file = File(
                     this@MainActivity.cacheDir.toString(),
                     "$mediaId.jpg"
                 )
-                fos = FileOutputStream(file)
-                resource.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                fos.flush()
-                fos.close()
+                if (!file.exists()) {
+                    val loader = ImageLoader(this@MainActivity)
+                    val request = ImageRequest.Builder(this@MainActivity)
+                        .data(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + poster)
+                        .allowHardware(false)
+                        .build()
+                    val result = loader.execute(request).drawable
+                    val resource = (result as BitmapDrawable).bitmap
+
+                    val fos: FileOutputStream?
+
+                    fos = FileOutputStream(file)
+                    resource.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    fos.flush()
+                    fos.close()
+                }
+
+                val resource = BitmapFactory.decodeFile("${this@MainActivity.cacheDir}/$mediaId.jpg")
 
                 Palette.from(resource).generate { palette ->
                     val map = mapOf(
@@ -315,103 +321,17 @@ class MainActivity : AppCompatActivity() {
                                 )
                             )
                         )?.toHex(),
-                        "backgroundAssetName" to "$mediaId.jpg"
+                        "backgroundAssetName" to "$mediaId.jpg",
+                        "mediaId" to mediaId.toString()
                     )
 
-                    val intent = createInstagramShareIntent(this@MainActivity, map)
-
-                    if (intent.isResolvable()) {
-                        Timber.d("shareToInstagram: Launching IG")
-                        startActivity(intent)
-                    } else {
-                        Timber.d("shareToInstagram: No Activity Resolved")
-                        try {
-                            startActivity(intent)
-                        } catch (e: Exception) {
-                            Timber.e(e, "shareToInstagram: Error while sharing")
-                            val shareIntent = createShareIntent(this@MainActivity, mapOf("mediaId" to mediaId.toString()))
-                            startActivity(Intent.createChooser(shareIntent, "Share to"))
-                        }
+                    try {
+                        startActivity(createExternalShareIntent(map))
+                    } catch (e: Exception) {
+                        Timber.e(e, "shareToInstagram: Error while sharing")
                     }
                 }
             }
         }
-    }
-
-    private fun createInstagramShareIntent(
-        context: Context,
-        intentExtras: Map<String, String?>
-    ): Intent {
-        val shareIntent = Intent(Constants.IG_SHARE_ACTION)
-
-        val backgroundAssetName = intentExtras["backgroundAssetName"]
-        val stickerAssetName = intentExtras["stickerAssetName"]
-
-        if (backgroundAssetName == null && stickerAssetName == null) {
-            val exceptionMessage = "Background and Sticker asset should not be null"
-            val exception = IllegalArgumentException(exceptionMessage)
-            throw exception
-        }
-
-        backgroundAssetName?.let {
-            val backgroundAssetUri =
-                FileProvider.getUriForFile(context, Constants.IG_SHARE_PROVIDER, File(context.cacheDir, it))
-            Timber.d("createInstagramShareIntent: URI $backgroundAssetUri")
-            shareIntent.apply {
-                type = Constants.MIME_TYPE_JPEG
-                putExtra("interactive_asset_uri", backgroundAssetUri)
-                putExtra(Intent.EXTRA_STREAM, backgroundAssetUri)
-                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            }
-
-            context.grantUriPermission(Constants.IG_PACKAGE_NAME, backgroundAssetUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-
-        shareIntent.apply {
-            intentExtras["topBackgroundColor"]?.let { putExtra(Constants.IG_EXTRA_TOP_COLOR, it) }
-            intentExtras["bottomBackgroundColor"]?.let { putExtra(Constants.IG_EXTRA_BOTTOM_COLOR, it) }
-            intentExtras["contentUrl"]?.let { putExtra(Constants.IG_EXTRA_CONTENT_URL, it) }
-            putExtra(Constants.IG_EXTRA_SOURCE_APP, com.afterroot.watchdone.media.BuildConfig.FB_APP_ID)
-        }
-
-        return shareIntent
-    }
-
-    fun Intent.isResolvable(flags: Long = 0): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            this@MainActivity.packageManager.resolveActivity(
-                this,
-                PackageManager.ResolveInfoFlags.of(flags)
-            ) != null
-        } else {
-            @Suppress("DEPRECATION")
-            this@MainActivity.packageManager.resolveActivity(this, flags.toInt()) != null
-        }
-    }
-
-    private fun Int.toHex() = "#${Integer.toHexString(this)}"
-
-    private fun createShareIntent(
-        context: Context,
-        intentExtras: Map<String, String?>
-    ): Intent {
-        val shareIntent = Intent(Intent.ACTION_SEND)
-
-        val mediaId = intentExtras["mediaId"]
-
-        if (mediaId == null) {
-            val exceptionMessage = "MediaId should not be null"
-            val exception = IllegalArgumentException(exceptionMessage)
-            throw exception
-        }
-
-        val uri = FileProvider.getUriForFile(context, Constants.IG_SHARE_PROVIDER, File(context.cacheDir, "$mediaId.jpg"))
-        shareIntent.apply {
-            type = Constants.MIME_TYPE_JPEG
-            putExtra(Intent.EXTRA_STREAM, uri)
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        }
-
-        return shareIntent
     }
 }

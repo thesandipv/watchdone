@@ -13,6 +13,9 @@
 * limitations under the License.
 */
 
+import java.io.FileInputStream
+import java.util.Properties
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.library)
@@ -35,6 +38,13 @@ android {
         buildConfigField("String", "COMMIT_ID", "\"$commit\"")
         buildConfigField("int", "VERSION_CODE", "${rootProject.extra["versionCode"]}")
         buildConfigField("String", "VERSION_NAME", "\"${rootProject.extra["versionName"]}\"")
+
+        val tmdbPropertiesFile = rootProject.file("tmdb.properties")
+        val tmdbProperties = Properties()
+        if (tmdbPropertiesFile.exists()) {
+            tmdbProperties.load(FileInputStream(tmdbPropertiesFile))
+        }
+        buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
     }
 }
 

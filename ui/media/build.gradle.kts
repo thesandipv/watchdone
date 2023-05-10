@@ -13,9 +13,6 @@
  * limitations under the License.
  */
 
-import java.io.FileInputStream
-import java.util.Properties
-
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.library)
@@ -30,14 +27,6 @@ apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
     namespace = "com.afterroot.watchdone.media"
-    defaultConfig {
-        val tmdbPropertiesFile = rootProject.file("tmdb.properties")
-        val tmdbProperties = Properties()
-        if (tmdbPropertiesFile.exists()) {
-            tmdbProperties.load(FileInputStream(tmdbPropertiesFile))
-        }
-        buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
-    }
 }
 
 dependencies {
