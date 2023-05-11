@@ -18,9 +18,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -28,19 +25,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.onVersionGreaterThanEqualTo
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.Collection
-import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.LocalUser
@@ -49,8 +41,7 @@ import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.ui.home.Home
 import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
-import com.afterroot.watchdone.utils.createExternalShareIntent
-import com.afterroot.watchdone.utils.toHex
+import com.afterroot.watchdone.utils.shareToInstagram
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
@@ -58,15 +49,10 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -106,7 +92,9 @@ class MainActivity : AppCompatActivity() {
                 }, settingsAction = {
                         startActivity<SettingsActivity>()
                     }, shareToIG = { mediaId, poster ->
-                        shareToInstagram(poster, mediaId)
+                        lifecycleScope.launch {
+                            shareToInstagram(poster, mediaId, settings)
+                        }
                     })
             }
         }
@@ -269,67 +257,6 @@ class MainActivity : AppCompatActivity() {
                     }.anchorView = binding.toolbar*/
                 } else {
                     // setUpNavigation()
-                }
-            }
-        }
-    }
-
-    private fun shareToInstagram(poster: String, mediaId: Int) {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val file = File(
-                    this@MainActivity.cacheDir.toString(),
-                    "$mediaId.jpg"
-                )
-                if (!file.exists()) {
-                    val loader = ImageLoader(this@MainActivity)
-                    val request = ImageRequest.Builder(this@MainActivity)
-                        .data(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + poster)
-                        .allowHardware(false)
-                        .build()
-                    val result = loader.execute(request).drawable
-                    val resource = (result as BitmapDrawable).bitmap
-
-                    val fos: FileOutputStream?
-
-                    fos = FileOutputStream(file)
-                    resource.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                    fos.flush()
-                    fos.close()
-                }
-
-                val resource = BitmapFactory.decodeFile("${this@MainActivity.cacheDir}/$mediaId.jpg")
-
-                Palette.from(resource).generate { palette ->
-                    val map = mapOf(
-                        "contentUrl" to HttpUrl.Builder().scheme(Constants.SCHEME_HTTPS).host(Constants.WATCHDONE_HOST)
-                            .addPathSegment("movie").addPathSegment(mediaId.toString())
-                            .build().toString(),
-                        "topBackgroundColor" to palette?.getVibrantColor(
-                            palette.getMutedColor(
-                                ContextCompat.getColor(
-                                    this@MainActivity,
-                                    com.afterroot.watchdone.resources.R.color.md_theme_dark_primary
-                                )
-                            )
-                        )?.toHex(),
-                        "bottomBackgroundColor" to palette?.getDarkVibrantColor(
-                            palette.getDarkMutedColor(
-                                ContextCompat.getColor(
-                                    this@MainActivity,
-                                    com.afterroot.watchdone.resources.R.color.md_theme_light_primaryContainer
-                                )
-                            )
-                        )?.toHex(),
-                        "backgroundAssetName" to "$mediaId.jpg",
-                        "mediaId" to mediaId.toString()
-                    )
-
-                    try {
-                        startActivity(createExternalShareIntent(map))
-                    } catch (e: Exception) {
-                        Timber.e(e, "shareToInstagram: Error while sharing")
-                    }
                 }
             }
         }
