@@ -49,7 +49,6 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-            <!--            <nav-graph android:value="@navigation/mobile_navigation" />-->
             <intent-filter>
                 <data
                     android:host="${hostName}"
