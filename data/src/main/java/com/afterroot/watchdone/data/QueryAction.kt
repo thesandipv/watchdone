@@ -14,8 +14,23 @@
  */
 package com.afterroot.watchdone.data
 
+import info.movito.themoviedbapi.model.Multi
+
 enum class QueryAction {
     CLEAR,
     WATCHED,
     PENDING
+}
+
+enum class WatchStateValues {
+    WATCHED, PENDING
+}
+
+data class Filters(
+    val state: WatchStateValues? = null,
+    val mediaType: Multi.MediaType? = null
+) {
+    companion object {
+        val EMPTY = Filters()
+    }
 }

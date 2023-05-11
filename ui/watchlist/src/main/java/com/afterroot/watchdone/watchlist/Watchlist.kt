@@ -40,7 +40,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Done
@@ -92,6 +94,7 @@ import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
+import com.afterroot.watchdone.data.Filters
 import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
@@ -122,7 +125,11 @@ fun Watchlist(
             viewModel.setQueryAction(it)
             watchlist.refresh()
         },
-        settingsAction = settingsAction
+        settingsAction = settingsAction,
+        filter = {
+            viewModel.updateFilters(it)
+            watchlist.refresh()
+        }
     )
 }
 
@@ -135,7 +142,8 @@ private fun Watchlist(
     refresh: () -> Unit,
     sortAction: () -> Unit,
     settingsAction: () -> Unit,
-    queryAction: (QueryAction) -> Unit
+    queryAction: (QueryAction) -> Unit,
+    filter: (Filters) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyGridState()
@@ -219,6 +227,19 @@ private fun Watchlist(
                                         queryAction(QueryAction.PENDING)
                                     } else {
                                         queryAction(QueryAction.WATCHED)
+                                    }
+                                }
+
+                                MediaTypeFilter(modifier = Modifier) { index, title, selectedList ->
+                                    if (selectedList.isEmpty()) {
+                                        filter(state.filters.copy(mediaType = null))
+                                        return@MediaTypeFilter
+                                    }
+
+                                    if (title == "Movie") {
+                                        filter(state.filters.copy(mediaType = Multi.MediaType.MOVIE))
+                                    } else {
+                                        filter(state.filters.copy(mediaType = Multi.MediaType.TV_SERIES))
                                     }
                                 }
                             }
@@ -413,6 +434,39 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
         // icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         onSelectedChanged = { index, _, _, _, selectedList ->
             onSelectionChanged(index, selectedList)
+        }
+    ) { _, title, icon, selected, onClick ->
+        FilterChip(
+            selected = selected,
+            onClick = { onClick(selected) },
+            label = { Text(text = title.valueOrBlank()) },
+            leadingIcon = {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = "$title Icon",
+                        modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MediaTypeFilter(
+    modifier: Modifier = Modifier,
+    onSelectionChanged: (index: Int, title: String, selectedList: List<Int>) -> Unit
+) {
+    DynamicChipGroup(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        list = listOf("Movie", "TV Series"),
+        icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
+        onSelectedChanged = { index, title, _, _, selectedList ->
+            onSelectionChanged(index, title, selectedList)
         }
     ) { _, title, icon, selected, onClick ->
         FilterChip(

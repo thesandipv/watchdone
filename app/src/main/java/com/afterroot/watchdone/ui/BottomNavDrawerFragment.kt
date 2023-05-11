@@ -19,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
@@ -61,7 +60,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
             setNavigationItemSelectedListener {
                 when (it.itemId) {
                     R.id.navigation_settings -> {
-                        findNavController().navigate(R.id.toSettings)
+                        // findNavController().navigate(R.id.toSettings)
                         dismiss()
                     }
                     R.id.tmdb_login -> {
@@ -107,7 +106,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         AuthUI.getInstance().signOut(requireContext())
                     }
                     root.setOnClickListener {
-                        findNavController().navigate(R.id.toEditProfile)
+                        // findNavController().navigate(R.id.toEditProfile)
                         dismiss()
                     }
                 }

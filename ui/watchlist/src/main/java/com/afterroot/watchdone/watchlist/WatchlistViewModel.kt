@@ -21,6 +21,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.afterroot.data.utils.FirebaseUtils
+import com.afterroot.watchdone.data.Filters
 import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.WatchlistPagingSource
 import com.afterroot.watchdone.settings.Settings
@@ -48,13 +49,15 @@ class WatchlistViewModel @Inject constructor(
     val uiActions = MutableSharedFlow<WatchlistActions>()
     private val flowIsLoading = MutableStateFlow(false)
     private val sortAscending = MutableStateFlow(settings.ascSort)
+    private val filters = MutableStateFlow(Filters.EMPTY)
 
     val state: StateFlow<WatchlistState> =
         combine(
             flowIsLoading,
-            sortAscending
-        ) { isLoading, sortAsc ->
-            WatchlistState(loading = isLoading, sortAscending = sortAsc)
+            sortAscending,
+            filters
+        ) { isLoading, sortAsc, filters ->
+            WatchlistState(loading = isLoading, sortAscending = sortAsc, filters = filters)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -97,12 +100,19 @@ class WatchlistViewModel @Inject constructor(
         savedStateHandle["QUERY_ACTION"] = queryAction.name
     }
 
+    fun updateFilters(filterUpdates: Filters) {
+        viewModelScope.launch {
+            filters.emit(filterUpdates)
+        }
+    }
+
     val watchlist = Pager(PagingConfig(20)) {
         WatchlistPagingSource(
             db,
             settings,
             firebaseUtils,
-            QueryAction.valueOf(savedStateHandle.get<String>("QUERY_ACTION") ?: QueryAction.CLEAR.name)
+            QueryAction.valueOf(savedStateHandle.get<String>("QUERY_ACTION") ?: QueryAction.CLEAR.name),
+            filters.value
         )
     }.flow.cachedIn(viewModelScope)
 }
