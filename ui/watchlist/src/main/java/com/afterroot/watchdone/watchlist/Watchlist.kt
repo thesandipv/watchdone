@@ -97,8 +97,8 @@ import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
-import com.afterroot.watchdone.data.Filters
-import com.afterroot.watchdone.data.QueryAction
+import com.afterroot.watchdone.data.model.Filters
+import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
@@ -125,10 +125,6 @@ fun Watchlist(
         sortAction = {
             viewModel.setSort(!state.sortAscending)
         },
-        queryAction = {
-            viewModel.setQueryAction(it)
-            watchlist.refresh()
-        },
         settingsAction = settingsAction,
         filter = {
             viewModel.updateFilters(it)
@@ -146,7 +142,6 @@ private fun Watchlist(
     refresh: () -> Unit,
     sortAction: () -> Unit,
     settingsAction: () -> Unit,
-    queryAction: (QueryAction) -> Unit,
     filter: (Filters) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -194,14 +189,18 @@ private fun Watchlist(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            AssistChip(text = if (state.sortAscending) "Ascending" else "Descending", leadingIcon = {
-                                Icon(
-                                    imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
-                                    contentDescription = "Sort Icon",
-                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }) {
+                            AssistChip(
+                                text = if (state.sortAscending) {
+                                    stringResource(id = CommonR.string.text_ascending)
+                                } else stringResource(id = CommonR.string.text_descending),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
+                                        contentDescription = "Sort Icon",
+                                        modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }) {
                                 sortAction()
                                 refresh()
                             }
@@ -246,13 +245,13 @@ private fun Watchlist(
 
                                 FilterChips(modifier = Modifier) { index, selectedList ->
                                     if (selectedList.isEmpty()) {
-                                        queryAction(QueryAction.CLEAR)
+                                        filter(state.filters.copy(watchState = null))
                                         return@FilterChips
                                     }
-                                    if (index == 0) {
-                                        queryAction(QueryAction.PENDING)
-                                    } else {
-                                        queryAction(QueryAction.WATCHED)
+                                    if (index == 0) { // Pending
+                                        filter(state.filters.copy(watchState = WatchStateValues.PENDING))
+                                    } else { // Watched
+                                        filter(state.filters.copy(watchState = WatchStateValues.WATCHED))
                                     }
                                 }
                             }
@@ -386,14 +385,14 @@ fun WatchlistItem(
                     if (mediaType == Multi.MediaType.MOVIE) {
                         Icon(
                             imageVector = Icons.Rounded.Movie,
-                            contentDescription = "Movie",
+                            contentDescription = stringResource(id = CommonR.string.text_search_movies),
                             modifier = Modifier.align(Alignment.CenterVertically),
                             tint = Color.White
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Rounded.LiveTv,
-                            contentDescription = "TV Series",
+                            contentDescription = stringResource(id = CommonR.string.text_search_tv),
                             modifier = Modifier.align(Alignment.CenterVertically),
                             tint = Color.White
                         )
@@ -492,7 +491,10 @@ fun MediaTypeFilter(
     DynamicChipGroup(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        list = listOf("Movie", "TV Series"),
+        list = listOf(
+            stringResource(id = CommonR.string.text_search_movies),
+            stringResource(id = CommonR.string.text_search_tv)
+        ),
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         preSelectItem = preSelect,
         onSelectedChanged = { index, title, _, _, selectedList ->

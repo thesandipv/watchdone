@@ -20,6 +20,8 @@ import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toMulti
+import com.afterroot.watchdone.data.model.Filters
+import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,7 +36,6 @@ class WatchlistPagingSource(
     private val firestore: FirebaseFirestore,
     private val settings: Settings,
     private val firebaseUtils: FirebaseUtils,
-    private val queryAction: QueryAction,
     private val filters: Filters = Filters.EMPTY
 ) : PagingSource<QuerySnapshot, Multi>() {
     override fun getRefreshKey(state: PagingState<QuerySnapshot, Multi>): QuerySnapshot? {
@@ -69,12 +70,13 @@ class WatchlistPagingSource(
                 }
 
                 val statusFilter: Query.() -> Query = {
-                    when (queryAction) {
-                        QueryAction.CLEAR -> this
-                        QueryAction.WATCHED -> whereEqualTo(Field.IS_WATCHED, true)
-                        QueryAction.PENDING -> whereIn(Field.IS_WATCHED, listOf(false, null))
+                    when (filters.watchState) {
+                        WatchStateValues.WATCHED -> whereEqualTo(Field.IS_WATCHED, true)
+                        WatchStateValues.PENDING -> whereIn(Field.IS_WATCHED, listOf(false, null))
+                        else -> this
                     }
                 }
+
                 mediaTypeFilter().statusFilter()
                 /*
                                 when (settings.filterBy) {

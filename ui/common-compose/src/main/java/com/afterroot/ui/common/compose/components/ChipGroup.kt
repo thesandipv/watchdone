@@ -237,13 +237,15 @@ fun DynamicChipGroup(
     preSelectItem: String? = null,
     selectionType: SelectionType = SelectionType.Single,
     showOnlySelected: Boolean = false,
-    onSelectedChanged: ((
-        index: Int,
-        title: String,
-        selected: Boolean,
-        list: List<String>,
-        selectedList: List<Int>
-    ) -> Unit)? = null,
+    onSelectedChanged: (
+        (
+            index: Int,
+            title: String,
+            selected: Boolean,
+            list: List<String>,
+            selectedList: List<Int>
+        ) -> Unit
+    )? = null,
     chipContent: @Composable (
         index: Int,
         title: String,
@@ -273,7 +275,9 @@ fun DynamicChipGroup(
             AnimatedVisibility(
                 visible = if (showOnlySelected && selectedList.isNotEmpty() && selectedList[0] != -1) {
                     selectedList.contains(index)
-                } else true
+                } else {
+                    true
+                }
             ) {
                 chipContent(
                     index = index,
