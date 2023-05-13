@@ -192,7 +192,9 @@ private fun Watchlist(
                             AssistChip(
                                 text = if (state.sortAscending) {
                                     stringResource(id = CommonR.string.text_ascending)
-                                } else stringResource(id = CommonR.string.text_descending),
+                                } else {
+                                    stringResource(id = CommonR.string.text_descending)
+                                },
                                 leadingIcon = {
                                     Icon(
                                         imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
@@ -200,7 +202,8 @@ private fun Watchlist(
                                         modifier = Modifier.size(FilterChipDefaults.IconSize),
                                         tint = MaterialTheme.colorScheme.onSurface
                                     )
-                                }) {
+                                }
+                            ) {
                                 sortAction()
                                 refresh()
                             }
