@@ -218,19 +218,14 @@ private fun Watchlist(
 
                                 Spacer(modifier = Modifier.width(4.dp))
 
-                                FilterChips(modifier = Modifier) { index, selectedList ->
-                                    if (selectedList.isEmpty()) {
-                                        queryAction(QueryAction.CLEAR)
-                                        return@FilterChips
+                                MediaTypeFilter(
+                                    modifier = Modifier,
+                                    preSelect = when (state.filters.mediaType) {
+                                        Multi.MediaType.MOVIE -> "Movie"
+                                        Multi.MediaType.TV_SERIES -> "TV Series"
+                                        else -> null
                                     }
-                                    if (index == 0) {
-                                        queryAction(QueryAction.PENDING)
-                                    } else {
-                                        queryAction(QueryAction.WATCHED)
-                                    }
-                                }
-
-                                MediaTypeFilter(modifier = Modifier) { index, title, selectedList ->
+                                ) { _, title, selectedList ->
                                     if (selectedList.isEmpty()) {
                                         filter(state.filters.copy(mediaType = null))
                                         return@MediaTypeFilter
@@ -240,6 +235,20 @@ private fun Watchlist(
                                         filter(state.filters.copy(mediaType = Multi.MediaType.MOVIE))
                                     } else {
                                         filter(state.filters.copy(mediaType = Multi.MediaType.TV_SERIES))
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(4.dp))
+
+                                FilterChips(modifier = Modifier) { index, selectedList ->
+                                    if (selectedList.isEmpty()) {
+                                        queryAction(QueryAction.CLEAR)
+                                        return@FilterChips
+                                    }
+                                    if (index == 0) {
+                                        queryAction(QueryAction.PENDING)
+                                    } else {
+                                        queryAction(QueryAction.WATCHED)
                                     }
                                 }
                             }
@@ -458,6 +467,7 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
 @Composable
 fun MediaTypeFilter(
     modifier: Modifier = Modifier,
+    preSelect: String? = null,
     onSelectionChanged: (index: Int, title: String, selectedList: List<Int>) -> Unit
 ) {
     DynamicChipGroup(
@@ -465,6 +475,7 @@ fun MediaTypeFilter(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         list = listOf("Movie", "TV Series"),
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
+        preSelectItem = preSelect,
         onSelectedChanged = { index, title, _, _, selectedList ->
             onSelectionChanged(index, title, selectedList)
         }

@@ -35,7 +35,7 @@ class WatchlistPagingSource(
     private val settings: Settings,
     private val firebaseUtils: FirebaseUtils,
     private val queryAction: QueryAction,
-    private val filters: Filters = Filters.EMPTY,
+    private val filters: Filters = Filters.EMPTY
 ) : PagingSource<QuerySnapshot, Multi>() {
     override fun getRefreshKey(state: PagingState<QuerySnapshot, Multi>): QuerySnapshot? {
         return null
@@ -60,26 +60,22 @@ class WatchlistPagingSource(
             }
 
             val filterBy: Query.() -> Query = {
-
-                if (filters.mediaType == Multi.MediaType.MOVIE) {
-                    whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.MOVIE.name)
-                } else if (filters.mediaType == Multi.MediaType.TV_SERIES) {
-                    whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.TV_SERIES.name)
-                }
-
-                when (queryAction) {
-                    QueryAction.CLEAR -> {
-                        this
-                    }
-
-                    QueryAction.WATCHED -> {
-                        whereEqualTo(Field.IS_WATCHED, true)
-                    }
-
-                    QueryAction.PENDING -> {
-                        whereIn(Field.IS_WATCHED, listOf(false, null))
+                val mediaTypeFilter: Query.() -> Query = {
+                    when (filters.mediaType) {
+                        Multi.MediaType.MOVIE -> whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.MOVIE.name)
+                        Multi.MediaType.TV_SERIES -> whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.TV_SERIES.name)
+                        else -> this
                     }
                 }
+
+                val statusFilter: Query.() -> Query = {
+                    when (queryAction) {
+                        QueryAction.CLEAR -> this
+                        QueryAction.WATCHED -> whereEqualTo(Field.IS_WATCHED, true)
+                        QueryAction.PENDING -> whereIn(Field.IS_WATCHED, listOf(false, null))
+                    }
+                }
+                mediaTypeFilter().statusFilter()
                 /*
                                 when (settings.filterBy) {
                                     Field.TITLE -> whereEqualTo(Field.TITLE, true)
