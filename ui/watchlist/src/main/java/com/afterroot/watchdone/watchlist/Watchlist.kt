@@ -45,6 +45,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.LiveTv
@@ -59,6 +60,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -75,6 +77,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -101,6 +104,7 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
 import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun Watchlist(
@@ -221,24 +225,24 @@ private fun Watchlist(
                                 MediaTypeFilter(
                                     modifier = Modifier,
                                     preSelect = when (state.filters.mediaType) {
-                                        Multi.MediaType.MOVIE -> "Movie"
-                                        Multi.MediaType.TV_SERIES -> "TV Series"
+                                        Multi.MediaType.MOVIE -> stringResource(id = CommonR.string.text_search_movies)
+                                        Multi.MediaType.TV_SERIES -> stringResource(id = CommonR.string.text_search_tv)
                                         else -> null
                                     }
-                                ) { _, title, selectedList ->
+                                ) { index, _, selectedList ->
                                     if (selectedList.isEmpty()) {
                                         filter(state.filters.copy(mediaType = null))
                                         return@MediaTypeFilter
                                     }
 
-                                    if (title == "Movie") {
+                                    if (index == 0) { // Movie
                                         filter(state.filters.copy(mediaType = Multi.MediaType.MOVIE))
-                                    } else {
+                                    } else { // TV
                                         filter(state.filters.copy(mediaType = Multi.MediaType.TV_SERIES))
                                     }
                                 }
 
-                                Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
 
                                 FilterChips(modifier = Modifier) { index, selectedList ->
                                     if (selectedList.isEmpty()) {
@@ -440,11 +444,11 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         list = listOf("Pending", "Watched"),
-        // icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         onSelectedChanged = { index, _, _, _, selectedList ->
             onSelectionChanged(index, selectedList)
-        }
-    ) { _, title, icon, selected, onClick ->
+        },
+        showOnlySelected = true
+    ) { _, title, icon, selected, onClick, clear ->
         FilterChip(
             selected = selected,
             onClick = { onClick(selected) },
@@ -458,7 +462,22 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
+            },
+            trailingIcon = {
+                if (selected) {
+                    IconButton(modifier = Modifier.size(InputChipDefaults.IconSize), onClick = {
+                        clear()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "Clear Filter",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
             }
+
         )
     }
 }
@@ -478,8 +497,9 @@ fun MediaTypeFilter(
         preSelectItem = preSelect,
         onSelectedChanged = { index, title, _, _, selectedList ->
             onSelectionChanged(index, title, selectedList)
-        }
-    ) { _, title, icon, selected, onClick ->
+        },
+        showOnlySelected = true
+    ) { _, title, icon, selected, onClick, clear ->
         FilterChip(
             selected = selected,
             onClick = { onClick(selected) },
@@ -492,6 +512,20 @@ fun MediaTypeFilter(
                         modifier = Modifier.size(FilterChipDefaults.IconSize),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
+                }
+            },
+            trailingIcon = {
+                if (selected) {
+                    IconButton(modifier = Modifier.size(InputChipDefaults.IconSize), onClick = {
+                        clear()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "Clear Filter",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
         )
