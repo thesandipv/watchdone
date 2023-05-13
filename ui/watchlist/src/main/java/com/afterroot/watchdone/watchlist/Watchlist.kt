@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -98,9 +99,9 @@ import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
 import com.afterroot.watchdone.data.model.Filters
-import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
 import info.movito.themoviedbapi.model.Multi
@@ -149,14 +150,18 @@ private fun Watchlist(
 
     Scaffold(
         topBar = {
-            CommonAppBar(withTitle = "Watchlist", scrollBehavior = scrollBehavior, actions = {
-                IconButton(onClick = { settingsAction() }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings"
-                    )
-                }
-            })
+            CommonAppBar(
+                withTitle = "Watchlist",
+                scrollBehavior = scrollBehavior,
+                windowInsets = WindowInsets(top = 0),
+                actions = {
+                    IconButton(onClick = { settingsAction() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
+                })
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->

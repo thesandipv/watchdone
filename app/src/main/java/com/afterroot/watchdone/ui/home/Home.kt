@@ -22,9 +22,11 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -171,7 +173,8 @@ fun HomeNavigationBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior?
 ) {
-    val heightOffsetLimit = with(LocalDensity.current) { -80.dp.toPx() }
+
+    val heightOffsetLimit = with(LocalDensity.current) { -(80.dp.toPx() + WindowInsets.navigationBars.getBottom(this)) }
     SideEffect {
         if (scrollBehavior?.state?.heightOffsetLimit != heightOffsetLimit) {
             scrollBehavior?.state?.heightOffsetLimit = heightOffsetLimit

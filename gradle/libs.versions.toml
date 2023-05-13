@@ -234,6 +234,7 @@ accompanist-insetsui = { module = "com.google.accompanist:accompanist-insets-ui"
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
 accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 accompanist-navigation = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
+accompanist-suc = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
 test-junit = "junit:junit:4.13.2"
 test-mockk = "io.mockk:mockk:1.13.5"
@@ -269,8 +270,10 @@ compose = [
     "androidx-compose-viewmodel",
     "androidx-compose-paging",
     "accompanist-insets",
+    "accompanist-insetsui",
     "accompanist-placeholder",
     "accompanist-swiperefresh",
+    "accompanist-suc",
     "accompanist-navigation"
 ]
 lifecycle = [

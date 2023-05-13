@@ -24,8 +24,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.os.ConfigurationCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
@@ -43,6 +47,7 @@ import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.shareToInstagram
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -84,8 +89,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
+            val systemUiController = rememberSystemUiController()
+            val useDarkIcons = !isSystemInDarkTheme()
+
+            DisposableEffect(systemUiController, useDarkIcons) {
+                // Update all of the system bar colors to be transparent, and use
+                // dark icons if we're in light theme
+                systemUiController.setSystemBarsColor(
+                    color = Color.Transparent,
+                    darkIcons = useDarkIcons
+                )
+
+                // setStatusBarColor() and setNavigationBarColor() also exist
+
+                onDispose {}
+            }
+
             Theme(context = this, settings = settings) {
                 Home(onWatchProviderClick = { link ->
                     browse(link, true)
