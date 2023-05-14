@@ -98,6 +98,7 @@ import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
+import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
@@ -153,7 +154,7 @@ private fun Watchlist(
             CommonAppBar(
                 withTitle = "Watchlist",
                 scrollBehavior = scrollBehavior,
-                windowInsets = WindowInsets(top = 0),
+                windowInsets = TopBarWindowInsets,
                 actions = {
                     IconButton(onClick = { settingsAction() }) {
                         Icon(

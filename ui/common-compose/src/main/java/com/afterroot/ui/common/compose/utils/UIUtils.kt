@@ -16,6 +16,7 @@ package com.afterroot.ui.common.compose.utils
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,3 +35,5 @@ fun Modifier.bottomNavigationPadding() = this.padding(bottom = 56.dp)
 
 fun Modifier.sidePadding(padding: Dp = 16.dp, applyBottom: Boolean = false) =
     padding(start = padding, top = padding, end = padding, bottom = if (applyBottom) padding else 0.dp)
+
+val TopBarWindowInsets = WindowInsets(top = 0)
