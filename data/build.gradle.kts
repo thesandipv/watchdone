@@ -71,7 +71,7 @@ dependencies {
     implementation(libs.retrofit.retrofit)
     implementation(libs.retrofit.jackson)
 
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
     implementation(libs.bundles.coroutines)

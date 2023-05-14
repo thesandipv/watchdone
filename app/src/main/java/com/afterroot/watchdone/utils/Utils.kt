@@ -19,13 +19,17 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.palette.graphics.Palette
 import coil.ImageLoader
 import coil.request.ImageRequest
+import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.settings.Settings
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
@@ -90,4 +94,18 @@ suspend fun Context.shareToInstagram(poster: String, mediaId: Int, settings: Set
             }
         }
     }
+}
+
+fun Context.logFirstStart() {
+    FirebaseAnalytics.getInstance(this@logFirstStart).logEvent(
+        "DeviceInfo",
+        bundleOf(
+            "Device_Name" to Build.DEVICE,
+            "Device_Model" to Build.MODEL,
+            "Manufacturer" to Build.MANUFACTURER,
+            "AndroidVersion" to Build.VERSION.RELEASE,
+            "AppVersion" to BuildConfig.VERSION_CODE.toString(),
+            "Package" to BuildConfig.APPLICATION_ID
+        )
+    )
 }

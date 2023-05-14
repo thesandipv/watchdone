@@ -41,4 +41,7 @@ dependencies {
 
     api(libs.androidx.paging.common)
     implementation(libs.androidx.paging)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 }

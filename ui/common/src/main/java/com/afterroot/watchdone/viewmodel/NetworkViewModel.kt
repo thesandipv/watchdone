@@ -31,7 +31,7 @@ class NetworkViewModel @Inject constructor(private val networkStateMonitor: Netw
         onDisconnect: ((state: NetworkState) -> Unit)? = null
     ) {
         if (doInitially == null) {
-            onConnect(NetworkState.CONNECTED) // Run [doWhenConnected] id [doInitially] is null
+            onConnect(NetworkState.CONNECTED) // Run [doWhenConnected] if [doInitially] is null
         } else {
             doInitially.invoke()
         }

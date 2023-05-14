@@ -21,8 +21,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.data.WatchlistPagingSource
 import com.afterroot.watchdone.data.model.Filters
+import com.afterroot.watchdone.domain.observers.WatchlistPagingSource
 import com.afterroot.watchdone.settings.Settings
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
