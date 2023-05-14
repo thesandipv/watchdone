@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -152,17 +151,18 @@ private fun Watchlist(
     Scaffold(
         topBar = {
             CommonAppBar(
-                withTitle = "Watchlist",
+                withTitle = stringResource(id = CommonR.string.title_watchlist),
                 scrollBehavior = scrollBehavior,
                 windowInsets = TopBarWindowInsets,
                 actions = {
                     IconButton(onClick = { settingsAction() }) {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
-                            contentDescription = "Settings"
+                            contentDescription = stringResource(id = CommonR.string.title_settings)
                         )
                     }
-                })
+                }
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->

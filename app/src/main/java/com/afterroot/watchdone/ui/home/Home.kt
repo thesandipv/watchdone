@@ -173,7 +173,6 @@ fun HomeNavigationBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior?
 ) {
-
     val heightOffsetLimit = with(LocalDensity.current) { -(80.dp.toPx() + WindowInsets.navigationBars.getBottom(this)) }
     SideEffect {
         if (scrollBehavior?.state?.heightOffsetLimit != heightOffsetLimit) {
