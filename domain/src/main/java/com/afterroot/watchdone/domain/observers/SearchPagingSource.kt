@@ -66,7 +66,7 @@ class SearchMoviePagingSource(private val query: Query, private val searchMovieI
             }
             return loadResult!!
         } catch (e: Exception) {
-            Timber.e("load: Load Error")
+            Timber.e(e, "load: Load Error")
             return LoadResult.Error(e)
         }
     }
@@ -111,7 +111,7 @@ class SearchTVPagingSource(private val query: Query, private val searchTVInterac
             }
             return loadResult!!
         } catch (e: Exception) {
-            Timber.e("load: Load Error")
+            Timber.e(e, "load: Load Error")
             return LoadResult.Error(e)
         }
     }

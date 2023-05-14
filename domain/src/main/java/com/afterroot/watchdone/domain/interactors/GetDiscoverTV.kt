@@ -17,7 +17,7 @@ package com.afterroot.watchdone.domain.interactors
 import app.tivi.domain.ResultInteractor
 import com.afterroot.watchdone.data.repositories.DiscoverRepository
 import com.afterroot.watchdone.utils.State
-import info.movito.themoviedbapi.TvResultsPage
+import info.movito.themoviedbapi.model.core.TvResultsPage
 import info.movito.themoviedbapi.model.Discover
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -14,7 +14,7 @@
  */
 package com.afterroot.watchdone.data.mapper
 
-import info.movito.themoviedbapi.TvResultsPage
+import info.movito.themoviedbapi.model.core.TvResultsPage
 import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.core.MovieResultsPage
 
