@@ -59,7 +59,7 @@ class RecommendedShowPagingSource(
             }
             return loadResult!!
         } catch (e: Exception) {
-            Timber.e("load: Load Error")
+            Timber.e(e, "load: Load Error")
             return LoadResult.Error(e)
         }
     }

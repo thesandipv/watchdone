@@ -18,7 +18,7 @@
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
 
--keepclassmembers class com.afterroot.watchdone.data.model.** {
+-keep class com.afterroot.watchdone.data.model.** {
   *;
 }
 

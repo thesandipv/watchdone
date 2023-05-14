@@ -22,7 +22,7 @@ import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.repositories.TVRepository
 import com.afterroot.watchdone.utils.State
-import info.movito.themoviedbapi.TvResultsPage
+import info.movito.themoviedbapi.model.core.TvResultsPage
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.providers.ProviderResults
 import kotlinx.coroutines.flow.Flow
