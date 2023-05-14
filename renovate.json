@@ -5,22 +5,40 @@
   ],
   "packageRules": [
     {
-      "groupName": "Kotlin, KSP and Compose Compiler",
+      "groupName": "Androidx Lifecycle deps",
+      "matchPackagePatterns": [
+        "androidx.lifecycle",
+        "androidx.navigation:navigation-compose"
+      ]
+    },
+    {
+      "groupName": "Kotlin, Coroutines and KSP",
       "groupSlug": "kotlin",
       "matchPackagePrefixes": [
         "com.google.devtools.ksp",
-        "androidx.compose.compiler"
-      ],
-      "matchPackagePatterns": [
-        "org.jetbrains.kotlin.*"
+        "org.jetbrains.kotlin"
       ]
     },
     {
       "description": "Automatically merge minor and patch-level updates",
-      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true
+    },
+    {
+      "groupName": "Compose Dependencies",
+      "matchPackagePatterns": "^androidx\\..*compose\\."
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
     }
   ]
 }

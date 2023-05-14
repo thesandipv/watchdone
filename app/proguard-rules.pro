@@ -18,13 +18,18 @@
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
 
--keepclassmembers class com.afterroot.watchdone.data.model.** {
+-keep class com.afterroot.watchdone.data.model.** {
   *;
 }
 
 -keep class com.afterroot.data.model.** {
   *;
 }
+
+-keep class * extends com.afterroot.watchdone.base.compose.* {
+  *;
+}
+
 
 # For enumeration classes
 -keepclassmembers enum * {
