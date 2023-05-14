@@ -36,6 +36,7 @@ class DiscoverTVPagingSource(private val discover: Discover, private val getDisc
             response.collect {
                 when (it) {
                     is State.Success -> {
+                        Timber.d("load: Data ${it.data}")
                         nextPage = it.data.page + 1
 
                         loadResult = LoadResult.Page(
@@ -56,7 +57,7 @@ class DiscoverTVPagingSource(private val discover: Discover, private val getDisc
             }
             return loadResult!!
         } catch (e: Exception) {
-            Timber.e("load: Load Error")
+            Timber.e(e, "load: Load Error")
             return LoadResult.Error(e)
         }
     }
