@@ -26,6 +26,11 @@
   *;
 }
 
+-keep class * extends com.afterroot.watchdone.base.compose.* {
+  *;
+}
+
+
 # For enumeration classes
 -keepclassmembers enum * {
     public static **[] values();
