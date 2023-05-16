@@ -4,10 +4,13 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 
 ### Pending
 - [ ] Add - Metrics by Genres on User Profile
-- [ ] Imp - Get ig share image from cache if exists (improvedIn - ``)
-- [ ] Add - Movie Share action
-- [ ] Add - Cast info Screen
 - [ ] Imp - Migrate from `kapt` to `ksp`
+
+### Upcoming
+
+- [X] Imp - Get ig share image from cache if exists
+- [X] Add - Media Share action
+- [X] Add - Cast info Screen
 
 ### v0.0.4
 - [X] Add - Region Selection in Settings (addedIn - `fc1f3fb`)
