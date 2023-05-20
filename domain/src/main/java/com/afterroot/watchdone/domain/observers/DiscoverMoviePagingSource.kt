@@ -54,7 +54,7 @@ class DiscoverMoviePagingSource(private val discover: Discover, private val getD
                     }
                 }
             }
-            return loadResult!!
+            return loadResult ?: LoadResult.Invalid()
         } catch (e: Exception) {
             Timber.e(e, "load: Load Error")
             return LoadResult.Error(e)

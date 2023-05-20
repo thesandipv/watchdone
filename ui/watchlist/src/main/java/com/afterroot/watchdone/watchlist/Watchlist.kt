@@ -252,16 +252,20 @@ private fun Watchlist(
 
                                 Spacer(modifier = Modifier.width(8.dp))
 
-                                FilterChips(modifier = Modifier) { index, selectedList ->
+                                FilterChips(
+                                    modifier = Modifier,
+                                    preSelect = when (state.filters.watchState) {
+                                        WatchStateValues.WATCHED -> stringResource(id = CommonR.string.watch_state_watched)
+                                        WatchStateValues.PENDING -> stringResource(id = CommonR.string.watch_state_pending)
+                                        WatchStateValues.STARTED -> stringResource(id = CommonR.string.watch_state_started)
+                                        else -> null
+                                    }
+                                ) { index, selectedList ->
                                     if (selectedList.isEmpty()) {
                                         filter(state.filters.copy(watchState = null))
                                         return@FilterChips
                                     }
-                                    if (index == 0) { // Pending
-                                        filter(state.filters.copy(watchState = WatchStateValues.PENDING))
-                                    } else { // Watched
-                                        filter(state.filters.copy(watchState = WatchStateValues.WATCHED))
-                                    }
+                                    filter(state.filters.copy(watchState = WatchStateValues.values()[selectedList[0]]))
                                 }
                             }
                         }
@@ -447,11 +451,20 @@ fun WatchlistItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (index: Int, selectedList: List<Int>) -> Unit) {
+private fun FilterChips(
+    modifier: Modifier = Modifier,
+    preSelect: String? = null,
+    onSelectionChanged: (index: Int, selectedList: List<Int>) -> Unit
+) {
     DynamicChipGroup(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        list = listOf("Pending", "Watched"),
+        list = listOf(
+            stringResource(id = CommonR.string.watch_state_watched),
+            stringResource(id = CommonR.string.watch_state_pending),
+            stringResource(id = CommonR.string.watch_state_started)
+        ),
+        preSelectItem = preSelect,
         onSelectedChanged = { index, _, _, _, selectedList ->
             onSelectionChanged(index, selectedList)
         },
@@ -478,7 +491,7 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
-                            contentDescription = "Clear Filter",
+                            contentDescription = stringResource(id = CommonR.string.content_desc_clear_filter),
                             modifier = Modifier.size(FilterChipDefaults.IconSize),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
@@ -532,7 +545,7 @@ fun MediaTypeFilter(
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
-                            contentDescription = "Clear Filter",
+                            contentDescription = stringResource(id = CommonR.string.content_desc_clear_filter),
                             modifier = Modifier.size(FilterChipDefaults.IconSize),
                             tint = MaterialTheme.colorScheme.onSurface
                         )

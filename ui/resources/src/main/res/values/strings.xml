@@ -8,6 +8,7 @@
     <string name="button_add_watched">Add Watched</string>
     <string name="content_desc_movie_poster">Movie/TV Show Poster</string>
     <string name="content_desc_watched_icon">Watched Icon</string>
+    <string name="content_desc_clear_filter">Clear Filter</string>
     <string name="contentDesc">fab</string>
     <string name="date_time_format">dd-MMM-yyyy hh:mm a</string>
     <string name="dialog_msg_no_network">No Network Available. Please check connection and try again.</string>
@@ -75,4 +76,7 @@
     <string name="media_info_rating_text">%.1f/10 (%d votes)</string>
     <string name="text_ascending">Ascending</string>
     <string name="text_descending">Descending</string>
+    <string name="watch_state_pending">Pending</string>
+    <string name="watch_state_watched">Watched</string>
+    <string name="watch_state_started">Started</string>
 </resources>
