@@ -14,7 +14,7 @@
  */
 package com.afterroot.watchdone.ui.profile
 
-import com.afterroot.ui.common.view.UiMessage
+import app.tivi.api.UiMessage
 import com.afterroot.watchdone.data.model.LocalUser
 
 sealed class ProfileActions {

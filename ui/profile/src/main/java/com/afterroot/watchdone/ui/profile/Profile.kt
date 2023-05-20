@@ -35,10 +35,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.tivi.api.UiMessage
 import com.afterroot.ui.common.compose.components.FABEdit
 import com.afterroot.ui.common.compose.components.SwipeDismissSnackbar
 import com.afterroot.ui.common.compose.utils.rememberFlowWithLifecycle
-import com.afterroot.ui.common.view.UiMessage
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch

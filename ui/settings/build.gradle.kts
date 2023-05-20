@@ -29,7 +29,7 @@ android {
     namespace = "com.afterroot.watchdone.ui.settings"
     buildFeatures {
         dataBinding = true
-        viewBinding = true
+        // viewBinding = true
     }
 }
 

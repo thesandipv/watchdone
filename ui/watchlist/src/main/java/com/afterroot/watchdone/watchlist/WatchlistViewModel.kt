@@ -20,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import app.tivi.api.UiMessageManager
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.domain.observers.WatchlistPagingSource
@@ -46,12 +47,15 @@ class WatchlistViewModel @Inject constructor(
     private val sortAscending = MutableStateFlow(settings.ascSort)
     private val filters = MutableStateFlow(Filters.EMPTY)
 
+    private val uiMessageManager = UiMessageManager()
+
     val state: StateFlow<WatchlistState> =
         combine(
             flowIsLoading,
             sortAscending,
-            filters
-        ) { isLoading, sortAsc, filters ->
+            filters,
+            uiMessageManager.message
+        ) { isLoading, sortAsc, filters, message ->
             WatchlistState(loading = isLoading, sortAscending = sortAsc, filters = filters)
         }.stateIn(
             scope = viewModelScope,
