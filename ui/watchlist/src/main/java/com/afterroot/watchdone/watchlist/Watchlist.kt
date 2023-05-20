@@ -260,7 +260,7 @@ private fun Watchlist(
                                         WatchStateValues.STARTED -> stringResource(id = CommonR.string.watch_state_started)
                                         else -> null
                                     }
-                                ) { index, selectedList ->
+                                ) { _, selectedList ->
                                     if (selectedList.isEmpty()) {
                                         filter(state.filters.copy(watchState = null))
                                         return@FilterChips
@@ -272,17 +272,9 @@ private fun Watchlist(
                     }
                     gridItemsIndexed(items = watchlist, key = { index, item ->
                         when (item.mediaType) {
-                            Multi.MediaType.MOVIE -> {
-                                (item as Movie).id
-                            }
-
-                            Multi.MediaType.TV_SERIES -> {
-                                (item as TV).id
-                            }
-
-                            else -> {
-                                index
-                            }
+                            Multi.MediaType.MOVIE -> (item as Movie).id
+                            Multi.MediaType.TV_SERIES -> (item as TV).id
+                            else -> index
                         }
                     }) { _, item ->
                         when (item?.mediaType) {
@@ -299,9 +291,7 @@ private fun Watchlist(
                                         .aspectRatio(2 / 3f),
                                     isWatched = item.isWatched,
                                     mediaType = item.mediaType,
-                                    onClick = {
-                                        itemSelectedCallback.onClick(0, null, item)
-                                    }
+                                    onClick = { itemSelectedCallback.onClick(0, null, item) }
                                 )
                             }
 
@@ -318,9 +308,7 @@ private fun Watchlist(
                                         .aspectRatio(2 / 3f),
                                     isWatched = item.isWatched,
                                     mediaType = item.mediaType,
-                                    onClick = {
-                                        itemSelectedCallback.onClick(0, null, item)
-                                    }
+                                    onClick = { itemSelectedCallback.onClick(0, null, item) }
                                 )
                             }
 

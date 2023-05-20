@@ -5,6 +5,7 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 ### Pending
 - [ ] Add - Metrics by Genres on User Profile
 - [ ] Imp - Migrate from `kapt` to `ksp`
+- [ ] Imp - Migrate from `Jackson` to `KS`
 
 ### Upcoming
 
