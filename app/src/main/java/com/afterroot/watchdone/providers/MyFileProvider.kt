@@ -12,16 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.ui.common.view
 
-sealed class UiStatus
+package com.afterroot.watchdone.providers
 
-object UiIdle : UiStatus()
+import androidx.core.content.FileProvider
+import com.afterroot.watchdone.R
 
-data class UiMessage(val message: String) : UiStatus()
-
-fun UiMessage(t: Throwable): UiMessage = UiMessage(t.message ?: "Error occurred: $t")
-
-data class UiLoading(val fullRefresh: Boolean = true) : UiStatus()
-
-object UiSuccess : UiStatus()
+class MyFileProvider : FileProvider(R.xml.file_provider_paths)

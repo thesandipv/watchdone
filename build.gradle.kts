@@ -71,12 +71,6 @@ allprojects {
         google()
         mavenCentral()
 
-        // Jetpack Compose SNAPSHOTs if needed
-        // maven("https://androidx.dev/snapshots/builds/$composeSnapshot/artifacts/repository/")
-
-        // Used for snapshots if needed
-        // maven("https://oss.sonatype.org/content/repositories/snapshots/")
-
         maven {
             name = "github-afterroot-utils"
             url = uri("https://maven.pkg.github.com/afterroot/utils")
