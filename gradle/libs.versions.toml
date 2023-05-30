@@ -237,7 +237,7 @@ accompanist-navigation = { module = "com.google.accompanist:accompanist-navigati
 
 test-junit = "junit:junit:4.13.2"
 test-mockk = "io.mockk:mockk:1.13.5"
-test-robolectric = "org.robolectric:robolectric:4.10.2"
+test-robolectric = "org.robolectric:robolectric:4.10.3"
 
 [bundles]
 firebase = [
