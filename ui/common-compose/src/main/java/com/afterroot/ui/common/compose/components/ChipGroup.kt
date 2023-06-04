@@ -70,7 +70,6 @@ fun CommonFilterChip(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AssistChip(
     modifier: Modifier = Modifier,
@@ -195,7 +194,7 @@ fun SuggestionChipGroup(
     val scrollState = rememberScrollState()
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.horizontalScroll(scrollState)
+        modifier = modifier.horizontalScroll(scrollState)
     ) {
         Spacer(modifier = Modifier.width(horizontalPadding))
         list?.forEachIndexed { index, it ->

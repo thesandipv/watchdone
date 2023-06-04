@@ -37,10 +37,6 @@ kapt {
 apply(from = "$rootDir/gradle/oss-licence.gradle")
 apply(from = "$rootDir/gradle/apply-core.gradle")
 
-hilt {
-    enableAggregatingTask = true
-}
-
 val ci by extra { System.getenv("CI") == "true" }
 
 android {

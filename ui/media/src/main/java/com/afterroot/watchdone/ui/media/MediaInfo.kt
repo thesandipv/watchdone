@@ -171,7 +171,8 @@ internal fun <T : Multi> MediaInfo(
                             contentDescription = "Up"
                         )
                     }
-                })
+                }
+            )
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { contentPadding ->

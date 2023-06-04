@@ -179,8 +179,6 @@ subprojects {
     }
 }
 
-apply(from = "$rootDir/gradle/dependencyGraph.gradle")
-
 task("incrementPatch") {
     doLast {
         versionProperties["patch"] = (patch + 1).toString()

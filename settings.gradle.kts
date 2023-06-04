@@ -24,6 +24,7 @@ pluginManagement {
 
 plugins {
     id("com.gradle.enterprise") version "3.13.3"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.4.0"
 }
 
 gradleEnterprise {
@@ -35,7 +36,7 @@ gradleEnterprise {
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+// enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 rootProject.name = "watchdone"
 

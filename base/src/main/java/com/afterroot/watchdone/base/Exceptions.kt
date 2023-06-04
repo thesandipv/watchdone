@@ -15,4 +15,6 @@
 
 package com.afterroot.watchdone.base
 
-class EmptyQuerySnapshotException(override val message: String? = null) : Exception()
+abstract class WatchdoneException : Exception()
+
+class EmptyQuerySnapshotException(override val message: String? = null) : WatchdoneException()

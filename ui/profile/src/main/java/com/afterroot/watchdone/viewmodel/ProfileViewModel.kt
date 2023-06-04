@@ -52,7 +52,6 @@ class ProfileViewModel @Inject constructor(
 
     private val uiMessageManager = UiMessageManager()
 
-
     val state: StateFlow<ProfileViewState> = combine(uiMessageManager.message) { msg ->
         ProfileViewState(msg[0])
     }.stateIn(
