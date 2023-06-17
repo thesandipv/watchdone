@@ -19,8 +19,8 @@ import app.tivi.domain.ResultInteractor
 import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.data.repositories.SearchRepository
 import com.afterroot.watchdone.utils.State
-import info.movito.themoviedbapi.model.core.TvResultsPage
 import info.movito.themoviedbapi.model.core.MovieResultsPage
+import info.movito.themoviedbapi.model.core.TvResultsPage
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
