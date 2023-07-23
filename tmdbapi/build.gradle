@@ -33,7 +33,7 @@ dependencies {
     implementation libs.commonsLang
 
     api "com.fasterxml.jackson.core:jackson-annotations:${libs.versions.jackson.get()}"
-    api "com.fasterxml.jackson.core:jackson-databind:2.15.1"
+    api "com.fasterxml.jackson.core:jackson-databind:2.15.2"
 
     implementation 'com.google.guava:guava:31.1-jre'
 
