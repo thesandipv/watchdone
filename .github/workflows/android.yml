@@ -142,6 +142,7 @@ jobs:
         run: ./release/clean.sh
 
       - name: Android App size difference
+        continue-on-error: true
         uses: microsoft/android-app-size-diff@v1.0.5
         with:
           baseAppPath: app/build/outputs/apk/release/app-release.apk
