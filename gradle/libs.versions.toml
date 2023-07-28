@@ -91,7 +91,7 @@ agp = "com.android.tools.build:gradle:8.1.0"
 
 commonsCodec = "commons-codec:commons-codec:1.16.0"
 commonsIo = { module = "org.apache.commons:commons-io", version.ref = "commonsIo" }
-commonsLang = "org.apache.commons:commons-lang3:3.12.0"
+commonsLang = "org.apache.commons:commons-lang3:3.13.0"
 materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
 store = "com.dropbox.mobile.store:store4:4.0.5"
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
