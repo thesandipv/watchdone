@@ -57,7 +57,7 @@ dependencies {
     api(libs.androidx.lifecycle.extensions)
 
     api(libs.glide.glide)
-    ksp(libs.glide.compiler)
+    ksp(libs.glide.ksp)
 
     implementation(libs.commonsCodec)
 

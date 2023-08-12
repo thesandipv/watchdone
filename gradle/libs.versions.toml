@@ -220,6 +220,7 @@ okhttp-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp"
 
 glide-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
 
 retrofit-jackson = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
