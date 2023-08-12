@@ -13,14 +13,40 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnstableApiUsage")
+
+import java.io.FileNotFoundException
+import java.util.Properties
 
 pluginManagement {
+    includeBuild("gradle/build-logic")
+
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
+
+dependencyResolutionManagement {
+    val properties = readProperties(file("private.properties"))
+
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+
+        maven {
+            name = "github-afterroot-utils"
+            url = uri("https://maven.pkg.github.com/afterroot/utils")
+            credentials {
+                username = properties.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
+                password = properties.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
+            }
+        }
+    }
+}
+
 
 plugins {
     id("com.gradle.enterprise") version "3.13.4"
@@ -36,23 +62,22 @@ gradleEnterprise {
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-// enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 rootProject.name = "watchdone"
 
 include(
     ":app",
-    ":base",
-    ":data",
     ":ards",
+    ":base",
+    ":common",
+    ":common:ui:compose",
+    ":common:ui:resources",
+    ":data",
     ":domain",
     ":themoviedbapi",
-    ":ui:common",
-    ":ui:common-compose",
     ":ui:discover",
     ":ui:media",
     ":ui:profile",
-    ":ui:resources",
     ":ui:recommended",
     ":ui:search",
     ":ui:settings",
@@ -60,5 +85,14 @@ include(
     ":utils"
 )
 
-project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
 project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure
+project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
+
+fun readProperties(propertiesFile: File): Properties {
+    if (!propertiesFile.exists()) {
+        throw FileNotFoundException("${propertiesFile.name} not found.")
+    }
+    return Properties().apply {
+        propertiesFile.inputStream().use { fis -> load(fis) }
+    }
+}

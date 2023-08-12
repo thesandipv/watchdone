@@ -15,8 +15,9 @@
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
     alias(libs.plugins.kotlin.kapt)
 }
 
@@ -29,12 +30,10 @@ android {
 }
 
 dependencies {
-    implementation(projects.base)
     implementation(projects.data)
     implementation(projects.domain)
-    implementation(projects.ui.common)
-    implementation(projects.ui.commonCompose)
-    implementation(projects.ui.resources)
+    implementation(projects.common)
+    implementation(projects.common.ui.compose)
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.viewmodel)

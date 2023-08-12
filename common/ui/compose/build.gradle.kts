@@ -15,22 +15,17 @@
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
 }
-
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
     namespace = "com.afterroot.watchdone.compose"
 }
 
 dependencies {
-    // All compose dependencies applied with compose.gradle
-    implementation(projects.base)
     implementation(projects.data)
-    implementation(projects.ui.resources)
 
     implementation(libs.google.material)
 

@@ -101,4 +101,5 @@ output.json
 tmdb.properties
 keystore.properties
 publish.properties
+private.properties
 graphics/

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.0.2"
+agp = "8.1.0"
 accompanist = "0.30.1"
 activity = "1.7.2"
 ankoCommons = "0.10.8"
@@ -7,17 +7,15 @@ appcompat = "1.6.1"
 billing = "6.0.1"
 browser = "1.5.0"
 cardView = "1.0.0"
-coil = "2.4.0"
 collection = "1.2.0"
-commonsIo = "1.3.2"
 compose = "1.3.0"
 composeBom = "2023.06.01"
-composeCompiler = "1.5.0"
+composeCompiler = "1.5.1"
 constraintLayout = "2.1.4"
 ar-utils = "0.6.0" # AfterROOT Core
 coreKtx = "1.10.1"
 coreSplash = "1.0.1"
-crshlyticsPlugin = "2.9.7"
+crshlyticsPlugin = "2.9.8"
 dagger = "2.46.1"
 depUpdates = "0.46.0"
 emoji = "1.1.0"
@@ -25,7 +23,7 @@ epoxy = "4.6.4"
 firebaseAds = "22.2.0"
 firebaseAnalytics = "21.2.2"
 firebaseAuth = "22.0.0"
-firebaseBom = "32.2.0"
+firebaseBom = "32.2.2"
 firebaseConfig = "21.4.0"
 firebaseCore = "21.1.1"
 firebaseCrashlytics = "18.3.7"
@@ -34,7 +32,7 @@ firebaseFirestore = "24.6.0"
 firebaseMessaging = "23.1.2"
 firebaseStorage = "20.2.0"
 firebaseUi = "8.0.2"
-fragmentKtx = "1.6.0"
+fragmentKtx = "1.6.1"
 glide = "4.15.1"
 googleMaterial = "1.9.0"
 googleAuth = "20.6.0"
@@ -54,10 +52,10 @@ materialDialogs = "3.3.0"
 multidex = "2.0.1"
 navigation = "2.6.0"
 okhttp = "5.0.0-alpha.11"
-paging = "3.2.0-rc01"
+paging = "3.2.0"
 palette = "1.0.0"
 preference = "1.2.0"
-recyclerview = "1.3.0"
+recyclerview = "1.3.1"
 retrofit = "2.9.0"
 room = "2.5.2"
 spotless = "6.19.0"
@@ -86,13 +84,16 @@ ksp = "com.google.devtools.ksp:1.9.0-1.0.11"
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
+android-pluginGradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+spotless-pluginGradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 
 commonsCodec = "commons-codec:commons-codec:1.16.0"
-commonsIo = { module = "org.apache.commons:commons-io", version.ref = "commonsIo" }
+commonsIo = "org.apache.commons:commons-io:1.3.2"
 commonsLang = "org.apache.commons:commons-lang3:3.12.0"
 materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
 store = "com.dropbox.mobile.store:store4:4.0.5"
-coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil = { module = "io.coil-kt:coil-compose", version = "2.4.0" }
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 
 afterroot-utils = { module = "com.afterroot:utils", version.ref = "ar-utils" }
@@ -159,6 +160,7 @@ androidx-compose-iconsExt = { module = "androidx.compose.material:material-icons
 androidx-compose-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 androidx-compose-material = { module = "androidx.compose.material:material" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material3-windowsizeclass = { module = "androidx.compose.material3:material3-window-size-class" }
 androidx-compose-materialThemeAdapter = { module = "com.google.android.material:compose-theme-adapter" }
 androidx-compose-paging = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling" }

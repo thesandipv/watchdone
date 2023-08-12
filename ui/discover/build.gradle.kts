@@ -15,15 +15,13 @@
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
     id("androidx.navigation.safeargs")
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
-
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
     namespace = "com.afterroot.watchdone.ui.discover"
@@ -35,13 +33,11 @@ android {
 
 dependencies {
     // All compose dependencies applied with compose.gradle
-    implementation(projects.base)
     implementation(projects.data)
     implementation(projects.domain)
-    implementation(projects.ui.common)
-    implementation(projects.ui.commonCompose)
+    implementation(projects.common)
+    implementation(projects.common.ui.compose)
     implementation(projects.ui.media)
-    implementation(projects.ui.resources)
 
     implementation(libs.androidx.constraintLayout)
     implementation(libs.androidx.core)

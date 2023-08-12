@@ -15,17 +15,34 @@
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
+    alias(libs.plugins.kotlin.kapt)
 }
 
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
-
 android {
-    namespace = "com.afterroot.watchdone.resources"
+    namespace = "com.afterroot.watchdone.ui.common"
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
+    implementation(projects.data)
+
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.transition)
+    implementation(libs.bundles.lifecycle)
+
     implementation(libs.google.material)
-    implementation(libs.androidx.preference)
+    implementation(libs.firebase.firestore)
+
+    implementation(libs.androidx.recyclerView)
+    implementation(libs.androidx.constraintLayout)
+
+    implementation(libs.materialProgress)
+
+    implementation(libs.hilt.hilt)
+    kapt(libs.hilt.compiler)
 }

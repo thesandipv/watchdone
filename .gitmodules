@@ -7,3 +7,6 @@
 [submodule "themoviedbapi"]
 	path = themoviedbapi
 	url = https://github.com/afterroot/themoviedbapi
+[submodule "gradle/build-logic"]
+	path = gradle/build-logic
+	url = https://github.com/afterroot/build-logic.git

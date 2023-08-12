@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.itemsIndexed
+import androidx.paging.compose.itemKey
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import info.movito.themoviedbapi.model.Multi
@@ -89,31 +89,25 @@ internal fun <T : Multi> PagingCarouselInt(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        itemsIndexed(items = items, key = { index: Int, item: T ->
-            when (item) {
-                is TV -> {
-                    item.id
-                }
-
-                is Movie -> {
-                    item.id
-                }
-
-                else -> {
-                    index
+        items(count = items.itemCount, key = { index ->
+            items.itemKey { item ->
+                when (item) {
+                    is TV -> item.id
+                    is Movie -> item.id
+                    else -> index
                 }
             }
-        }, itemContent = { index, item ->
-                if (item != null) {
-                    PosterCard(
-                        media = item,
-                        onClick = { onItemClick(item, index) },
-                        modifier = Modifier
-                            .animateItemPlacement()
-                            .fillParentMaxHeight()
-                            .aspectRatio(2 / 3f)
-                    )
-                }
-            })
+        }) { index ->
+            items[index]?.let { item ->
+                PosterCard(
+                    media = item,
+                    onClick = { onItemClick(item, index) },
+                    modifier = Modifier
+                        .animateItemPlacement()
+                        .fillParentMaxHeight()
+                        .aspectRatio(2 / 3f)
+                )
+            }
+        }
     }
 }
