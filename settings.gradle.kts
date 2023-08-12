@@ -29,7 +29,11 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    val properties = readProperties(file("private.properties"))
+    val properties: Properties? = try {
+        readProperties(file("private.properties"))
+    } catch (_: FileNotFoundException) {
+        null
+    }
 
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
@@ -40,8 +44,8 @@ dependencyResolutionManagement {
             name = "github-afterroot-utils"
             url = uri("https://maven.pkg.github.com/afterroot/utils")
             credentials {
-                username = properties.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
-                password = properties.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
+                username = properties?.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
+                password = properties?.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
             }
         }
     }
