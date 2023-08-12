@@ -15,7 +15,6 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import java.io.FileNotFoundException
 import java.util.Properties
 
 pluginManagement {
@@ -29,11 +28,7 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    val properties: Properties? = try {
-        readProperties(file("private.properties"))
-    } catch (_: FileNotFoundException) {
-        null
-    }
+    val properties = readProperties(file("private.properties"))
 
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
@@ -44,8 +39,8 @@ dependencyResolutionManagement {
             name = "github-afterroot-utils"
             url = uri("https://maven.pkg.github.com/afterroot/utils")
             credentials {
-                username = properties?.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
-                password = properties?.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
+                username = properties.getProperty("gpr.user") ?: System.getenv("GHUSERNAME")
+                password = properties.getProperty("gpr.key") ?: System.getenv("GHTOKEN")
             }
         }
     }
@@ -94,7 +89,7 @@ project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
 
 fun readProperties(propertiesFile: File): Properties {
     if (!propertiesFile.exists()) {
-        throw FileNotFoundException("${propertiesFile.name} not found.")
+        return Properties()
     }
     return Properties().apply {
         propertiesFile.inputStream().use { fis -> load(fis) }
