@@ -52,7 +52,7 @@ jobs:
 
       - name: set up JDK
         id: setup-jdk
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v3.12.0
         with:
           distribution: 'zulu'
           java-version: 17
@@ -73,7 +73,7 @@ jobs:
 
       - name: Build with Gradle
         id: build
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.7.0
         env:
           CI: true
           GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
           arguments: :app:assembleRelease :app:bundleRelease --stacktrace
 
       - name: Run Tests in app module
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.7.0
         id: run-tests
         with:
           cache-read-only: false
