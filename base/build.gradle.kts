@@ -20,7 +20,6 @@ plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.ksp)
 }
 
 android {
@@ -57,7 +56,6 @@ dependencies {
     api(libs.androidx.lifecycle.extensions)
 
     api(libs.glide.glide)
-    ksp(libs.glide.ksp)
 
     implementation(libs.commonsCodec)
 

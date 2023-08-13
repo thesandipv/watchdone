@@ -21,7 +21,7 @@ WatchDone is an Android app that helps you manage your watchlist for movies and 
 
 **Installation**
 
-To install WatchDone, open the Google Play Store and search for "WatchDone." 
+To install WatchDone, open the Google Play Store and search for "WatchDone."
 
 **Usage**
 

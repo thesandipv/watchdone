@@ -18,6 +18,7 @@ plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
     id("com.afterroot.watchdone.android.common")
+    id("com.afterroot.android.compose")
 }
 
 android {
@@ -28,6 +29,7 @@ dependencies {
     implementation(projects.data)
 
     implementation(libs.google.material)
+    implementation(libs.coil)
 
     implementation(libs.androidx.lifecycle.runtime)
 }

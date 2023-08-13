@@ -18,12 +18,10 @@ plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
     id("com.afterroot.watchdone.android.common")
+    id("com.afterroot.android.compose")
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
 }
-
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
     namespace = "com.afterroot.watchdone.search"

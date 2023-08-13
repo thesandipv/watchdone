@@ -1,4 +1,4 @@
-//check project.path is in list of projects
+// check project.path is in list of projects
 val composeProjects =
     arrayOf(
         ":data",
@@ -8,7 +8,7 @@ val composeProjects =
         ":ui:recommended",
         ":ui:search",
         ":ui:settings",
-        ":ui:watchlist",
+        ":ui:watchlist"
     )
 if (project.path in composeProjects) {
     println("- INFO: Compose Enabled for ${project.path}")

@@ -29,7 +29,7 @@ import com.afterroot.tmdbapi.repository.GenresRepository
 import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
-import com.afterroot.watchdone.BuildConfig
+import com.afterroot.watchdone.base.BuildConfig
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.whenBuildIs
 import dagger.Module

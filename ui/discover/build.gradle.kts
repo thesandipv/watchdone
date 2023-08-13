@@ -19,6 +19,7 @@ plugins {
     id("com.afterroot.kotlin.android")
     id("com.afterroot.watchdone.android.common")
     id("androidx.navigation.safeargs")
+    id("com.afterroot.android.compose")
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
 }

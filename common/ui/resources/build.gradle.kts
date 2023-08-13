@@ -18,9 +18,6 @@ plugins {
     id("com.afterroot.android.library")
 }
 
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
-
 android {
     namespace = "com.afterroot.watchdone.resources"
 }
