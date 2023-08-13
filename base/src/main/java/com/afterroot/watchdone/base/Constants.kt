@@ -65,7 +65,13 @@ object Constants {
     const val IG_EXTRA_TOP_COLOR = "top_background_color"
     const val IG_EXTRA_BOTTOM_COLOR = "bottom_background_color"
     const val IG_EXTRA_SOURCE_APP = "source_application"
-    val IG_SHARE_PROVIDER: String = if (BuildConfig.BUILD_TYPE != "debug") "$BASE_APP_ID.provider" else "$BASE_APP_ID.debug.provider"
+
+    @Suppress("KotlinConstantConditions")
+    val IG_SHARE_PROVIDER: String = if (BuildConfig.BUILD_TYPE != "debug") {
+        "$BASE_APP_ID.provider"
+    } else {
+        "$BASE_APP_ID.debug.provider"
+    }
 
     const val USERNAME_LENGTH = 15
     const val NAME_LENGTH = 30

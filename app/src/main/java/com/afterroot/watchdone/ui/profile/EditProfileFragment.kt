@@ -21,24 +21,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.utils.extensions.getTintedDrawable
-import com.afterroot.utils.getMaterialColor
-import com.afterroot.watchdone.R
-import com.afterroot.watchdone.base.Collection
-import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.getGravatarUrl
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
-import org.jetbrains.anko.toast
 import javax.inject.Inject
-import com.afterroot.watchdone.resources.R as CommonR
-import com.google.android.material.R as MaterialR
 
 @AndroidEntryPoint
 class EditProfileFragment : Fragment() {
@@ -63,6 +53,7 @@ class EditProfileFragment : Fragment() {
             binding.inputEmail.setText(user.email)
             binding.inputEmail.isEnabled = false
             requireActivity().apply {
+/*
                 findViewById<FloatingActionButton>(R.id.fab).apply {
                     setOnClickListener {
                         val newName = binding.inputProfileName.text.toString().trim()
@@ -89,6 +80,7 @@ class EditProfileFragment : Fragment() {
                         )
                     )
                 }
+*/
                 GlideApp.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
             }
         } else {

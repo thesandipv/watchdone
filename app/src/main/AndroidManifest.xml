@@ -18,12 +18,10 @@
             <action android:name="android.intent.action.SENDTO" />
             <data android:scheme="mailto" />
         </intent>
-        <!--
-                <intent>
-                    <action android:name='com.instagram.share.ADD_TO_STORY' />
-                    <data android:mimeType='image/*' />
-                </intent>
-        -->
+        <intent>
+            <action android:name='com.instagram.share.ADD_TO_STORY' />
+            <data android:mimeType='image/*' />
+        </intent>
 
     </queries>
 
@@ -49,7 +47,6 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-            <!--            <nav-graph android:value="@navigation/mobile_navigation" />-->
             <intent-filter>
                 <data
                     android:host="${hostName}"

@@ -14,6 +14,7 @@
  */
 package com.afterroot.ui.common.compose.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -235,8 +236,24 @@ fun DynamicChipGroup(
     preSelect: List<String> = emptyList(),
     preSelectItem: String? = null,
     selectionType: SelectionType = SelectionType.Single,
-    onSelectedChanged: ((index: Int, title: String, selected: Boolean, list: List<String>, selectedList: List<Int>) -> Unit)? = null,
-    chipContent: @Composable (index: Int, title: String, icon: ImageVector?, selected: Boolean, onClick: (selected: Boolean) -> Unit) -> Unit
+    showOnlySelected: Boolean = false,
+    onSelectedChanged: (
+        (
+            index: Int,
+            title: String,
+            selected: Boolean,
+            list: List<String>,
+            selectedList: List<Int>
+        ) -> Unit
+    )? = null,
+    chipContent: @Composable (
+        index: Int,
+        title: String,
+        icon: ImageVector?,
+        selected: Boolean,
+        onClick: (selected: Boolean) -> Unit,
+        clearSelection: () -> Unit
+    ) -> Unit
 ) {
     val selectedList = remember { mutableStateListOf<Int>() }
 
@@ -255,32 +272,44 @@ fun DynamicChipGroup(
 
     Row(modifier = modifier, horizontalArrangement = horizontalArrangement) {
         list?.forEachIndexed { index, label ->
-            chipContent(
-                index = index,
-                title = label,
-                icon = if (icons.isNotEmpty()) icons[index] else null,
-                selected = selectedList.contains(index),
-                onClick = { selected ->
-                    when (selectionType) {
-                        SelectionType.Single -> {
-                            selectedList.apply {
-                                clear()
-                                add(index)
-                            }
-                        }
-
-                        SelectionType.Multiple -> {
-                            if (selectedList.contains(index)) {
-                                selectedList.remove(index)
-                            } else {
-                                selectedList.add(index)
-                            }
-                        }
-                    }
-
-                    onSelectedChanged?.invoke(index, label, selected, list, selectedList)
+            AnimatedVisibility(
+                visible = if (showOnlySelected && selectedList.isNotEmpty() && selectedList[0] != -1) {
+                    selectedList.contains(index)
+                } else {
+                    true
                 }
-            )
+            ) {
+                chipContent(
+                    index = index,
+                    title = label,
+                    icon = if (icons.isNotEmpty()) icons[index] else null,
+                    selected = selectedList.contains(index),
+                    onClick = { selected ->
+                        when (selectionType) {
+                            SelectionType.Single -> {
+                                selectedList.apply {
+                                    clear()
+                                    add(index)
+                                }
+                            }
+
+                            SelectionType.Multiple -> {
+                                if (selectedList.contains(index)) {
+                                    selectedList.remove(index)
+                                } else {
+                                    selectedList.add(index)
+                                }
+                            }
+                        }
+
+                        onSelectedChanged?.invoke(index, label, selected, list, selectedList)
+                    },
+                    clearSelection = {
+                        selectedList.clear()
+                        onSelectedChanged?.invoke(index, label, false, list, selectedList)
+                    }
+                )
+            }
         }
     }
 }

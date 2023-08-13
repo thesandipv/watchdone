@@ -15,12 +15,12 @@
 package com.afterroot.watchdone.watchlist
 
 import com.afterroot.watchdone.base.compose.ViewState
-import com.afterroot.watchdone.data.QueryAction
+import com.afterroot.watchdone.data.model.Filters
 
 data class WatchlistState(
     val loading: Boolean = false,
     val sortAscending: Boolean = false,
-    val queryAction: QueryAction = QueryAction.CLEAR
+    val filters: Filters = Filters.EMPTY
 ) : ViewState() {
     companion object {
         val Empty = WatchlistState()

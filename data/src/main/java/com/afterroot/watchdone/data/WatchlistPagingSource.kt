@@ -20,6 +20,8 @@ import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toMulti
+import com.afterroot.watchdone.data.model.Filters
+import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,7 +36,7 @@ class WatchlistPagingSource(
     private val firestore: FirebaseFirestore,
     private val settings: Settings,
     private val firebaseUtils: FirebaseUtils,
-    private val queryAction: QueryAction
+    private val filters: Filters = Filters.EMPTY
 ) : PagingSource<QuerySnapshot, Multi>() {
     override fun getRefreshKey(state: PagingState<QuerySnapshot, Multi>): QuerySnapshot? {
         return null
@@ -59,27 +61,33 @@ class WatchlistPagingSource(
             }
 
             val filterBy: Query.() -> Query = {
-                when (queryAction) {
-                    QueryAction.CLEAR -> {
-                        this
-                    }
-                    QueryAction.WATCHED -> {
-                        whereEqualTo(Field.IS_WATCHED, true)
-                    }
-                    QueryAction.PENDING -> {
-                        whereIn(Field.IS_WATCHED, listOf(false, null))
+                val mediaTypeFilter: Query.() -> Query = {
+                    when (filters.mediaType) {
+                        Multi.MediaType.MOVIE -> whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.MOVIE.name)
+                        Multi.MediaType.TV_SERIES -> whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.TV_SERIES.name)
+                        else -> this
                     }
                 }
-/*
-                when (settings.filterBy) {
-                    Field.TITLE -> whereEqualTo(Field.TITLE, true)
-                    Field.YEAR -> whereEqualTo(Field.YEAR, true)
-                    Field.RATING -> whereEqualTo(Field.RATING, true)
-                    Field.RELEASE_DATE -> whereEqualTo(Field.RELEASE_DATE, true)
-                    Field.LAST_WATCHED -> whereEqualTo(Field.LAST_WATCHED, true)
-                    else -> whereEqualTo(Field.TITLE, true)
+
+                val statusFilter: Query.() -> Query = {
+                    when (filters.watchState) {
+                        WatchStateValues.WATCHED -> whereEqualTo(Field.IS_WATCHED, true)
+                        WatchStateValues.PENDING -> whereIn(Field.IS_WATCHED, listOf(false, null))
+                        else -> this
+                    }
                 }
-*/
+
+                mediaTypeFilter().statusFilter()
+                /*
+                                when (settings.filterBy) {
+                                    Field.TITLE -> whereEqualTo(Field.TITLE, true)
+                                    Field.YEAR -> whereEqualTo(Field.YEAR, true)
+                                    Field.RATING -> whereEqualTo(Field.RATING, true)
+                                    Field.RELEASE_DATE -> whereEqualTo(Field.RELEASE_DATE, true)
+                                    Field.LAST_WATCHED -> whereEqualTo(Field.LAST_WATCHED, true)
+                                    else -> whereEqualTo(Field.TITLE, true)
+                                }
+                */
             }
 
             var currentPageSource = Source.CACHE
@@ -105,6 +113,7 @@ class WatchlistPagingSource(
             if (currentPage.isEmpty && currentPageSource == Source.CACHE) {
                 Timber.d("load: Cache is empty. Getting data from Server.")
                 currentPage = params.key ?: baseQuery.orderBy().filterBy().limit(20).get().await()
+                Timber.d("load: Data from server: Empty: ${currentPage.isEmpty}, Size: ${currentPage.documents.size}")
             }
 
             var nextPage: QuerySnapshot? = null

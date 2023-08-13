@@ -40,9 +40,12 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.LiveTv
@@ -57,6 +60,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -73,6 +77,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -92,12 +97,14 @@ import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
-import com.afterroot.watchdone.data.QueryAction
+import com.afterroot.watchdone.data.model.Filters
+import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
 import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun Watchlist(
@@ -118,11 +125,11 @@ fun Watchlist(
         sortAction = {
             viewModel.setSort(!state.sortAscending)
         },
-        queryAction = {
-            viewModel.setQueryAction(it)
+        settingsAction = settingsAction,
+        filter = {
+            viewModel.updateFilters(it)
             watchlist.refresh()
-        },
-        settingsAction = settingsAction
+        }
     )
 }
 
@@ -135,7 +142,7 @@ private fun Watchlist(
     refresh: () -> Unit,
     sortAction: () -> Unit,
     settingsAction: () -> Unit,
-    queryAction: (QueryAction) -> Unit
+    filter: (Filters) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyGridState()
@@ -182,14 +189,21 @@ private fun Watchlist(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            AssistChip(text = if (state.sortAscending) "Ascending" else "Descending", leadingIcon = {
-                                Icon(
-                                    imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
-                                    contentDescription = "Sort Icon",
-                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }) {
+                            AssistChip(
+                                text = if (state.sortAscending) {
+                                    stringResource(id = CommonR.string.text_ascending)
+                                } else {
+                                    stringResource(id = CommonR.string.text_descending)
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = if (state.sortAscending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
+                                        contentDescription = "Sort Icon",
+                                        modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            ) {
                                 sortAction()
                                 refresh()
                             }
@@ -210,15 +224,37 @@ private fun Watchlist(
 
                                 Spacer(modifier = Modifier.width(4.dp))
 
+                                MediaTypeFilter(
+                                    modifier = Modifier,
+                                    preSelect = when (state.filters.mediaType) {
+                                        Multi.MediaType.MOVIE -> stringResource(id = CommonR.string.text_search_movies)
+                                        Multi.MediaType.TV_SERIES -> stringResource(id = CommonR.string.text_search_tv)
+                                        else -> null
+                                    }
+                                ) { index, _, selectedList ->
+                                    if (selectedList.isEmpty()) {
+                                        filter(state.filters.copy(mediaType = null))
+                                        return@MediaTypeFilter
+                                    }
+
+                                    if (index == 0) { // Movie
+                                        filter(state.filters.copy(mediaType = Multi.MediaType.MOVIE))
+                                    } else { // TV
+                                        filter(state.filters.copy(mediaType = Multi.MediaType.TV_SERIES))
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
                                 FilterChips(modifier = Modifier) { index, selectedList ->
                                     if (selectedList.isEmpty()) {
-                                        queryAction(QueryAction.CLEAR)
+                                        filter(state.filters.copy(watchState = null))
                                         return@FilterChips
                                     }
-                                    if (index == 0) {
-                                        queryAction(QueryAction.PENDING)
-                                    } else {
-                                        queryAction(QueryAction.WATCHED)
+                                    if (index == 0) { // Pending
+                                        filter(state.filters.copy(watchState = WatchStateValues.PENDING))
+                                    } else { // Watched
+                                        filter(state.filters.copy(watchState = WatchStateValues.WATCHED))
                                     }
                                 }
                             }
@@ -352,14 +388,14 @@ fun WatchlistItem(
                     if (mediaType == Multi.MediaType.MOVIE) {
                         Icon(
                             imageVector = Icons.Rounded.Movie,
-                            contentDescription = "Movie",
+                            contentDescription = stringResource(id = CommonR.string.text_search_movies),
                             modifier = Modifier.align(Alignment.CenterVertically),
                             tint = Color.White
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Rounded.LiveTv,
-                            contentDescription = "TV Series",
+                            contentDescription = stringResource(id = CommonR.string.text_search_tv),
                             modifier = Modifier.align(Alignment.CenterVertically),
                             tint = Color.White
                         )
@@ -410,11 +446,11 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         list = listOf("Pending", "Watched"),
-        // icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         onSelectedChanged = { index, _, _, _, selectedList ->
             onSelectionChanged(index, selectedList)
-        }
-    ) { _, title, icon, selected, onClick ->
+        },
+        showOnlySelected = true
+    ) { _, title, icon, selected, onClick, clear ->
         FilterChip(
             selected = selected,
             onClick = { onClick(selected) },
@@ -427,6 +463,74 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
                         modifier = Modifier.size(FilterChipDefaults.IconSize),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
+                }
+            },
+            trailingIcon = {
+                if (selected) {
+                    IconButton(modifier = Modifier.size(InputChipDefaults.IconSize), onClick = {
+                        clear()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "Clear Filter",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MediaTypeFilter(
+    modifier: Modifier = Modifier,
+    preSelect: String? = null,
+    onSelectionChanged: (index: Int, title: String, selectedList: List<Int>) -> Unit
+) {
+    DynamicChipGroup(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        list = listOf(
+            stringResource(id = CommonR.string.text_search_movies),
+            stringResource(id = CommonR.string.text_search_tv)
+        ),
+        icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
+        preSelectItem = preSelect,
+        onSelectedChanged = { index, title, _, _, selectedList ->
+            onSelectionChanged(index, title, selectedList)
+        },
+        showOnlySelected = true
+    ) { _, title, icon, selected, onClick, clear ->
+        FilterChip(
+            selected = selected,
+            onClick = { onClick(selected) },
+            label = { Text(text = title.valueOrBlank()) },
+            leadingIcon = {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = "$title Icon",
+                        modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            },
+            trailingIcon = {
+                if (selected) {
+                    IconButton(modifier = Modifier.size(InputChipDefaults.IconSize), onClick = {
+                        clear()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "Clear Filter",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
         )

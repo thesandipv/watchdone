@@ -21,12 +21,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.data.QueryAction
 import com.afterroot.watchdone.data.WatchlistPagingSource
+import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.settings.Settings
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,18 +42,17 @@ class WatchlistViewModel @Inject constructor(
     var settings: Settings,
     var firebaseUtils: FirebaseUtils
 ) : ViewModel() {
-    private val uid: String = firebaseUtils.uid.toString()
-    private val actions = MutableSharedFlow<WatchlistActions>()
-    val uiActions = MutableSharedFlow<WatchlistActions>()
     private val flowIsLoading = MutableStateFlow(false)
     private val sortAscending = MutableStateFlow(settings.ascSort)
+    private val filters = MutableStateFlow(Filters.EMPTY)
 
     val state: StateFlow<WatchlistState> =
         combine(
             flowIsLoading,
-            sortAscending
-        ) { isLoading, sortAsc ->
-            WatchlistState(loading = isLoading, sortAscending = sortAsc)
+            sortAscending,
+            filters
+        ) { isLoading, sortAsc, filters ->
+            WatchlistState(loading = isLoading, sortAscending = sortAsc, filters = filters)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -63,29 +61,6 @@ class WatchlistViewModel @Inject constructor(
 
     init {
         Timber.d("init: Initializing")
-
-        viewModelScope.launch {
-            actions.collect { action ->
-                Timber.d("actions: Collected action: $action")
-                when (action) {
-                    is WatchlistActions.SetQueryAction -> {
-                        savedStateHandle["QUERY_ACTION"] = action.queryAction.name
-                    }
-
-                    else -> {
-                        viewModelScope.launch {
-                            uiActions.emit(action)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun submitAction(action: WatchlistActions) {
-        viewModelScope.launch {
-            actions.emit(action)
-        }
     }
 
     fun setSort(ascending: Boolean) {
@@ -93,8 +68,10 @@ class WatchlistViewModel @Inject constructor(
         sortAscending.value = ascending
     }
 
-    fun setQueryAction(queryAction: QueryAction) {
-        savedStateHandle["QUERY_ACTION"] = queryAction.name
+    fun updateFilters(filterUpdates: Filters) {
+        viewModelScope.launch {
+            filters.emit(filterUpdates)
+        }
     }
 
     val watchlist = Pager(PagingConfig(20)) {
@@ -102,7 +79,7 @@ class WatchlistViewModel @Inject constructor(
             db,
             settings,
             firebaseUtils,
-            QueryAction.valueOf(savedStateHandle.get<String>("QUERY_ACTION") ?: QueryAction.CLEAR.name)
+            filters.value
         )
     }.flow.cachedIn(viewModelScope)
 }

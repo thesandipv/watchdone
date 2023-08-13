@@ -12,12 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.watchlist
+package com.afterroot.watchdone.data.model
 
-import com.afterroot.watchdone.base.compose.Actions
-import com.afterroot.watchdone.data.QueryAction
+import info.movito.themoviedbapi.model.Multi
 
-sealed class WatchlistActions : Actions() {
-    data class SetQueryAction(val queryAction: QueryAction) : WatchlistActions()
-    object Refresh : WatchlistActions()
+enum class WatchStateValues {
+    WATCHED, PENDING
+}
+
+data class Filters(
+    val watchState: WatchStateValues? = null,
+    val mediaType: Multi.MediaType? = null
+) {
+    companion object {
+        val EMPTY = Filters()
+    }
 }
