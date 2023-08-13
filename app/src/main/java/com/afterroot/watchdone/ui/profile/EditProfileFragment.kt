@@ -21,10 +21,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.base.GlideApp
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
 import com.afterroot.watchdone.ui.SplashActivity
 import com.afterroot.watchdone.utils.getGravatarUrl
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,7 +81,7 @@ class EditProfileFragment : Fragment() {
                     )
                 }
 */
-                GlideApp.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
+                Glide.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
             }
         } else {
             startActivity(Intent(this.context, SplashActivity::class.java))

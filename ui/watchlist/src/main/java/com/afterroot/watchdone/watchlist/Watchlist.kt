@@ -97,10 +97,11 @@ import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
+import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.Filters
-import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
 import info.movito.themoviedbapi.model.Multi
@@ -149,14 +150,19 @@ private fun Watchlist(
 
     Scaffold(
         topBar = {
-            CommonAppBar(withTitle = "Watchlist", scrollBehavior = scrollBehavior, actions = {
-                IconButton(onClick = { settingsAction() }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings"
-                    )
+            CommonAppBar(
+                withTitle = stringResource(id = CommonR.string.title_watchlist),
+                scrollBehavior = scrollBehavior,
+                windowInsets = TopBarWindowInsets,
+                actions = {
+                    IconButton(onClick = { settingsAction() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = stringResource(id = CommonR.string.title_settings)
+                        )
+                    }
                 }
-            })
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
@@ -246,33 +252,29 @@ private fun Watchlist(
 
                                 Spacer(modifier = Modifier.width(8.dp))
 
-                                FilterChips(modifier = Modifier) { index, selectedList ->
+                                FilterChips(
+                                    modifier = Modifier,
+                                    preSelect = when (state.filters.watchState) {
+                                        WatchStateValues.WATCHED -> stringResource(id = CommonR.string.watch_state_watched)
+                                        WatchStateValues.PENDING -> stringResource(id = CommonR.string.watch_state_pending)
+                                        WatchStateValues.STARTED -> stringResource(id = CommonR.string.watch_state_started)
+                                        else -> null
+                                    }
+                                ) { _, selectedList ->
                                     if (selectedList.isEmpty()) {
                                         filter(state.filters.copy(watchState = null))
                                         return@FilterChips
                                     }
-                                    if (index == 0) { // Pending
-                                        filter(state.filters.copy(watchState = WatchStateValues.PENDING))
-                                    } else { // Watched
-                                        filter(state.filters.copy(watchState = WatchStateValues.WATCHED))
-                                    }
+                                    filter(state.filters.copy(watchState = WatchStateValues.values()[selectedList[0]]))
                                 }
                             }
                         }
                     }
                     gridItemsIndexed(items = watchlist, key = { index, item ->
                         when (item.mediaType) {
-                            Multi.MediaType.MOVIE -> {
-                                (item as Movie).id
-                            }
-
-                            Multi.MediaType.TV_SERIES -> {
-                                (item as TV).id
-                            }
-
-                            else -> {
-                                index
-                            }
+                            Multi.MediaType.MOVIE -> (item as Movie).id
+                            Multi.MediaType.TV_SERIES -> (item as TV).id
+                            else -> index
                         }
                     }) { _, item ->
                         when (item?.mediaType) {
@@ -289,9 +291,7 @@ private fun Watchlist(
                                         .aspectRatio(2 / 3f),
                                     isWatched = item.isWatched,
                                     mediaType = item.mediaType,
-                                    onClick = {
-                                        itemSelectedCallback.onClick(0, null, item)
-                                    }
+                                    onClick = { itemSelectedCallback.onClick(0, null, item) }
                                 )
                             }
 
@@ -308,9 +308,7 @@ private fun Watchlist(
                                         .aspectRatio(2 / 3f),
                                     isWatched = item.isWatched,
                                     mediaType = item.mediaType,
-                                    onClick = {
-                                        itemSelectedCallback.onClick(0, null, item)
-                                    }
+                                    onClick = { itemSelectedCallback.onClick(0, null, item) }
                                 )
                             }
 
@@ -441,11 +439,20 @@ fun WatchlistItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (index: Int, selectedList: List<Int>) -> Unit) {
+private fun FilterChips(
+    modifier: Modifier = Modifier,
+    preSelect: String? = null,
+    onSelectionChanged: (index: Int, selectedList: List<Int>) -> Unit
+) {
     DynamicChipGroup(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        list = listOf("Pending", "Watched"),
+        list = listOf(
+            stringResource(id = CommonR.string.watch_state_watched),
+            stringResource(id = CommonR.string.watch_state_pending),
+            stringResource(id = CommonR.string.watch_state_started)
+        ),
+        preSelectItem = preSelect,
         onSelectedChanged = { index, _, _, _, selectedList ->
             onSelectionChanged(index, selectedList)
         },
@@ -472,7 +479,7 @@ private fun FilterChips(modifier: Modifier = Modifier, onSelectionChanged: (inde
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
-                            contentDescription = "Clear Filter",
+                            contentDescription = stringResource(id = CommonR.string.content_desc_clear_filter),
                             modifier = Modifier.size(FilterChipDefaults.IconSize),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
@@ -526,7 +533,7 @@ fun MediaTypeFilter(
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
-                            contentDescription = "Clear Filter",
+                            contentDescription = stringResource(id = CommonR.string.content_desc_clear_filter),
                             modifier = Modifier.size(FilterChipDefaults.IconSize),
                             tint = MaterialTheme.colorScheme.onSurface
                         )

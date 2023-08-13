@@ -15,15 +15,13 @@
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
+    id("com.afterroot.android.compose")
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
 }
-
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/compose.gradle")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
     namespace = "com.afterroot.watchdone.recommended"
@@ -33,12 +31,10 @@ android {
 }
 
 dependencies {
-    implementation(projects.base)
     implementation(projects.data)
     implementation(projects.domain)
-    implementation(projects.ui.common)
-    implementation(projects.ui.commonCompose)
-    implementation(projects.ui.resources)
+    implementation(projects.common)
+    implementation(projects.common.ui.compose)
 
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.paging)

@@ -15,13 +15,16 @@
 package com.afterroot.watchdone.ui.discover
 
 import androidx.compose.runtime.Immutable
+import app.tivi.api.UiMessage
+import com.afterroot.watchdone.base.compose.ViewState
 import info.movito.themoviedbapi.model.Multi
 
 @Immutable
 data class DiscoverViewState(
     val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
-    val isLoading: Boolean = false
-) {
+    val isLoading: Boolean = false,
+    override val message: UiMessage? = null
+) : ViewState() {
     companion object {
         val Empty = DiscoverViewState()
     }

@@ -13,73 +13,49 @@
  * limitations under the License.
  */
 
-import java.io.FileInputStream
-import java.util.Properties
+import com.afterroot.gradle.readProperties
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.afterroot.android.application")
+    id("com.afterroot.android.compose")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
+
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.gms.googleServices)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
+
     id("androidx.navigation.safeargs")
     id("com.google.android.gms.oss-licenses-plugin")
     id("kotlin-parcelize")
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
-apply(from = "$rootDir/gradle/oss-licence.gradle")
-apply(from = "$rootDir/gradle/apply-core.gradle")
-
-hilt {
-    enableAggregatingTask = true
-}
-
 val ci by extra { System.getenv("CI") == "true" }
 
 android {
+    namespace = "com.afterroot.watchdone"
+
     buildFeatures {
         viewBinding = true
         dataBinding = true
-        compose = true
+        buildConfig = true
     }
 
     defaultConfig {
-        manifestPlaceholders += mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
-        namespace = "com.afterroot.watchdone"
         applicationId = "com.afterroot.watchdone"
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"].toString()
 
         testInstrumentationRunner = "com.afterroot.watchdone.di.HiltTestRunner"
 
+        manifestPlaceholders += mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
+
         resourceConfigurations.addAll(listOf("en"))
-
-        val tmdbPropertiesFile = rootProject.file("tmdb.properties")
-        val tmdbProperties = Properties()
-        if (tmdbPropertiesFile.exists()) {
-            tmdbProperties.load(FileInputStream(tmdbPropertiesFile))
-        }
-        buildConfigField(
-            "String",
-            "TMDB_BEARER_TOKEN",
-            tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN")
-        )
-        buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
-        buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
     }
 
-    val keystorePropertiesFile = rootProject.file("keystore.properties")
-    val keystoreProperties = Properties()
-    if (keystorePropertiesFile.exists()) {
-        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-    }
+    val keystoreProperties = readProperties(rootProject.file("keystore.properties"))
 
     signingConfigs {
         create("release") {
@@ -95,24 +71,18 @@ android {
             isShrinkResources = true
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // multiDexKeepProguard(file("proguard-rules.pro"))
-
             signingConfig = signingConfigs["release"]
         }
         debug {
             extra["alwaysUpdateBuildId"] = false
-            // splits.abi.enable = false
-            // splits.density.enable = false
-            // crunchPngs = false
-
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-beta"
-
             signingConfig = signingConfigs["release"]
-
             isMinifyEnabled = false
         }
     }
+
+    lint.abortOnError = false
 
     packaging.resources.excludes += setOf(
         "META-INF/proguard/*",
@@ -121,29 +91,17 @@ android {
         "META-INF/*.properties",
         "META-INF/LICENSE*.md"
     )
-
-    lint {
-        abortOnError = false
-    }
-
-    composeOptions {
-        println("- INFO: Compose BOM Version: ${libs.versions.composeBom.get()}")
-        println("- INFO: Compose Compiler Version: ${libs.versions.composeCompiler.get()}")
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 }
 
 dependencies {
 
-    implementation(projects.base)
     implementation(projects.data)
-    implementation(projects.ui.common)
-    implementation(projects.ui.commonCompose)
+    implementation(projects.common)
+    implementation(projects.common.ui.compose)
     implementation(projects.ui.discover)
     implementation(projects.ui.media)
     implementation(projects.ui.profile)
     implementation(projects.ui.recommended)
-    implementation(projects.ui.resources)
     implementation(projects.ui.search)
     implementation(projects.ui.settings)
     implementation(projects.ui.watchlist)
@@ -184,7 +142,7 @@ dependencies {
     implementation(libs.hilt.compose)
     kapt(libs.hilt.compiler)
 
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.google.ossLic)
     implementation(libs.google.material)
@@ -212,7 +170,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.4.0")
     androidTestImplementation("org.mockito:mockito-android:5.4.0")
 
-    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    implementation(libs.androidx.work)
     implementation(libs.google.auth)
 
     androidTestImplementation(libs.androidx.test.archCore)
@@ -221,8 +179,4 @@ dependencies {
     androidTestImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.test.mockk)
     androidTestImplementation(libs.test.robolectric)
-}
-
-fun propOrEnv(propName: String): String {
-    return project.properties[propName] as String? ?: System.getenv(propName)
 }

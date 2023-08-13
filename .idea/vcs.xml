@@ -3,7 +3,8 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ards" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/utils" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/gradle/build-logic" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/themoviedbapi" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/utils" vcs="Git" />
   </component>
 </project>

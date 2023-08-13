@@ -13,31 +13,27 @@
  * limitations under the License.
  */
 
-import java.io.FileInputStream
-import java.util.Properties
+import com.afterroot.gradle.readProperties
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
+
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
 }
 
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/common-config-library.gradle")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
-
 android {
     namespace = "com.afterroot.watchdone.data"
+
+    buildFeatures.buildConfig = true
+
     defaultConfig {
         testInstrumentationRunner = "com.afterroot.watchdone.data.test.DataTestRunner"
 
-        val tmdbPropertiesFile = rootProject.file("tmdb.properties")
-        val tmdbProperties = Properties()
-        if (tmdbPropertiesFile.exists()) {
-            tmdbProperties.load(FileInputStream(tmdbPropertiesFile))
-        }
+        val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
         buildConfigField(
             "String",
             "TMDB_BEARER_TOKEN",
@@ -55,8 +51,6 @@ ksp {
 dependencies {
     api(projects.ards)
     api(projects.themoviedbapi)
-    implementation(projects.base)
-    implementation(projects.ui.resources)
 
     implementation(libs.androidx.preference)
     implementation(libs.androidx.paging)
@@ -71,7 +65,7 @@ dependencies {
     implementation(libs.retrofit.retrofit)
     implementation(libs.retrofit.jackson)
 
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
     implementation(libs.bundles.coroutines)

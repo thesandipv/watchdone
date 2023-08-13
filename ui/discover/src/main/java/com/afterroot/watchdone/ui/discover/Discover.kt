@@ -44,6 +44,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -56,11 +57,13 @@ import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MovieCard
 import com.afterroot.ui.common.compose.components.TVCard
+import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun DiscoverChips(
@@ -72,8 +75,11 @@ fun DiscoverChips(
         chipSpacing = 12.dp,
         horizontalPadding = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-        list = listOf("Movies", "TV"),
-        preSelect = listOf("Movies"),
+        list = listOf(
+            stringResource(id = CommonR.string.text_search_movies),
+            stringResource(id = CommonR.string.text_search_tv)
+        ),
+        preSelect = listOf(stringResource(id = CommonR.string.text_search_movies)),
         onSelectedChanged = { selected, _ ->
             when (selected) {
                 "Movies" -> onMovieSelected()
@@ -129,7 +135,7 @@ internal fun Discover(
 
     Scaffold(
         topBar = {
-            CommonAppBar(withTitle = "Discover", scrollBehavior = scrollBehavior)
+            CommonAppBar(withTitle = "Discover", scrollBehavior = scrollBehavior, windowInsets = TopBarWindowInsets)
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->

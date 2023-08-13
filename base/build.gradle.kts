@@ -13,21 +13,19 @@
 * limitations under the License.
 */
 
-import java.io.FileInputStream
-import java.util.Properties
+import com.afterroot.gradle.readProperties
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
     alias(libs.plugins.kotlin.kapt)
 }
 
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
-
 android {
     namespace = "com.afterroot.watchdone.base"
+
+    buildFeatures.buildConfig = true
 
     defaultConfig {
         val commitHash = providers.exec {
@@ -39,11 +37,13 @@ android {
         buildConfigField("int", "VERSION_CODE", "${rootProject.extra["versionCode"]}")
         buildConfigField("String", "VERSION_NAME", "\"${rootProject.extra["versionName"]}\"")
 
-        val tmdbPropertiesFile = rootProject.file("tmdb.properties")
-        val tmdbProperties = Properties()
-        if (tmdbPropertiesFile.exists()) {
-            tmdbProperties.load(FileInputStream(tmdbPropertiesFile))
-        }
+        val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
+        buildConfigField(
+            "String",
+            "TMDB_BEARER_TOKEN",
+            tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN")
+        )
+        buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
         buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
     }
 }
@@ -56,7 +56,6 @@ dependencies {
     api(libs.androidx.lifecycle.extensions)
 
     api(libs.glide.glide)
-    kapt(libs.glide.compiler)
 
     implementation(libs.commonsCodec)
 

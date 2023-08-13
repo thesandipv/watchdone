@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.tivi.api.UiMessage
 import com.afterroot.data.model.NetworkUser
 import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.components.CommonAppBar
@@ -57,7 +58,6 @@ import com.afterroot.ui.common.compose.components.FABSave
 import com.afterroot.ui.common.compose.components.UpActionButton
 import com.afterroot.ui.common.compose.utils.bottomNavigationPadding
 import com.afterroot.ui.common.compose.utils.rememberFlowWithLifecycle
-import com.afterroot.ui.common.view.UiMessage
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.mapper.toLocalUser
 import com.afterroot.watchdone.data.model.LocalUser

@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.ui.media
 
 import androidx.compose.runtime.Immutable
+import app.tivi.api.UiMessage
 import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.watchdone.base.compose.ViewState
 import com.afterroot.watchdone.data.model.DBMedia
@@ -43,7 +44,8 @@ data class MediaInfoViewState(
     val isInWatchlist: Boolean = false,
     val isWatched: Boolean = false,
     val genres: List<Genre> = emptyList(),
-    val watchProviders: State<ProviderResults> = State.loading()
+    val watchProviders: State<ProviderResults> = State.loading(),
+    override val message: UiMessage? = null
 ) : ViewState() {
     companion object {
         val Empty = MediaInfoViewState()

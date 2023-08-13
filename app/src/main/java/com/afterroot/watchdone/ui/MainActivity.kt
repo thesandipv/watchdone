@@ -24,14 +24,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.os.ConfigurationCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.utils.onVersionGreaterThanEqualTo
-import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.base.Field
@@ -41,11 +44,12 @@ import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.ui.home.Home
 import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
+import com.afterroot.watchdone.utils.logFirstStart
 import com.afterroot.watchdone.utils.shareToInstagram
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,18 +88,36 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
+            val systemUiController = rememberSystemUiController()
+            val useDarkIcons = !isSystemInDarkTheme()
+
+            DisposableEffect(systemUiController, useDarkIcons) {
+                // Update all of the system bar colors to be transparent, and use
+                // dark icons if we're in light theme
+                systemUiController.setSystemBarsColor(
+                    color = Color.Transparent,
+                    darkIcons = useDarkIcons
+                )
+
+                onDispose {}
+            }
+
             Theme(context = this, settings = settings) {
-                Home(onWatchProviderClick = { link ->
-                    browse(link, true)
-                }, settingsAction = {
+                Home(
+                    onWatchProviderClick = { link ->
+                        browse(link, true)
+                    },
+                    settingsAction = {
                         startActivity<SettingsActivity>()
-                    }, shareToIG = { mediaId, poster ->
+                    },
+                    shareToIG = { mediaId, poster ->
                         lifecycleScope.launch {
                             shareToInstagram(poster, mediaId, settings)
                         }
-                    })
+                    }
+                )
             }
         }
     }
@@ -119,15 +141,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun initialize() {
         if (settings.isFirstInstalled) {
-            Bundle().apply {
-                putString("Device_Name", Build.DEVICE)
-                putString("Device_Model", Build.MODEL)
-                putString("Manufacturer", Build.MANUFACTURER)
-                putString("AndroidVersion", Build.VERSION.RELEASE)
-                putString("AppVersion", BuildConfig.VERSION_CODE.toString())
-                putString("Package", BuildConfig.APPLICATION_ID)
-                FirebaseAnalytics.getInstance(this@MainActivity).logEvent("DeviceInfo", this)
-            }
+            logFirstStart()
             settings.isFirstInstalled = false
         }
 
@@ -161,8 +175,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         onVersionGreaterThanEqualTo(Build.VERSION_CODES.M, ::checkPermissions)
-
-        // setUpNavigation()
 
         // Add user in db if not available
         addUserInfoInDB()

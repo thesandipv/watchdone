@@ -15,31 +15,27 @@
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
+    id("com.afterroot.android.library")
+    id("com.afterroot.kotlin.android")
+    id("com.afterroot.watchdone.android.common")
+    id("com.afterroot.android.compose")
     id("dagger.hilt.android.plugin")
+    alias(libs.plugins.kotlin.kapt)
 }
-
-apply(from = "$rootDir/gradle/common-config.gradle.kts")
-apply(from = "$rootDir/gradle/common-config-library.gradle")
-apply(from = "$rootDir/gradle/oss-licence.gradle")
 
 android {
     namespace = "com.afterroot.watchdone.ui.settings"
     buildFeatures {
-        dataBinding = true
+        // dataBinding = true
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
-    // All compose dependencies applied with compose.gradle
-    implementation(projects.base)
     implementation(projects.data)
-    implementation(projects.ui.common)
-    implementation(projects.ui.commonCompose)
-    implementation(projects.ui.resources)
+    implementation(projects.common)
+    implementation(projects.common.ui.compose)
 
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.core)

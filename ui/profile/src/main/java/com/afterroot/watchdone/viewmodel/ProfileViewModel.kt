@@ -17,10 +17,10 @@ package com.afterroot.watchdone.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.tivi.api.UiMessage
+import app.tivi.api.UiMessageManager
 import com.afterroot.data.model.NetworkUser
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.ui.common.view.SnackbarManager
-import com.afterroot.ui.common.view.UiMessage
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.domain.interactors.GetProfile
 import com.afterroot.watchdone.domain.interactors.SetProfile
@@ -44,14 +44,15 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val snackbarManager: SnackbarManager,
     private val getProfile: GetProfile,
     private val setProfile: SetProfile,
     val firebaseUtils: FirebaseUtils,
     private val settings: Settings
 ) : ViewModel() {
 
-    val state: StateFlow<ProfileViewState> = combine(snackbarManager.messages) { msg ->
+    private val uiMessageManager = UiMessageManager()
+
+    val state: StateFlow<ProfileViewState> = combine(uiMessageManager.message) { msg ->
         ProfileViewState(msg[0])
     }.stateIn(
         scope = viewModelScope,
@@ -145,13 +146,13 @@ class ProfileViewModel @Inject constructor(
 
     private fun showMessageAction(action: ProfileActions.ShowMessage) {
         viewModelScope.launch {
-            snackbarManager.addMessage(action.message)
+            uiMessageManager.emitMessage(action.message)
         }
     }
 
     fun clearMessage() {
         viewModelScope.launch {
-            snackbarManager.removeCurrentMessage()
+            uiMessageManager.clearMessage(0)
         }
     }
 }

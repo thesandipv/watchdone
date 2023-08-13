@@ -48,6 +48,7 @@ import com.afterroot.ui.common.compose.components.Backdrop
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
+import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
@@ -139,24 +140,29 @@ internal fun <T : Multi> MediaInfo(
 
                 else -> ""
             }
-            CommonAppBar(withTitle = title ?: "", scrollBehavior = scrollBehavior, actions = {
-                IconButton(onClick = {
-                    if (viewState.mediaType == Multi.MediaType.MOVIE) {
-                        viewState.movie.posterPath?.let {
-                            shareToIG?.invoke(viewState.movie.id, it)
+            CommonAppBar(
+                withTitle = title ?: "",
+                scrollBehavior = scrollBehavior,
+                windowInsets = TopBarWindowInsets,
+                actions = {
+                    IconButton(onClick = {
+                        if (viewState.mediaType == Multi.MediaType.MOVIE) {
+                            viewState.movie.posterPath?.let {
+                                shareToIG?.invoke(viewState.movie.id, it)
+                            }
+                        } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+                            viewState.tv.posterPath?.let {
+                                shareToIG?.invoke(viewState.tv.id, it)
+                            }
                         }
-                    } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-                        viewState.tv.posterPath?.let {
-                            shareToIG?.invoke(viewState.tv.id, it)
-                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Share,
+                            contentDescription = "Share"
+                        )
                     }
-                }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Share,
-                        contentDescription = "Share"
-                    )
-                }
-            }, navigationIcon = {
+                },
+                navigationIcon = {
                     IconButton(onClick = {
                         navigateUp()
                     }) {
@@ -165,7 +171,8 @@ internal fun <T : Multi> MediaInfo(
                             contentDescription = "Up"
                         )
                     }
-                })
+                }
+            )
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { contentPadding ->

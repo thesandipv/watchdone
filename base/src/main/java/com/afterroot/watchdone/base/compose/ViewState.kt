@@ -14,4 +14,8 @@
  */
 package com.afterroot.watchdone.base.compose
 
-abstract class ViewState
+import app.tivi.api.UiMessage
+
+abstract class ViewState {
+    abstract val message: UiMessage?
+}

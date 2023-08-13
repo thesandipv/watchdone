@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.ui.search
 
 import androidx.compose.runtime.Immutable
+import app.tivi.api.UiMessage
 import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.base.compose.ViewState
 import info.movito.themoviedbapi.model.Multi
@@ -26,7 +27,8 @@ data class SearchViewState(
     val query: Query = Query(),
     val isLoading: Boolean = false,
     val refresh: Boolean = false,
-    val empty: Boolean = true
+    val empty: Boolean = true,
+    override val message: UiMessage? = null
 ) : ViewState() {
     companion object {
         val Empty = SearchViewState()
