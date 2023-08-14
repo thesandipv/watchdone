@@ -28,7 +28,9 @@ data class DBMedia(
     var mediaType: Multi.MediaType? = null,
     var rating: Double? = null,
     // TODO update in ards
-    var watchStatus: Map<String, Boolean> = emptyMap()
+    @Deprecated("Use watched instead.")
+    var watchStatus: Map<String, Boolean> = emptyMap(),
+    var watched: List<String> = emptyList()
 ) {
     companion object {
         val Empty = DBMedia()

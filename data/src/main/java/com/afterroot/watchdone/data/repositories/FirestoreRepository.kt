@@ -91,7 +91,14 @@ class FirestoreRepository @Inject constructor(
         }
         val documentId = getDocumentId(tvId)
         if (documentId != null) {
-            watchlistItemsRef.document(documentId).update("${Field.WATCH_STATUS}.$episodeId", isWatched).await()
+            watchlistItemsRef.document(documentId).update(
+                Field.WATCHED_EPISODES,
+                if (isWatched) {
+                    FieldValue.arrayUnion(episodeId)
+                } else {
+                    FieldValue.arrayRemove(episodeId)
+                }
+            ).await()
             emit(State.success(isWatched))
         } else {
             emit(State.failed("Media not found"))
@@ -109,7 +116,10 @@ class FirestoreRepository @Inject constructor(
         }
     }
 
-    private suspend fun getDocumentId(media: DBMedia, source: Source = Source.CACHE) = getDocumentId(media.id, source)
+    private suspend fun getDocumentId(media: DBMedia, source: Source = Source.CACHE) = getDocumentId(
+        media.id,
+        source
+    )
 
     private suspend fun getDocumentId(mediaId: Int, source: Source = Source.CACHE): String? {
         val qs = watchlistItemsRef.whereEqualTo(Field.ID, mediaId).get(source).await()
@@ -117,7 +127,10 @@ class FirestoreRepository @Inject constructor(
     }
 
     private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
-        this.set(hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)), SetOptions.merge()).addOnCompleteListener {
+        this.set(
+            hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)),
+            SetOptions.merge()
+        ).addOnCompleteListener {
             doOnSuccess?.invoke()
         }
     }

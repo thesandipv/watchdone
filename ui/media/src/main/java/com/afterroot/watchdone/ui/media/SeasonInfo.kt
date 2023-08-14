@@ -46,7 +46,7 @@ import com.afterroot.watchdone.utils.State
 fun Seasons(
     tv: TV,
     season: State<Season>,
-    watchedEpisodes: Map<String, Boolean>,
+    watchedEpisodes: List<String>,
     onSeasonSelected: (Int) -> Unit,
     onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
 ) {
@@ -91,7 +91,7 @@ fun manufactureSeasonList(numberOfSeasons: Int): List<String> = mutableListOf<St
 @Composable
 fun SeasonsDetail(
     season: State<Season>,
-    watchedEpisodes: Map<String, Boolean>,
+    watchedEpisodes: List<String>,
     onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
 ) {
     val bodyMargin = Layout.bodyMargin
@@ -118,13 +118,12 @@ fun SeasonsDetail(
                         modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
                     )
                     episodes.forEach { episode ->
-                        val watched = if (watchedEpisodes.containsKey(episode.id.toString())) {
-                            watchedEpisodes[episode.id.toString()] ?: false
-                        } else {
-                            false
-                        }
-
-                        EpisodeItem(episode = episode, isWatched = watched, onWatchClicked = onWatchClicked)
+                        val watched = watchedEpisodes.contains(episode.id.toString())
+                        EpisodeItem(
+                            episode = episode,
+                            isWatched = watched,
+                            onWatchClicked = onWatchClicked
+                        )
                     }
                 }
             }
