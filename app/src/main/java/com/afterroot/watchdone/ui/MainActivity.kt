@@ -87,8 +87,8 @@ class MainActivity : AppCompatActivity() {
     private val networkViewModel: NetworkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        super.onCreate(savedInstanceState)
         setContent {
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()

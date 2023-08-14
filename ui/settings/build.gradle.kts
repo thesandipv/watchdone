@@ -26,8 +26,7 @@ plugins {
 android {
     namespace = "com.afterroot.watchdone.ui.settings"
     buildFeatures {
-        // dataBinding = true
-        viewBinding = true
+        dataBinding = true
         buildConfig = true
     }
 }

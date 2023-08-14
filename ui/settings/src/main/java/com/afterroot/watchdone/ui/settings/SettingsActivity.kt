@@ -18,6 +18,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.databinding.DataBindingUtil
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.watchdone.settings.Settings
@@ -36,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = FragmentSettingsBinding.inflate(layoutInflater)
+        binding = DataBindingUtil.setContentView(this, R.layout.fragment_settings)
 
         binding.fragmentSettingsAppBarCompose.apply {
             setContent {
