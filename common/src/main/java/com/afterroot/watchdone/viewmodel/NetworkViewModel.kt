@@ -22,7 +22,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class NetworkViewModel @Inject constructor(private val networkStateMonitor: NetworkStateMonitor) : ViewModel() {
+class NetworkViewModel @Inject constructor(
+    private val networkStateMonitor: NetworkStateMonitor
+) : ViewModel() {
 
     fun monitor(
         lifecycleOwner: LifecycleOwner,

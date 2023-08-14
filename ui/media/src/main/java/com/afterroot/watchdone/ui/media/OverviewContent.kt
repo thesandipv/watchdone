@@ -233,11 +233,16 @@ fun WatchProviders(
             text?.let {
                 MetaText(text = "$text:", icon = Icons.Rounded.SmartDisplay)
             }
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 providers.forEach {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath).crossfade(true).build(),
+                            .data(
+                                LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath
+                            ).crossfade(true).build(),
                         contentDescription = it.providerName,
                         modifier = Modifier
                             .size(32.dp)

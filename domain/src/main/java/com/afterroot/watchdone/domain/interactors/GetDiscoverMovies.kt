@@ -19,8 +19,8 @@ import com.afterroot.watchdone.data.repositories.DiscoverRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Discover
 import info.movito.themoviedbapi.model.core.MovieResultsPage
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class GetDiscoverMovies @Inject constructor(private val discoverRepository: DiscoverRepository) :
     ResultInteractor<GetDiscoverMovies.Params, Flow<State<MovieResultsPage>>>() {

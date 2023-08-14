@@ -28,7 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore
  * @param isUseOnlyProdDB true will always return [CollectionReference] of Production Database
  * otherwise it will based on BuildConfig.DEBUG
  */
-fun FirebaseFirestore.collectionWatchdone(id: String, isUseOnlyProdDB: Boolean): CollectionReference {
+fun FirebaseFirestore.collectionWatchdone(
+    id: String,
+    isUseOnlyProdDB: Boolean
+): CollectionReference {
     return collection(Collection.USERS).document(id)
         .collection(if (isUseOnlyProdDB) Collection.WATCHDONE_PROD else Collection.WATCHDONE_AUTO)
 }

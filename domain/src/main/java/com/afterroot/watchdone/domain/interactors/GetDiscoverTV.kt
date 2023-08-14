@@ -19,8 +19,8 @@ import com.afterroot.watchdone.data.repositories.DiscoverRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Discover
 import info.movito.themoviedbapi.model.core.TvResultsPage
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class GetDiscoverTV @Inject constructor(private val discoverRepository: DiscoverRepository) :
     ResultInteractor<GetDiscoverTV.Params, Flow<State<TvResultsPage>>>() {

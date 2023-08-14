@@ -28,14 +28,14 @@ import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.utils.getMaterialColor
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
+import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.MainActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
-import com.afterroot.watchdone.resources.R as CommonR
+import timber.log.Timber
 
 /**
  * FCM Service that will be used only if app is in foreground state.
@@ -100,7 +100,12 @@ class FireMessagingService : FirebaseMessagingService() {
             }
         }
         val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            )
         } else {
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
         }

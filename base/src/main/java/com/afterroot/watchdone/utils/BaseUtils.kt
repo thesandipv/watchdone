@@ -25,21 +25,25 @@ import android.view.View
 import android.view.WindowMetrics
 import android.view.inputmethod.InputMethodManager
 import com.afterroot.watchdone.base.BuildConfig
-import org.apache.commons.codec.digest.DigestUtils
 import java.util.Locale
+import org.apache.commons.codec.digest.DigestUtils
 
 fun getGravatarUrl(email: String) =
     "https://www.gravatar.com/avatar/${DigestUtils.md5Hex(email.lowercase(Locale.getDefault()))}"
 
 fun Context.showKeyboard(view: View) {
     if (view.requestFocus()) {
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager = getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as InputMethodManager
         inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
 }
 
 fun Context.hideKeyboard(view: View) {
-    val inputMethodManager = applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val inputMethodManager = applicationContext.getSystemService(
+        Context.INPUT_METHOD_SERVICE
+    ) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
@@ -87,7 +91,10 @@ fun <T> whenBuildIs(debug: T, release: T): T = if (BuildConfig.DEBUG) debug else
  * @since v0.0.4
  * @return either [debug] or [release] with provided type [T]
  */
-fun <T> whenBuildIs(debug: () -> T, release: () -> T): T = whenBuildIs(debug.invoke(), release.invoke())
+fun <T> whenBuildIs(
+    debug: () -> T,
+    release: () -> T
+): T = whenBuildIs(debug.invoke(), release.invoke())
 
 /**
  * Helper Function for invoking function only if build is Debug

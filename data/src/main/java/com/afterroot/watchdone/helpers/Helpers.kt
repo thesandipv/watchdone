@@ -54,7 +54,10 @@ fun migrateFirestore(
                         val docId = it.id // Remember Document Id
                         val media = movie?.toDBMedia() // New Structure Object
                         val docRef =
-                            firestore.collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().document(docId)
+                            firestore.collectionWatchdone(
+                                uid,
+                                isUseProdDb
+                            ).collectionWatchlistItems().document(docId)
                         batch.delete(docRef) // First delete the document
                         media?.let { dbMedia ->
                             batch.set(docRef, dbMedia) // Then set data under same document id
@@ -69,7 +72,10 @@ fun migrateFirestore(
                         val docId = it.id // Remember Document Id
                         val media = tv?.toDBMedia() // New Structure Object
                         val docRef =
-                            firestore.collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().document(docId)
+                            firestore.collectionWatchdone(
+                                uid,
+                                isUseProdDb
+                            ).collectionWatchlistItems().document(docId)
                         batch.delete(docRef) // First delete the document
                         media?.let { dbMedia ->
                             batch.set(docRef, dbMedia) // Then set data under same document id

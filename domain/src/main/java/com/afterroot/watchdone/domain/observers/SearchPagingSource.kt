@@ -35,7 +35,9 @@ class SearchMoviePagingSource(private val query: Query, private val searchMovieI
         try {
             var nextPage = params.key ?: 1
             Timber.d("load: Page $nextPage, Query: $query")
-            val response = searchMovieInteractor.executeSync(SearchMovieInteractor.Params(query.page(nextPage)))
+            val response = searchMovieInteractor.executeSync(
+                SearchMovieInteractor.Params(query.page(nextPage))
+            )
             var loadResult: LoadResult<Int, Movie>? = null
 
             if (!query.validateForSearch()) {
@@ -80,7 +82,9 @@ class SearchTVPagingSource(private val query: Query, private val searchTVInterac
         try {
             var nextPage = params.key ?: 1
             Timber.d("load: Page $nextPage, Query: $query")
-            val response = searchTVInteractor.executeSync(SearchTVInteractor.Params(query.page(nextPage)))
+            val response = searchTVInteractor.executeSync(
+                SearchTVInteractor.Params(query.page(nextPage))
+            )
             var loadResult: LoadResult<Int, TV>? = null
 
             if (!query.validateForSearch()) {

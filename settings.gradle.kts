@@ -80,7 +80,7 @@ include(
     ":ui:search",
     ":ui:settings",
     ":ui:watchlist",
-    ":utils"
+    ":utils",
 )
 
 project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure

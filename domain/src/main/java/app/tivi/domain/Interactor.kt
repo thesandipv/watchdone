@@ -22,6 +22,7 @@ import com.afterroot.watchdone.base.InvokeError
 import com.afterroot.watchdone.base.InvokeStarted
 import com.afterroot.watchdone.base.InvokeStatus
 import com.afterroot.watchdone.base.InvokeSuccess
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +32,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withTimeout
-import java.util.concurrent.TimeUnit
 
 abstract class Interactor<in P> {
     operator fun invoke(

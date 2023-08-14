@@ -17,11 +17,11 @@ package com.afterroot.watchdone
 import com.afterroot.watchdone.di.AppTest
 import com.afterroot.watchdone.settings.Settings
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import javax.inject.Inject
 
 @HiltAndroidTest
 class SettingsTest : AppTest() {

@@ -18,11 +18,11 @@ package com.afterroot.watchdone.data.repositories
 import com.afterroot.tmdbapi.api.SearchApi
 import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.utils.State
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 class SearchRepository @Inject constructor(private val searchApi: SearchApi) {
     fun searchMovie(query: Query) = flow {

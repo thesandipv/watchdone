@@ -31,7 +31,9 @@ class DiscoverMoviePagingSource(private val discover: Discover, private val getD
         try {
             var nextPage = params.key ?: 1
             Timber.d("load: Page $nextPage")
-            val response = getDiscoverMovies.executeSync(GetDiscoverMovies.Params(discover.page(nextPage)))
+            val response = getDiscoverMovies.executeSync(
+                GetDiscoverMovies.Params(discover.page(nextPage))
+            )
             var loadResult: LoadResult<Int, Movie>? = null
             response.collect {
                 when (it) {

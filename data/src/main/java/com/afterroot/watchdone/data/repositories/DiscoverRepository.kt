@@ -17,11 +17,11 @@ package com.afterroot.watchdone.data.repositories
 import com.afterroot.tmdbapi.api.DiscoverApi
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Discover
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 class DiscoverRepository @Inject constructor(private val discoverApi: DiscoverApi) {
     fun getMoviesDiscover(discover: Discover) = flow {

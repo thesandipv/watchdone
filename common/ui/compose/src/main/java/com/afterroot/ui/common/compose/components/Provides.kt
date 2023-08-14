@@ -25,4 +25,5 @@ val LocalPosterSize = compositionLocalOf { "w342" }
 val LocalBackdropSize = compositionLocalOf { "w780" }
 val LocalLogoSize = compositionLocalOf { "w92" }
 val LocalRegion = compositionLocalOf { "IN" }
-val LocalSettings = compositionLocalOf<Settings> { throw IllegalStateException("LocalSettings is not initialized") }
+val LocalSettings =
+    compositionLocalOf<Settings> { throw IllegalStateException("LocalSettings is not initialized") }

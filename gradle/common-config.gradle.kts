@@ -8,7 +8,7 @@ val composeProjects =
         ":ui:recommended",
         ":ui:search",
         ":ui:settings",
-        ":ui:watchlist"
+        ":ui:watchlist",
     )
 if (project.path in composeProjects) {
     println("- INFO: Compose Enabled for ${project.path}")

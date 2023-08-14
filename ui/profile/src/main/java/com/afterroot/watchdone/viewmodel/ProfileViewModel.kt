@@ -29,6 +29,7 @@ import com.afterroot.watchdone.ui.profile.ProfileActions
 import com.afterroot.watchdone.ui.profile.ProfileViewState
 import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -39,7 +40,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -90,7 +90,9 @@ class ProfileViewModel @Inject constructor(
                     }
                     is ProfileActions.ShowMessage -> showMessageAction(action)
                     ProfileActions.Refresh -> refresh(true)
-                    else -> Timber.d("collectAction: This action not handled by ProfileViewModel. Action: $action")
+                    else -> Timber.d(
+                        "collectAction: This action not handled by ProfileViewModel. Action: $action"
+                    )
                 }
             }
         }
@@ -121,14 +123,20 @@ class ProfileViewModel @Inject constructor(
                             onSave(action.localUser)
                         }
                         is State.Failed -> {
-                            submitAction(ProfileActions.ShowMessage(UiMessage("Failed to save Profile")))
+                            submitAction(
+                                ProfileActions.ShowMessage(UiMessage("Failed to save Profile"))
+                            )
                         }
                         else -> {
                         }
                     }
                 }
             } else {
-                submitAction(ProfileActions.ShowMessage(UiMessage("Failed to save Profile. Please sign in again.")))
+                submitAction(
+                    ProfileActions.ShowMessage(
+                        UiMessage("Failed to save Profile. Please sign in again.")
+                    )
+                )
             }
         }
     }

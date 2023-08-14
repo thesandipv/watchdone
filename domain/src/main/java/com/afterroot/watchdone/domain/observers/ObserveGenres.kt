@@ -18,8 +18,8 @@ package com.afterroot.watchdone.domain.observers
 import app.tivi.domain.SubjectInteractor
 import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.watchdone.database.GenreDao
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class ObserveGenres @Inject constructor(private val genreDao: GenreDao) :
     SubjectInteractor<ObserveGenres.Params, List<Genre>>() {

@@ -15,12 +15,12 @@
 package com.afterroot.watchdone.utils
 
 import com.afterroot.data.utils.FirebaseUtils
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlin.coroutines.CoroutineContext
 
 fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versionCode: Int): String {
     val builder = StringBuilder().apply {

@@ -19,11 +19,11 @@ import com.afterroot.tmdbapi.api.MoviesApi
 import com.afterroot.watchdone.data.mapper.toMovie
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.resultFlow
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 class MovieRepository @Inject constructor(private val moviesApi: MoviesApi) {
 

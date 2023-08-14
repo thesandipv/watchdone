@@ -192,11 +192,15 @@ class MediaInfoViewModel @Inject constructor(
         getMediaInfo()
     }
 
-    fun getRecommendedShows(mediaId: Int) = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+    fun getRecommendedShows(mediaId: Int) = Pager(
+        PagingConfig(pageSize = 20, initialLoadSize = 20)
+    ) {
         RecommendedShowPagingSource(mediaId, observeRecommendedShows)
     }.flow.cachedIn(viewModelScope)
 
-    fun getRecommendedMovies(mediaId: Int) = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+    fun getRecommendedMovies(mediaId: Int) = Pager(
+        PagingConfig(pageSize = 20, initialLoadSize = 20)
+    ) {
         RecommendedMoviePagingSource(mediaId, observeRecommendedMovies)
     }.flow.cachedIn(viewModelScope)
 
@@ -257,7 +261,9 @@ class MediaInfoViewModel @Inject constructor(
 
     private fun getMediaInfo() {
         viewModelScope.launch {
-            mediaInfoInteractor.executeSync(MediaInfoInteractor.Params(mediaId.value)).collectLatest { result ->
+            mediaInfoInteractor.executeSync(
+                MediaInfoInteractor.Params(mediaId.value)
+            ).collectLatest { result ->
                 result.whenSuccess {
                     dbMedia.value = it
                     isWatched.value = it.isWatched ?: false

@@ -58,7 +58,11 @@ fun Seasons(
     }
 
     SeasonsChips(tv = tv, onSeasonSelected = onSeasonSelected)
-    SeasonsDetail(season = season, watchedEpisodes = watchedEpisodes, onWatchClicked = onWatchClicked)
+    SeasonsDetail(
+        season = season,
+        watchedEpisodes = watchedEpisodes,
+        onWatchClicked = onWatchClicked
+    )
 }
 
 @Composable
@@ -93,7 +97,10 @@ fun SeasonsDetail(
     val bodyMargin = Layout.bodyMargin
     val gutter = Layout.gutter
 
-    Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.animateContentSize()) {
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.animateContentSize()
+    ) {
         when (season) {
             is State.Success -> {
                 season.data.overview?.let {
@@ -122,7 +129,10 @@ fun SeasonsDetail(
                 }
             }
             is State.Failed -> {
-                Text(text = "Error while loading", modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter))
+                Text(
+                    text = "Error while loading",
+                    modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+                )
             }
             is State.Loading -> {
                 EpisodeItemPlaceholder()
@@ -158,9 +168,15 @@ fun EpisodeItem(
             }
         ) {
             if (isWatched) {
-                Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Remove Episode from Watched")
+                Icon(
+                    imageVector = Icons.Rounded.Clear,
+                    contentDescription = "Remove Episode from Watched"
+                )
             } else {
-                Icon(imageVector = Icons.Rounded.Done, contentDescription = "Add Episode from Watched")
+                Icon(
+                    imageVector = Icons.Rounded.Done,
+                    contentDescription = "Add Episode from Watched"
+                )
             }
         }
     }

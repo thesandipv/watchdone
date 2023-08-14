@@ -53,12 +53,12 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

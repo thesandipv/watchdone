@@ -25,8 +25,8 @@ import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.core.TvResultsPage
 import info.movito.themoviedbapi.model.providers.ProviderResults
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 @Deprecated("Use ObserveTVSeason")
 class TVSeasonInteractor @Inject constructor(private val tvRepository: TVRepository) :

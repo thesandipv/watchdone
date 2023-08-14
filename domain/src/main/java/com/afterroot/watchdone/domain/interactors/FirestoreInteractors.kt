@@ -20,8 +20,8 @@ import app.tivi.domain.SubjectInteractor
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.repositories.FirestoreRepository
 import com.afterroot.watchdone.utils.State
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class WatchlistInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
     ResultInteractor<WatchlistInteractor.Params, Flow<State<Boolean>>>() {
@@ -48,7 +48,12 @@ class WatchlistInteractor @Inject constructor(private val firestoreRepository: F
 
 class WatchStateInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
     ResultInteractor<WatchStateInteractor.Params, Flow<State<Boolean>>>() {
-    data class Params(val id: Int, val watchState: Boolean, val episodeId: String? = null, val method: Method)
+    data class Params(
+        val id: Int,
+        val watchState: Boolean,
+        val episodeId: String? = null,
+        val method: Method
+    )
 
     enum class Method {
         MEDIA, EPISODE
@@ -60,7 +65,11 @@ class WatchStateInteractor @Inject constructor(private val firestoreRepository: 
                 firestoreRepository.setWatchStatus(params.id, params.watchState)
             }
             Method.EPISODE -> {
-                firestoreRepository.setEpisodeWatchStatus(params.id, params.episodeId, params.watchState)
+                firestoreRepository.setEpisodeWatchStatus(
+                    params.id,
+                    params.episodeId,
+                    params.watchState
+                )
             }
         }
     }
