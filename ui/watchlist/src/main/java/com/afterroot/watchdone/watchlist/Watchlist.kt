@@ -68,6 +68,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -102,10 +103,10 @@ import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.model.WatchStateValues
-import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
 import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun Watchlist(
@@ -240,9 +241,11 @@ private fun Watchlist(
                                         Multi.MediaType.MOVIE -> stringResource(
                                             id = CommonR.string.text_search_movies
                                         )
+
                                         Multi.MediaType.TV_SERIES -> stringResource(
                                             id = CommonR.string.text_search_tv
                                         )
+
                                         else -> null
                                     }
                                 ) { index, _, selectedList ->
@@ -272,12 +275,15 @@ private fun Watchlist(
                                         WatchStateValues.WATCHED -> stringResource(
                                             id = CommonR.string.watch_state_watched
                                         )
+
                                         WatchStateValues.PENDING -> stringResource(
                                             id = CommonR.string.watch_state_pending
                                         )
+
                                         WatchStateValues.STARTED -> stringResource(
                                             id = CommonR.string.watch_state_started
                                         )
+
                                         else -> null
                                     }
                                 ) { _, selectedList ->
@@ -486,7 +492,7 @@ private fun FilterChips(
             stringResource(id = CommonR.string.watch_state_pending),
             stringResource(id = CommonR.string.watch_state_started)
         ),
-        preSelectItem = preSelect,
+        preSelectItem = remember { preSelect },
         onSelectedChanged = { index, _, _, _, selectedList ->
             onSelectionChanged(index, selectedList)
         },
