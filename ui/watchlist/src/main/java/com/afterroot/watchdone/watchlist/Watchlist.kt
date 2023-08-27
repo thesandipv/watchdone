@@ -103,10 +103,10 @@ import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.model.WatchStateValues
+import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
 import info.movito.themoviedbapi.model.Multi
-import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun Watchlist(
