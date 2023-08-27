@@ -15,7 +15,6 @@
 
 import com.afterroot.gradle.readProperties
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
