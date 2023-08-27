@@ -50,7 +50,11 @@ fun Profile(onSignOut: () -> Unit = {}, onEditProfile: () -> Unit) {
 }
 
 @Composable
-internal fun Profile(viewModel: ProfileViewModel, onSignOut: () -> Unit = {}, onEditProfile: () -> Unit) {
+internal fun Profile(
+    viewModel: ProfileViewModel,
+    onSignOut: () -> Unit = {},
+    onEditProfile: () -> Unit
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     Profile(viewModel = viewModel) { action ->
@@ -62,12 +66,16 @@ internal fun Profile(viewModel: ProfileViewModel, onSignOut: () -> Unit = {}, on
                         Timber.d("Profile: SignOutState: $signOutState")
                         when (signOutState) {
                             is State.Failed -> {
-                                val showMessage = ProfileActions.ShowMessage(UiMessage("Failed Signing Out."))
+                                val showMessage = ProfileActions.ShowMessage(
+                                    UiMessage("Failed Signing Out.")
+                                )
                                 viewModel.submitAction(showMessage)
                             }
 
                             is State.Success -> {
-                                val showMessage = ProfileActions.ShowMessage(UiMessage("Signed Out."))
+                                val showMessage = ProfileActions.ShowMessage(
+                                    UiMessage("Signed Out.")
+                                )
                                 viewModel.submitAction(showMessage)
                                 onSignOut()
                             }
@@ -92,7 +100,9 @@ internal fun Profile(viewModel: ProfileViewModel, onSignOut: () -> Unit = {}, on
 @Composable
 internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
     val scaffoldState = rememberScaffoldState()
-    val viewState by rememberFlowWithLifecycle(viewModel.state).collectAsState(initial = ProfileViewState.Empty)
+    val viewState by rememberFlowWithLifecycle(
+        viewModel.state
+    ).collectAsState(initial = ProfileViewState.Empty)
 
     LaunchedEffect(viewState.message) {
         viewState.message?.let { uiMessage ->

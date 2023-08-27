@@ -101,11 +101,15 @@ internal fun EditProfile(
                         Timber.d("EditProfile: SignOutState: $signOutState")
                         when (signOutState) {
                             is State.Failed -> {
-                                val showMessage = ProfileActions.ShowMessage(UiMessage("Failed Signing Out."))
+                                val showMessage = ProfileActions.ShowMessage(
+                                    UiMessage("Failed Signing Out.")
+                                )
                                 viewModel.submitAction(showMessage)
                             }
                             is State.Success -> {
-                                val showMessage = ProfileActions.ShowMessage(UiMessage("Signed Out."))
+                                val showMessage = ProfileActions.ShowMessage(
+                                    UiMessage("Signed Out.")
+                                )
                                 viewModel.submitAction(showMessage)
                                 onSignOut()
                             }
@@ -125,9 +129,15 @@ internal fun EditProfile(
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = false, actions: (ProfileActions) -> Unit) {
+internal fun EditProfile(
+    viewModel: ProfileViewModel,
+    standalone: Boolean = false,
+    actions: (ProfileActions) -> Unit
+) {
     val profileState = viewModel.profile.collectAsState()
-    val viewState by rememberFlowWithLifecycle(viewModel.state).collectAsState(initial = ProfileViewState.Empty)
+    val viewState by rememberFlowWithLifecycle(
+        viewModel.state
+    ).collectAsState(initial = ProfileViewState.Empty)
     val enteredState = remember { mutableStateOf(LocalUser()) }
     val keyboardController = LocalSoftwareKeyboardController.current
     // val networkUser = remember { mutableStateOf(NetworkUser()) }
@@ -163,7 +173,10 @@ internal fun EditProfile(viewModel: ProfileViewModel, standalone: Boolean = fals
                                     actions(ProfileActions.SignOut)
                                 }
                             ) {
-                                Icon(imageVector = Icons.Rounded.Logout, contentDescription = "Back")
+                                Icon(
+                                    imageVector = Icons.Rounded.Logout,
+                                    contentDescription = "Back"
+                                )
                             }
                         }
                     },
@@ -318,7 +331,9 @@ fun UserProfile(
             content(localUser)
         }
         is State.Failed -> {
-            profileViewModel.submitAction(ProfileActions.SaveProfile(profileViewModel.firebaseUtils.auth.getLocalUser()))
+            profileViewModel.submitAction(
+                ProfileActions.SaveProfile(profileViewModel.firebaseUtils.auth.getLocalUser())
+            )
         }
     }
 }

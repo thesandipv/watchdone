@@ -21,8 +21,8 @@ import com.afterroot.tmdbapi.model.RequestBodyToken
 import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.watchdone.helpers.Deeplink
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(

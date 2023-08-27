@@ -23,8 +23,8 @@ import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.core.MovieResultsPage
 import info.movito.themoviedbapi.model.providers.ProviderResults
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 @Deprecated("Use ObserveMovieCredits")
 class MovieCreditsInteractor @Inject constructor(private val movieRepository: MovieRepository) :

@@ -30,8 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import com.afterroot.ui.common.compose.components.LocalSettings
 import com.afterroot.utils.getMaterialColor
-import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.resources.R as CommonR
+import com.afterroot.watchdone.settings.Settings
 import com.google.android.material.R as MaterialR
 
 @Composable
@@ -46,29 +46,47 @@ fun Theme(context: Context, settings: Settings, content: @Composable () -> Unit)
         ColorScheme(
             primary = Color(context.getMaterialColor(MaterialR.attr.colorPrimary)),
             onPrimary = Color(context.getMaterialColor(MaterialR.attr.colorOnPrimary)),
-            primaryContainer = Color(context.getMaterialColor(MaterialR.attr.colorPrimaryContainer)),
-            onPrimaryContainer = Color(context.getMaterialColor(MaterialR.attr.colorOnPrimaryContainer)),
+            primaryContainer = Color(
+                context.getMaterialColor(MaterialR.attr.colorPrimaryContainer)
+            ),
+            onPrimaryContainer = Color(
+                context.getMaterialColor(MaterialR.attr.colorOnPrimaryContainer)
+            ),
             inversePrimary = Color(context.getMaterialColor(MaterialR.attr.colorPrimaryInverse)),
             secondary = Color(context.getMaterialColor(MaterialR.attr.colorSecondary)),
             onSecondary = Color(context.getMaterialColor(MaterialR.attr.colorOnSecondary)),
-            secondaryContainer = Color(context.getMaterialColor(MaterialR.attr.colorSecondaryContainer)),
-            onSecondaryContainer = Color(context.getMaterialColor(MaterialR.attr.colorOnSecondaryContainer)),
+            secondaryContainer = Color(
+                context.getMaterialColor(MaterialR.attr.colorSecondaryContainer)
+            ),
+            onSecondaryContainer = Color(
+                context.getMaterialColor(MaterialR.attr.colorOnSecondaryContainer)
+            ),
             tertiary = Color(context.getMaterialColor(MaterialR.attr.colorTertiary)),
             onTertiary = Color(context.getMaterialColor(MaterialR.attr.colorOnTertiary)),
-            tertiaryContainer = Color(context.getMaterialColor(MaterialR.attr.colorTertiaryContainer)),
-            onTertiaryContainer = Color(context.getMaterialColor(MaterialR.attr.colorOnTertiaryContainer)),
+            tertiaryContainer = Color(
+                context.getMaterialColor(MaterialR.attr.colorTertiaryContainer)
+            ),
+            onTertiaryContainer = Color(
+                context.getMaterialColor(MaterialR.attr.colorOnTertiaryContainer)
+            ),
             background = background,
             onBackground = Color(context.getMaterialColor(MaterialR.attr.colorOnBackground)),
             surface = Color(context.getMaterialColor(MaterialR.attr.colorSurface)),
             onSurface = Color(context.getMaterialColor(MaterialR.attr.colorOnSurface)),
             surfaceVariant = Color(context.getMaterialColor(MaterialR.attr.colorSurfaceVariant)),
-            onSurfaceVariant = Color(context.getMaterialColor(MaterialR.attr.colorOnSurfaceVariant)),
+            onSurfaceVariant = Color(
+                context.getMaterialColor(MaterialR.attr.colorOnSurfaceVariant)
+            ),
             inverseSurface = Color(context.getMaterialColor(MaterialR.attr.colorSurfaceInverse)),
-            inverseOnSurface = Color(context.getMaterialColor(MaterialR.attr.colorOnSurfaceInverse)),
+            inverseOnSurface = Color(
+                context.getMaterialColor(MaterialR.attr.colorOnSurfaceInverse)
+            ),
             error = Color(context.getMaterialColor(MaterialR.attr.colorError)),
             onError = Color(context.getMaterialColor(MaterialR.attr.colorOnError)),
             errorContainer = Color(context.getMaterialColor(MaterialR.attr.colorErrorContainer)),
-            onErrorContainer = Color(context.getMaterialColor(MaterialR.attr.colorOnErrorContainer)),
+            onErrorContainer = Color(
+                context.getMaterialColor(MaterialR.attr.colorOnErrorContainer)
+            ),
             outline = Color(context.getMaterialColor(MaterialR.attr.colorOutline)),
             outlineVariant = Color(context.getMaterialColor(MaterialR.attr.colorOutlineVariant)),
             surfaceTint = Color(context.getMaterialColor(MaterialR.attr.colorPrimary)),

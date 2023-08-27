@@ -68,6 +68,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -102,10 +103,10 @@ import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.model.WatchStateValues
+import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
 import info.movito.themoviedbapi.model.Multi
-import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun Watchlist(
@@ -134,7 +135,11 @@ fun Watchlist(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 private fun Watchlist(
     state: WatchlistState,
@@ -233,8 +238,14 @@ private fun Watchlist(
                                 MediaTypeFilter(
                                     modifier = Modifier,
                                     preSelect = when (state.filters.mediaType) {
-                                        Multi.MediaType.MOVIE -> stringResource(id = CommonR.string.text_search_movies)
-                                        Multi.MediaType.TV_SERIES -> stringResource(id = CommonR.string.text_search_tv)
+                                        Multi.MediaType.MOVIE -> stringResource(
+                                            id = CommonR.string.text_search_movies
+                                        )
+
+                                        Multi.MediaType.TV_SERIES -> stringResource(
+                                            id = CommonR.string.text_search_tv
+                                        )
+
                                         else -> null
                                     }
                                 ) { index, _, selectedList ->
@@ -244,9 +255,15 @@ private fun Watchlist(
                                     }
 
                                     if (index == 0) { // Movie
-                                        filter(state.filters.copy(mediaType = Multi.MediaType.MOVIE))
+                                        filter(
+                                            state.filters.copy(mediaType = Multi.MediaType.MOVIE)
+                                        )
                                     } else { // TV
-                                        filter(state.filters.copy(mediaType = Multi.MediaType.TV_SERIES))
+                                        filter(
+                                            state.filters.copy(
+                                                mediaType = Multi.MediaType.TV_SERIES
+                                            )
+                                        )
                                     }
                                 }
 
@@ -255,9 +272,18 @@ private fun Watchlist(
                                 FilterChips(
                                     modifier = Modifier,
                                     preSelect = when (state.filters.watchState) {
-                                        WatchStateValues.WATCHED -> stringResource(id = CommonR.string.watch_state_watched)
-                                        WatchStateValues.PENDING -> stringResource(id = CommonR.string.watch_state_pending)
-                                        WatchStateValues.STARTED -> stringResource(id = CommonR.string.watch_state_started)
+                                        WatchStateValues.WATCHED -> stringResource(
+                                            id = CommonR.string.watch_state_watched
+                                        )
+
+                                        WatchStateValues.PENDING -> stringResource(
+                                            id = CommonR.string.watch_state_pending
+                                        )
+
+                                        WatchStateValues.STARTED -> stringResource(
+                                            id = CommonR.string.watch_state_started
+                                        )
+
                                         else -> null
                                     }
                                 ) { _, selectedList ->
@@ -265,7 +291,11 @@ private fun Watchlist(
                                         filter(state.filters.copy(watchState = null))
                                         return@FilterChips
                                     }
-                                    filter(state.filters.copy(watchState = WatchStateValues.values()[selectedList[0]]))
+                                    filter(
+                                        state.filters.copy(
+                                            watchState = WatchStateValues.values()[selectedList[0]]
+                                        )
+                                    )
                                 }
                             }
                         }
@@ -362,7 +392,9 @@ fun WatchlistItem(
             poster?.let {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(LocalTMDbBaseUrl.current + LocalPosterSize.current + poster).crossfade(true).build(),
+                        .data(
+                            LocalTMDbBaseUrl.current + LocalPosterSize.current + poster
+                        ).crossfade(true).build(),
                     contentDescription = title,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()
@@ -382,11 +414,16 @@ fun WatchlistItem(
                     .padding(all = 8.dp)
                     .matchParentSize()
             ) {
-                Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     if (mediaType == Multi.MediaType.MOVIE) {
                         Icon(
                             imageVector = Icons.Rounded.Movie,
-                            contentDescription = stringResource(id = CommonR.string.text_search_movies),
+                            contentDescription = stringResource(
+                                id = CommonR.string.text_search_movies
+                            ),
                             modifier = Modifier.align(Alignment.CenterVertically),
                             tint = Color.White
                         )
@@ -417,7 +454,10 @@ fun WatchlistItem(
                             Text(text = it, softWrap = false, overflow = TextOverflow.Ellipsis)
                         }
                     }
-                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         releaseDate?.let {
                             ProvideTextStyle(value = ubuntuTypography.bodySmall) {
                                 Text(text = it, modifier = Modifier.align(Alignment.Bottom))
@@ -452,7 +492,7 @@ private fun FilterChips(
             stringResource(id = CommonR.string.watch_state_pending),
             stringResource(id = CommonR.string.watch_state_started)
         ),
-        preSelectItem = preSelect,
+        preSelectItem = remember { preSelect },
         onSelectedChanged = { index, _, _, _, selectedList ->
             onSelectionChanged(index, selectedList)
         },
@@ -479,7 +519,9 @@ private fun FilterChips(
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
-                            contentDescription = stringResource(id = CommonR.string.content_desc_clear_filter),
+                            contentDescription = stringResource(
+                                id = CommonR.string.content_desc_clear_filter
+                            ),
                             modifier = Modifier.size(FilterChipDefaults.IconSize),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
@@ -533,7 +575,9 @@ fun MediaTypeFilter(
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
-                            contentDescription = stringResource(id = CommonR.string.content_desc_clear_filter),
+                            contentDescription = stringResource(
+                                id = CommonR.string.content_desc_clear_filter
+                            ),
                             modifier = Modifier.size(FilterChipDefaults.IconSize),
                             tint = MaterialTheme.colorScheme.onSurface
                         )

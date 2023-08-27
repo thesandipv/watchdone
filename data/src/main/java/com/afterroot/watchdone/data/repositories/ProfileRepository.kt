@@ -24,11 +24,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.messaging.FirebaseMessaging
+import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
     private val firestore: FirebaseFirestore,

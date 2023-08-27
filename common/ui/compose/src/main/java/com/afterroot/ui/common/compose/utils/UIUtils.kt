@@ -34,6 +34,11 @@ fun CenteredRow(modifier: Modifier = Modifier, content: @Composable (RowScope) -
 fun Modifier.bottomNavigationPadding() = this.padding(bottom = 56.dp)
 
 fun Modifier.sidePadding(padding: Dp = 16.dp, applyBottom: Boolean = false) =
-    padding(start = padding, top = padding, end = padding, bottom = if (applyBottom) padding else 0.dp)
+    padding(
+        start = padding,
+        top = padding,
+        end = padding,
+        bottom = if (applyBottom) padding else 0.dp
+    )
 
 val TopBarWindowInsets = WindowInsets(top = 0)

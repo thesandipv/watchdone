@@ -89,7 +89,7 @@ android {
         "/*.properties",
         "fabric/*.properties",
         "META-INF/*.properties",
-        "META-INF/LICENSE*.md"
+        "META-INF/LICENSE*.md",
     )
 }
 

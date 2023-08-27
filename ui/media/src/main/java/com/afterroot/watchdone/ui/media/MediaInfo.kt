@@ -80,7 +80,9 @@ internal fun MediaInfo(
 ) {
     val viewState by viewModel.state.collectAsState()
     if (viewState.mediaType == Multi.MediaType.MOVIE) {
-        val recommended = viewModel.getRecommendedMovies(viewState.mediaId).collectAsLazyPagingItems()
+        val recommended = viewModel.getRecommendedMovies(
+            viewState.mediaId
+        ).collectAsLazyPagingItems()
         MediaInfo(
             viewState = viewState,
             recommended = recommended,
@@ -92,7 +94,9 @@ internal fun MediaInfo(
             navigateUp = navigateUp
         )
     } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
-        val recommended = viewModel.getRecommendedShows(viewState.mediaId).collectAsLazyPagingItems()
+        val recommended = viewModel.getRecommendedShows(
+            viewState.mediaId
+        ).collectAsLazyPagingItems()
         MediaInfo(
             viewState = viewState,
             recommended = recommended,
@@ -215,17 +219,9 @@ internal fun <T : Multi> MediaInfoContent(
         item {
             Backdrop(
                 backdropPath = when (viewState.mediaType) {
-                    Multi.MediaType.MOVIE -> {
-                        viewState.movie.backdropPath
-                    }
-
-                    Multi.MediaType.TV_SERIES -> {
-                        viewState.tv.backdropPath
-                    }
-
-                    else -> {
-                        null
-                    }
+                    Multi.MediaType.MOVIE -> viewState.movie.backdropPath
+                    Multi.MediaType.TV_SERIES -> viewState.tv.backdropPath
+                    else -> null
                 },
                 modifier = Modifier
                     .padding(horizontal = bodyMargin, vertical = gutter)
@@ -252,7 +248,7 @@ internal fun <T : Multi> MediaInfoContent(
                 Seasons(
                     tv = viewState.tv,
                     season = viewState.seasonInfo,
-                    watchedEpisodes = viewState.media.watchStatus,
+                    watchedEpisodes = viewState.media.watched,
                     onSeasonSelected = onSeasonSelected,
                     onWatchClicked = onEpisodeWatchAction
                 )

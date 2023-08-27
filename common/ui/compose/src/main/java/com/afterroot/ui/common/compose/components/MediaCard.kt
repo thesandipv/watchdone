@@ -74,12 +74,22 @@ fun <T : Multi> PosterCard(
 
 @Composable
 fun MovieCard(movie: Movie, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    BasePosterCard(title = movie.title, posterPath = movie.posterPath, modifier = modifier, onClick = onClick)
+    BasePosterCard(
+        title = movie.title,
+        posterPath = movie.posterPath,
+        modifier = modifier,
+        onClick = onClick
+    )
 }
 
 @Composable
 fun TVCard(tv: TV, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    BasePosterCard(title = tv.name, posterPath = tv.posterPath, modifier = modifier, onClick = onClick)
+    BasePosterCard(
+        title = tv.name,
+        posterPath = tv.posterPath,
+        modifier = modifier,
+        onClick = onClick
+    )
 }
 
 @Composable
@@ -106,7 +116,9 @@ fun BasePosterCard(
             if (posterPath != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(LocalTMDbBaseUrl.current + LocalPosterSize.current + posterPath).crossfade(true).build(),
+                        .data(
+                            LocalTMDbBaseUrl.current + LocalPosterSize.current + posterPath
+                        ).crossfade(true).build(),
                     contentDescription = title,
                     modifier = Modifier.matchParentSize(),
                     contentScale = ContentScale.Crop
@@ -139,7 +151,9 @@ fun Backdrop(
             if (backdropPath != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(LocalTMDbBaseUrl.current + LocalBackdropSize.current + backdropPath).crossfade(true).build(),
+                        .data(
+                            LocalTMDbBaseUrl.current + LocalBackdropSize.current + backdropPath
+                        ).crossfade(true).build(),
                     contentDescription = title,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

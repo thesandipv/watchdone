@@ -34,7 +34,9 @@ class RecommendedMoviePagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         try {
             var nextPage = params.key ?: 1
-            val response = observeRecommendedMovies.executeSync(ObserveRecommendedMovies.Params(movieId, nextPage))
+            val response = observeRecommendedMovies.executeSync(
+                ObserveRecommendedMovies.Params(movieId, nextPage)
+            )
             var loadResult: LoadResult<Int, Movie>? = null
             response.collect {
                 when (it) {

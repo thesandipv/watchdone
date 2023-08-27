@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("com.afterroot.android.library")
 }

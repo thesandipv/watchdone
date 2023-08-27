@@ -21,8 +21,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.FileProvider
 import com.afterroot.watchdone.base.Constants
-import timber.log.Timber
 import java.io.File
+import timber.log.Timber
 
 private fun createInstagramShareIntent(
     context: Context,
@@ -41,7 +41,11 @@ private fun createInstagramShareIntent(
 
     backgroundAssetName?.let {
         val backgroundAssetUri =
-            FileProvider.getUriForFile(context, Constants.IG_SHARE_PROVIDER, File(context.cacheDir, it))
+            FileProvider.getUriForFile(
+                context,
+                Constants.IG_SHARE_PROVIDER,
+                File(context.cacheDir, it)
+            )
         Timber.d("createInstagramShareIntent: URI $backgroundAssetUri")
         shareIntent.apply {
             type = Constants.MIME_TYPE_JPEG
@@ -50,7 +54,11 @@ private fun createInstagramShareIntent(
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
 
-        context.grantUriPermission(Constants.IG_PACKAGE_NAME, backgroundAssetUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.grantUriPermission(
+            Constants.IG_PACKAGE_NAME,
+            backgroundAssetUri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
     }
 
     shareIntent.apply {
@@ -91,7 +99,11 @@ private fun createShareIntent(
         throw exception
     }
 
-    val uri = FileProvider.getUriForFile(context, Constants.IG_SHARE_PROVIDER, File(context.cacheDir, "$mediaId.jpg"))
+    val uri = FileProvider.getUriForFile(
+        context,
+        Constants.IG_SHARE_PROVIDER,
+        File(context.cacheDir, "$mediaId.jpg")
+    )
     shareIntent.apply {
         type = Constants.MIME_TYPE_JPEG
         putExtra(Intent.EXTRA_STREAM, uri)

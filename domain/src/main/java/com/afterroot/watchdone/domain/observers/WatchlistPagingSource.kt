@@ -32,6 +32,8 @@ import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
+typealias ExtendedQuery = Query.() -> Query
+
 class WatchlistPagingSource(
     private val firestore: FirebaseFirestore,
     private val settings: Settings,
@@ -44,50 +46,54 @@ class WatchlistPagingSource(
 
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Multi> {
         return try {
-            val baseQuery = firestore.collectionWatchdone(id = firebaseUtils.uid!!, settings.isUseProdDb)
+            val baseQuery = firestore.collectionWatchdone(
+                id = firebaseUtils.uid!!,
+                settings.isUseProdDb
+            )
                 .document(Collection.WATCHLIST)
                 .collection(Collection.ITEMS)
 
-            val orderBy: Query.() -> Query = {
-                orderBy(Field.RELEASE_DATE, settings.queryDirection)
-                /*when (settings.orderBy) {
-                    Field.TITLE -> orderBy(Field.TITLE, Query.Direction.ASCENDING)
-                    Field.YEAR -> orderBy(Field.YEAR, Query.Direction.DESCENDING)
-                    Field.RATING -> orderBy(Field.RATING, Query.Direction.DESCENDING)
-                    Field.RELEASE_DATE -> orderBy(Field.RELEASE_DATE, Query.Direction.DESCENDING)
-                    Field.LAST_WATCHED -> orderBy(Field.LAST_WATCHED, Query.Direction.DESCENDING)
-                    else -> orderBy(Field.TITLE, Query.Direction.ASCENDING)
-                }*/
+            val orderBy: ExtendedQuery = {
+                val defaultOrder: ExtendedQuery = {
+                    orderBy(
+                        Field.RELEASE_DATE,
+                        settings.queryDirection
+                    )
+                }
+                when (filters.watchState) {
+                    WatchStateValues.STARTED -> orderBy(Field.WATCHED_EPISODES).defaultOrder()
+                    else -> defaultOrder()
+                }
             }
 
-            val filterBy: Query.() -> Query = {
-                val mediaTypeFilter: Query.() -> Query = {
+            val filterBy: ExtendedQuery = {
+                val mediaTypeFilter: ExtendedQuery = {
                     when (filters.mediaType) {
-                        Multi.MediaType.MOVIE -> whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.MOVIE.name)
-                        Multi.MediaType.TV_SERIES -> whereEqualTo(Field.MEDIA_TYPE, Multi.MediaType.TV_SERIES.name)
+                        Multi.MediaType.MOVIE -> whereEqualTo(
+                            Field.MEDIA_TYPE,
+                            Multi.MediaType.MOVIE.name
+                        )
+                        Multi.MediaType.TV_SERIES -> whereEqualTo(
+                            Field.MEDIA_TYPE,
+                            Multi.MediaType.TV_SERIES.name
+                        )
                         else -> this
                     }
                 }
 
-                val statusFilter: Query.() -> Query = {
+                val statusFilter: ExtendedQuery = {
                     when (filters.watchState) {
                         WatchStateValues.WATCHED -> whereEqualTo(Field.IS_WATCHED, true)
                         WatchStateValues.PENDING -> whereIn(Field.IS_WATCHED, listOf(false, null))
+                        WatchStateValues.STARTED -> whereNotEqualTo(
+                            Field.WATCHED_EPISODES,
+                            emptyList<String>()
+                        )
                         else -> this
                     }
                 }
 
                 mediaTypeFilter().statusFilter()
-                /*
-                                when (settings.filterBy) {
-                                    Field.TITLE -> whereEqualTo(Field.TITLE, true)
-                                    Field.YEAR -> whereEqualTo(Field.YEAR, true)
-                                    Field.RATING -> whereEqualTo(Field.RATING, true)
-                                    Field.RELEASE_DATE -> whereEqualTo(Field.RELEASE_DATE, true)
-                                    Field.LAST_WATCHED -> whereEqualTo(Field.LAST_WATCHED, true)
-                                    else -> whereEqualTo(Field.TITLE, true)
-                                }
-                */
             }
 
             var currentPageSource = Source.CACHE
@@ -113,7 +119,9 @@ class WatchlistPagingSource(
             if (currentPage.isEmpty && currentPageSource == Source.CACHE) {
                 Timber.d("load: Cache is empty. Getting data from Server.")
                 currentPage = params.key ?: baseQuery.orderBy().filterBy().limit(20).get().await()
-                Timber.d("load: Data from server: Empty: ${currentPage.isEmpty}, Size: ${currentPage.documents.size}")
+                Timber.d(
+                    "load: Data from server: Empty: ${currentPage.isEmpty}, Size: ${currentPage.documents.size}"
+                )
             }
 
             var nextPage: QuerySnapshot? = null

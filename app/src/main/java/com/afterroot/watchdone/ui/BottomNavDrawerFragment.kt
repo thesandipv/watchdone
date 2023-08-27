@@ -23,17 +23,17 @@ import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
+import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Named
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
-import javax.inject.Inject
-import javax.inject.Named
-import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -70,7 +70,9 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         ) { response ->
                             if (response.success) {
                                 try {
-                                    requireContext().browse(AuthRepository.getAuthVerifyUrl(response))
+                                    requireContext().browse(
+                                        AuthRepository.getAuthVerifyUrl(response)
+                                    )
                                     // dialog.dismiss()
                                     dismiss()
                                 } catch (e: Exception) {

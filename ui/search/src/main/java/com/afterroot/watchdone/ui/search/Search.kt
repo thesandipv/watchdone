@@ -171,11 +171,19 @@ internal fun Search(
         }
     }, modifier = Modifier.fillMaxSize()) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-            AnimatedVisibility(visible = state.isLoading && !state.empty, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(
+                visible = state.isLoading && !state.empty,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-            AnimatedVisibility(visible = !state.isLoading || state.empty, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(
+                visible = !state.isLoading || state.empty,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(3),
@@ -236,7 +244,11 @@ internal fun Search(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchBar(prefill: String = "", modifier: Modifier = Modifier, onChange: (String) -> Unit = {}) {
+fun SearchBar(
+    prefill: String = "",
+    modifier: Modifier = Modifier,
+    onChange: (String) -> Unit = {}
+) {
     Surface(modifier = modifier) {
         SearchTextInput(
             modifier = Modifier,

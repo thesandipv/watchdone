@@ -19,8 +19,8 @@ import com.afterroot.data.model.NetworkUser
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.data.repositories.ProfileRepository
 import com.afterroot.watchdone.utils.State
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class GetProfile @Inject constructor(private val profileRepository: ProfileRepository) :
     ResultInteractor<GetProfile.Params, Flow<State<NetworkUser>>>() {

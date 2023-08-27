@@ -49,7 +49,9 @@ fun <T : Multi> Carousel(
             Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
                 TextButton(
                     onClick = onMoreClick,
-                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.secondary
+                    ),
                     modifier = Modifier.alignBy(FirstBaseline)
                 ) {
                     Text(text = "More")

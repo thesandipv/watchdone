@@ -66,7 +66,11 @@ fun AppNavigation(
     settingsAction: () -> Unit,
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
 ) {
-    NavHost(navController = navController, startDestination = RootScreen.Watchlist.route, modifier = modifier) {
+    NavHost(
+        navController = navController,
+        startDestination = RootScreen.Watchlist.route,
+        modifier = modifier
+    ) {
         addWatchlistRoot(navController, onWatchProviderClick, settingsAction, shareToIG)
         addDiscoverRoot(navController)
         addSearchRoot(navController)
@@ -85,7 +89,12 @@ private fun NavGraphBuilder.addWatchlistRoot(
         startDestination = Screen.Watchlist.createRoute(RootScreen.Watchlist)
     ) {
         addWatchlist(navController, RootScreen.Watchlist, settingsAction)
-        addMediaInfo(navController, RootScreen.Watchlist, onWatchProviderClick = onWatchProviderClick, shareToIG = shareToIG)
+        addMediaInfo(
+            navController,
+            RootScreen.Watchlist,
+            onWatchProviderClick = onWatchProviderClick,
+            shareToIG = shareToIG
+        )
     }
 }
 
@@ -131,9 +140,13 @@ private fun NavGraphBuilder.addMediaInfo(
             },
             onRecommendedClick = {
                 if (it is Movie) {
-                    navController.navigate(Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id))
+                    navController.navigate(
+                        Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id)
+                    )
                 } else if (it is TV) {
-                    navController.navigate(Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id))
+                    navController.navigate(
+                        Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id)
+                    )
                 }
             },
             onWatchProviderClick = onWatchProviderClick,
@@ -153,7 +166,10 @@ private fun NavGraphBuilder.addDiscoverRoot(navController: NavHostController) {
 
 private fun NavGraphBuilder.addDiscover(navController: NavHostController, rootScreen: RootScreen) {
     composable(route = Screen.Discover.createRoute(rootScreen)) {
-        Discover(discoverViewModel = hiltViewModel(), itemSelectedCallback = itemSelectedCallback(navController))
+        Discover(
+            discoverViewModel = hiltViewModel(),
+            itemSelectedCallback = itemSelectedCallback(navController)
+        )
     }
 }
 
@@ -175,7 +191,10 @@ private fun NavGraphBuilder.addSearch(navController: NavHostController, rootScre
             }
         )
     ) {
-        Search(viewModel = hiltViewModel(), itemSelectedCallback = itemSelectedCallback(navController))
+        Search(
+            viewModel = hiltViewModel(),
+            itemSelectedCallback = itemSelectedCallback(navController)
+        )
     }
 }
 

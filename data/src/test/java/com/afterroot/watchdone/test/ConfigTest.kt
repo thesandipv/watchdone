@@ -16,11 +16,11 @@ package com.afterroot.watchdone.test
 
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import javax.inject.Inject
 
 @HiltAndroidTest
 class ConfigTest : DataTest() {

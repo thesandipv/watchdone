@@ -69,11 +69,11 @@ import app.tivi.common.compose.ui.copy
 import com.afterroot.ui.common.compose.components.navigationBarEnterAlwaysScrollBehavior
 import com.afterroot.ui.common.compose.components.settleAppBar
 import com.afterroot.ui.common.compose.navigation.RootScreen
+import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.navigation.AppNavigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.afterroot.watchdone.resources.R as CommonR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
 @Composable
@@ -173,7 +173,8 @@ fun HomeNavigationBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior?
 ) {
-    val heightOffsetLimit = with(LocalDensity.current) { -(80.dp.toPx() + WindowInsets.navigationBars.getBottom(this)) }
+    val heightOffsetLimit =
+        with(LocalDensity.current) { -(80.dp.toPx() + WindowInsets.navigationBars.getBottom(this)) }
     SideEffect {
         if (scrollBehavior?.state?.heightOffsetLimit != heightOffsetLimit) {
             scrollBehavior?.state?.heightOffsetLimit = heightOffsetLimit
@@ -213,7 +214,12 @@ fun HomeNavigationBar(
                 selected = selectedRootScreen == item.screen,
                 onClick = { onNavigationSelected(item.screen) },
                 label = { Text(text = stringResource(id = item.labelResId)) },
-                icon = { HomeNavigationItemIcon(item = item, selected = selectedRootScreen == item.screen) }
+                icon = {
+                    HomeNavigationItemIcon(
+                        item = item,
+                        selected = selectedRootScreen == item.screen
+                    )
+                }
             )
         }
     }
@@ -281,7 +287,11 @@ private fun HomeNavigationItemIcon(item: HomeNavigationItem, selected: Boolean) 
     }
     val selectedPainter = when (item) {
         is HomeNavigationItem.ResourceIcon -> item.selectedIconResId?.let { painterResource(it) }
-        is HomeNavigationItem.ImageVectorIcon -> item.selectedImageVector?.let { rememberVectorPainter(it) }
+        is HomeNavigationItem.ImageVectorIcon -> item.selectedImageVector?.let {
+            rememberVectorPainter(
+                it
+            )
+        }
     }
 
     if (selectedPainter != null) {

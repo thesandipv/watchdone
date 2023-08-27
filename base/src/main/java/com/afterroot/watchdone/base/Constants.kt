@@ -39,6 +39,7 @@ object Field {
     const val MEDIA_TYPE_TV = "TV_SERIES"
     const val TIMESTAMP = "timestamp"
     const val WATCH_STATUS = "watchStatus"
+    const val WATCHED_EPISODES = "watched"
 }
 
 object Constants {

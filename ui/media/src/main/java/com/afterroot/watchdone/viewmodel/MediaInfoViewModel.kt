@@ -45,6 +45,7 @@ import com.afterroot.watchdone.ui.media.MediaInfoViewState
 import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Multi
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -55,7 +56,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class MediaInfoViewModel @Inject constructor(
@@ -192,11 +192,15 @@ class MediaInfoViewModel @Inject constructor(
         getMediaInfo()
     }
 
-    fun getRecommendedShows(mediaId: Int) = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+    fun getRecommendedShows(mediaId: Int) = Pager(
+        PagingConfig(pageSize = 20, initialLoadSize = 20)
+    ) {
         RecommendedShowPagingSource(mediaId, observeRecommendedShows)
     }.flow.cachedIn(viewModelScope)
 
-    fun getRecommendedMovies(mediaId: Int) = Pager(PagingConfig(pageSize = 20, initialLoadSize = 20)) {
+    fun getRecommendedMovies(mediaId: Int) = Pager(
+        PagingConfig(pageSize = 20, initialLoadSize = 20)
+    ) {
         RecommendedMoviePagingSource(mediaId, observeRecommendedMovies)
     }.flow.cachedIn(viewModelScope)
 
@@ -257,7 +261,9 @@ class MediaInfoViewModel @Inject constructor(
 
     private fun getMediaInfo() {
         viewModelScope.launch {
-            mediaInfoInteractor.executeSync(MediaInfoInteractor.Params(mediaId.value)).collectLatest { result ->
+            mediaInfoInteractor.executeSync(
+                MediaInfoInteractor.Params(mediaId.value)
+            ).collectLatest { result ->
                 result.whenSuccess {
                     dbMedia.value = it
                     isWatched.value = it.isWatched ?: false

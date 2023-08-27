@@ -34,7 +34,9 @@ class RecommendedShowPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TV> {
         try {
             var nextPage = params.key ?: 1
-            val response = observeRecommendedShows.executeSync(ObserveRecommendedShows.Params(showId, nextPage))
+            val response = observeRecommendedShows.executeSync(
+                ObserveRecommendedShows.Params(showId, nextPage)
+            )
             var loadResult: LoadResult<Int, TV>? = null
             response.collect {
                 when (it) {

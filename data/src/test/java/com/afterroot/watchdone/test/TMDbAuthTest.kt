@@ -17,11 +17,11 @@ package com.afterroot.watchdone.test
 import com.afterroot.tmdbapi.model.RequestBodyToken
 import com.afterroot.tmdbapi.repository.AuthRepository
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import javax.inject.Inject
 
 @HiltAndroidTest
 class TMDbAuthTest : DataTest() {
@@ -32,7 +32,9 @@ class TMDbAuthTest : DataTest() {
     fun `Verify request token valid`() {
         launch {
             val token =
-                authRepository.createRequestToken(RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch")).requestToken
+                authRepository.createRequestToken(
+                    RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch")
+                ).requestToken
             Assert.assertNotNull("Token is Null", token)
         }
     }

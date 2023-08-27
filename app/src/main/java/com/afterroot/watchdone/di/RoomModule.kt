@@ -32,7 +32,11 @@ object RoomModule {
     @Provides
     @Singleton
     fun provideMyDatabase(@ApplicationContext context: Context): MyDatabase =
-        Room.databaseBuilder(context, MyDatabase::class.java, "watchdone-db").fallbackToDestructiveMigration().build()
+        Room.databaseBuilder(
+            context,
+            MyDatabase::class.java,
+            "watchdone-db"
+        ).fallbackToDestructiveMigration().build()
 
     @Provides
     @Singleton

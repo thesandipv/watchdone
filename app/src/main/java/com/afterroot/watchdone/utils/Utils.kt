@@ -30,12 +30,12 @@ import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.settings.Settings
 import com.google.firebase.analytics.FirebaseAnalytics
+import java.io.File
+import java.io.FileOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
 
 suspend fun Context.shareToInstagram(poster: String, mediaId: Int, settings: Settings) {
     withContext(Dispatchers.IO) {

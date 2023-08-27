@@ -15,7 +15,7 @@
 
 import com.afterroot.gradle.readProperties
 
-@Suppress("DSL_SCOPE_VIOLATION")
+
 plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
@@ -38,7 +38,7 @@ android {
         buildConfigField(
             "String",
             "TMDB_BEARER_TOKEN",
-            tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN")
+            tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN"),
         )
         buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
     }

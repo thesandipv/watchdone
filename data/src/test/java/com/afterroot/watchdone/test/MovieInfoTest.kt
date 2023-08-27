@@ -19,11 +19,11 @@ import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
 import dagger.hilt.android.testing.HiltAndroidTest
 import info.movito.themoviedbapi.model.ArtworkType
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import javax.inject.Inject
 
 @HiltAndroidTest
 class MovieInfoTest : DataTest() {
@@ -42,7 +42,11 @@ class MovieInfoTest : DataTest() {
     @Test
     fun `Full Movie Info`() {
         launch {
-            val response = moviesRepository.getFullMovieInfo(550, MovieAppendableResponses.images, MovieAppendableResponses.videos)
+            val response = moviesRepository.getFullMovieInfo(
+                550,
+                MovieAppendableResponses.images,
+                MovieAppendableResponses.videos
+            )
             Assert.assertNotNull("Images is null", response.images(ArtworkType.POSTER))
             response.images(ArtworkType.POSTER)?.forEach {
                 println(it.toString())

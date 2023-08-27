@@ -46,7 +46,7 @@ import com.afterroot.watchdone.utils.State
 fun Seasons(
     tv: TV,
     season: State<Season>,
-    watchedEpisodes: Map<String, Boolean>,
+    watchedEpisodes: List<String>,
     onSeasonSelected: (Int) -> Unit,
     onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
 ) {
@@ -58,7 +58,11 @@ fun Seasons(
     }
 
     SeasonsChips(tv = tv, onSeasonSelected = onSeasonSelected)
-    SeasonsDetail(season = season, watchedEpisodes = watchedEpisodes, onWatchClicked = onWatchClicked)
+    SeasonsDetail(
+        season = season,
+        watchedEpisodes = watchedEpisodes,
+        onWatchClicked = onWatchClicked
+    )
 }
 
 @Composable
@@ -87,13 +91,16 @@ fun manufactureSeasonList(numberOfSeasons: Int): List<String> = mutableListOf<St
 @Composable
 fun SeasonsDetail(
     season: State<Season>,
-    watchedEpisodes: Map<String, Boolean>,
+    watchedEpisodes: List<String>,
     onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
 ) {
     val bodyMargin = Layout.bodyMargin
     val gutter = Layout.gutter
 
-    Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.animateContentSize()) {
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.animateContentSize()
+    ) {
         when (season) {
             is State.Success -> {
                 season.data.overview?.let {
@@ -111,18 +118,20 @@ fun SeasonsDetail(
                         modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
                     )
                     episodes.forEach { episode ->
-                        val watched = if (watchedEpisodes.containsKey(episode.id.toString())) {
-                            watchedEpisodes[episode.id.toString()] ?: false
-                        } else {
-                            false
-                        }
-
-                        EpisodeItem(episode = episode, isWatched = watched, onWatchClicked = onWatchClicked)
+                        val watched = watchedEpisodes.contains(episode.id.toString())
+                        EpisodeItem(
+                            episode = episode,
+                            isWatched = watched,
+                            onWatchClicked = onWatchClicked
+                        )
                     }
                 }
             }
             is State.Failed -> {
-                Text(text = "Error while loading", modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter))
+                Text(
+                    text = "Error while loading",
+                    modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+                )
             }
             is State.Loading -> {
                 EpisodeItemPlaceholder()
@@ -158,9 +167,15 @@ fun EpisodeItem(
             }
         ) {
             if (isWatched) {
-                Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Remove Episode from Watched")
+                Icon(
+                    imageVector = Icons.Rounded.Clear,
+                    contentDescription = "Remove Episode from Watched"
+                )
             } else {
-                Icon(imageVector = Icons.Rounded.Done, contentDescription = "Add Episode from Watched")
+                Icon(
+                    imageVector = Icons.Rounded.Done,
+                    contentDescription = "Add Episode from Watched"
+                )
             }
         }
     }

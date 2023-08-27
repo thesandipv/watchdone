@@ -52,7 +52,9 @@ fun <T : Multi> PagingCarousel(
                 if (onMoreClick != null) {
                     TextButton(
                         onClick = onMoreClick,
-                        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.secondary
+                        ),
                         modifier = Modifier.alignBy(FirstBaseline)
                     ) {
                         Text(text = "More")

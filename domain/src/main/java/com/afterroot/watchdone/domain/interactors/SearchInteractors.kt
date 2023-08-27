@@ -21,8 +21,8 @@ import com.afterroot.watchdone.data.repositories.SearchRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.core.MovieResultsPage
 import info.movito.themoviedbapi.model.core.TvResultsPage
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class SearchMovieInteractor @Inject constructor(private val searchRepository: SearchRepository) :
     ResultInteractor<SearchMovieInteractor.Params, Flow<State<MovieResultsPage>>>() {

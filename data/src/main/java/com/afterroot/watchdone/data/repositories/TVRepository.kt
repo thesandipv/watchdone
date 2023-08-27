@@ -26,7 +26,9 @@ class TVRepository @Inject constructor(private val tvApi: TVApi) {
 
     suspend fun season(id: Int, season: Int) = resultFlow(tvApi.getSeason(id, season).toSeason())
 
-    suspend fun episode(id: Int, season: Int, episode: Int) = resultFlow(tvApi.getEpisode(id, season, episode).toEpisode())
+    suspend fun episode(id: Int, season: Int, episode: Int) = resultFlow(
+        tvApi.getEpisode(id, season, episode).toEpisode()
+    )
 
     suspend fun credits(id: Int) = resultFlow(tvApi.getCredits(id))
 

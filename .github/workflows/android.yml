@@ -8,6 +8,7 @@ on:
       - ci*
     paths-ignore:
       - '.idea/**'
+      - '**/README.md'
   pull_request:
     branches: [ main, dev ]
 

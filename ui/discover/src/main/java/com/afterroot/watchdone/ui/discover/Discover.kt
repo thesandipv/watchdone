@@ -60,10 +60,10 @@ import com.afterroot.ui.common.compose.components.TVCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import info.movito.themoviedbapi.model.Multi
-import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun DiscoverChips(
@@ -99,7 +99,9 @@ fun Discover(
     val tvItems = discoverViewModel.discoverTV.collectAsLazyPagingItems()
 
     Discover(
-        state = viewState.copy(isLoading = movieItems.loadState.refresh is LoadState.Loading || tvItems.loadState.refresh is LoadState.Loading),
+        state = viewState.copy(
+            isLoading = movieItems.loadState.refresh is LoadState.Loading || tvItems.loadState.refresh is LoadState.Loading
+        ),
         movieItems = movieItems,
         tvItems = tvItems,
         itemSelectedCallback = itemSelectedCallback,
@@ -119,7 +121,11 @@ fun Discover(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 internal fun Discover(
     state: DiscoverViewState,
@@ -135,7 +141,11 @@ internal fun Discover(
 
     Scaffold(
         topBar = {
-            CommonAppBar(withTitle = "Discover", scrollBehavior = scrollBehavior, windowInsets = TopBarWindowInsets)
+            CommonAppBar(
+                withTitle = "Discover",
+                scrollBehavior = scrollBehavior,
+                windowInsets = TopBarWindowInsets
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
@@ -162,7 +172,10 @@ internal fun Discover(
                         .fillMaxHeight()
                 ) {
                     fullSpanItem {
-                        DiscoverChips(onMovieSelected = { onMovieChipSelected() }, onTVSelected = { onTVChipSelected() })
+                        DiscoverChips(
+                            onMovieSelected = { onMovieChipSelected() },
+                            onTVSelected = { onTVChipSelected() }
+                        )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
                         gridItems(items = movieItems, key = { it.id }) { movie ->

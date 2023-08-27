@@ -111,7 +111,13 @@ fun FilterChipGroup(
     preSelectItem: String? = null,
     selectionType: SelectionType = SelectionType.Single,
     onSelectedChanged: ((selected: String, selectedChips: List<String>) -> Unit)? = null,
-    onSelectedChangedIndexed: ((index: Int, selected: String, selectedChips: List<String>) -> Unit)? = null
+    onSelectedChangedIndexed: (
+        (
+            index: Int,
+            selected: String,
+            selectedChips: List<String>
+        ) -> Unit
+    )? = null
 ) {
     val selectedChips = remember { mutableStateListOf<String>() }
 

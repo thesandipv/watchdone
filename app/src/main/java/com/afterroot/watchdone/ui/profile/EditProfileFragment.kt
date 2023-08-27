@@ -81,7 +81,9 @@ class EditProfileFragment : Fragment() {
                     )
                 }
 */
-                Glide.with(requireContext()).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
+                Glide.with(
+                    requireContext()
+                ).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
             }
         } else {
             startActivity(Intent(this.context, SplashActivity::class.java))
