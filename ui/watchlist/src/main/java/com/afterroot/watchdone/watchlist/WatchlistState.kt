@@ -22,7 +22,7 @@ data class WatchlistState(
     val loading: Boolean = false,
     val sortAscending: Boolean = false,
     val filters: Filters = Filters.EMPTY,
-    override val message: UiMessage? = null
+    override val message: UiMessage? = null,
 ) : ViewState() {
     companion object {
         val Empty = WatchlistState()

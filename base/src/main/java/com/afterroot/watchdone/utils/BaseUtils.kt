@@ -34,7 +34,7 @@ fun getGravatarUrl(email: String) =
 fun Context.showKeyboard(view: View) {
     if (view.requestFocus()) {
         val inputMethodManager = getSystemService(
-            Context.INPUT_METHOD_SERVICE
+            Context.INPUT_METHOD_SERVICE,
         ) as InputMethodManager
         inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
@@ -42,7 +42,7 @@ fun Context.showKeyboard(view: View) {
 
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = applicationContext.getSystemService(
-        Context.INPUT_METHOD_SERVICE
+        Context.INPUT_METHOD_SERVICE,
     ) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
@@ -93,7 +93,7 @@ fun <T> whenBuildIs(debug: T, release: T): T = if (BuildConfig.DEBUG) debug else
  */
 fun <T> whenBuildIs(
     debug: () -> T,
-    release: () -> T
+    release: () -> T,
 ): T = whenBuildIs(debug.invoke(), release.invoke())
 
 /**

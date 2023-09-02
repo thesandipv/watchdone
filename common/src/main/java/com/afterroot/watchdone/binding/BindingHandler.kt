@@ -30,16 +30,16 @@ val transitionOptions = DrawableTransitionOptions.with(crossFadeFactory)
 @BindingAdapter("avatar")
 fun ImageView.setAvatar(email: String?) {
     Glide.with(
-        context
+        context,
     ).load(getGravatarUrl(email.toString())).circleCrop().transition(transitionOptions).into(this)
 }
 
 @BindingAdapter("movieDb", "settings")
 fun ImageView.setMoviePoster(movieDb: NetworkMovie?, settings: Settings?) {
     Glide.with(
-        context
+        context,
     ).load(
-        settings?.baseUrl + settings?.imageSize + movieDb?.posterPath
+        settings?.baseUrl + settings?.imageSize + movieDb?.posterPath,
     ).transition(transitionOptions)
         .into(this)
 }
@@ -47,9 +47,9 @@ fun ImageView.setMoviePoster(movieDb: NetworkMovie?, settings: Settings?) {
 @BindingAdapter("tvSeries", "settings")
 fun ImageView.setTVPoster(tvSeries: TvSeries?, settings: Settings?) {
     Glide.with(
-        context
+        context,
     ).load(
-        settings?.baseUrl + settings?.imageSize + tvSeries?.posterPath
+        settings?.baseUrl + settings?.imageSize + tvSeries?.posterPath,
     ).transition(transitionOptions)
         .into(this)
 }

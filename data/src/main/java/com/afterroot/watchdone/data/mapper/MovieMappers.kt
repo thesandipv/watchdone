@@ -62,7 +62,7 @@ fun NetworkMovie.toMovie(isWatched: Boolean = false): Movie = Movie(
     translations = translations,
     videos = videos,
     credits = credits,
-    isWatched = isWatched
+    isWatched = isWatched,
 )
 
 fun DBMedia.toMovie(): Movie = Movie(
@@ -71,7 +71,7 @@ fun DBMedia.toMovie(): Movie = Movie(
     title = title,
     isWatched = isWatched ?: false,
     posterPath = posterPath,
-    voteAverage = rating
+    voteAverage = rating,
 )
 
 fun Movie.toDBMedia() = DBMedia(
@@ -81,7 +81,7 @@ fun Movie.toDBMedia() = DBMedia(
     isWatched = isWatched,
     posterPath = posterPath,
     mediaType = Multi.MediaType.MOVIE,
-    rating = voteAverage
+    rating = voteAverage,
 )
 
 fun MovieResultsPage.toMovies(): List<Movie> = results.mapNotNull { it?.toMovie() }

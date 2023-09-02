@@ -52,7 +52,7 @@ fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     videos = getVideos(),
     keywords = getKeywords(),
     // Additional
-    isWatched = isWatched
+    isWatched = isWatched,
 )
 
 fun TV.toDBMedia() = DBMedia(
@@ -62,7 +62,7 @@ fun TV.toDBMedia() = DBMedia(
     isWatched = isWatched,
     posterPath = posterPath,
     mediaType = Multi.MediaType.TV_SERIES,
-    rating = voteAverage
+    rating = voteAverage,
 )
 
 fun DBMedia.toTV(): TV = TV(
@@ -71,7 +71,7 @@ fun DBMedia.toTV(): TV = TV(
     name = title,
     isWatched = isWatched ?: false,
     posterPath = posterPath,
-    voteAverage = rating
+    voteAverage = rating,
 )
 
 fun TvResultsPage.toTV(): List<TV> = results.mapNotNull { it?.toTV() }

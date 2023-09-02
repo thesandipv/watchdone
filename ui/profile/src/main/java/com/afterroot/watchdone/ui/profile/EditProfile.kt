@@ -78,7 +78,7 @@ import timber.log.Timber
 fun EditProfile(
     standalone: Boolean = false,
     onSignOut: () -> Unit = {},
-    onUpAction: () -> Unit = {}
+    onUpAction: () -> Unit = {},
 ) {
     EditProfile(viewModel = hiltViewModel(), standalone, onSignOut, onUpAction)
 }
@@ -88,7 +88,7 @@ internal fun EditProfile(
     viewModel: ProfileViewModel,
     standalone: Boolean = false,
     onSignOut: () -> Unit = {},
-    onUpAction: () -> Unit = {}
+    onUpAction: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -102,13 +102,13 @@ internal fun EditProfile(
                         when (signOutState) {
                             is State.Failed -> {
                                 val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Failed Signing Out.")
+                                    UiMessage("Failed Signing Out."),
                                 )
                                 viewModel.submitAction(showMessage)
                             }
                             is State.Success -> {
                                 val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Signed Out.")
+                                    UiMessage("Signed Out."),
                                 )
                                 viewModel.submitAction(showMessage)
                                 onSignOut()
@@ -132,11 +132,11 @@ internal fun EditProfile(
 internal fun EditProfile(
     viewModel: ProfileViewModel,
     standalone: Boolean = false,
-    actions: (ProfileActions) -> Unit
+    actions: (ProfileActions) -> Unit,
 ) {
     val profileState = viewModel.profile.collectAsState()
     val viewState by rememberFlowWithLifecycle(
-        viewModel.state
+        viewModel.state,
     ).collectAsState(initial = ProfileViewState.Empty)
     val enteredState = remember { mutableStateOf(LocalUser()) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -161,7 +161,7 @@ internal fun EditProfile(
         scaffoldState = scaffoldState,
         topBar = {
             Box(
-                modifier = Modifier.statusBarsPadding(standalone)
+                modifier = Modifier.statusBarsPadding(standalone),
             ) {
                 AppBar(
                     getTitle(standalone),
@@ -171,11 +171,11 @@ internal fun EditProfile(
                             IconButton(
                                 onClick = {
                                     actions(ProfileActions.SignOut)
-                                }
+                                },
                             ) {
                                 Icon(
                                     imageVector = Icons.Rounded.Logout,
-                                    contentDescription = "Back"
+                                    contentDescription = "Back",
                                 )
                             }
                         }
@@ -186,7 +186,7 @@ internal fun EditProfile(
                                 actions(ProfileActions.Up)
                             }
                         }
-                    }
+                    },
                 )
             }
         },
@@ -198,16 +198,16 @@ internal fun EditProfile(
                 onClick = {
                     enteredState.value = enteredState.value.trim()
                     actions(ProfileActions.SaveProfile(enteredState.value))
-                }
+                },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             TextField(
                 modifier = textFieldModifier,
@@ -227,8 +227,8 @@ internal fun EditProfile(
                 },
                 keyboardOptions = KeyboardOptions(autoCorrect = false, imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() }
-                )
+                    onDone = { keyboardController?.hide() },
+                ),
             )
             TextField(
                 modifier = textFieldModifier,
@@ -247,8 +247,8 @@ internal fun EditProfile(
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() }
-                )
+                    onDone = { keyboardController?.hide() },
+                ),
             )
             TextField(
                 modifier = textFieldModifier,
@@ -259,7 +259,7 @@ internal fun EditProfile(
                 },
                 enabled = false,
                 onValueChange = {
-                }
+                },
             )
         }
     }
@@ -275,7 +275,7 @@ val textFieldModifier = Modifier
 internal fun AppBar(
     title: String = getTitle(),
     actions: @Composable RowScope.() -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {}
+    navigationIcon: @Composable () -> Unit = {},
 ) {
     CommonAppBar(withTitle = title, actions = actions, navigationIcon = navigationIcon)
 }
@@ -285,12 +285,12 @@ fun UpdateProfilePrompt() {
     Column(
         modifier = Modifier
             .padding(top = 16.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         Text(
             text = "Update LocalUser Name",
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         TextField(
@@ -299,14 +299,14 @@ fun UpdateProfilePrompt() {
             modifier = Modifier.fillMaxWidth(),
             label = {
                 Text(text = "LocalUser Name")
-            }
+            },
         )
     }
 }
 
 @Composable
 fun DoWhenUserNameNotAvailable(
-    whenNotAvailable: () -> Unit
+    whenNotAvailable: () -> Unit,
 ) {
     UserProfile { profile ->
         if (profile.userName == null || !profile.isUserNameAvailable) {
@@ -319,7 +319,7 @@ fun DoWhenUserNameNotAvailable(
 fun UserProfile(
     profileViewModel: ProfileViewModel = hiltViewModel(),
     loadingContent: @Composable () -> Unit = {},
-    content: @Composable (LocalUser) -> Unit = {}
+    content: @Composable (LocalUser) -> Unit = {},
 ) {
     val profileState = profileViewModel.profile.collectAsState(State.loading())
     when (profileState.value) {
@@ -332,7 +332,7 @@ fun UserProfile(
         }
         is State.Failed -> {
             profileViewModel.submitAction(
-                ProfileActions.SaveProfile(profileViewModel.firebaseUtils.auth.getLocalUser())
+                ProfileActions.SaveProfile(profileViewModel.firebaseUtils.auth.getLocalUser()),
             )
         }
     }

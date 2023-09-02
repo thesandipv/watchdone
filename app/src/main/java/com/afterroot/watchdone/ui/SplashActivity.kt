@@ -27,18 +27,18 @@ import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Constants
-import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.material.R as MaterialR
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.jetbrains.anko.browse
+import com.afterroot.watchdone.resources.R as CommonR
+import com.google.android.material.R as MaterialR
 
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
@@ -54,17 +54,18 @@ class SplashActivity : AppCompatActivity() {
             when (
                 getPrefs().getString(
                     Constants.PREF_KEY_THEME,
-                    getString(CommonR.string.theme_device_default)
+                    getString(CommonR.string.theme_device_default),
                 )
             ) {
                 getString(
-                    CommonR.string.theme_device_default
-                ) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    CommonR.string.theme_device_default,
+                ),
+                -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 getString(CommonR.string.theme_battery) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
                 getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
                 getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
                 else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            }
+            },
         )
         super.onCreate(savedInstanceState)
     }
@@ -114,7 +115,7 @@ class SplashActivity : AppCompatActivity() {
                 .setLogo(CommonR.drawable.launch_icon)
                 .setTosAndPrivacyPolicyUrls(
                     getString(CommonR.string.url_tos),
-                    getString(CommonR.string.url_privacy_policy)
+                    getString(CommonR.string.url_privacy_policy),
                 )
                 .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
                 .setAvailableProviders(
@@ -122,11 +123,11 @@ class SplashActivity : AppCompatActivity() {
                         AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build(),
                         AuthUI.IdpConfig.GoogleBuilder()
                             .setSignInOptions(
-                                GoogleSignInOptions.Builder().requestProfile().requestEmail().requestId().build()
+                                GoogleSignInOptions.Builder().requestProfile().requestEmail().requestId().build(),
                             )
-                            .build()
-                    )
-                ).build()
+                            .build(),
+                    ),
+                ).build(),
         )
     }
 
@@ -137,7 +138,7 @@ class SplashActivity : AppCompatActivity() {
             Toast.makeText(
                 this,
                 getString(CommonR.string.msg_login_failed),
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT,
             ).show()
             tryLogin()
         }
@@ -159,7 +160,7 @@ class SplashActivity : AppCompatActivity() {
                 dialog = showNetworkDialog(state = it, positive = {
                     setUpNetworkObserver()
                 }, negative = { finish() })
-            }
+            },
         )
     }
 }

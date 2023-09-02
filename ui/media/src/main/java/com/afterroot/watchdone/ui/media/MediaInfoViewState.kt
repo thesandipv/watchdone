@@ -45,7 +45,7 @@ data class MediaInfoViewState(
     val isWatched: Boolean = false,
     val genres: List<Genre> = emptyList(),
     val watchProviders: State<ProviderResults> = State.loading(),
-    override val message: UiMessage? = null
+    override val message: UiMessage? = null,
 ) : ViewState() {
     companion object {
         val Empty = MediaInfoViewState()

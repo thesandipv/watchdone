@@ -23,7 +23,6 @@ import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
-import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -34,6 +33,7 @@ import javax.inject.Named
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -66,12 +66,12 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                     R.id.tmdb_login -> {
                         // val dialog = requireContext().showStaticProgressDialog("Loading...")
                         homeViewModel.getResponseRequestToken().observe(
-                            viewLifecycleOwner
+                            viewLifecycleOwner,
                         ) { response ->
                             if (response.success) {
                                 try {
                                     requireContext().browse(
-                                        AuthRepository.getAuthVerifyUrl(response)
+                                        AuthRepository.getAuthVerifyUrl(response),
                                     )
                                     // dialog.dismiss()
                                     dismiss()
@@ -91,7 +91,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                         requireContext().email(
                             email = "afterhasroot@gmail.com",
                             subject = "Watchdone Feedback",
-                            text = feedbackBody
+                            text = feedbackBody,
                         )
                     }
                     R.id.action_rate -> {

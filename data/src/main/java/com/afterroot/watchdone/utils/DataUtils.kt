@@ -35,7 +35,7 @@ fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versio
 
 fun <T> resultFlow(
     value: T,
-    coroutineContext: CoroutineContext = Dispatchers.IO
+    coroutineContext: CoroutineContext = Dispatchers.IO,
 ) = resultFlow(coroutineContext = coroutineContext) {
     emit(State.success(value))
 }
@@ -43,7 +43,7 @@ fun <T> resultFlow(
 fun <T> resultFlow(
     result: T,
     coroutineContext: CoroutineContext = Dispatchers.IO,
-    executeBeforeResult: suspend () -> Unit
+    executeBeforeResult: suspend () -> Unit,
 ) = resultFlow(coroutineContext = coroutineContext) {
     executeBeforeResult()
     emit(State.success(result))
@@ -51,7 +51,7 @@ fun <T> resultFlow(
 
 fun <T> resultFlow(
     coroutineContext: CoroutineContext = Dispatchers.IO,
-    block: suspend FlowCollector<State<T>>.() -> Unit
+    block: suspend FlowCollector<State<T>>.() -> Unit,
 ) = flow {
     emit(State.loading())
     block()

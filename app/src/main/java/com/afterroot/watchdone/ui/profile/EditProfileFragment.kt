@@ -82,7 +82,7 @@ class EditProfileFragment : Fragment() {
                 }
 */
                 Glide.with(
-                    requireContext()
+                    requireContext(),
                 ).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
             }
         } else {

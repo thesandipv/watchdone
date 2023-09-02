@@ -31,7 +31,7 @@ fun TvSeason.toSeason(): Season = Season(
     externalIds = externalIds,
     images = images,
     videos = getVideos(),
-    keywords = getKeywords()
+    keywords = getKeywords(),
 )
 
 fun TVSeasons.toSeasons(): Seasons = this?.map {

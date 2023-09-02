@@ -1,8 +1,8 @@
 package com.afterroot.ui.common.compose.navigation
 
 import androidx.annotation.StringRes
-import com.afterroot.watchdone.resources.R as CommonR
 import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.resources.R as CommonR
 
 sealed class RootScreen(val route: String) {
     object Watchlist : RootScreen("watchlist")

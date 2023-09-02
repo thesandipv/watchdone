@@ -53,7 +53,7 @@ fun Profile(onSignOut: () -> Unit = {}, onEditProfile: () -> Unit) {
 internal fun Profile(
     viewModel: ProfileViewModel,
     onSignOut: () -> Unit = {},
-    onEditProfile: () -> Unit
+    onEditProfile: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -67,14 +67,14 @@ internal fun Profile(
                         when (signOutState) {
                             is State.Failed -> {
                                 val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Failed Signing Out.")
+                                    UiMessage("Failed Signing Out."),
                                 )
                                 viewModel.submitAction(showMessage)
                             }
 
                             is State.Success -> {
                                 val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Signed Out.")
+                                    UiMessage("Signed Out."),
                                 )
                                 viewModel.submitAction(showMessage)
                                 onSignOut()
@@ -101,7 +101,7 @@ internal fun Profile(
 internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
     val scaffoldState = rememberScaffoldState()
     val viewState by rememberFlowWithLifecycle(
-        viewModel.state
+        viewModel.state,
     ).collectAsState(initial = ProfileViewState.Empty)
 
     LaunchedEffect(viewState.message) {
@@ -120,11 +120,11 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
                     IconButton(
                         onClick = {
                             actions(ProfileActions.SignOut)
-                        }
+                        },
                     ) {
                         Icon(imageVector = Icons.Rounded.Logout, contentDescription = "Logout")
                     }
-                }
+                },
             )
         },
         floatingActionButton = {
@@ -133,7 +133,7 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
                     .navigationBarsPadding(),
                 onClick = {
                     actions(ProfileActions.EditProfile)
-                }
+                },
             )
         },
         snackbarHost = { snackbarHostState ->
@@ -142,18 +142,18 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
                 snackbar = { snackbarData ->
                     SwipeDismissSnackbar(
                         data = snackbarData,
-                        onDismiss = { viewModel.clearMessage() }
+                        onDismiss = { viewModel.clearMessage() },
                     )
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(paddingValues = paddingValues)
+                .padding(paddingValues = paddingValues),
         ) {
         }
     }

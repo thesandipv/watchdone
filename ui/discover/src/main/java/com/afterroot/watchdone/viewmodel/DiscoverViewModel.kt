@@ -44,7 +44,7 @@ class DiscoverViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
     val settings: Settings,
     private val getDiscoverMovies: GetDiscoverMovies,
-    private val getDiscoverTV: GetDiscoverTV
+    private val getDiscoverTV: GetDiscoverTV,
 ) : ViewModel() {
     private val actions = MutableSharedFlow<DiscoverActions>()
     private val mediaType = MutableSharedFlow<Multi.MediaType>()
@@ -55,7 +55,7 @@ class DiscoverViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = DiscoverViewState.Empty
+        initialValue = DiscoverViewState.Empty,
     )
 
     val discoverMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
@@ -63,7 +63,7 @@ class DiscoverViewModel @Inject constructor(
             discover.apply {
                 settings.country?.let { region(it) }
             },
-            getDiscoverMovies
+            getDiscoverMovies,
         )
     }.flow.cachedIn(viewModelScope)
 
@@ -72,7 +72,7 @@ class DiscoverViewModel @Inject constructor(
             discover.apply {
                 settings.country?.let { region(it) }
             },
-            getDiscoverTV
+            getDiscoverTV,
         )
     }.flow.cachedIn(viewModelScope)
 

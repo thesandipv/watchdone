@@ -46,7 +46,7 @@ class SearchViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
     val settings: Settings,
     private val searchMovieInteractor: SearchMovieInteractor,
-    private val searchTVInteractor: SearchTVInteractor
+    private val searchTVInteractor: SearchTVInteractor,
 ) : ViewModel() {
     private val mediaType = MutableStateFlow(Multi.MediaType.MOVIE)
     private var searchQuery = MutableStateFlow(Query())
@@ -61,21 +61,21 @@ class SearchViewModel @Inject constructor(
             searchQuery,
             isRefresh,
             isLoading,
-            isEmpty
+            isEmpty,
         ) { mediaType, searchQuery, isRefresh, isLoading, isEmpty ->
             SearchViewState(
                 mediaType = mediaType,
                 query = searchQuery,
                 refresh = isRefresh,
                 isLoading = isLoading,
-                empty = isEmpty
+                empty = isEmpty,
             ).apply {
                 Timber.d("load: State: $this")
             }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = SearchViewState.Empty
+            initialValue = SearchViewState.Empty,
         )
 
     val searchMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {

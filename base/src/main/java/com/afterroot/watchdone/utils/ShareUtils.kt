@@ -26,7 +26,7 @@ import timber.log.Timber
 
 private fun createInstagramShareIntent(
     context: Context,
-    intentExtras: Map<String, String?>
+    intentExtras: Map<String, String?>,
 ): Intent {
     val shareIntent = Intent(Constants.IG_SHARE_ACTION)
 
@@ -44,7 +44,7 @@ private fun createInstagramShareIntent(
             FileProvider.getUriForFile(
                 context,
                 Constants.IG_SHARE_PROVIDER,
-                File(context.cacheDir, it)
+                File(context.cacheDir, it),
             )
         Timber.d("createInstagramShareIntent: URI $backgroundAssetUri")
         shareIntent.apply {
@@ -57,7 +57,7 @@ private fun createInstagramShareIntent(
         context.grantUriPermission(
             Constants.IG_PACKAGE_NAME,
             backgroundAssetUri,
-            Intent.FLAG_GRANT_READ_URI_PERMISSION
+            Intent.FLAG_GRANT_READ_URI_PERMISSION,
         )
     }
 
@@ -75,7 +75,7 @@ fun Intent.isResolvable(context: Context, flags: Long = 0): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         context.packageManager.resolveActivity(
             this,
-            PackageManager.ResolveInfoFlags.of(flags)
+            PackageManager.ResolveInfoFlags.of(flags),
         ) != null
     } else {
         @Suppress("DEPRECATION")
@@ -87,7 +87,7 @@ fun Int.toHex() = "#${Integer.toHexString(this)}"
 
 private fun createShareIntent(
     context: Context,
-    intentExtras: Map<String, String?>
+    intentExtras: Map<String, String?>,
 ): Intent {
     val shareIntent = Intent(Intent.ACTION_SEND)
 
@@ -102,7 +102,7 @@ private fun createShareIntent(
     val uri = FileProvider.getUriForFile(
         context,
         Constants.IG_SHARE_PROVIDER,
-        File(context.cacheDir, "$mediaId.jpg")
+        File(context.cacheDir, "$mediaId.jpg"),
     )
     shareIntent.apply {
         type = Constants.MIME_TYPE_JPEG

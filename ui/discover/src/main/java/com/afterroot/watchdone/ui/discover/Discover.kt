@@ -60,15 +60,15 @@ import com.afterroot.ui.common.compose.components.TVCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
-import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun DiscoverChips(
     onMovieSelected: () -> Unit,
-    onTVSelected: () -> Unit
+    onTVSelected: () -> Unit,
 ) {
     FilterChipGroup(
         modifier = Modifier.padding(vertical = 8.dp),
@@ -77,7 +77,7 @@ fun DiscoverChips(
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         list = listOf(
             stringResource(id = CommonR.string.text_search_movies),
-            stringResource(id = CommonR.string.text_search_tv)
+            stringResource(id = CommonR.string.text_search_tv),
         ),
         preSelect = listOf(stringResource(id = CommonR.string.text_search_movies)),
         onSelectedChanged = { selected, _ ->
@@ -85,14 +85,14 @@ fun DiscoverChips(
                 "Movies" -> onMovieSelected()
                 "TV" -> onTVSelected()
             }
-        }
+        },
     )
 }
 
 @Composable
 fun Discover(
     discoverViewModel: DiscoverViewModel = hiltViewModel(),
-    itemSelectedCallback: ItemSelectedCallback<Multi>
+    itemSelectedCallback: ItemSelectedCallback<Multi>,
 ) {
     val viewState by discoverViewModel.state.collectAsState()
     val movieItems = discoverViewModel.discoverMovies.collectAsLazyPagingItems()
@@ -100,7 +100,7 @@ fun Discover(
 
     Discover(
         state = viewState.copy(
-            isLoading = movieItems.loadState.refresh is LoadState.Loading || tvItems.loadState.refresh is LoadState.Loading
+            isLoading = movieItems.loadState.refresh is LoadState.Loading || tvItems.loadState.refresh is LoadState.Loading,
         ),
         movieItems = movieItems,
         tvItems = tvItems,
@@ -117,14 +117,14 @@ fun Discover(
             } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
                 tvItems.refresh()
             }
-        }
+        },
     )
 }
 
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class
+    ExperimentalMaterialApi::class,
 )
 @Composable
 internal fun Discover(
@@ -134,7 +134,7 @@ internal fun Discover(
     itemSelectedCallback: ItemSelectedCallback<Multi>,
     onMovieChipSelected: () -> Unit,
     onTVChipSelected: () -> Unit,
-    refresh: () -> Unit
+    refresh: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyGridState()
@@ -144,20 +144,20 @@ internal fun Discover(
             CommonAppBar(
                 withTitle = "Discover",
                 scrollBehavior = scrollBehavior,
-                windowInsets = TopBarWindowInsets
+                windowInsets = TopBarWindowInsets,
             )
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) { paddingValues ->
         val refreshState = rememberPullRefreshState(
             refreshing = state.isLoading,
-            onRefresh = refresh
+            onRefresh = refresh,
         )
 
         Box(
             modifier = Modifier
                 .pullRefresh(state = refreshState)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             if ((state.mediaType == Multi.MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == Multi.MediaType.TV_SERIES && tvItems.itemCount != 0) || !state.isLoading
             ) {
@@ -169,12 +169,12 @@ internal fun Discover(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .fillMaxHeight()
+                        .fillMaxHeight(),
                 ) {
                     fullSpanItem {
                         DiscoverChips(
                             onMovieSelected = { onMovieChipSelected() },
-                            onTVSelected = { onTVChipSelected() }
+                            onTVSelected = { onTVChipSelected() },
                         )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
@@ -188,7 +188,7 @@ internal fun Discover(
                                     modifier = Modifier
                                         .animateItemPlacement()
                                         .fillMaxWidth()
-                                        .aspectRatio(2 / 3f)
+                                        .aspectRatio(2 / 3f),
                                 )
                             }
                         }
@@ -203,7 +203,7 @@ internal fun Discover(
                                     modifier = Modifier
                                         .animateItemPlacement()
                                         .fillMaxWidth()
-                                        .aspectRatio(2 / 3f)
+                                        .aspectRatio(2 / 3f),
                                 )
                             }
                         }
@@ -220,7 +220,7 @@ internal fun Discover(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(paddingValues),
-                scale = true
+                scale = true,
             )
         }
     }

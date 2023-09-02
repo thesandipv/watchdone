@@ -30,7 +30,7 @@ fun <T : Any> LazyGridScope.gridItems(
     key: ((item: T) -> Any)? = null,
     span: (LazyGridItemSpanScope.(item: T) -> GridItemSpan)? = null,
     contentType: (item: T) -> Any? = { null },
-    itemContent: @Composable LazyGridItemScope.(item: T?) -> Unit
+    itemContent: @Composable LazyGridItemScope.(item: T?) -> Unit,
 ) {
     items(
         count = items.itemCount,
@@ -55,7 +55,7 @@ fun <T : Any> LazyGridScope.gridItems(
                     key(item)
                 }
             }
-        }
+        },
     ) { index ->
         itemContent(items[index])
     }
@@ -66,7 +66,7 @@ fun <T : Any> LazyGridScope.gridItemsIndexed(
     key: ((index: Int, item: T) -> Any)? = null,
     span: (LazyGridItemSpanScope.(index: Int, item: T) -> GridItemSpan)? = null,
     contentType: (item: T) -> Any? = { null },
-    itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit
+    itemContent: @Composable LazyGridItemScope.(index: Int, item: T?) -> Unit,
 ) {
     items(
         count = items.itemCount,
@@ -91,7 +91,7 @@ fun <T : Any> LazyGridScope.gridItemsIndexed(
                     key(index, item)
                 }
             }
-        }
+        },
     ) { index ->
         itemContent(index, items[index])
     }
@@ -118,12 +118,12 @@ internal data class PagingPlaceholderKey(private val index: Int) : Parcelable {
 fun LazyGridScope.fullSpanItem(
     key: Any? = null,
     contentType: Any? = null,
-    content: @Composable LazyGridItemScope.() -> Unit
+    content: @Composable LazyGridItemScope.() -> Unit,
 ) {
     item(
         key = key,
         span = { GridItemSpan(maxLineSpan) },
         contentType = contentType,
-        content = content
+        content = content,
     )
 }

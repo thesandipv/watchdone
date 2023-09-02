@@ -32,5 +32,5 @@ data class Season(
     val videos: Videos = null,
     val keywords: Keywords = null,
     // Additional Data
-    var isWatched: Boolean = false
+    var isWatched: Boolean = false,
 )

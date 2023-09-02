@@ -26,11 +26,11 @@ fun Context.showNetworkDialog(
     state: NetworkState,
     positive: () -> Unit,
     negative: () -> Unit,
-    isShowHide: Boolean = false
+    isShowHide: Boolean = false,
 ): AlertDialog {
     val dialog = MaterialAlertDialogBuilder(this).apply {
         setTitle(
-            if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected"
+            if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected",
         )
         setCancelable(false)
         setMessage(com.afterroot.watchdone.resources.R.string.dialog_msg_no_network)

@@ -53,7 +53,7 @@ object FirebaseModule {
         setConfigSettingsAsync(
             remoteConfigSettings {
                 fetchTimeoutInSeconds = whenBuildIs(debug = 0, release = 3600)
-            }
+            },
         )
     }
 

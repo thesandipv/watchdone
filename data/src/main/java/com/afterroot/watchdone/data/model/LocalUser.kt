@@ -26,7 +26,7 @@ data class LocalUser(
     var fcmId: String? = null,
     var userName: String? = null,
     var isUserNameAvailable: Boolean = userName.valueOrBlank().isNotBlank(),
-    var properties: UserProperties = UserProperties()
+    var properties: UserProperties = UserProperties(),
 ) : Serializable {
     fun trim(): LocalUser = copy(name = name?.trim(), userName = userName?.trim())
 }

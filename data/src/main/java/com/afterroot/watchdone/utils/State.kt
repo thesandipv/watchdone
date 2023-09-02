@@ -31,7 +31,7 @@ sealed class State<T> {
         success: (T) -> Unit,
         loading: () -> Unit = {
         },
-        failed: (message: String) -> Unit = {}
+        failed: (message: String) -> Unit = {},
     ) = when (this) {
         is Success -> success(data)
         is Failed -> failed(this.message)
@@ -64,7 +64,7 @@ sealed class State<T> {
 
     @Composable
     fun composeWhen(
-        failed: @Composable (message: String, exception: Throwable?) -> Unit
+        failed: @Composable (message: String, exception: Throwable?) -> Unit,
     ): State<T> {
         if (this is Failed) failed(message, exception)
         return this

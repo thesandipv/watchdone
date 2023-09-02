@@ -35,7 +35,7 @@ fun TvEpisode.toEpisode(): Episode = Episode(
     externalIds = externalIds,
     images = images,
     videos = getVideos(),
-    keywords = getKeywords()
+    keywords = getKeywords(),
 )
 
 fun TVEpisodes.toEpisodes(): Episodes = this?.map {

@@ -26,11 +26,11 @@ import info.movito.themoviedbapi.model.core.ResultsPage
  */
 @OptIn(ExperimentalPagingApi::class)
 internal class ResultsPageRemoteMediator<LI>(
-    private val fetch: suspend (page: Int) -> Unit
+    private val fetch: suspend (page: Int) -> Unit,
 ) : RemoteMediator<Int, ResultsPage<LI>>() {
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, ResultsPage<LI>>
+        state: PagingState<Int, ResultsPage<LI>>,
     ): MediatorResult {
         val nextPage = when (loadType) {
             LoadType.REFRESH -> 0

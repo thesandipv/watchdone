@@ -42,7 +42,7 @@ fun <T : Multi> Carousel(
     refreshing: Boolean,
     modifier: Modifier = Modifier,
     onItemClick: (T, Int) -> Unit,
-    onMoreClick: () -> Unit
+    onMoreClick: () -> Unit,
 ) {
     Column(modifier) {
         if (refreshing || items.isNotEmpty()) {
@@ -50,9 +50,9 @@ fun <T : Multi> Carousel(
                 TextButton(
                     onClick = onMoreClick,
                     colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary
+                        contentColor = MaterialTheme.colorScheme.secondary,
                     ),
-                    modifier = Modifier.alignBy(FirstBaseline)
+                    modifier = Modifier.alignBy(FirstBaseline),
                 ) {
                     Text(text = "More")
                 }
@@ -64,7 +64,7 @@ fun <T : Multi> Carousel(
                     onItemClick = onItemClick,
                     modifier = Modifier
                         .height(192.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 )
             }
         }
@@ -76,7 +76,7 @@ fun <T : Multi> Carousel(
 internal fun <T : Multi> CarouselInt(
     items: List<T>,
     onItemClick: (T, Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
     val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -85,7 +85,7 @@ internal fun <T : Multi> CarouselInt(
         state = lazyListState,
         modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         itemsIndexed(items = items) { index, item ->
             PosterCard(
@@ -94,7 +94,7 @@ internal fun <T : Multi> CarouselInt(
                 modifier = Modifier
                     .animateItemPlacement()
                     .fillParentMaxHeight()
-                    .aspectRatio(2 / 3f)
+                    .aspectRatio(2 / 3f),
             )
         }
     }

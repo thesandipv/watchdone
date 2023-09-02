@@ -23,7 +23,7 @@ fun LocalUser.toNetworkUser(): NetworkUser = NetworkUser(
     uid = uid,
     fcmId = fcmId,
     userName = userName,
-    properties = properties
+    properties = properties,
 )
 
 fun NetworkUser.toLocalUser(): LocalUser = LocalUser(
@@ -32,5 +32,5 @@ fun NetworkUser.toLocalUser(): LocalUser = LocalUser(
     uid = uid,
     fcmId = fcmId,
     userName = userName,
-    properties = properties
+    properties = properties,
 )

@@ -24,7 +24,7 @@ import timber.log.Timber
 
 class RecommendedMoviePagingSource(
     private val movieId: Int,
-    private val observeRecommendedMovies: ObserveRecommendedMovies
+    private val observeRecommendedMovies: ObserveRecommendedMovies,
 ) : PagingSource<Int, Movie>() {
 
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
@@ -35,7 +35,7 @@ class RecommendedMoviePagingSource(
         try {
             var nextPage = params.key ?: 1
             val response = observeRecommendedMovies.executeSync(
-                ObserveRecommendedMovies.Params(movieId, nextPage)
+                ObserveRecommendedMovies.Params(movieId, nextPage),
             )
             var loadResult: LoadResult<Int, Movie>? = null
             response.collect {
@@ -46,7 +46,7 @@ class RecommendedMoviePagingSource(
                         loadResult = LoadResult.Page(
                             data = if (it.data.page == 1) it.data.toMovies().dropLast(1) else it.data.toMovies(),
                             prevKey = null,
-                            nextKey = if (nextPage <= it.data.totalPages) nextPage else null
+                            nextKey = if (nextPage <= it.data.totalPages) nextPage else null,
                         )
                     }
 

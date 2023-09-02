@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
         val fragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(
             binding.fragmentSettingsContainer.id,
-            fragment
+            fragment,
         ).commit()
     }
 }

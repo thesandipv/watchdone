@@ -59,14 +59,14 @@ fun MediaInfo(
     navigateUp: () -> Unit,
     onRecommendedClick: (media: Multi) -> Unit,
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
     MediaInfo(
         viewModel = hiltViewModel(),
         navigateUp = navigateUp,
         onRecommendedClick = onRecommendedClick,
         onWatchProviderClick = onWatchProviderClick,
-        shareToIG = shareToIG
+        shareToIG = shareToIG,
     )
 }
 
@@ -76,12 +76,12 @@ internal fun MediaInfo(
     navigateUp: () -> Unit,
     onRecommendedClick: (media: Multi) -> Unit,
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
     val viewState by viewModel.state.collectAsState()
     if (viewState.mediaType == Multi.MediaType.MOVIE) {
         val recommended = viewModel.getRecommendedMovies(
-            viewState.mediaId
+            viewState.mediaId,
         ).collectAsLazyPagingItems()
         MediaInfo(
             viewState = viewState,
@@ -91,11 +91,11 @@ internal fun MediaInfo(
             onRecommendedClick = onRecommendedClick,
             onWatchProviderClick = onWatchProviderClick,
             shareToIG = shareToIG,
-            navigateUp = navigateUp
+            navigateUp = navigateUp,
         )
     } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
         val recommended = viewModel.getRecommendedShows(
-            viewState.mediaId
+            viewState.mediaId,
         ).collectAsLazyPagingItems()
         MediaInfo(
             viewState = viewState,
@@ -109,7 +109,7 @@ internal fun MediaInfo(
             },
             onWatchProviderClick = onWatchProviderClick,
             shareToIG = shareToIG,
-            navigateUp = navigateUp
+            navigateUp = navigateUp,
         )
     }
 }
@@ -126,7 +126,7 @@ internal fun <T : Multi> MediaInfo(
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
-    navigateUp: () -> Unit = {}
+    navigateUp: () -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
@@ -162,7 +162,7 @@ internal fun <T : Multi> MediaInfo(
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Share,
-                            contentDescription = "Share"
+                            contentDescription = "Share",
                         )
                     }
                 },
@@ -172,13 +172,13 @@ internal fun <T : Multi> MediaInfo(
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.NavigateBefore,
-                            contentDescription = "Up"
+                            contentDescription = "Up",
                         )
                     }
-                }
+                },
             )
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { contentPadding ->
         Surface(modifier = Modifier.fillMaxWidth()) {
             MediaInfoContent(
@@ -192,7 +192,7 @@ internal fun <T : Multi> MediaInfo(
                 onSeasonSelected = onSeasonSelected,
                 onEpisodeWatchAction = onEpisodeWatchAction,
                 onWatchProviderClick = onWatchProviderClick,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }
@@ -210,7 +210,7 @@ internal fun <T : Multi> MediaInfoContent(
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     val gutter = Layout.gutter
     val bodyMargin = Layout.bodyMargin
@@ -226,7 +226,7 @@ internal fun <T : Multi> MediaInfoContent(
                 modifier = Modifier
                     .padding(horizontal = bodyMargin, vertical = gutter)
                     .fillMaxWidth()
-                    .aspectRatio(16f / 10)
+                    .aspectRatio(16f / 10),
             )
         }
         item(key = "overview") {
@@ -239,7 +239,7 @@ internal fun <T : Multi> MediaInfoContent(
                 watchProviders = viewState.watchProviders,
                 onWatchlistAction = onWatchlistAction,
                 onWatchedAction = onWatchedAction,
-                onWatchProvidersClick = onWatchProviderClick
+                onWatchProvidersClick = onWatchProviderClick,
             )
         }
 
@@ -250,7 +250,7 @@ internal fun <T : Multi> MediaInfoContent(
                     season = viewState.seasonInfo,
                     watchedEpisodes = viewState.media.watched,
                     onSeasonSelected = onSeasonSelected,
-                    onWatchClicked = onEpisodeWatchAction
+                    onWatchClicked = onEpisodeWatchAction,
                 )
             }
         }
@@ -289,7 +289,7 @@ internal fun <T : Multi> MediaInfoContent(
                     onItemClick = { t, _ ->
                         onRecommendedClick(t)
                     },
-                    onMoreClick = null
+                    onMoreClick = null,
                 )
             }
         } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
@@ -302,7 +302,7 @@ internal fun <T : Multi> MediaInfoContent(
                     onItemClick = { t, _ ->
                         onRecommendedClick(t)
                     },
-                    onMoreClick = null
+                    onMoreClick = null,
                 )
             }
         }
@@ -312,8 +312,8 @@ internal fun <T : Multi> MediaInfoContent(
                     text = "Media ID: ${viewState.mediaId} | Stream and Rent data provided by JustWatch.",
                     modifier = Modifier.padding(
                         horizontal = bodyMargin,
-                        vertical = gutter
-                    )
+                        vertical = gutter,
+                    ),
                 )
             }
         }

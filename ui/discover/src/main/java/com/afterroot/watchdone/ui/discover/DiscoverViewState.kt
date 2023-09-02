@@ -23,7 +23,7 @@ import info.movito.themoviedbapi.model.Multi
 data class DiscoverViewState(
     val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
     val isLoading: Boolean = false,
-    override val message: UiMessage? = null
+    override val message: UiMessage? = null,
 ) : ViewState() {
     companion object {
         val Empty = DiscoverViewState()

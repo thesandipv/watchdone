@@ -28,7 +28,7 @@ data class SearchViewState(
     val isLoading: Boolean = false,
     val refresh: Boolean = false,
     val empty: Boolean = true,
-    override val message: UiMessage? = null
+    override val message: UiMessage? = null,
 ) : ViewState() {
     companion object {
         val Empty = SearchViewState()

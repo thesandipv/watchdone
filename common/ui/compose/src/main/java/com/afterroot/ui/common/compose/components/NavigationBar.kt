@@ -44,7 +44,7 @@ fun ScrollAwareNavigationBar(
     tonalElevation: Dp = NavigationBarDefaults.Elevation,
     windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
     scrollBehavior: TopAppBarScrollBehavior?,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     val navigationHeight = 80.dp
     val heightOffsetLimit = with(LocalDensity.current) { -navigationHeight.toPx() }
@@ -65,9 +65,9 @@ fun ScrollAwareNavigationBar(
                     scrollBehavior.state,
                     velocity,
                     scrollBehavior.flingAnimationSpec,
-                    scrollBehavior.snapAnimationSpec
+                    scrollBehavior.snapAnimationSpec,
                 )
-            }
+            },
         )
     } else {
         Modifier
@@ -85,7 +85,7 @@ fun ScrollAwareNavigationBar(
         contentColor = contentColor,
         tonalElevation = tonalElevation,
         windowInsets = windowInsets,
-        content = content
+        content = content,
     )
 }
 
@@ -95,13 +95,13 @@ fun navigationBarEnterAlwaysScrollBehavior(
     state: TopAppBarState = rememberTopAppBarState(),
     canScroll: () -> Boolean = { true },
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
-    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
+    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
 ): TopAppBarScrollBehavior =
     EnterAlwaysScrollBehavior(
         state = state,
         snapAnimationSpec = snapAnimationSpec,
         flingAnimationSpec = flingAnimationSpec,
-        canScroll = canScroll
+        canScroll = canScroll,
     )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,7 +109,7 @@ private class EnterAlwaysScrollBehavior(
     override val state: TopAppBarState,
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
-    val canScroll: () -> Boolean = { true }
+    val canScroll: () -> Boolean = { true },
 ) : TopAppBarScrollBehavior {
     override val isPinned: Boolean = false
     override var nestedScrollConnection =
@@ -131,7 +131,7 @@ private class EnterAlwaysScrollBehavior(
             override fun onPostScroll(
                 consumed: Offset,
                 available: Offset,
-                source: NestedScrollSource
+                source: NestedScrollSource,
             ): Offset {
                 if (!canScroll()) return Offset.Zero
                 state.contentOffset += consumed.y
@@ -152,7 +152,7 @@ private class EnterAlwaysScrollBehavior(
                     state,
                     available.y,
                     flingAnimationSpec,
-                    snapAnimationSpec
+                    snapAnimationSpec,
                 )
             }
         }
@@ -163,7 +163,7 @@ suspend fun settleAppBar(
     state: TopAppBarState,
     velocity: Float,
     flingAnimationSpec: DecayAnimationSpec<Float>?,
-    snapAnimationSpec: AnimationSpec<Float>?
+    snapAnimationSpec: AnimationSpec<Float>?,
 ): Velocity {
     // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
     // and just return Zero Velocity.
@@ -179,7 +179,7 @@ suspend fun settleAppBar(
         var lastValue = 0f
         AnimationState(
             initialValue = 0f,
-            initialVelocity = velocity
+            initialVelocity = velocity,
         )
             .animateDecay(flingAnimationSpec) {
                 val delta = value - lastValue
@@ -203,7 +203,7 @@ suspend fun settleAppBar(
                 } else {
                     state.heightOffsetLimit
                 },
-                animationSpec = snapAnimationSpec
+                animationSpec = snapAnimationSpec,
             ) { state.heightOffset = value }
         }
     }

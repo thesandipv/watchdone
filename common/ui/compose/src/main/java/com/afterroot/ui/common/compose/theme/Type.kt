@@ -31,7 +31,7 @@ val fontProvider by lazy {
     GoogleFont.Provider(
         providerAuthority = "com.google.android.gms.fonts",
         providerPackage = "com.google.android.gms",
-        certificates = R.array.com_google_android_gms_fonts_certs
+        certificates = R.array.com_google_android_gms_fonts_certs,
     )
 }
 
@@ -40,10 +40,10 @@ val ubuntuFamily = googleFontFamily(
     listOf(
         FontWeight.Normal,
         FontWeight.Bold,
-        FontWeight.Medium
+        FontWeight.Medium,
         // FontWeight.ExtraLight,
         // FontWeight.SemiBold
-    )
+    ),
 )
 
 val ubuntuTypography = Typography(
@@ -61,16 +61,16 @@ val ubuntuTypography = Typography(
     bodySmall = typography.bodySmall.copy(fontFamily = ubuntuFamily),
     labelLarge = typography.labelLarge.copy(fontFamily = ubuntuFamily),
     labelMedium = typography.labelMedium.copy(fontFamily = ubuntuFamily),
-    labelSmall = typography.labelSmall.copy(fontFamily = ubuntuFamily)
+    labelSmall = typography.labelSmall.copy(fontFamily = ubuntuFamily),
 )
 
 fun googleFontFamily(
     name: String,
-    weights: List<FontWeight>
+    weights: List<FontWeight>,
 ): FontFamily {
     return FontFamily(
         weights.map {
             Font(GoogleFont(name), fontProvider, it)
-        }
+        },
     )
 }

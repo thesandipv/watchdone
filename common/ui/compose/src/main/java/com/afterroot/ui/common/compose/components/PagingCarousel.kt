@@ -44,7 +44,7 @@ fun <T : Multi> PagingCarousel(
     refreshing: Boolean,
     modifier: Modifier = Modifier,
     onItemClick: (T, Int) -> Unit,
-    onMoreClick: (() -> Unit)? = null
+    onMoreClick: (() -> Unit)? = null,
 ) {
     Column(modifier) {
         if (refreshing || items.itemCount != 0) {
@@ -53,9 +53,9 @@ fun <T : Multi> PagingCarousel(
                     TextButton(
                         onClick = onMoreClick,
                         colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.secondary
+                            contentColor = MaterialTheme.colorScheme.secondary,
                         ),
-                        modifier = Modifier.alignBy(FirstBaseline)
+                        modifier = Modifier.alignBy(FirstBaseline),
                     ) {
                         Text(text = "More")
                     }
@@ -68,7 +68,7 @@ fun <T : Multi> PagingCarousel(
                     onItemClick = onItemClick,
                     modifier = Modifier
                         .height(192.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 )
             }
         }
@@ -80,7 +80,7 @@ fun <T : Multi> PagingCarousel(
 internal fun <T : Multi> PagingCarouselInt(
     items: LazyPagingItems<T>,
     onItemClick: (T, Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
     val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -89,7 +89,7 @@ internal fun <T : Multi> PagingCarouselInt(
         state = lazyListState,
         modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(count = items.itemCount, key = { index ->
             items.itemKey { item ->
@@ -107,7 +107,7 @@ internal fun <T : Multi> PagingCarouselInt(
                     modifier = Modifier
                         .animateItemPlacement()
                         .fillParentMaxHeight()
-                        .aspectRatio(2 / 3f)
+                        .aspectRatio(2 / 3f),
                 )
             }
         }

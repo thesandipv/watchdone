@@ -33,7 +33,7 @@ class TMDbAuthTest : DataTest() {
         launch {
             val token =
                 authRepository.createRequestToken(
-                    RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch")
+                    RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"),
                 ).requestToken
             Assert.assertNotNull("Token is Null", token)
         }

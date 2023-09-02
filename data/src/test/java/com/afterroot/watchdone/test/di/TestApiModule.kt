@@ -59,7 +59,7 @@ object TestApiModule {
     @Provides
     fun provideOkHttpClient(
         tmdbInterceptor: TMDbInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
     ) =
         OkHttpClient().newBuilder()
             .addInterceptor(tmdbInterceptor)
@@ -76,7 +76,7 @@ object TestApiModule {
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = whenBuildIs(
             debug = HttpLoggingInterceptor.Level.BODY,
-            release = HttpLoggingInterceptor.Level.NONE
+            release = HttpLoggingInterceptor.Level.NONE,
         )
     }
 
@@ -131,7 +131,7 @@ object RetrofitApisModule {
     @Provides
     @Singleton
     fun provideDiscoverApi(
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): DiscoverApi = retrofit.create(DiscoverApi::class.java)
 
     @Provides

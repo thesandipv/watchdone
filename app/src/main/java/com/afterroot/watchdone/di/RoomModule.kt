@@ -35,7 +35,7 @@ object RoomModule {
         Room.databaseBuilder(
             context,
             MyDatabase::class.java,
-            "watchdone-db"
+            "watchdone-db",
         ).fallbackToDestructiveMigration().build()
 
     @Provides

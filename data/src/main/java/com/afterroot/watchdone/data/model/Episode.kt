@@ -38,5 +38,5 @@ data class Episode(
     val videos: List<Video>? = null,
     val keywords: List<Keyword>? = null,
     // Additional Data
-    var isWatched: Boolean = false
+    var isWatched: Boolean = false,
 )

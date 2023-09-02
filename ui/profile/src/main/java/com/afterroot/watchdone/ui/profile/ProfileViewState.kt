@@ -20,7 +20,7 @@ import com.afterroot.watchdone.base.compose.ViewState
 
 @Immutable
 data class ProfileViewState(
-    override val message: UiMessage? = null
+    override val message: UiMessage? = null,
 ) : ViewState() {
     companion object {
         val Empty = ProfileViewState()

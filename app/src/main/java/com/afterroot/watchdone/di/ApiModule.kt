@@ -60,7 +60,7 @@ object ApiModule {
     fun provideOkHttpClient(
         tmdbInterceptor: TMDbInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        settings: Settings
+        settings: Settings,
     ): OkHttpClient {
         val client = OkHttpClient().newBuilder()
             .addInterceptor(tmdbInterceptor)
@@ -80,7 +80,7 @@ object ApiModule {
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = whenBuildIs(
             debug = HttpLoggingInterceptor.Level.BODY,
-            release = HttpLoggingInterceptor.Level.NONE
+            release = HttpLoggingInterceptor.Level.NONE,
         )
     }
 
@@ -131,7 +131,7 @@ object RetrofitApisModule {
     @Provides
     @Singleton
     fun provideDiscoverApi(
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): DiscoverApi = retrofit.create(DiscoverApi::class.java)
 
     @Provides

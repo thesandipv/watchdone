@@ -38,7 +38,7 @@ class WatchlistPagingSource(
     private val firestore: FirebaseFirestore,
     private val settings: Settings,
     private val firebaseUtils: FirebaseUtils,
-    private val filters: Filters = Filters.EMPTY
+    private val filters: Filters = Filters.EMPTY,
 ) : PagingSource<QuerySnapshot, Multi>() {
     override fun getRefreshKey(state: PagingState<QuerySnapshot, Multi>): QuerySnapshot? {
         return null
@@ -48,7 +48,7 @@ class WatchlistPagingSource(
         return try {
             val baseQuery = firestore.collectionWatchdone(
                 id = firebaseUtils.uid!!,
-                settings.isUseProdDb
+                settings.isUseProdDb,
             )
                 .document(Collection.WATCHLIST)
                 .collection(Collection.ITEMS)
@@ -57,7 +57,7 @@ class WatchlistPagingSource(
                 val defaultOrder: ExtendedQuery = {
                     orderBy(
                         Field.RELEASE_DATE,
-                        settings.queryDirection
+                        settings.queryDirection,
                     )
                 }
                 when (filters.watchState) {
@@ -71,11 +71,11 @@ class WatchlistPagingSource(
                     when (filters.mediaType) {
                         Multi.MediaType.MOVIE -> whereEqualTo(
                             Field.MEDIA_TYPE,
-                            Multi.MediaType.MOVIE.name
+                            Multi.MediaType.MOVIE.name,
                         )
                         Multi.MediaType.TV_SERIES -> whereEqualTo(
                             Field.MEDIA_TYPE,
-                            Multi.MediaType.TV_SERIES.name
+                            Multi.MediaType.TV_SERIES.name,
                         )
                         else -> this
                     }
@@ -87,7 +87,7 @@ class WatchlistPagingSource(
                         WatchStateValues.PENDING -> whereIn(Field.IS_WATCHED, listOf(false, null))
                         WatchStateValues.STARTED -> whereNotEqualTo(
                             Field.WATCHED_EPISODES,
-                            emptyList<String>()
+                            emptyList<String>(),
                         )
                         else -> this
                     }
@@ -120,7 +120,7 @@ class WatchlistPagingSource(
                 Timber.d("load: Cache is empty. Getting data from Server.")
                 currentPage = params.key ?: baseQuery.orderBy().filterBy().limit(20).get().await()
                 Timber.d(
-                    "load: Data from server: Empty: ${currentPage.isEmpty}, Size: ${currentPage.documents.size}"
+                    "load: Data from server: Empty: ${currentPage.isEmpty}, Size: ${currentPage.documents.size}",
                 )
             }
 
@@ -144,7 +144,7 @@ class WatchlistPagingSource(
             LoadResult.Page(
                 data = currentPage.toMulti(),
                 prevKey = null,
-                nextKey = nextPage
+                nextKey = nextPage,
             )
         } catch (e: Exception) {
             Timber.e(e, "load: ${e.message}")

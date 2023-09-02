@@ -55,7 +55,7 @@ fun CommonFilterChip(
     text: String? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
     selected: Boolean = false,
-    onSelectionChanged: (label: String, selected: Boolean) -> Unit = { _, _ -> }
+    onSelectionChanged: (label: String, selected: Boolean) -> Unit = { _, _ -> },
 ) {
     FilterChip(
         modifier = modifier,
@@ -66,7 +66,7 @@ fun CommonFilterChip(
         label = {
             Text(text = text.valueOrBlank())
         },
-        leadingIcon = leadingIcon
+        leadingIcon = leadingIcon,
     )
 }
 
@@ -75,7 +75,7 @@ fun AssistChip(
     modifier: Modifier = Modifier,
     text: String? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     AssistChip(
         modifier = modifier,
@@ -83,7 +83,7 @@ fun AssistChip(
         label = {
             Text(text = text.valueOrBlank())
         },
-        leadingIcon = leadingIcon
+        leadingIcon = leadingIcon,
     )
 }
 
@@ -115,9 +115,9 @@ fun FilterChipGroup(
         (
             index: Int,
             selected: String,
-            selectedChips: List<String>
+            selectedChips: List<String>,
         ) -> Unit
-    )? = null
+    )? = null,
 ) {
     val selectedChips = remember { mutableStateListOf<String>() }
 
@@ -133,7 +133,7 @@ fun FilterChipGroup(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = horizontalPadding),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             list?.forEachIndexed { index, it ->
                 if (index != 0) {
@@ -149,7 +149,7 @@ fun FilterChipGroup(
                                 Icon(
                                     imageVector = icon,
                                     contentDescription = "$it Icon",
-                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
                                 )
                             }
                         }
@@ -175,7 +175,7 @@ fun FilterChipGroup(
 
                         onSelectedChanged?.invoke(label, selectedChips)
                         onSelectedChangedIndexed?.invoke(index, label, selectedChips)
-                    }
+                    },
                 )
             }
         }
@@ -195,12 +195,12 @@ fun SuggestionChipGroup(
     horizontalPadding: Dp = 0.dp,
     icons: List<ImageVector?> = emptyList(),
     list: List<String>? = null,
-    onClick: ((index: Int, label: String) -> Unit)? = null
+    onClick: ((index: Int, label: String) -> Unit)? = null,
 ) {
     val scrollState = rememberScrollState()
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = modifier.horizontalScroll(scrollState)
+        modifier = modifier.horizontalScroll(scrollState),
     ) {
         Spacer(modifier = Modifier.width(horizontalPadding))
         list?.forEachIndexed { index, it ->
@@ -221,11 +221,11 @@ fun SuggestionChipGroup(
                             Icon(
                                 imageVector = icon,
                                 contentDescription = "$it Icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                modifier = Modifier.size(FilterChipDefaults.IconSize),
                             )
                         }
                     }
-                }
+                },
             )
         }
         Spacer(modifier = Modifier.width(horizontalPadding))
@@ -248,7 +248,7 @@ fun DynamicChipGroup(
             title: String,
             selected: Boolean,
             list: List<String>,
-            selectedList: List<Int>
+            selectedList: List<Int>,
         ) -> Unit
     )? = null,
     chipContent: @Composable (
@@ -257,8 +257,8 @@ fun DynamicChipGroup(
         icon: ImageVector?,
         selected: Boolean,
         onClick: (selected: Boolean) -> Unit,
-        clearSelection: () -> Unit
-    ) -> Unit
+        clearSelection: () -> Unit,
+    ) -> Unit,
 ) {
     val selectedList = remember { mutableStateListOf<Int>() }
 
@@ -268,7 +268,7 @@ fun DynamicChipGroup(
                 selectedList.addAll(
                     preSelect.map {
                         list.indexOf(it)
-                    }
+                    },
                 )
             }
             preSelectItem?.let { selectedList.add(list.indexOf(preSelectItem)) }
@@ -282,7 +282,7 @@ fun DynamicChipGroup(
                     selectedList.contains(index)
                 } else {
                     true
-                }
+                },
             ) {
                 chipContent(
                     index = index,
@@ -312,7 +312,7 @@ fun DynamicChipGroup(
                     clearSelection = {
                         selectedList.clear()
                         onSelectedChanged?.invoke(index, label, false, list, selectedList)
-                    }
+                    },
                 )
             }
         }

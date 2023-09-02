@@ -26,7 +26,6 @@ import com.afterroot.tmdbapi.model.config.Country
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.database.CountriesDao
-import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.settings.Settings
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -44,6 +43,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -70,20 +70,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<ListPreference>(
-            Constants.PREF_KEY_THEME
+            Constants.PREF_KEY_THEME,
         )?.setOnPreferenceChangeListener { _, newValue ->
             AppCompatDelegate.setDefaultNightMode(
                 when (newValue) {
                     getString(
-                        CommonR.string.theme_device_default
-                    ) -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                        CommonR.string.theme_device_default,
+                    ),
+                    -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                     getString(
-                        CommonR.string.theme_battery
-                    ) -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                        CommonR.string.theme_battery,
+                    ),
+                    -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
                     getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
                     getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
                     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                }
+                },
             )
             return@setOnPreferenceChangeListener true
         }
@@ -91,7 +93,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<PreferenceCategory>("key_debug")?.isVisible = BuildConfig.DEBUG
 
         findPreference<SwitchPreferenceCompat>(
-            "http_logging"
+            "http_logging",
         )?.setOnPreferenceChangeListener { _, _ ->
             ProcessPhoenix.triggerRebirth(requireContext())
             true
@@ -99,7 +101,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
             OssLicensesMenuActivity.setActivityTitle(
-                getString(com.google.android.gms.oss.licenses.R.string.oss_license_title)
+                getString(com.google.android.gms.oss.licenses.R.string.oss_license_title),
             )
             requireContext().startActivity<OssLicensesMenuActivity>()
             return@setOnPreferenceClickListener true

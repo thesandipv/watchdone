@@ -75,7 +75,7 @@ data class Movie(
     var credits: Credits? = null,
     // Additional Data
     @field:JvmField
-    var isWatched: Boolean = false
+    var isWatched: Boolean = false,
 ) : Multi {
     override val mediaType: Multi.MediaType
         get() = Multi.MediaType.MOVIE

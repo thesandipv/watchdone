@@ -62,7 +62,7 @@ fun QuerySnapshot.toMovies(): List<Movie> {
     this.forEach { queryDocumentSnapshot ->
         list.add(
             queryDocumentSnapshot.toObject(NetworkMovie::class.java)
-                .toMovie(isWatched = queryDocumentSnapshot.getBoolean(Field.IS_WATCHED) ?: false)
+                .toMovie(isWatched = queryDocumentSnapshot.getBoolean(Field.IS_WATCHED) ?: false),
         )
     }
     return list

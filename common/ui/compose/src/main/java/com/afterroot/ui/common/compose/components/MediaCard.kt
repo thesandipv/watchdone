@@ -50,7 +50,7 @@ fun <T : Multi> PosterCard(
     media: T,
     modifier: Modifier = Modifier,
     type: Multi.MediaType = media.mediaType ?: Multi.MediaType.MOVIE,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     var title: String? = null
     var posterPath: String? = null
@@ -78,7 +78,7 @@ fun MovieCard(movie: Movie, modifier: Modifier = Modifier, onClick: (() -> Unit)
         title = movie.title,
         posterPath = movie.posterPath,
         modifier = modifier,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -88,7 +88,7 @@ fun TVCard(tv: TV, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null)
         title = tv.name,
         posterPath = tv.posterPath,
         modifier = modifier,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -97,31 +97,31 @@ fun BasePosterCard(
     modifier: Modifier = Modifier,
     title: String? = null,
     posterPath: String? = null,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     Card(modifier = modifier) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
         ) {
             Text(
                 text = title ?: "",
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .padding(4.dp)
-                    .align(Alignment.Center)
+                    .align(Alignment.Center),
             )
 
             if (posterPath != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(
-                            LocalTMDbBaseUrl.current + LocalPosterSize.current + posterPath
+                            LocalTMDbBaseUrl.current + LocalPosterSize.current + posterPath,
                         ).crossfade(true).build(),
                     contentDescription = title,
                     modifier = Modifier.matchParentSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
         }
@@ -134,29 +134,29 @@ fun Backdrop(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     title: String? = null,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     Surface(
         color = MaterialTheme.colorScheme.onSurface
             .copy(alpha = 0.2f)
             .compositeOver(MaterialTheme.colorScheme.surface),
         shape = shape,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
         ) {
             if (backdropPath != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(
-                            LocalTMDbBaseUrl.current + LocalBackdropSize.current + backdropPath
+                            LocalTMDbBaseUrl.current + LocalBackdropSize.current + backdropPath,
                         ).crossfade(true).build(),
                     contentDescription = title,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
 
@@ -166,7 +166,7 @@ fun Backdrop(
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
                         .padding(Layout.gutter * 2)
-                        .align(Alignment.BottomStart)
+                        .align(Alignment.BottomStart),
                 )
             }
         }
@@ -178,7 +178,7 @@ fun Header(
     title: String,
     modifier: Modifier = Modifier,
     loading: Boolean = false,
-    content: @Composable RowScope.() -> Unit = {}
+    content: @Composable RowScope.() -> Unit = {},
 ) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(Modifier.width(16.dp))
@@ -189,7 +189,7 @@ fun Header(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
         )
 
         Spacer(Modifier.weight(1f))
@@ -199,7 +199,7 @@ fun Header(
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .padding(8.dp)
-                    .size(16.dp)
+                    .size(16.dp),
             )
         }
 

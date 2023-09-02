@@ -52,7 +52,7 @@ class WatchStateInteractor @Inject constructor(private val firestoreRepository: 
         val id: Int,
         val watchState: Boolean,
         val episodeId: String? = null,
-        val method: Method
+        val method: Method,
     )
 
     enum class Method {
@@ -68,7 +68,7 @@ class WatchStateInteractor @Inject constructor(private val firestoreRepository: 
                 firestoreRepository.setEpisodeWatchStatus(
                     params.id,
                     params.episodeId,
-                    params.watchState
+                    params.watchState,
                 )
             }
         }

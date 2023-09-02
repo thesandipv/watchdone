@@ -22,7 +22,7 @@ enum class WatchStateValues {
 
 data class Filters(
     val watchState: WatchStateValues? = null,
-    val mediaType: Multi.MediaType? = null
+    val mediaType: Multi.MediaType? = null,
 ) {
     companion object {
         val EMPTY = Filters()

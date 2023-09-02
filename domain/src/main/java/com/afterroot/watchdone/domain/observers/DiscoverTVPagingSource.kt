@@ -42,7 +42,7 @@ class DiscoverTVPagingSource(private val discover: Discover, private val getDisc
                         loadResult = LoadResult.Page(
                             data = it.data.toTV(),
                             prevKey = null,
-                            nextKey = if (nextPage <= it.data.totalPages) nextPage else null
+                            nextKey = if (nextPage <= it.data.totalPages) nextPage else null,
                         )
                     }
 

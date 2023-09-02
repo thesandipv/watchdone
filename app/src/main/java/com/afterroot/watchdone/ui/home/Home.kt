@@ -69,18 +69,18 @@ import app.tivi.common.compose.ui.copy
 import com.afterroot.ui.common.compose.components.navigationBarEnterAlwaysScrollBehavior
 import com.afterroot.ui.common.compose.components.settleAppBar
 import com.afterroot.ui.common.compose.navigation.RootScreen
-import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.navigation.AppNavigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import com.afterroot.watchdone.resources.R as CommonR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
 @Composable
 fun Home(
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
     settingsAction: () -> Unit,
-    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null
+    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
@@ -102,14 +102,14 @@ fun Home(
             },
             modifier = Modifier
                 .fillMaxWidth(),
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
     }) { paddingValues ->
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues.copy(copyBottom = false))
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
                 AppNavigation(
@@ -119,7 +119,7 @@ fun Home(
                         .fillMaxHeight(),
                     onWatchProviderClick = onWatchProviderClick,
                     settingsAction = settingsAction,
-                    shareToIG = shareToIG
+                    shareToIG = shareToIG,
                 )
             }
         }
@@ -171,7 +171,7 @@ fun HomeNavigationBar(
     selectedRootScreen: RootScreen,
     onNavigationSelected: (RootScreen) -> Unit,
     modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior?
+    scrollBehavior: TopAppBarScrollBehavior?,
 ) {
     val heightOffsetLimit =
         with(LocalDensity.current) { -(80.dp.toPx() + WindowInsets.navigationBars.getBottom(this)) }
@@ -192,9 +192,9 @@ fun HomeNavigationBar(
                     scrollBehavior.state,
                     velocity,
                     scrollBehavior.flingAnimationSpec,
-                    scrollBehavior.snapAnimationSpec
+                    scrollBehavior.snapAnimationSpec,
                 )
-            }
+            },
         )
     } else {
         Modifier
@@ -207,7 +207,7 @@ fun HomeNavigationBar(
     NavigationBar(
         modifier = modifier
             .then(appBarDragModifier)
-            .offset(y = -height)
+            .offset(y = -height),
     ) {
         for (item in homeNavigationItems) {
             NavigationBarItem(
@@ -217,9 +217,9 @@ fun HomeNavigationBar(
                 icon = {
                     HomeNavigationItemIcon(
                         item = item,
-                        selected = selectedRootScreen == item.screen
+                        selected = selectedRootScreen == item.screen,
                     )
-                }
+                },
             )
         }
     }
@@ -228,14 +228,14 @@ fun HomeNavigationBar(
 private sealed class HomeNavigationItem(
     val screen: RootScreen,
     @StringRes val labelResId: Int,
-    @StringRes val contentDescriptionResId: Int
+    @StringRes val contentDescriptionResId: Int,
 ) {
     class ResourceIcon(
         screen: RootScreen,
         @StringRes labelResId: Int,
         @StringRes contentDescriptionResId: Int,
         @DrawableRes val iconResId: Int,
-        @DrawableRes val selectedIconResId: Int? = null
+        @DrawableRes val selectedIconResId: Int? = null,
     ) : HomeNavigationItem(screen, labelResId, contentDescriptionResId)
 
     class ImageVectorIcon(
@@ -243,7 +243,7 @@ private sealed class HomeNavigationItem(
         @StringRes labelResId: Int,
         @StringRes contentDescriptionResId: Int,
         val iconImageVector: ImageVector,
-        val selectedImageVector: ImageVector? = null
+        val selectedImageVector: ImageVector? = null,
     ) : HomeNavigationItem(screen, labelResId, contentDescriptionResId)
 }
 
@@ -253,29 +253,29 @@ private val homeNavigationItems = listOf(
         labelResId = CommonR.string.title_watchlist,
         contentDescriptionResId = CommonR.string.title_watchlist,
         iconImageVector = Icons.Outlined.DashboardCustomize,
-        selectedImageVector = Icons.Default.DashboardCustomize
+        selectedImageVector = Icons.Default.DashboardCustomize,
     ),
     HomeNavigationItem.ImageVectorIcon(
         screen = RootScreen.Discover,
         labelResId = CommonR.string.text_discover,
         contentDescriptionResId = CommonR.string.text_discover,
         iconImageVector = Icons.Outlined.RemoveRedEye,
-        selectedImageVector = Icons.Default.RemoveRedEye
+        selectedImageVector = Icons.Default.RemoveRedEye,
     ),
     HomeNavigationItem.ImageVectorIcon(
         screen = RootScreen.Search,
         labelResId = CommonR.string.title_search,
         contentDescriptionResId = CommonR.string.title_search,
         iconImageVector = Icons.Outlined.Search,
-        selectedImageVector = Icons.Default.Search
+        selectedImageVector = Icons.Default.Search,
     ),
     HomeNavigationItem.ImageVectorIcon(
         screen = RootScreen.Profile,
         labelResId = CommonR.string.title_profile,
         contentDescriptionResId = CommonR.string.title_profile,
         iconImageVector = Icons.Outlined.AccountCircle,
-        selectedImageVector = Icons.Default.AccountCircle
-    )
+        selectedImageVector = Icons.Default.AccountCircle,
+    ),
 
 )
 
@@ -289,7 +289,7 @@ private fun HomeNavigationItemIcon(item: HomeNavigationItem, selected: Boolean) 
         is HomeNavigationItem.ResourceIcon -> item.selectedIconResId?.let { painterResource(it) }
         is HomeNavigationItem.ImageVectorIcon -> item.selectedImageVector?.let {
             rememberVectorPainter(
-                it
+                it,
             )
         }
     }
@@ -298,13 +298,13 @@ private fun HomeNavigationItemIcon(item: HomeNavigationItem, selected: Boolean) 
         Crossfade(targetState = selected, label = "SelectedIcon") {
             Icon(
                 painter = if (it) selectedPainter else painter,
-                contentDescription = stringResource(item.contentDescriptionResId)
+                contentDescription = stringResource(item.contentDescriptionResId),
             )
         }
     } else {
         Icon(
             painter = painter,
-            contentDescription = stringResource(item.contentDescriptionResId)
+            contentDescription = stringResource(item.contentDescriptionResId),
         )
     }
 }

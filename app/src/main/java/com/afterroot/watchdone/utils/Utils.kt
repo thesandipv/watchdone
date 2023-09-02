@@ -41,7 +41,7 @@ suspend fun Context.shareToInstagram(poster: String, mediaId: Int, settings: Set
     withContext(Dispatchers.IO) {
         val file = File(
             this@shareToInstagram.cacheDir.toString(),
-            "$mediaId.jpg"
+            "$mediaId.jpg",
         )
         if (!file.exists()) {
             val loader = ImageLoader(this@shareToInstagram)
@@ -71,20 +71,20 @@ suspend fun Context.shareToInstagram(poster: String, mediaId: Int, settings: Set
                     palette.getMutedColor(
                         ContextCompat.getColor(
                             this@shareToInstagram,
-                            R.color.md_theme_dark_primary
-                        )
-                    )
+                            R.color.md_theme_dark_primary,
+                        ),
+                    ),
                 )?.toHex(),
                 "bottomBackgroundColor" to palette?.getDarkVibrantColor(
                     palette.getDarkMutedColor(
                         ContextCompat.getColor(
                             this@shareToInstagram,
-                            R.color.md_theme_light_primaryContainer
-                        )
-                    )
+                            R.color.md_theme_light_primaryContainer,
+                        ),
+                    ),
                 )?.toHex(),
                 "backgroundAssetName" to "$mediaId.jpg",
-                "mediaId" to mediaId.toString()
+                "mediaId" to mediaId.toString(),
             )
 
             try {
@@ -105,7 +105,7 @@ fun Context.logFirstStart() {
             "Manufacturer" to Build.MANUFACTURER,
             "AndroidVersion" to Build.VERSION.RELEASE,
             "AppVersion" to BuildConfig.VERSION_CODE.toString(),
-            "Package" to BuildConfig.APPLICATION_ID
-        )
+            "Package" to BuildConfig.APPLICATION_ID,
+        ),
     )
 }

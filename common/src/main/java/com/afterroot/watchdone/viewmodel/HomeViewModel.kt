@@ -27,12 +27,12 @@ import kotlinx.coroutines.Dispatchers
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     fun getResponseRequestToken() = liveData(Dispatchers.IO) {
         emit( // TODO Deeplink properly
-            authRepository.createRequestToken(RequestBodyToken(Deeplink.launch))
+            authRepository.createRequestToken(RequestBodyToken(Deeplink.launch)),
         )
     }
 }

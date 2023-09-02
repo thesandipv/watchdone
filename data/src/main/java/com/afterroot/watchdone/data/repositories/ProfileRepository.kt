@@ -33,7 +33,7 @@ import kotlinx.coroutines.tasks.await
 class ProfileRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val firebaseMessaging: FirebaseMessaging,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
 ) {
     fun getProfile(uid: String, cached: Boolean = false) = flow {
         emit(State.loading())

@@ -73,7 +73,7 @@ class MediaInfoViewModel @Inject constructor(
     private val watchlistInteractor: WatchlistInteractor,
     private val watchStateInteractor: WatchStateInteractor,
     private val tvEpisodeInteractor: TVEpisodeInteractor,
-    private val mediaInfoInteractor: MediaInfoInteractor
+    private val mediaInfoInteractor: MediaInfoInteractor,
 ) : ViewModel() {
 
     private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
@@ -94,7 +94,7 @@ class MediaInfoViewModel @Inject constructor(
             observeMovieInfo.flow,
             observeMovieCredits.flow,
             observeMovieWatchProviders.flow,
-            dbMedia
+            dbMedia,
         ) { mediaId, isInWL, isWatched, movieInfo, credits, watchProviders, mediaInfo ->
             MediaInfoViewState(
                 mediaId = mediaId,
@@ -104,12 +104,12 @@ class MediaInfoViewModel @Inject constructor(
                 isWatched = isWatched,
                 credits = credits,
                 media = mediaInfo,
-                watchProviders = watchProviders
+                watchProviders = watchProviders,
             )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = MediaInfoViewState.Empty
+            initialValue = MediaInfoViewState.Empty,
         )
     }
 
@@ -122,7 +122,7 @@ class MediaInfoViewModel @Inject constructor(
             observeTVCredits.flow,
             observeTVSeason.flow,
             observeTVWatchProviders.flow,
-            dbMedia
+            dbMedia,
         ) { mediaId, isInWL, isWatched, tvInfo, credits, season, watchProviders, mediaInfo ->
             MediaInfoViewState(
                 mediaId = mediaId,
@@ -133,12 +133,12 @@ class MediaInfoViewModel @Inject constructor(
                 credits = credits,
                 seasonInfo = season,
                 media = mediaInfo,
-                watchProviders = watchProviders
+                watchProviders = watchProviders,
             )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = MediaInfoViewState.Empty
+            initialValue = MediaInfoViewState.Empty,
         )
     }
 
@@ -157,7 +157,7 @@ class MediaInfoViewModel @Inject constructor(
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = MediaInfoViewState.Empty
+                initialValue = MediaInfoViewState.Empty,
             )
         }
     }
@@ -180,8 +180,8 @@ class MediaInfoViewModel @Inject constructor(
             watchlistInteractor.executeSync(
                 WatchlistInteractor.Params(
                     mediaId.value,
-                    method = WatchlistInteractor.Method.EXIST
-                )
+                    method = WatchlistInteractor.Method.EXIST,
+                ),
             ).collectLatest {
                 if (it is State.Success) {
                     isInWL.value = it.data
@@ -193,13 +193,13 @@ class MediaInfoViewModel @Inject constructor(
     }
 
     fun getRecommendedShows(mediaId: Int) = Pager(
-        PagingConfig(pageSize = 20, initialLoadSize = 20)
+        PagingConfig(pageSize = 20, initialLoadSize = 20),
     ) {
         RecommendedShowPagingSource(mediaId, observeRecommendedShows)
     }.flow.cachedIn(viewModelScope)
 
     fun getRecommendedMovies(mediaId: Int) = Pager(
-        PagingConfig(pageSize = 20, initialLoadSize = 20)
+        PagingConfig(pageSize = 20, initialLoadSize = 20),
     ) {
         RecommendedMoviePagingSource(mediaId, observeRecommendedMovies)
     }.flow.cachedIn(viewModelScope)
@@ -210,8 +210,8 @@ class MediaInfoViewModel @Inject constructor(
                 WatchlistInteractor.Params(
                     mediaId.value,
                     media,
-                    if (isAdd) WatchlistInteractor.Method.ADD else WatchlistInteractor.Method.REMOVE
-                )
+                    if (isAdd) WatchlistInteractor.Method.ADD else WatchlistInteractor.Method.REMOVE,
+                ),
             ).collect { result ->
                 result.whenSuccess {
                     isInWL.value = isAdd
@@ -229,8 +229,8 @@ class MediaInfoViewModel @Inject constructor(
                 WatchStateInteractor.Params(
                     id = mediaId.value,
                     watchState = isMark,
-                    method = WatchStateInteractor.Method.MEDIA
-                )
+                    method = WatchStateInteractor.Method.MEDIA,
+                ),
             ).collect { result ->
                 result.whenSuccess {
                     isWatched.value = it
@@ -248,8 +248,8 @@ class MediaInfoViewModel @Inject constructor(
                     id = mediaId.value,
                     watchState = isMark,
                     episodeId = episodeId,
-                    method = WatchStateInteractor.Method.EPISODE
-                )
+                    method = WatchStateInteractor.Method.EPISODE,
+                ),
             ).collect { result ->
                 result.whenSuccess {
                     // TODO this is costly
@@ -262,7 +262,7 @@ class MediaInfoViewModel @Inject constructor(
     private fun getMediaInfo() {
         viewModelScope.launch {
             mediaInfoInteractor.executeSync(
-                MediaInfoInteractor.Params(mediaId.value)
+                MediaInfoInteractor.Params(mediaId.value),
             ).collectLatest { result ->
                 result.whenSuccess {
                     dbMedia.value = it

@@ -35,13 +35,13 @@ import kotlinx.coroutines.tasks.await
 class FirestoreRepository @Inject constructor(
     val firestore: FirebaseFirestore,
     settings: Settings,
-    firebaseUtils: FirebaseUtils
+    firebaseUtils: FirebaseUtils,
 ) {
 
     private val watchListRef by lazy {
         firestore.collectionWatchdone(
             id = firebaseUtils.uid.toString(),
-            isUseOnlyProdDB = settings.isUseProdDb
+            isUseOnlyProdDB = settings.isUseProdDb,
         ).documentWatchlist()
     }
 
@@ -97,7 +97,7 @@ class FirestoreRepository @Inject constructor(
                     FieldValue.arrayUnion(episodeId)
                 } else {
                     FieldValue.arrayRemove(episodeId)
-                }
+                },
             ).await()
             emit(State.success(isWatched))
         } else {
@@ -118,7 +118,7 @@ class FirestoreRepository @Inject constructor(
 
     private suspend fun getDocumentId(media: DBMedia, source: Source = Source.CACHE) = getDocumentId(
         media.id,
-        source
+        source,
     )
 
     private suspend fun getDocumentId(mediaId: Int, source: Source = Source.CACHE): String? {
@@ -129,7 +129,7 @@ class FirestoreRepository @Inject constructor(
     private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
         this.set(
             hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)),
-            SetOptions.merge()
+            SetOptions.merge(),
         ).addOnCompleteListener {
             doOnSuccess?.invoke()
         }

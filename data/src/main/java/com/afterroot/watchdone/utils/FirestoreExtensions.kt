@@ -30,7 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore
  */
 fun FirebaseFirestore.collectionWatchdone(
     id: String,
-    isUseOnlyProdDB: Boolean
+    isUseOnlyProdDB: Boolean,
 ): CollectionReference {
     return collection(Collection.USERS).document(id)
         .collection(if (isUseOnlyProdDB) Collection.WATCHDONE_PROD else Collection.WATCHDONE_AUTO)
@@ -45,5 +45,5 @@ fun FirebaseFirestore.collectionUsers() = collection(Collection.USERS)
 fun FirebaseAuth.getLocalUser() = LocalUser(
     name = currentUser?.displayName,
     email = currentUser?.email,
-    uid = currentUser?.uid
+    uid = currentUser?.uid,
 )

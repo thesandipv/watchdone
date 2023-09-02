@@ -20,19 +20,19 @@ import androidx.core.content.edit
 import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.model.LocalUser
-import com.afterroot.watchdone.resources.R as CommonR
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import timber.log.Timber
+import com.afterroot.watchdone.resources.R as CommonR
 
 /**
  * Helper Class for managing main preferences of App
  */
 class Settings @Inject constructor(
     @ApplicationContext val context: Context,
-    val gson: Gson
+    val gson: Gson,
 ) {
 
     init {
@@ -73,7 +73,7 @@ class Settings @Inject constructor(
 
     fun getStringSet(key: String, value: MutableSet<String>?) = preferences.getStringSet(
         key,
-        value
+        value,
     ).also {
         Timber.d("getStringSet: $key, $it")
     }
@@ -116,7 +116,7 @@ class Settings @Inject constructor(
     val theme: String?
         get() = getString(
             Constants.PREF_KEY_THEME,
-            context.getString(CommonR.string.theme_device_default)
+            context.getString(CommonR.string.theme_device_default),
         )
 
     @DebugPref

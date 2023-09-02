@@ -53,7 +53,7 @@ fun TextInput(
     keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
     validate: (String) -> Boolean = { true },
     onChange: (String) -> Unit,
-    onError: (String) -> Unit = {}
+    onError: (String) -> Unit = {},
 ) {
     var value by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
@@ -81,7 +81,7 @@ fun TextInput(
                 .padding(horizontal = 16.dp)
                 .padding(top = 8.dp),
             keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions
+            keyboardActions = keyboardActions,
         )
         AnimatedVisibility(visible = error) {
             Text(
@@ -91,7 +91,7 @@ fun TextInput(
                     .padding(horizontal = (16.dp * 2)),
                 maxLines = 1,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }
@@ -112,7 +112,7 @@ fun OutlinedTextInput(
     keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
     validate: (String) -> Boolean = { true },
     onChange: (String) -> Unit,
-    onError: (String) -> Unit = {}
+    onError: (String) -> Unit = {},
 ) {
     var value by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
@@ -140,7 +140,7 @@ fun OutlinedTextInput(
                 .padding(horizontal = 16.dp)
                 .padding(top = 8.dp),
             keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions
+            keyboardActions = keyboardActions,
         )
         AnimatedVisibility(visible = error) {
             Text(
@@ -150,7 +150,7 @@ fun OutlinedTextInput(
                     .padding(horizontal = (16.dp * 2)),
                 maxLines = 1,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }

@@ -31,8 +31,8 @@ import kotlinx.coroutines.flow.Flow
     entities = [Genre::class, Country::class],
     version = 2,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
-    ]
+        AutoMigration(from = 1, to = 2),
+    ],
 )
 abstract class MyDatabase : RoomDatabase() {
     abstract fun genreDao(): GenreDao

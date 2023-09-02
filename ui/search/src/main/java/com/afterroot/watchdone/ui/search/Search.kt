@@ -88,7 +88,7 @@ import kotlin.math.roundToInt
 @Composable
 fun Search(
     viewModel: SearchViewModel = hiltViewModel(),
-    itemSelectedCallback: ItemSelectedCallback<Multi>
+    itemSelectedCallback: ItemSelectedCallback<Multi>,
 ) {
     val viewState by viewModel.state.collectAsState()
     val movieItems = viewModel.searchMovies.collectAsLazyPagingItems()
@@ -129,7 +129,7 @@ fun Search(
         },
         onTVSelected = {
             viewModel.setMediaType(Multi.MediaType.TV_SERIES)
-        }
+        },
     )
 }
 
@@ -142,7 +142,7 @@ internal fun Search(
     tvItems: LazyPagingItems<TV>,
     onSearch: (String) -> Unit = {},
     onMovieSelected: () -> Unit = {},
-    onTVSelected: () -> Unit = {}
+    onTVSelected: () -> Unit = {},
 ) {
     var searchQuery by remember { mutableStateOf(state.query) }
     val listState = rememberLazyGridState()
@@ -164,7 +164,7 @@ internal fun Search(
         SearchBar(
             prefill = searchQuery.getQuery(),
             modifier = Modifier
-                .offset { IntOffset(x = 0, y = searchHeightOffset.value.roundToInt()) }
+                .offset { IntOffset(x = 0, y = searchHeightOffset.value.roundToInt()) },
         ) {
             searchQuery = searchQuery.query(it)
             onSearch(searchQuery.getQuery())
@@ -174,7 +174,7 @@ internal fun Search(
             AnimatedVisibility(
                 visible = state.isLoading && !state.empty,
                 enter = fadeIn(),
-                exit = fadeOut()
+                exit = fadeOut(),
             ) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
@@ -182,7 +182,7 @@ internal fun Search(
             AnimatedVisibility(
                 visible = !state.isLoading || state.empty,
                 enter = fadeIn(),
-                exit = fadeOut()
+                exit = fadeOut(),
             ) {
                 LazyVerticalGrid(
                     state = listState,
@@ -192,13 +192,13 @@ internal fun Search(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
                         .nestedScroll(nsc)
-                        .fillMaxHeight()
+                        .fillMaxHeight(),
                 ) {
                     fullSpanItem {
                         SearchChips(
                             preselect = state.mediaType ?: Multi.MediaType.MOVIE,
                             onMovieSelected = onMovieSelected,
-                            onTVSelected = onTVSelected
+                            onTVSelected = onTVSelected,
                         )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
@@ -214,7 +214,7 @@ internal fun Search(
                                     modifier = Modifier
                                         .animateItemPlacement()
                                         .fillMaxWidth()
-                                        .aspectRatio(2 / 3f)
+                                        .aspectRatio(2 / 3f),
                                 )
                             }
                         }
@@ -231,7 +231,7 @@ internal fun Search(
                                     modifier = Modifier
                                         .animateItemPlacement()
                                         .fillMaxWidth()
-                                        .aspectRatio(2 / 3f)
+                                        .aspectRatio(2 / 3f),
                                 )
                             }
                         }
@@ -247,7 +247,7 @@ internal fun Search(
 fun SearchBar(
     prefill: String = "",
     modifier: Modifier = Modifier,
-    onChange: (String) -> Unit = {}
+    onChange: (String) -> Unit = {},
 ) {
     Surface(modifier = modifier) {
         SearchTextInput(
@@ -256,7 +256,7 @@ fun SearchBar(
             prefillValue = prefill,
             hint = "Search movie or tv show...",
             showLabel = true,
-            onChange = onChange
+            onChange = onChange,
         )
     }
 }
@@ -278,7 +278,7 @@ fun SearchTextInput(
     keyboardActions: KeyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
     validate: (String) -> Boolean = { true },
     onChange: (String) -> Unit,
-    onError: (String) -> Unit = {}
+    onError: (String) -> Unit = {},
 ) {
     var value by remember { mutableStateOf(prefillValue) }
     var error by remember { mutableStateOf(false) }
@@ -320,7 +320,7 @@ fun SearchTextInput(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions
+            keyboardActions = keyboardActions,
         )
     }
 }
@@ -329,7 +329,7 @@ fun SearchTextInput(
 fun SearchChips(
     preselect: Multi.MediaType,
     onMovieSelected: () -> Unit,
-    onTVSelected: () -> Unit
+    onTVSelected: () -> Unit,
 ) {
     FilterChipGroup(
         modifier = Modifier,
@@ -342,7 +342,7 @@ fun SearchChips(
                 "Movie" -> onMovieSelected()
                 "TV" -> onTVSelected()
             }
-        }
+        },
     )
 }
 

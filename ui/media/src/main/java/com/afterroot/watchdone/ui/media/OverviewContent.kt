@@ -91,7 +91,7 @@ fun OverviewContent(
     watchProviders: State<ProviderResults> = State.loading(),
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onWatchProvidersClick: (link: String) -> Unit = { _ -> }
+    onWatchProvidersClick: (link: String) -> Unit = { _ -> },
 ) {
     val gutter = Layout.gutter
     val bodyMargin = Layout.bodyMargin
@@ -104,7 +104,7 @@ fun OverviewContent(
                 modifier = Modifier
                     .padding(start = bodyMargin)
                     .height(192.dp)
-                    .aspectRatio(2 / 3f)
+                    .aspectRatio(2 / 3f),
 
             )
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -116,7 +116,7 @@ fun OverviewContent(
                         it.name
                     } ?: tv?.genres?.map {
                         it.name
-                    } ?: emptyList()
+                    } ?: emptyList(),
                 )
 
                 (movie?.voteAverage ?: tv?.voteAverage)?.let {
@@ -124,10 +124,10 @@ fun OverviewContent(
                         text = stringResource(
                             id = R.string.media_info_rating_text,
                             it,
-                            movie?.voteCount ?: tv?.voteCount ?: 0
+                            movie?.voteCount ?: tv?.voteCount ?: 0,
                         ),
                         icon = Icons.Rounded.Star,
-                        modifier = Modifier.padding(horizontal = bodyMargin)
+                        modifier = Modifier.padding(horizontal = bodyMargin),
                     )
                 }
 
@@ -135,7 +135,7 @@ fun OverviewContent(
                     MetaText(
                         text = "Release Date: $it",
                         modifier = Modifier.padding(horizontal = bodyMargin),
-                        icon = Icons.Rounded.Event
+                        icon = Icons.Rounded.Event,
                     )
                 }
 
@@ -143,7 +143,7 @@ fun OverviewContent(
                     MetaText(
                         text = "Status: $it",
                         modifier = Modifier.padding(horizontal = bodyMargin),
-                        icon = Icons.Rounded.HourglassEmpty
+                        icon = Icons.Rounded.HourglassEmpty,
                     )
                 }
 
@@ -151,13 +151,13 @@ fun OverviewContent(
                     MetaText(
                         text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
                         modifier = Modifier.padding(horizontal = bodyMargin),
-                        icon = Icons.Rounded.LiveTv
+                        icon = Icons.Rounded.LiveTv,
                     )
                 }
 
                 watchProviders.composeWhen(success = { providers ->
                     val providersForCountry = providers.getProvidersForCountry(
-                        LocalSettings.current.country ?: "IN"
+                        LocalSettings.current.country ?: "IN",
                     )
                     WatchProviders(
                         modifier = Modifier.padding(horizontal = bodyMargin),
@@ -168,7 +168,7 @@ fun OverviewContent(
                             if (it != null) {
                                 onWatchProvidersClick(it)
                             }
-                        }
+                        },
                     )
 
                     WatchProviders(
@@ -180,7 +180,7 @@ fun OverviewContent(
                             if (it != null) {
                                 onWatchProvidersClick(it)
                             }
-                        }
+                        },
                     )
                 })
             }
@@ -208,14 +208,14 @@ fun OverviewContent(
                         isInWatchlist = isInWatchlist,
                         isWatched = isWatched,
                         onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
-                        onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) }
+                        onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) },
                     )
                 }
             }
         }
         OverviewText(
             text = (movie?.overview ?: tv?.overview) ?: "",
-            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
         )
     }
 }
@@ -226,7 +226,7 @@ fun WatchProviders(
     text: String? = null,
     link: String? = null,
     providers: List<Provider>? = emptyList(),
-    onClick: (link: String?) -> Unit = { _ -> }
+    onClick: (link: String?) -> Unit = { _ -> },
 ) {
     if (providers?.isNotEmpty() == true) {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -235,13 +235,13 @@ fun WatchProviders(
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 providers.forEach {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(
-                                LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath
+                                LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath,
                             ).crossfade(true).build(),
                         contentDescription = it.providerName,
                         modifier = Modifier
@@ -249,7 +249,7 @@ fun WatchProviders(
                             .clip(RoundedCornerShape(8.dp))
                             .clickable {
                                 onClick(link)
-                            }
+                            },
                     )
                 }
             }
@@ -261,13 +261,13 @@ fun WatchProviders(
 fun MetaText(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) {
             Icon(
                 imageVector = icon,
                 contentDescription = text,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
             )
 
             Spacer(modifier = Modifier.padding(2.dp))
@@ -290,7 +290,7 @@ fun OverviewText(text: String, modifier: Modifier = Modifier) {
             modifier = Modifier
                 .animateContentSize(animationSpec = tween(100))
                 .clickable { maxLines = if (maxLines == 4) Int.MAX_VALUE else 4 }
-                .then(modifier)
+                .then(modifier),
         )
     }
 }
@@ -301,12 +301,12 @@ fun WatchlistActions(
     isInWatchlist: Boolean = false,
     isWatched: Boolean = false,
     onWatchlistAction: (checked: Boolean) -> Unit,
-    onWatchedAction: (checked: Boolean) -> Unit
+    onWatchedAction: (checked: Boolean) -> Unit,
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         TwoStateButton(
             modifier = Modifier.weight(1f),
@@ -318,7 +318,7 @@ fun WatchlistActions(
             uncheckedText = "Add to Watchlist",
             checkedIcon = Icons.Filled.Bookmark,
             uncheckedIcon = Icons.Outlined.Bookmark,
-            onClick = onWatchlistAction
+            onClick = onWatchlistAction,
         )
 
         TwoStateOutlinedButton(
@@ -331,7 +331,7 @@ fun WatchlistActions(
             uncheckedText = "Mark as Watched",
             checkedIcon = Icons.Filled.Clear,
             uncheckedIcon = Icons.Filled.Done,
-            onClick = onWatchedAction
+            onClick = onWatchedAction,
         )
     }
 }
@@ -345,25 +345,25 @@ fun TwoStateButton(
     uncheckedText: String,
     checkedIcon: ImageVector,
     uncheckedIcon: ImageVector,
-    onClick: (checked: Boolean) -> Unit
+    onClick: (checked: Boolean) -> Unit,
 ) {
     Button(
         modifier = modifier,
         onClick = {
             onClick(!checked)
         },
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         Icon(
             if (checked) checkedIcon else uncheckedIcon,
             contentDescription = checkedText,
-            modifier = Modifier.size(ButtonDefaults.IconSize)
+            modifier = Modifier.size(ButtonDefaults.IconSize),
         )
         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
         Text(
             text = if (checked) checkedText else uncheckedText,
             textAlign = TextAlign.Center,
-            modifier = Modifier.animateContentSize()
+            modifier = Modifier.animateContentSize(),
         )
     }
 }
@@ -377,25 +377,25 @@ fun TwoStateOutlinedButton(
     uncheckedText: String,
     checkedIcon: ImageVector,
     uncheckedIcon: ImageVector,
-    onClick: (checked: Boolean) -> Unit
+    onClick: (checked: Boolean) -> Unit,
 ) {
     OutlinedButton(
         modifier = modifier,
         onClick = {
             onClick(!checked)
         },
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         Icon(
             if (checked) checkedIcon else uncheckedIcon,
             contentDescription = checkedText,
-            modifier = Modifier.size(ButtonDefaults.IconSize)
+            modifier = Modifier.size(ButtonDefaults.IconSize),
         )
         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
         Text(
             text = if (checked) checkedText else uncheckedText,
             textAlign = TextAlign.Center,
-            modifier = Modifier.animateContentSize()
+            modifier = Modifier.animateContentSize(),
         )
     }
 }
@@ -407,7 +407,7 @@ fun PreviewOverviewContent() {
         val movie = Movie(
             voteAverage = 7.2,
             overview = "After his retirement is interrupted by Gorr the God Butcher, a galactic killer who seeks the extinction of the gods, Thor Odinson enlists the help of King Valkyrie, Korg, and ex-girlfriend Jane Foster, who now wields Mjolnir as the Mighty Thor. Together they embark upon a harrowing cosmic adventure to uncover the mystery of the God Butcher’s vengeance and stop him before it’s too late.",
-            releaseDate = "21/08/22"
+            releaseDate = "21/08/22",
         )
         OverviewContent(movie = movie)
     }

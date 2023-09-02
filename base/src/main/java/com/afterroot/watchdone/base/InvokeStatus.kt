@@ -34,7 +34,7 @@ data class InvokeError(val throwable: Throwable) : InvokeStatus()
 fun Flow<InvokeStatus>.watchStatus(
     scope: CoroutineScope,
     tag: String = "",
-    onSuccess: () -> Unit = {}
+    onSuccess: () -> Unit = {},
 ): Job {
     return scope.launch { collectStatus(tag, onSuccess) }
 }
@@ -46,7 +46,7 @@ fun Flow<InvokeStatus>.watchStatus(
  */
 private suspend fun Flow<InvokeStatus>.collectStatus(
     tag: String = "",
-    onSuccess: () -> Unit = {}
+    onSuccess: () -> Unit = {},
 ) = collect { status ->
     val logTag = if (tag != "") tag else tag
 
@@ -60,7 +60,7 @@ private suspend fun Flow<InvokeStatus>.collectStatus(
         }
         is InvokeError -> {
             Timber.tag(
-                logTag
+                logTag,
             ).e(status.throwable, "collectStatus: Error: ${status.throwable.message}")
         }
     }

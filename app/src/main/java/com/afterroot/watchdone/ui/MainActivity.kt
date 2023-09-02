@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                 // dark icons if we're in light theme
                 systemUiController.setSystemBarsColor(
                     color = Color.Transparent,
-                    darkIcons = useDarkIcons
+                    darkIcons = useDarkIcons,
                 )
 
                 onDispose {}
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                         lifecycleScope.launch {
                             shareToInstagram(poster, mediaId, settings)
                         }
-                    }
+                    },
                 )
             }
         }
@@ -193,9 +193,9 @@ class MainActivity : AppCompatActivity() {
                     state = it,
                     positive = { dialog?.dismiss() },
                     negative = { finish() },
-                    isShowHide = true
+                    isShowHide = true,
                 )
-            }
+            },
         )
     }
 
@@ -220,13 +220,13 @@ class MainActivity : AppCompatActivity() {
                                         name = curUser.displayName,
                                         email = curUser.email,
                                         uid = curUser.uid,
-                                        fcmId = tokenTask.result
+                                        fcmId = tokenTask.result,
                                     )
                                     userRef.set(user).addOnCompleteListener { setUserTask ->
                                         if (!setUserTask.isSuccessful) {
                                             Timber.e(
                                                 setUserTask.exception,
-                                                "Can't create firebaseUser"
+                                                "Can't create firebaseUser",
                                             )
                                         }
                                     }
@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                                 Timber.e(getUserTask.exception, "Unknown Error")
                             }
                         }
-                    }
+                    },
                 )
         } catch (e: Exception) {
             Timber.e("addUserInfoInDB: $e")

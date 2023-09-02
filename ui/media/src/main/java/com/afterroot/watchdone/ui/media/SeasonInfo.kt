@@ -48,12 +48,12 @@ fun Seasons(
     season: State<Season>,
     watchedEpisodes: List<String>,
     onSeasonSelected: (Int) -> Unit,
-    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
+    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
 ) {
     ProvideTextStyle(value = ubuntuTypography.titleMedium) {
         Text(
             text = "Seasons",
-            modifier = Modifier.padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter)
+            modifier = Modifier.padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter),
         )
     }
 
@@ -61,7 +61,7 @@ fun Seasons(
     SeasonsDetail(
         season = season,
         watchedEpisodes = watchedEpisodes,
-        onWatchClicked = onWatchClicked
+        onWatchClicked = onWatchClicked,
     )
 }
 
@@ -78,7 +78,7 @@ fun SeasonsChips(tv: TV, onSeasonSelected: (Int) -> Unit) {
         onSelectedChangedIndexed = { index, _, _ ->
             onSeasonSelected(index + 1)
         },
-        preSelectItem = seasonsList?.first()
+        preSelectItem = seasonsList?.first(),
     )
 }
 
@@ -92,14 +92,14 @@ fun manufactureSeasonList(numberOfSeasons: Int): List<String> = mutableListOf<St
 fun SeasonsDetail(
     season: State<Season>,
     watchedEpisodes: List<String>,
-    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
+    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
 ) {
     val bodyMargin = Layout.bodyMargin
     val gutter = Layout.gutter
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.animateContentSize()
+        modifier = Modifier.animateContentSize(),
     ) {
         when (season) {
             is State.Success -> {
@@ -107,7 +107,7 @@ fun SeasonsDetail(
                     if (it.isNotBlank()) {
                         OverviewText(
                             text = it,
-                            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+                            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
                         )
                     }
                 }
@@ -115,14 +115,14 @@ fun SeasonsDetail(
                 season.data.episodes?.let { episodes ->
                     Text(
                         text = "${episodes.count()} Episodes",
-                        modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+                        modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
                     )
                     episodes.forEach { episode ->
                         val watched = watchedEpisodes.contains(episode.id.toString())
                         EpisodeItem(
                             episode = episode,
                             isWatched = watched,
-                            onWatchClicked = onWatchClicked
+                            onWatchClicked = onWatchClicked,
                         )
                     }
                 }
@@ -130,7 +130,7 @@ fun SeasonsDetail(
             is State.Failed -> {
                 Text(
                     text = "Error while loading",
-                    modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter)
+                    modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
                 )
             }
             is State.Loading -> {
@@ -144,14 +144,14 @@ fun SeasonsDetail(
 fun EpisodeItem(
     episode: Episode,
     isWatched: Boolean = false,
-    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit
+    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column {
             ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
@@ -164,17 +164,17 @@ fun EpisodeItem(
             checked = isWatched,
             onCheckedChange = {
                 onWatchClicked(episode, it)
-            }
+            },
         ) {
             if (isWatched) {
                 Icon(
                     imageVector = Icons.Rounded.Clear,
-                    contentDescription = "Remove Episode from Watched"
+                    contentDescription = "Remove Episode from Watched",
                 )
             } else {
                 Icon(
                     imageVector = Icons.Rounded.Done,
-                    contentDescription = "Add Episode from Watched"
+                    contentDescription = "Add Episode from Watched",
                 )
             }
         }
@@ -186,7 +186,7 @@ fun EpisodeItemPlaceholder() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height((32 * 8).dp)
+            .height((32 * 8).dp),
     ) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }

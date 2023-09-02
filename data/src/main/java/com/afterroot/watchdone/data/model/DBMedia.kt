@@ -30,7 +30,7 @@ data class DBMedia(
     // TODO update in ards
     @Deprecated("Use watched instead.")
     var watchStatus: Map<String, Boolean> = emptyMap(),
-    var watched: List<String> = emptyList()
+    var watched: List<String> = emptyList(),
 ) {
     companion object {
         val Empty = DBMedia()

@@ -32,7 +32,7 @@ import androidx.compose.runtime.Composable
 fun SwipeDismissSnackbar(
     data: SnackbarData,
     onDismiss: (() -> Unit)? = null,
-    snackbar: @Composable (SnackbarData) -> Unit = { Snackbar(it) }
+    snackbar: @Composable (SnackbarData) -> Unit = { Snackbar(it) },
 ) {
     snackbar(data)
 
@@ -50,6 +50,6 @@ fun SwipeDismissSnackbar(
         state = dismissState,
         directions = setOf(DismissDirection.StartToEnd, DismissDirection.EndToStart),
         background = {},
-        dismissContent = { snackbar(data) }
+        dismissContent = { snackbar(data) },
     )
 }

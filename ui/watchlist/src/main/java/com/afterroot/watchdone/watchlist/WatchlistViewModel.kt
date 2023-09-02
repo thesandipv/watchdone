@@ -41,7 +41,7 @@ class WatchlistViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private var db: FirebaseFirestore,
     var settings: Settings,
-    var firebaseUtils: FirebaseUtils
+    var firebaseUtils: FirebaseUtils,
 ) : ViewModel() {
     private val flowIsLoading = MutableStateFlow(false)
     private val sortAscending = MutableStateFlow(settings.ascSort)
@@ -54,13 +54,13 @@ class WatchlistViewModel @Inject constructor(
             flowIsLoading,
             sortAscending,
             filters,
-            uiMessageManager.message
+            uiMessageManager.message,
         ) { isLoading, sortAsc, filters, message ->
             WatchlistState(loading = isLoading, sortAscending = sortAsc, filters = filters)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = WatchlistState.Empty
+            initialValue = WatchlistState.Empty,
         )
 
     init {
@@ -83,7 +83,7 @@ class WatchlistViewModel @Inject constructor(
             db,
             settings,
             firebaseUtils,
-            filters.value
+            filters.value,
         )
     }.flow.cachedIn(viewModelScope)
 }

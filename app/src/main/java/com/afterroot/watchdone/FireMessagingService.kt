@@ -28,7 +28,6 @@ import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.utils.getMaterialColor
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.resources.R as CommonR
 import com.afterroot.watchdone.ui.MainActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -36,6 +35,7 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import timber.log.Timber
+import com.afterroot.watchdone.resources.R as CommonR
 
 /**
  * FCM Service that will be used only if app is in foreground state.
@@ -77,7 +77,7 @@ class FireMessagingService : FirebaseMessagingService() {
                 url = remoteMessage.data["link"],
                 channelId = remoteMessage.notification!!.channelId,
                 channelName = remoteMessage.data["cname"],
-                title = remoteMessage.notification?.title
+                title = remoteMessage.notification?.title,
             )
         }
     }
@@ -88,7 +88,7 @@ class FireMessagingService : FirebaseMessagingService() {
         url: String? = "",
         channelId: String? = getString(CommonR.string.fcm_channel_id),
         channelName: String? = getString(CommonR.string.fcm_channel_default),
-        title: String? = getString(R.string.app_name)
+        title: String? = getString(R.string.app_name),
     ) {
         val intent: Intent
         if (url!!.isEmpty()) {
@@ -104,7 +104,7 @@ class FireMessagingService : FirebaseMessagingService() {
                 this,
                 0,
                 intent,
-                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE,
             )
         } else {
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
@@ -127,7 +127,7 @@ class FireMessagingService : FirebaseMessagingService() {
             val channel = NotificationChannel(
                 channelId ?: getString(CommonR.string.fcm_channel_id),
                 channelName ?: getString(CommonR.string.fcm_channel_default),
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_DEFAULT,
             )
             notificationManager.createNotificationChannel(channel)
         }

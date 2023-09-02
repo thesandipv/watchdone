@@ -45,7 +45,7 @@ class MovieInfoTest : DataTest() {
             val response = moviesRepository.getFullMovieInfo(
                 550,
                 MovieAppendableResponses.images,
-                MovieAppendableResponses.videos
+                MovieAppendableResponses.videos,
             )
             Assert.assertNotNull("Images is null", response.images(ArtworkType.POSTER))
             response.images(ArtworkType.POSTER)?.forEach {

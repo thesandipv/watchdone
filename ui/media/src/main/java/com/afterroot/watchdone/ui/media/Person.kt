@@ -54,7 +54,7 @@ fun <T : Person> PersonRow(
     modifier: Modifier = Modifier,
     title: String,
     refreshing: Boolean = false,
-    onMoreClick: (() -> Unit)? = null
+    onMoreClick: (() -> Unit)? = null,
 ) {
     Column(modifier) {
         Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
@@ -62,9 +62,9 @@ fun <T : Person> PersonRow(
                 TextButton(
                     onClick = onMoreClick,
                     colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary
+                        contentColor = MaterialTheme.colorScheme.secondary,
                     ),
-                    modifier = Modifier.alignBy(FirstBaseline)
+                    modifier = Modifier.alignBy(FirstBaseline),
                 ) {
                     Text(text = "More")
                 }
@@ -82,7 +82,7 @@ fun <T : Person> PersonRow(
 private fun <T : Person> PersonRow(
     items: List<T>,
     onItemClick: (index: Int, item: T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
     val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -91,7 +91,7 @@ private fun <T : Person> PersonRow(
         state = listState,
         modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         itemsIndexed(
             items = items,
@@ -102,7 +102,7 @@ private fun <T : Person> PersonRow(
                 PersonItem(item = item, onClick = {
                     onItemClick(index, item)
                 })
-            }
+            },
         )
     }
 }
@@ -111,7 +111,7 @@ private fun <T : Person> PersonRow(
 fun <T : Person> PersonItem(
     item: T,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     Column(modifier = modifier.width(128.dp)) {
         BasePosterCard(
@@ -122,7 +122,7 @@ fun <T : Person> PersonItem(
                 .fillMaxWidth()
                 .clickable {
                     onClick?.invoke()
-                }
+                },
         )
 
         Spacer(modifier = Modifier.size(4.dp))
@@ -143,8 +143,8 @@ fun <T : Person> PersonItem(
         ProvideTextStyle(
             value = ubuntuTypography.bodySmall.copy(
                 color = LocalContentColor.current.copy(alpha = 0.8f),
-                fontStyle = FontStyle.Italic
-            )
+                fontStyle = FontStyle.Italic,
+            ),
         ) {
             item.name?.let { Text(text = it) }
         }
@@ -160,7 +160,7 @@ fun PreviewPersonItem() {
             posterPath = "na",
             modifier = Modifier
                 .height(192.dp)
-                .aspectRatio(2 / 3f)
+                .aspectRatio(2 / 3f),
         )
         ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
             Text(text = "First Last")

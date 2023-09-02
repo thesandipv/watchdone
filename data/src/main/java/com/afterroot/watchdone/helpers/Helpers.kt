@@ -41,7 +41,7 @@ fun migrateFirestore(
     watchlistSnapshot: QuerySnapshot,
     uid: String,
     isUseProdDb: Boolean,
-    successBlock: (() -> Unit)? = null
+    successBlock: (() -> Unit)? = null,
 ) {
     firestore.runBatch { batch ->
         watchlistSnapshot.documents.forEach {
@@ -56,7 +56,7 @@ fun migrateFirestore(
                         val docRef =
                             firestore.collectionWatchdone(
                                 uid,
-                                isUseProdDb
+                                isUseProdDb,
                             ).collectionWatchlistItems().document(docId)
                         batch.delete(docRef) // First delete the document
                         media?.let { dbMedia ->
@@ -74,7 +74,7 @@ fun migrateFirestore(
                         val docRef =
                             firestore.collectionWatchdone(
                                 uid,
-                                isUseProdDb
+                                isUseProdDb,
                             ).collectionWatchlistItems().document(docId)
                         batch.delete(docRef) // First delete the document
                         media?.let { dbMedia ->
@@ -96,7 +96,7 @@ fun migrateFirestore(
 suspend fun FirebaseFirestore.filterWatchlist(
     uid: String,
     isUseProdDb: Boolean,
-    filter: Query.() -> Query
+    filter: Query.() -> Query,
 ): QuerySnapshot {
     return collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().filter().get().await()
 }

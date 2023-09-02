@@ -47,7 +47,7 @@ class ProfileViewModel @Inject constructor(
     private val getProfile: GetProfile,
     private val setProfile: SetProfile,
     val firebaseUtils: FirebaseUtils,
-    private val settings: Settings
+    private val settings: Settings,
 ) : ViewModel() {
 
     private val uiMessageManager = UiMessageManager()
@@ -57,7 +57,7 @@ class ProfileViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = ProfileViewState.Empty
+        initialValue = ProfileViewState.Empty,
     )
 
     val profile = MutableStateFlow<State<NetworkUser>>(State.loading())
@@ -91,7 +91,7 @@ class ProfileViewModel @Inject constructor(
                     is ProfileActions.ShowMessage -> showMessageAction(action)
                     ProfileActions.Refresh -> refresh(true)
                     else -> Timber.d(
-                        "collectAction: This action not handled by ProfileViewModel. Action: $action"
+                        "collectAction: This action not handled by ProfileViewModel. Action: $action",
                     )
                 }
             }
@@ -124,7 +124,7 @@ class ProfileViewModel @Inject constructor(
                         }
                         is State.Failed -> {
                             submitAction(
-                                ProfileActions.ShowMessage(UiMessage("Failed to save Profile"))
+                                ProfileActions.ShowMessage(UiMessage("Failed to save Profile")),
                             )
                         }
                         else -> {
@@ -134,8 +134,8 @@ class ProfileViewModel @Inject constructor(
             } else {
                 submitAction(
                     ProfileActions.ShowMessage(
-                        UiMessage("Failed to save Profile. Please sign in again.")
-                    )
+                        UiMessage("Failed to save Profile. Please sign in again."),
+                    ),
                 )
             }
         }
