@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -65,7 +66,6 @@ import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.getLocalUser
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
 import com.firebase.ui.auth.AuthUI
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
