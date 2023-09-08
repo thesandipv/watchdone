@@ -72,6 +72,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import app.tivi.common.compose.fullSpanItem
 import app.tivi.common.compose.gridItemsIndexed
 import app.tivi.common.compose.ui.plus
@@ -107,10 +108,12 @@ fun Search(
             viewModel.setLoading(movieItems.loadState.refresh == LoadState.Loading)
             viewModel.setEmpty(movieItems.itemCount == 0 || viewState.query.getQuery().isBlank())
         }
+
         Multi.MediaType.TV_SERIES -> {
             viewModel.setLoading(tvItems.loadState.refresh == LoadState.Loading)
             viewModel.setEmpty(tvItems.itemCount == 0 || viewState.query.getQuery().isBlank())
         }
+
         else -> {}
     }
 
@@ -202,9 +205,8 @@ internal fun Search(
                         )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
-                        gridItemsIndexed(items = movieItems, key = { index, _ ->
-                            index
-                        }) { index, movie ->
+                        items(count = movieItems.itemCount, key = movieItems.itemKey { it.id }) { index ->
+                            val movie = movieItems[index]
                             if (movie != null) {
                                 MovieCard(
                                     movie = movie,
@@ -219,9 +221,8 @@ internal fun Search(
                             }
                         }
                     } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
-                        gridItemsIndexed(items = tvItems, key = { index, _ ->
-                            index
-                        }) { index, tv ->
+                        items(count = tvItems.itemCount, key = tvItems.itemKey { it.id }) { index ->
+                            val tv = tvItems[index]
                             if (tv != null) {
                                 TVCard(
                                     tv = tv,
@@ -305,6 +306,7 @@ fun SearchTextInput(
                         error = false
                         onChange(it)
                     }
+
                     else -> {
                         error = true
                         onError(it)

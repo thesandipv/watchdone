@@ -50,8 +50,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import app.tivi.common.compose.fullSpanItem
-import app.tivi.common.compose.gridItems
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FilterChipGroup
@@ -178,7 +178,8 @@ internal fun Discover(
                         )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
-                        gridItems(items = movieItems, key = { it.id }) { movie ->
+                        items(count = movieItems.itemCount, key = movieItems.itemKey { it.id }) {index ->
+                            val movie = movieItems[index]
                             if (movie != null) {
                                 MovieCard(
                                     movie = movie,
@@ -191,9 +192,11 @@ internal fun Discover(
                                         .aspectRatio(2 / 3f),
                                 )
                             }
+
                         }
                     } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
-                        gridItems(items = tvItems, key = { it.id }) { tv ->
+                        items(count = tvItems.itemCount, key = tvItems.itemKey{ it.id }) { index ->
+                            val tv = tvItems[index]
                             if (tv != null) {
                                 TVCard(
                                     tv = tv,
