@@ -74,7 +74,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import app.tivi.common.compose.fullSpanItem
-import app.tivi.common.compose.gridItemsIndexed
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MovieCard
@@ -205,7 +204,10 @@ internal fun Search(
                         )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
-                        items(count = movieItems.itemCount, key = movieItems.itemKey { it.id }) { index ->
+                        items(
+                            count = movieItems.itemCount,
+                            key = movieItems.itemKey { it.id },
+                        ) { index ->
                             val movie = movieItems[index]
                             if (movie != null) {
                                 MovieCard(

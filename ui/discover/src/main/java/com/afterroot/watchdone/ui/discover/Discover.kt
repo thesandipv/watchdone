@@ -178,7 +178,10 @@ internal fun Discover(
                         )
                     }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
-                        items(count = movieItems.itemCount, key = movieItems.itemKey { it.id }) {index ->
+                        items(
+                            count = movieItems.itemCount,
+                            key = movieItems.itemKey { it.id },
+                        ) { index ->
                             val movie = movieItems[index]
                             if (movie != null) {
                                 MovieCard(
@@ -192,10 +195,9 @@ internal fun Discover(
                                         .aspectRatio(2 / 3f),
                                 )
                             }
-
                         }
                     } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
-                        items(count = tvItems.itemCount, key = tvItems.itemKey{ it.id }) { index ->
+                        items(count = tvItems.itemCount, key = tvItems.itemKey { it.id }) { index ->
                             val tv = tvItems[index]
                             if (tv != null) {
                                 TVCard(
