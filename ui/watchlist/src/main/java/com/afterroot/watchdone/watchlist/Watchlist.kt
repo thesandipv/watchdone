@@ -85,8 +85,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import app.tivi.common.compose.fullSpanItem
-import app.tivi.common.compose.gridItemsIndexed
 import app.tivi.common.compose.ui.plus
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -300,13 +300,18 @@ private fun Watchlist(
                             }
                         }
                     }
-                    gridItemsIndexed(items = watchlist, key = { index, item ->
-                        when (item.mediaType) {
-                            Multi.MediaType.MOVIE -> (item as Movie).id
-                            Multi.MediaType.TV_SERIES -> (item as TV).id
-                            else -> index
-                        }
-                    }) { _, item ->
+
+                    items(
+                        count = watchlist.itemCount,
+                        key = watchlist.itemKey { item ->
+                            when (item.mediaType) {
+                                Multi.MediaType.MOVIE -> (item as Movie).id
+                                Multi.MediaType.TV_SERIES -> (item as TV).id
+                                else -> null
+                            }!!
+                        },
+                    ) { index ->
+                        val item = watchlist[index]
                         when (item?.mediaType) {
                             Multi.MediaType.MOVIE -> {
                                 item as Movie
