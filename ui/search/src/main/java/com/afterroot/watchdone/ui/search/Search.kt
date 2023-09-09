@@ -51,6 +51,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -150,13 +151,13 @@ internal fun Search(
     val listState = rememberLazyGridState()
     val searchHeight = TextFieldDefaults.MinHeight + 32.dp
     val searchHeightPx = with(LocalDensity.current) { searchHeight.roundToPx().toFloat() }
-    val searchHeightOffset = remember { mutableStateOf(0f) }
+    val searchHeightOffset = remember { mutableFloatStateOf(0f) }
 
     val nsc = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val newOffset = searchHeightOffset.value + available.y
-                searchHeightOffset.value = newOffset.coerceIn(-searchHeightPx, 0f)
+                val newOffset = searchHeightOffset.floatValue + available.y
+                searchHeightOffset.floatValue = newOffset.coerceIn(-searchHeightPx, 0f)
                 return Offset.Zero
             }
         }
@@ -166,7 +167,7 @@ internal fun Search(
         SearchBar(
             prefill = searchQuery.getQuery(),
             modifier = Modifier
-                .offset { IntOffset(x = 0, y = searchHeightOffset.value.roundToInt()) },
+                .offset { IntOffset(x = 0, y = searchHeightOffset.floatValue.roundToInt()) },
         ) {
             searchQuery = searchQuery.query(it)
             onSearch(searchQuery.getQuery())
