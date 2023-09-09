@@ -40,6 +40,7 @@ import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +55,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -152,6 +154,8 @@ internal fun Search(
     val searchHeight = TextFieldDefaults.MinHeight + 32.dp
     val searchHeightPx = with(LocalDensity.current) { searchHeight.roundToPx().toFloat() }
     val searchHeightOffset = remember { mutableFloatStateOf(0f) }
+    var active by rememberSaveable { mutableStateOf(false) }
+    var searchText by rememberSaveable { mutableStateOf(state.query.getQuery()) }
 
     val nsc = remember {
         object : NestedScrollConnection {
@@ -163,17 +167,25 @@ internal fun Search(
         }
     }
 
-    Scaffold(topBar = {
-        SearchBar(
-            prefill = searchQuery.getQuery(),
-            modifier = Modifier
-                .offset { IntOffset(x = 0, y = searchHeightOffset.floatValue.roundToInt()) },
-        ) {
-            searchQuery = searchQuery.query(it)
-            onSearch(searchQuery.getQuery())
-        }
-    }, modifier = Modifier.fillMaxSize()) { paddingValues ->
+    Scaffold( modifier = Modifier.fillMaxSize()) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
+            DockedSearchBar(
+                query = searchText,
+                onQueryChange = { searchText = it },
+                onSearch = {
+                    active = false
+                    searchQuery = searchQuery.query(it)
+                    onSearch(searchQuery.getQuery())
+                },
+                active = false,
+                onActiveChange = { active = it },
+                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset { IntOffset(x = 0, y = searchHeightOffset.floatValue.roundToInt()) }
+            ) {
+            }
+
             AnimatedVisibility(
                 visible = state.isLoading && !state.empty,
                 enter = fadeIn(),
