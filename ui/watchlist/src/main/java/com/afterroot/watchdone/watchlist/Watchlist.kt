@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
@@ -47,6 +48,7 @@ import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.LiveTv
 import androidx.compose.material.icons.rounded.Movie
@@ -92,6 +94,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.components.AssistChip
+import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.DynamicChipGroup
 import com.afterroot.ui.common.compose.components.LocalPosterSize
@@ -186,7 +189,7 @@ private fun Watchlist(
             if (watchlist.itemCount != 0) {
                 LazyVerticalGrid(
                     state = listState,
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(1),
                     contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -194,6 +197,7 @@ private fun Watchlist(
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .fillMaxHeight(),
                 ) {
+                    // Filters Item
                     fullSpanItem {
                         Row(
                             modifier = Modifier.horizontalScroll(scrollState),
@@ -311,47 +315,15 @@ private fun Watchlist(
                             }!!
                         },
                     ) { index ->
-                        val item = watchlist[index]
-                        when (item?.mediaType) {
-                            Multi.MediaType.MOVIE -> {
-                                item as Movie
-                                WatchlistItem(
-                                    poster = item.posterPath,
-                                    title = item.title,
-                                    rating = item.rating(),
-                                    releaseDate = item.releaseDate,
-                                    modifier = Modifier
-                                        .animateItemPlacement()
-                                        .fillMaxWidth()
-                                        .aspectRatio(2 / 3f),
-                                    isWatched = item.isWatched,
-                                    mediaType = item.mediaType,
-                                    onClick = { itemSelectedCallback.onClick(0, null, item) },
-                                )
-                            }
-
-                            Multi.MediaType.TV_SERIES -> {
-                                item as TV
-                                WatchlistItem(
-                                    poster = item.posterPath,
-                                    title = item.name,
-                                    rating = item.rating(),
-                                    releaseDate = item.releaseDate,
-                                    modifier = Modifier
-                                        .animateItemPlacement()
-                                        .fillMaxWidth()
-                                        .aspectRatio(2 / 3f),
-                                    isWatched = item.isWatched,
-                                    mediaType = item.mediaType,
-                                    onClick = { itemSelectedCallback.onClick(0, null, item) },
-                                )
-                            }
-
-                            else -> {
-                                // BLANK
-                            }
+                        watchlist[index]?.let {
+                            WatchlistItem(
+                                item = it,
+                                type = WatchlistType.LIST, // TODO add setting to switch between list and grid.
+                                itemSelectedCallback = itemSelectedCallback,
+                            )
                         }
                     }
+
                     fullSpanItem {
                         Spacer(modifier = Modifier.height(8.dp)) // Adjustment
                     }
@@ -370,8 +342,165 @@ private fun Watchlist(
     }
 }
 
+enum class WatchlistType {
+    GRID, LIST
+}
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WatchlistItem(
+fun LazyGridItemScope.WatchlistItem(
+    modifier: Modifier = Modifier,
+    item: Multi,
+    type: WatchlistType,
+    itemSelectedCallback: ItemSelectedCallback<Multi>,
+) {
+    when (item.mediaType) {
+        Multi.MediaType.MOVIE -> {
+            item as Movie
+            when (type) {
+                WatchlistType.LIST -> {
+                    ListWatchlistItem(
+                        poster = item.posterPath,
+                        title = item.title,
+                        rating = item.rating(),
+                        releaseDate = item.releaseDate,
+                        modifier = Modifier
+                            .animateItemPlacement()
+                            .fillMaxWidth(),
+                        isWatched = item.isWatched,
+                        mediaType = item.mediaType,
+                        onClick = { itemSelectedCallback.onClick(0, null, item) },
+                    )
+                }
+
+                WatchlistType.GRID -> {
+                    GridWatchlistItem(
+                        poster = item.posterPath,
+                        title = item.title,
+                        rating = item.rating(),
+                        releaseDate = item.releaseDate,
+                        modifier = Modifier
+                            .animateItemPlacement()
+                            .fillMaxWidth()
+                            .aspectRatio(2 / 3f),
+                        isWatched = item.isWatched,
+                        mediaType = item.mediaType,
+                        onClick = { itemSelectedCallback.onClick(0, null, item) },
+                    )
+                }
+            }
+        }
+
+        Multi.MediaType.TV_SERIES -> {
+            item as TV
+            when (type) {
+                WatchlistType.LIST -> {
+                    ListWatchlistItem(
+                        poster = item.posterPath,
+                        title = item.name,
+                        rating = item.rating(),
+                        releaseDate = item.releaseDate,
+                        modifier = Modifier
+                            .animateItemPlacement()
+                            .fillMaxWidth(),
+                        isWatched = item.isWatched,
+                        mediaType = item.mediaType,
+                        onClick = { itemSelectedCallback.onClick(0, null, item) },
+                    )
+                }
+
+                WatchlistType.GRID -> {
+                    GridWatchlistItem(
+                        poster = item.posterPath,
+                        title = item.name,
+                        rating = item.rating(),
+                        releaseDate = item.releaseDate,
+                        modifier = Modifier
+                            .animateItemPlacement()
+                            .fillMaxWidth()
+                            .aspectRatio(2 / 3f),
+                        isWatched = item.isWatched,
+                        mediaType = item.mediaType,
+                        onClick = { itemSelectedCallback.onClick(0, null, item) },
+                    )
+                }
+            }
+        }
+
+        else -> {
+            // BLANK
+        }
+    }
+}
+
+@Composable
+fun ListWatchlistItem(
+    poster: String?,
+    title: String?,
+    rating: String?,
+    releaseDate: String?,
+    mediaType: Multi.MediaType,
+    modifier: Modifier = Modifier,
+    isWatched: Boolean = false,
+    onClick: (() -> Unit)? = {},
+) {
+    Row(
+        modifier = modifier.then(
+            if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        poster?.let {
+            BasePosterCard(
+                modifier = Modifier
+                    .height(128.dp)
+                    .aspectRatio(2 / 3f),
+                title = title,
+                posterPath = poster,
+            )
+        }
+
+        Spacer(modifier = Modifier.size(16.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterVertically),
+        ) {
+            title?.let {
+                ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+                    MetaText(
+                        text = it,
+                        icon = when (mediaType) {
+                            Multi.MediaType.MOVIE -> Icons.Rounded.Movie
+                            Multi.MediaType.TV_SERIES -> Icons.Rounded.LiveTv
+                            else -> null
+                        },
+                    ) {
+                        Text(text = it, softWrap = false, overflow = TextOverflow.Ellipsis)
+                    }
+                }
+            }
+            releaseDate?.let {
+                ProvideTextStyle(value = ubuntuTypography.labelSmall) {
+                    MetaText(text = it, icon = Icons.Rounded.Event) {
+                        Text(text = it, modifier = Modifier)
+                    }
+                }
+            }
+            rating?.let {
+                MetaText(
+                    text = it,
+                    modifier = Modifier,
+                    icon = Icons.Rounded.Star,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun GridWatchlistItem(
     poster: String?,
     title: String?,
     rating: String?,
