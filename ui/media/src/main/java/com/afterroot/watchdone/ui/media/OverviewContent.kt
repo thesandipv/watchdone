@@ -47,7 +47,7 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -106,7 +106,7 @@ fun OverviewContent(
                     .height(192.dp)
                     .aspectRatio(2 / 3f),
 
-            )
+                )
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 SuggestionChipGroup(
                     chipSpacing = 8.dp,
@@ -259,6 +259,20 @@ fun WatchProviders(
 
 @Composable
 fun MetaText(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
+    MetaText(text = text, modifier = modifier, icon = icon) {
+        ProvideTextStyle(value = ubuntuTypography.bodySmall) {
+            Text(text = it)
+        }
+    }
+}
+
+@Composable
+fun MetaText(
+    text: String,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    content: @Composable (text: String) -> Unit,
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -273,15 +287,13 @@ fun MetaText(text: String, modifier: Modifier = Modifier, icon: ImageVector? = n
             Spacer(modifier = Modifier.padding(2.dp))
         }
 
-        ProvideTextStyle(value = ubuntuTypography.bodySmall) {
-            Text(text = text)
-        }
+        content(text)
     }
 }
 
 @Composable
 fun OverviewText(text: String, modifier: Modifier = Modifier) {
-    var maxLines by remember { mutableStateOf(4) }
+    var maxLines by remember { mutableIntStateOf(4) }
     ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
         Text(
             text = text,
