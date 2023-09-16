@@ -19,6 +19,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.base.Constants
+import com.afterroot.watchdone.base.WatchlistType
 import com.afterroot.watchdone.data.model.LocalUser
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
@@ -138,6 +139,12 @@ class Settings @Inject constructor(
     var country: String?
         get() = getString("key_country", null)
         set(value) = putString("key_country", value)
+
+    var watchlistType: WatchlistType
+        get() = WatchlistType.valueOf(
+            getString("watchlist_type", WatchlistType.GRID.name) ?: WatchlistType.GRID.name,
+        )
+        set(value) = putString("watchlist_type", value.name)
 
     // Helper Functions
     fun createPosterUrl(path: String) = baseUrl + imageSize + path

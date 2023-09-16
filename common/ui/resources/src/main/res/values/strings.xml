@@ -79,4 +79,5 @@
     <string name="watch_state_pending">Pending</string>
     <string name="watch_state_watched">Watched</string>
     <string name="watch_state_started">Started</string>
+    <string name="watchlist_style">Watchlist Style</string>
 </resources>

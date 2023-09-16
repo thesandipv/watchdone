@@ -41,6 +41,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.ListAlt
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Tv
@@ -102,6 +104,7 @@ import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
+import com.afterroot.watchdone.base.WatchlistType
 import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
@@ -131,6 +134,9 @@ fun Watchlist(
             viewModel.setSort(!state.sortAscending)
         },
         settingsAction = settingsAction,
+        watchlistTypeAction = {
+            viewModel.setWatchlistType(it)
+        },
         filter = {
             viewModel.updateFilters(it)
             watchlist.refresh()
@@ -140,7 +146,6 @@ fun Watchlist(
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
     ExperimentalMaterialApi::class,
 )
 @Composable
@@ -151,6 +156,7 @@ private fun Watchlist(
     refresh: () -> Unit,
     sortAction: () -> Unit,
     settingsAction: () -> Unit,
+    watchlistTypeAction: (WatchlistType) -> Unit,
     filter: (Filters) -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -168,6 +174,30 @@ private fun Watchlist(
                             imageVector = Icons.Outlined.Settings,
                             contentDescription = stringResource(id = CommonR.string.title_settings),
                         )
+                    }
+                },
+                navigationIcon = {
+                    when (state.watchlistType) {
+                        WatchlistType.GRID -> {
+                            IconButton(onClick = { watchlistTypeAction(WatchlistType.LIST) }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ListAlt,
+                                    contentDescription = stringResource(
+                                        id = CommonR.string.watchlist_style,
+                                    ),
+                                )
+                            }
+                        }
+                        WatchlistType.LIST -> {
+                            IconButton(onClick = { watchlistTypeAction(WatchlistType.GRID) }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.GridView,
+                                    contentDescription = stringResource(
+                                        id = CommonR.string.watchlist_style,
+                                    ),
+                                )
+                            }
+                        }
                     }
                 },
             )
@@ -189,7 +219,12 @@ private fun Watchlist(
             if (watchlist.itemCount != 0) {
                 LazyVerticalGrid(
                     state = listState,
-                    columns = GridCells.Fixed(1),
+                    columns = GridCells.Fixed(
+                        when (state.watchlistType) {
+                            WatchlistType.GRID -> 2
+                            WatchlistType.LIST -> 1
+                        },
+                    ),
                     contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -318,7 +353,7 @@ private fun Watchlist(
                         watchlist[index]?.let {
                             WatchlistItem(
                                 item = it,
-                                type = WatchlistType.LIST, // TODO add setting to switch between list and grid.
+                                type = state.watchlistType,
                                 itemSelectedCallback = itemSelectedCallback,
                             )
                         }
@@ -340,10 +375,6 @@ private fun Watchlist(
             )
         }
     }
-}
-
-enum class WatchlistType {
-    GRID, LIST
 }
 
 @OptIn(ExperimentalFoundationApi::class)

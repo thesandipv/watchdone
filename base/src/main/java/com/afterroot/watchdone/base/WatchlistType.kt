@@ -12,21 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.watchlist
 
-import app.tivi.api.UiMessage
-import com.afterroot.watchdone.base.WatchlistType
-import com.afterroot.watchdone.base.compose.ViewState
-import com.afterroot.watchdone.data.model.Filters
+package com.afterroot.watchdone.base
 
-data class WatchlistState(
-    val loading: Boolean = false,
-    val sortAscending: Boolean = false,
-    val filters: Filters = Filters.EMPTY,
-    val watchlistType: WatchlistType = WatchlistType.GRID,
-    override val message: UiMessage? = null,
-) : ViewState() {
-    companion object {
-        val Empty = WatchlistState()
-    }
+enum class WatchlistType {
+    GRID, LIST
 }
