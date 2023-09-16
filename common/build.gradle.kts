@@ -16,8 +16,8 @@
 plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
-    id("com.afterroot.watchdone.android.common")
     id("com.afterroot.android.compose")
+    id("com.afterroot.watchdone.android.common")
     alias(libs.plugins.kotlin.kapt)
 }
 

@@ -17,8 +17,8 @@ import com.afterroot.gradle.readProperties
 
 plugins {
     id("com.afterroot.android.application")
-    id("com.afterroot.android.compose")
     id("com.afterroot.kotlin.android")
+    id("com.afterroot.android.compose")
     id("com.afterroot.watchdone.android.common")
 
     alias(libs.plugins.firebase.crashlytics)
