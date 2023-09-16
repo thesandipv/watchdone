@@ -90,3 +90,5 @@ task("incrementPatch") {
         println("-INFO: Patch changed from $patch to ${versionProperties["patch"]}")
     }
 }
+
+apply(from = file("gradle/projectDependencyGraph.gradle"))
