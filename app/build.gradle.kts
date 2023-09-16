@@ -97,7 +97,6 @@ dependencies {
 
     implementation(projects.data)
     implementation(projects.common)
-    implementation(projects.common.ui.compose)
     implementation(projects.ui.discover)
     implementation(projects.ui.media)
     implementation(projects.ui.profile)

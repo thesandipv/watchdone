@@ -30,7 +30,6 @@ dependencies {
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.common)
-    implementation(projects.common.ui.compose)
     implementation(projects.ui.media)
 
     implementation(libs.firebase.firestore)

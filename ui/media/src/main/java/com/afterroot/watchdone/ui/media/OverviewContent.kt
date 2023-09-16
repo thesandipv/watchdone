@@ -106,7 +106,7 @@ fun OverviewContent(
                     .height(192.dp)
                     .aspectRatio(2 / 3f),
 
-                )
+            )
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 SuggestionChipGroup(
                     chipSpacing = 8.dp,
