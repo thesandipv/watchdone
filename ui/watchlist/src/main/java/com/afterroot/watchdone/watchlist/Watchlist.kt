@@ -379,7 +379,7 @@ private fun Watchlist(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LazyGridItemScope.WatchlistItem(
+private fun LazyGridItemScope.WatchlistItem(
     modifier: Modifier = Modifier,
     item: Multi,
     type: WatchlistType,
@@ -700,7 +700,7 @@ private fun FilterChips(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediaTypeFilter(
+private fun MediaTypeFilter(
     modifier: Modifier = Modifier,
     preSelect: String? = null,
     onSelectionChanged: (index: Int, title: String, selectedList: List<Int>) -> Unit,
