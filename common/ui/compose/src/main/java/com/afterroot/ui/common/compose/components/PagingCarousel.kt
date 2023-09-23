@@ -91,13 +91,16 @@ internal fun <T : Multi> PagingCarouselInt(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(count = items.itemCount, key = items.itemKey { item ->
-            when (item) {
-                is TV -> (item as TV).id
-                is Movie -> (item as Movie).id
-                else -> null
-            }!!
-        }) { index ->
+        items(
+            count = items.itemCount,
+            key = items.itemKey { item ->
+                when (item) {
+                    is TV -> (item as TV).id
+                    is Movie -> (item as Movie).id
+                    else -> null
+                }!!
+            },
+        ) { index ->
             items[index]?.let { item ->
                 PosterCard(
                     media = item,

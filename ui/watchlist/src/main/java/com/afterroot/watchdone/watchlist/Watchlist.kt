@@ -21,7 +21,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -91,7 +90,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import app.tivi.common.compose.fullSpanItem
-import app.tivi.common.compose.ui.plus
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.afterroot.data.utils.valueOrBlank
@@ -101,6 +99,7 @@ import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.DynamicChipGroup
 import com.afterroot.ui.common.compose.components.LocalPosterSize
 import com.afterroot.ui.common.compose.components.LocalTMDbBaseUrl
+import com.afterroot.ui.common.compose.theme.ListStyleWatchlistItemShape
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
@@ -188,6 +187,7 @@ private fun Watchlist(
                                 )
                             }
                         }
+
                         WatchlistType.LIST -> {
                             IconButton(onClick = { watchlistTypeAction(WatchlistType.GRID) }) {
                                 Icon(
@@ -225,7 +225,7 @@ private fun Watchlist(
                             WatchlistType.LIST -> 1
                         },
                     ),
-                    contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
+                    contentPadding = paddingValues,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
@@ -239,6 +239,8 @@ private fun Watchlist(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
+                            Spacer(modifier = Modifier.size(8.dp))
+
                             AssistChip(
                                 text = if (state.sortAscending) {
                                     stringResource(id = CommonR.string.text_ascending)
@@ -336,6 +338,8 @@ private fun Watchlist(
                                         ),
                                     )
                                 }
+
+                                Spacer(modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -352,6 +356,7 @@ private fun Watchlist(
                     ) { index ->
                         watchlist[index]?.let {
                             WatchlistItem(
+                                index = index,
                                 item = it,
                                 type = state.watchlistType,
                                 itemSelectedCallback = itemSelectedCallback,
@@ -381,6 +386,7 @@ private fun Watchlist(
 @Composable
 private fun LazyGridItemScope.WatchlistItem(
     modifier: Modifier = Modifier,
+    index: Int,
     item: Multi,
     type: WatchlistType,
     itemSelectedCallback: ItemSelectedCallback<Multi>,
@@ -413,7 +419,11 @@ private fun LazyGridItemScope.WatchlistItem(
                         modifier = Modifier
                             .animateItemPlacement()
                             .fillMaxWidth()
-                            .aspectRatio(2 / 3f),
+                            .aspectRatio(2 / 3f)
+                            .padding(
+                                start = if (index % 2 == 0) 16.dp else 0.dp,
+                                end = if (index % 2 == 0) 0.dp else 16.dp,
+                            ),
                         isWatched = item.isWatched,
                         mediaType = item.mediaType,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
@@ -449,7 +459,11 @@ private fun LazyGridItemScope.WatchlistItem(
                         modifier = Modifier
                             .animateItemPlacement()
                             .fillMaxWidth()
-                            .aspectRatio(2 / 3f),
+                            .aspectRatio(2 / 3f)
+                            .padding(
+                                start = if (index % 2 == 0) 16.dp else 0.dp,
+                                end = if (index % 2 == 0) 0.dp else 16.dp,
+                            ),
                         isWatched = item.isWatched,
                         mediaType = item.mediaType,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
@@ -475,56 +489,62 @@ fun ListWatchlistItem(
     isWatched: Boolean = false,
     onClick: (() -> Unit)? = {},
 ) {
-    Row(
-        modifier = modifier.then(
-            if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
-        ),
-        verticalAlignment = Alignment.CenterVertically,
+    Surface(
+        shape = ListStyleWatchlistItemShape,
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier.padding(horizontal = 16.dp),
     ) {
-        poster?.let {
-            BasePosterCard(
-                modifier = Modifier
-                    .height(128.dp)
-                    .aspectRatio(2 / 3f),
-                title = title,
-                posterPath = poster,
-            )
-        }
-
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically),
+        Row(
+            modifier = modifier.then(
+                if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
+            ),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            title?.let {
-                ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+            poster?.let {
+                BasePosterCard(
+                    modifier = Modifier
+                        .height(128.dp)
+                        .aspectRatio(2 / 3f),
+                    title = title,
+                    posterPath = poster,
+                )
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically),
+            ) {
+                title?.let {
+                    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+                        MetaText(
+                            text = it,
+                            icon = when (mediaType) {
+                                Multi.MediaType.MOVIE -> Icons.Rounded.Movie
+                                Multi.MediaType.TV_SERIES -> Icons.Rounded.LiveTv
+                                else -> null
+                            },
+                        ) {
+                            Text(text = it, softWrap = false, overflow = TextOverflow.Ellipsis)
+                        }
+                    }
+                }
+                releaseDate?.let {
+                    ProvideTextStyle(value = ubuntuTypography.labelSmall) {
+                        MetaText(text = it, icon = Icons.Rounded.Event) {
+                            Text(text = it, modifier = Modifier)
+                        }
+                    }
+                }
+                rating?.let {
                     MetaText(
                         text = it,
-                        icon = when (mediaType) {
-                            Multi.MediaType.MOVIE -> Icons.Rounded.Movie
-                            Multi.MediaType.TV_SERIES -> Icons.Rounded.LiveTv
-                            else -> null
-                        },
-                    ) {
-                        Text(text = it, softWrap = false, overflow = TextOverflow.Ellipsis)
-                    }
+                        modifier = Modifier,
+                        icon = Icons.Rounded.Star,
+                    )
                 }
-            }
-            releaseDate?.let {
-                ProvideTextStyle(value = ubuntuTypography.labelSmall) {
-                    MetaText(text = it, icon = Icons.Rounded.Event) {
-                        Text(text = it, modifier = Modifier)
-                    }
-                }
-            }
-            rating?.let {
-                MetaText(
-                    text = it,
-                    modifier = Modifier,
-                    icon = Icons.Rounded.Star,
-                )
             }
         }
     }
