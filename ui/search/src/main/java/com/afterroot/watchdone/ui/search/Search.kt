@@ -27,11 +27,11 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -44,6 +44,7 @@ import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -63,20 +64,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import app.tivi.common.compose.fullSpanItem
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MovieCard
@@ -86,7 +83,6 @@ import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.SearchViewModel
 import info.movito.themoviedbapi.model.Multi
-import kotlin.math.roundToInt
 
 @Composable
 fun Search(
@@ -154,7 +150,6 @@ internal fun Search(
     val searchHeight = TextFieldDefaults.MinHeight + 32.dp
     val searchHeightPx = with(LocalDensity.current) { searchHeight.roundToPx().toFloat() }
     val searchHeightOffset = remember { mutableFloatStateOf(0f) }
-    var active by rememberSaveable { mutableStateOf(false) }
     var searchText by rememberSaveable { mutableStateOf(state.query.getQuery()) }
 
     val nsc = remember {
@@ -167,31 +162,55 @@ internal fun Search(
         }
     }
 
-    Scaffold( modifier = Modifier.fillMaxSize()) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        Column(modifier = Modifier.fillMaxWidth()) {
             DockedSearchBar(
                 query = searchText,
-                onQueryChange = { searchText = it },
+                onQueryChange = {
+                    searchText = it
+                    searchQuery = searchQuery.query(it)
+                    onSearch(searchQuery.getQuery())
+                },
                 onSearch = {
-                    active = false
                     searchQuery = searchQuery.query(it)
                     onSearch(searchQuery.getQuery())
                 },
                 active = false,
-                onActiveChange = { active = it },
+                onActiveChange = {},
                 leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+                placeholder = {
+                    Text(text = "Search movie or tv show...")
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset { IntOffset(x = 0, y = searchHeightOffset.floatValue.roundToInt()) }
-            ) {
-            }
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 8.dp),
+            ) {}
 
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(4.dp),
+            ) {
+                SearchChips(
+                    preselect = state.mediaType ?: Multi.MediaType.MOVIE,
+                    onMovieSelected = onMovieSelected,
+                    onTVSelected = onTVSelected,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                )
+            }
+        }
+    }) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(
                 visible = state.isLoading && !state.empty,
                 enter = fadeIn(),
                 exit = fadeOut(),
+                modifier = Modifier.align(Alignment.Center),
             ) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CircularProgressIndicator()
             }
 
             AnimatedVisibility(
@@ -206,16 +225,9 @@ internal fun Search(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .nestedScroll(nsc)
+                        // .nestedScroll(nsc)
                         .fillMaxHeight(),
                 ) {
-                    fullSpanItem {
-                        SearchChips(
-                            preselect = state.mediaType ?: Multi.MediaType.MOVIE,
-                            onMovieSelected = onMovieSelected,
-                            onTVSelected = onTVSelected,
-                        )
-                    }
                     if (state.mediaType == Multi.MediaType.MOVIE) {
                         items(
                             count = movieItems.itemCount,
@@ -258,27 +270,9 @@ internal fun Search(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun SearchBar(
-    prefill: String = "",
-    modifier: Modifier = Modifier,
-    onChange: (String) -> Unit = {},
-) {
-    Surface(modifier = modifier) {
-        SearchTextInput(
-            modifier = Modifier,
-            label = "Search",
-            prefillValue = prefill,
-            hint = "Search movie or tv show...",
-            showLabel = true,
-            onChange = onChange,
-        )
-    }
-}
-
 /**
  * [OutlinedTextField] with Validation
+ * TODO Extract Composable
  */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -347,10 +341,11 @@ fun SearchChips(
     preselect: Multi.MediaType,
     onMovieSelected: () -> Unit,
     onTVSelected: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     FilterChipGroup(
-        modifier = Modifier,
-        chipSpacing = 12.dp,
+        modifier = modifier,
+        chipSpacing = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         list = listOf("Movie", "TV"),
         preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV"),
@@ -361,11 +356,4 @@ fun SearchChips(
             }
         },
     )
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview
-@Composable
-fun PreviewSearchInput() {
-    SearchTextInput(label = "Search", onChange = {})
 }
