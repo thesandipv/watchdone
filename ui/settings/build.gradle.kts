@@ -16,8 +16,8 @@
 plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
-    id("com.afterroot.watchdone.android.common")
     id("com.afterroot.android.compose")
+    id("com.afterroot.watchdone.android.common")
     id("dagger.hilt.android.plugin")
     alias(libs.plugins.kotlin.kapt)
 }
@@ -33,7 +33,6 @@ android {
 dependencies {
     implementation(projects.data)
     implementation(projects.common)
-    implementation(projects.common.ui.compose)
 
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.core)

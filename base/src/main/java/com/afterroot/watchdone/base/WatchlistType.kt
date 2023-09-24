@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,20 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.ui.common.compose.theme
 
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.unit.dp
+package com.afterroot.watchdone.base
 
-val shapes = Shapes(
-    // small = RoundedCornerShape(8.dp),
-    // medium = RoundedCornerShape(8.dp),
-    // large = RoundedCornerShape(0.dp)
-)
-
-val fabShape = RoundedCornerShape(16.dp)
-
-val bottomSheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-
-val ListStyleWatchlistItemShape = RoundedCornerShape(16.dp)
+enum class WatchlistType {
+    GRID, LIST
+}

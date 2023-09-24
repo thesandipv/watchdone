@@ -16,8 +16,8 @@
 plugins {
     id("com.afterroot.android.library")
     id("com.afterroot.kotlin.android")
-    id("com.afterroot.watchdone.android.common")
     id("com.afterroot.android.compose")
+    id("com.afterroot.watchdone.android.common")
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.kapt)
 }
@@ -30,7 +30,6 @@ dependencies {
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.common)
-    implementation(projects.common.ui.compose)
     implementation(projects.ui.recommended)
 
     implementation(libs.androidx.appCompat)
