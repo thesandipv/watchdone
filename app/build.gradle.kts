@@ -17,8 +17,8 @@ import com.afterroot.gradle.readProperties
 
 plugins {
     id("com.afterroot.android.application")
-    id("com.afterroot.android.compose")
     id("com.afterroot.kotlin.android")
+    id("com.afterroot.android.compose")
     id("com.afterroot.watchdone.android.common")
 
     alias(libs.plugins.firebase.crashlytics)
@@ -97,7 +97,6 @@ dependencies {
 
     implementation(projects.data)
     implementation(projects.common)
-    implementation(projects.common.ui.compose)
     implementation(projects.ui.discover)
     implementation(projects.ui.media)
     implementation(projects.ui.profile)
