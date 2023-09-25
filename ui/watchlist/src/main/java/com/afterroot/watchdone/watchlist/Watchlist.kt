@@ -172,7 +172,9 @@ private fun Watchlist(
                         IconButton(onClick = { settingsAction() }) {
                             Icon(
                                 imageVector = Icons.Outlined.Settings,
-                                contentDescription = stringResource(id = CommonR.string.title_settings),
+                                contentDescription = stringResource(
+                                    id = CommonR.string.title_settings,
+                                ),
                             )
                         }
                     },
@@ -207,10 +209,9 @@ private fun Watchlist(
                     sortAction = sortAction,
                     refresh = refresh,
                     filter = filter,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    modifier = Modifier.padding(vertical = 4.dp),
                 )
             }
-
         },
         modifier = Modifier.fillMaxSize(),
     ) { paddingValues ->
@@ -224,7 +225,6 @@ private fun Watchlist(
                 .pullRefresh(state = refreshState)
                 .fillMaxWidth(),
         ) {
-
             if (watchlist.itemCount != 0) {
                 LazyVerticalGrid(
                     state = listState,
@@ -290,7 +290,7 @@ fun FiltersRow(
 ) {
     val scrollState = rememberScrollState()
 
-    Surface(color= MaterialTheme.colorScheme.surface) {
+    Surface(color = MaterialTheme.colorScheme.surface) {
         Row(
             modifier = modifier.then(Modifier.horizontalScroll(scrollState)),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
