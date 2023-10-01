@@ -12,32 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.database
+
+package com.afterroot.watchdone.data.daos
 
 import androidx.lifecycle.LiveData
-import androidx.room.AutoMigration
 import androidx.room.Dao
-import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.RoomDatabase
 import com.afterroot.tmdbapi.model.Genre
-import com.afterroot.tmdbapi.model.config.Country
 import kotlinx.coroutines.flow.Flow
-
-@Database(
-    entities = [Genre::class, Country::class],
-    version = 2,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-    ],
-)
-abstract class MyDatabase : RoomDatabase() {
-    abstract fun genreDao(): GenreDao
-    abstract fun countriesDao(): CountriesDao
-}
 
 @Dao
 interface GenreDao {
@@ -61,31 +46,4 @@ interface GenreDao {
 
     @Query("SELECT * from genres WHERE id LIKE :genreId")
     fun get(genreId: Int): Genre
-}
-
-@Dao
-interface CountriesDao {
-    @Query("SELECT * from countries")
-    fun getCountries(): LiveData<List<Country>>
-
-    @Query("SELECT * from countries")
-    fun getCountriesFlow(): Flow<List<Country>>
-
-    @Query("SELECT * from countries WHERE iso LIKE :iso")
-    fun get(iso: String): Flow<Country?>
-
-    @Query("SELECT * from countries WHERE englishName LIKE :name")
-    fun getByName(name: String): Flow<Country?>
-
-    @Delete
-    suspend fun delete(country: Country)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun add(vararg countries: Country)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun add(countries: List<Country>)
-
-    @Query("SELECT COUNT(iso) from countries")
-    fun count(): Int
 }

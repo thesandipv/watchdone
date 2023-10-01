@@ -51,6 +51,7 @@ ksp {
 
 dependencies {
     api(projects.ards)
+    api(projects.data.database)
     api(projects.themoviedbapi)
 
     implementation(libs.androidx.preference)

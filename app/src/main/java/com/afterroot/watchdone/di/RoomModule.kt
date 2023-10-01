@@ -16,9 +16,9 @@ package com.afterroot.watchdone.di
 
 import android.content.Context
 import androidx.room.Room
-import com.afterroot.watchdone.database.CountriesDao
-import com.afterroot.watchdone.database.GenreDao
-import com.afterroot.watchdone.database.MyDatabase
+import com.afterroot.watchdone.data.daos.CountriesDao
+import com.afterroot.watchdone.data.daos.GenreDao
+import com.afterroot.watchdone.database.WatchdoneDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,18 +31,18 @@ import javax.inject.Singleton
 object RoomModule {
     @Provides
     @Singleton
-    fun provideMyDatabase(@ApplicationContext context: Context): MyDatabase =
+    fun provideWatchdoneDatabase(@ApplicationContext context: Context): WatchdoneDatabase =
         Room.databaseBuilder(
             context,
-            MyDatabase::class.java,
+            WatchdoneDatabase::class.java,
             "watchdone-db",
         ).fallbackToDestructiveMigration().build()
 
     @Provides
     @Singleton
-    fun provideGenreDao(database: MyDatabase): GenreDao = database.genreDao()
+    fun provideGenreDao(database: WatchdoneDatabase): GenreDao = database.genreDao()
 
     @Provides
     @Singleton
-    fun provideCountriesDao(database: MyDatabase): CountriesDao = database.countriesDao()
+    fun provideCountriesDao(database: WatchdoneDatabase): CountriesDao = database.countriesDao()
 }

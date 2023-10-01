@@ -71,6 +71,8 @@ include(
     ":common:ui:compose",
     ":common:ui:resources",
     ":data",
+    ":data:database",
+    ":data:model",
     ":domain",
     ":themoviedbapi",
     ":ui:discover",
