@@ -17,7 +17,7 @@ package com.afterroot.watchdone.domain.observers
 
 import app.tivi.domain.SubjectInteractor
 import com.afterroot.tmdbapi.model.Genre
-import com.afterroot.watchdone.database.GenreDao
+import com.afterroot.watchdone.data.daos.GenreDao
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 

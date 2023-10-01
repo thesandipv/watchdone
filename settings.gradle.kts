@@ -75,6 +75,7 @@ include(
     ":data:model",
     ":domain",
     ":themoviedbapi",
+    ":test-app",
     ":ui:discover",
     ":ui:media",
     ":ui:profile",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,27 +12,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.di
+package com.afterroot.watchdone.test
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import dagger.hilt.android.testing.HiltAndroidRule
+import com.afterroot.watchdone.settings.Settings
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.TestCoroutineScope
-import org.junit.Before
-import org.junit.Rule
+import javax.inject.Inject
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
+import org.junit.Test
 
 @HiltAndroidTest
-abstract class AppTest {
-    @get:Rule(order = 0)
-    val hiltRule: HiltAndroidRule by lazy { HiltAndroidRule(this) }
+class SettingsTest : AppTest() {
+    @Inject lateinit var settings: Settings
 
-    @get:Rule(order = 1)
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @Test
+    fun settingsWorking() {
+        launch() {
+            Assert.assertNotNull(settings)
+        }
+    }
 
-    protected val testScope = TestCoroutineScope()
-
-    @Before
-    fun init() {
-        hiltRule.inject()
+    private fun launch(block: suspend () -> Unit) {
+        runBlocking {
+            launch {
+                block()
+            }
+        }
     }
 }

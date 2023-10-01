@@ -12,5 +12,6 @@ dependencies {
     api(projects.themoviedbapi)
     implementation(projects.ards)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.core)
     implementation(libs.firebase.firestore)
 }

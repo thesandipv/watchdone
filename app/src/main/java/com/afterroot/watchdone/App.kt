@@ -14,8 +14,8 @@
  */
 package com.afterroot.watchdone
 
+import android.app.Application
 import androidx.annotation.Keep
-import androidx.multidex.MultiDexApplication
 import com.afterroot.watchdone.utils.whenBuildIs
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
@@ -23,7 +23,7 @@ import timber.log.Timber
 
 @Keep
 @HiltAndroidApp
-class App : MultiDexApplication() {
+class App : Application() {
     override fun onCreate() {
         DynamicColors.applyToActivitiesIfAvailable(this)
         super.onCreate()

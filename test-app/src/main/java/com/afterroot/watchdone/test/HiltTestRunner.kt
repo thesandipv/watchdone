@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.di
+package com.afterroot.watchdone.test
 
 import android.app.Application
 import android.content.Context
