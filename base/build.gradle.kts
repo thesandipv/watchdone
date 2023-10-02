@@ -16,8 +16,8 @@
 import com.afterroot.gradle.readProperties
 
 plugins {
-    id("com.afterroot.android.library")
-    id("com.afterroot.kotlin.android")
+    id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
     alias(libs.plugins.kotlin.kapt)
 }
 

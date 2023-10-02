@@ -16,10 +16,10 @@
 import com.afterroot.gradle.readProperties
 
 plugins {
-    id("com.afterroot.android.application")
-    id("com.afterroot.kotlin.android")
-    id("com.afterroot.android.compose")
-    id("com.afterroot.watchdone.android.common")
+    id(afterroot.plugins.android.application.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.android.compose.get().pluginId)
+    id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.gms.googleServices)

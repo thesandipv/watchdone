@@ -30,7 +30,7 @@ buildscript {
 }
 
 plugins {
-    id("com.afterroot.root")
+    id(afterroot.plugins.root.get().pluginId)
 
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false

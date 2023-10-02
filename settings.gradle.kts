@@ -44,6 +44,12 @@ dependencyResolutionManagement {
             }
         }
     }
+
+    versionCatalogs {
+        create("afterroot") {
+            from(files("gradle/build-logic/convention.versions.toml"))
+        }
+    }
 }
 
 plugins {

@@ -1,7 +1,7 @@
 plugins {
-    id("com.afterroot.android.library")
-    id("com.afterroot.kotlin.android")
-    id("com.afterroot.watchdone.android.common")
+    id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)

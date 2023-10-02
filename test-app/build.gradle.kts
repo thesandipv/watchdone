@@ -14,8 +14,8 @@
 */
 
 plugins {
-    id("com.afterroot.android.test")
-    id("com.afterroot.kotlin.android")
+    id(afterroot.plugins.android.test.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
     alias(libs.plugins.kotlin.kapt)
 }
 
