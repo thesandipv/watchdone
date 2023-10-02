@@ -68,7 +68,6 @@ minSdk = "21"
 targetSdk = "34"
 major = "0"
 minor = "0"
-patch = "6"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
