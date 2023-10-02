@@ -83,11 +83,11 @@ include(
     ":ui:search",
     ":ui:settings",
     ":ui:watchlist",
-    ":utils",
+    // ":utils",
 )
 
 project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure
-project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
+// project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
 
 fun readProperties(propertiesFile: File): Properties {
     if (!propertiesFile.exists()) {
