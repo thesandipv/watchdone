@@ -97,7 +97,9 @@ tasks.register('projectDependencyGraph') {
 
         dot << '\n  # Dependencies\n\n'
         dependencies.forEach { key, traits ->
-            dot << "  \"${key.v1.path}\" -> \"${key.v2.path}\""
+            if (key.v1.path != key.v2.path) { // Ignore Same project dependency
+                dot << "  \"${key.v1.path}\" -> \"${key.v2.path}\""
+            }
             if (!traits.isEmpty()) {
                 dot << " [${traits.join(", ")}]"
             }
