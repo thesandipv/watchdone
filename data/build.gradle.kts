@@ -20,6 +20,7 @@ plugins {
     id(afterroot.plugins.android.library.get().pluginId)
     id(afterroot.plugins.kotlin.android.get().pluginId)
     id(afterroot.plugins.android.compose.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
     alias(libs.plugins.kotlin.kapt)
@@ -76,9 +77,6 @@ dependencies {
     api(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
-    implementation(libs.hilt.hilt)
-    kapt(libs.hilt.compiler)
-
     testImplementation(libs.androidx.room.test)
     testImplementation(libs.androidx.test.archCore)
     testImplementation(libs.androidx.test.core)
@@ -89,7 +87,6 @@ dependencies {
     testImplementation(libs.androidx.test.junitExt)
     testImplementation(libs.test.robolectric)
 
-    kaptTest(libs.hilt.compiler)
     kaptTest(libs.androidx.room.compiler)
 
     androidTestImplementation(libs.androidx.test.core)
@@ -99,7 +96,7 @@ dependencies {
     androidTestImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.test.junit)
 
-    kaptAndroidTest(libs.hilt.compiler)
-
     implementation(libs.coil)
+
+    implementation(libs.kotlin.datetime)
 }

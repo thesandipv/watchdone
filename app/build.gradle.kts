@@ -19,12 +19,11 @@ plugins {
     id(afterroot.plugins.android.application.get().pluginId)
     id(afterroot.plugins.kotlin.android.get().pluginId)
     id(afterroot.plugins.android.compose.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.gms.googleServices)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
 
     id("com.google.android.gms.oss-licenses-plugin")
@@ -135,9 +134,7 @@ dependencies {
     // implementation(libs.firebase.ui.firestore)
     // implementation(libs.firebase.ui.storage)
 
-    implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
-    kapt(libs.hilt.compiler)
 
     // ksp(libs.androidx.room.compiler)
 
