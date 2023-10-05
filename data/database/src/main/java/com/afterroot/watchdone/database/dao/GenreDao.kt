@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.daos
+package com.afterroot.watchdone.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

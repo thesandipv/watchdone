@@ -12,12 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.di
+package com.afterroot.watchdone.database.di
 
 import android.content.Context
 import androidx.room.Room
-import com.afterroot.watchdone.data.daos.CountriesDao
-import com.afterroot.watchdone.data.daos.GenreDao
 import com.afterroot.watchdone.database.WatchdoneDatabase
 import dagger.Module
 import dagger.Provides
@@ -28,7 +26,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RoomModule {
+object DatabaseModule {
     @Provides
     @Singleton
     fun provideWatchdoneDatabase(@ApplicationContext context: Context): WatchdoneDatabase =
@@ -36,13 +34,5 @@ object RoomModule {
             context,
             WatchdoneDatabase::class.java,
             "watchdone-db",
-        ).fallbackToDestructiveMigration().build()
-
-    @Provides
-    @Singleton
-    fun provideGenreDao(database: WatchdoneDatabase): GenreDao = database.genreDao()
-
-    @Provides
-    @Singleton
-    fun provideCountriesDao(database: WatchdoneDatabase): CountriesDao = database.countriesDao()
+        ).build()
 }

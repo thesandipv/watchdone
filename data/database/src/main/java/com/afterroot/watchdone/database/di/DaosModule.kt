@@ -13,30 +13,26 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.database
+package com.afterroot.watchdone.database.di
 
-import androidx.room.AutoMigration
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.afterroot.tmdbapi.model.Genre
-import com.afterroot.tmdbapi.model.config.Country
+import com.afterroot.watchdone.database.WatchdoneDatabase
 import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.database.dao.GenreDao
 import com.afterroot.watchdone.database.dao.MediaDao
-import com.afterroot.watchdone.database.model.MediaEntity
-import com.afterroot.watchdone.database.util.InstantConverter
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-@Database(
-    entities = [Genre::class, Country::class, MediaEntity::class],
-    version = 2,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-    ],
-)
-@TypeConverters(InstantConverter::class)
-abstract class WatchdoneDatabase : RoomDatabase() {
-    abstract fun genreDao(): GenreDao
-    abstract fun countriesDao(): CountriesDao
-    abstract fun mediaDao(): MediaDao
+@Module
+@InstallIn(SingletonComponent::class)
+object DaosModule {
+    @Provides
+    fun provideMediaDao(database: WatchdoneDatabase): MediaDao = database.mediaDao()
+
+    @Provides
+    fun provideGenreDao(database: WatchdoneDatabase): GenreDao = database.genreDao()
+
+    @Provides
+    fun provideCountriesDao(database: WatchdoneDatabase): CountriesDao = database.countriesDao()
 }

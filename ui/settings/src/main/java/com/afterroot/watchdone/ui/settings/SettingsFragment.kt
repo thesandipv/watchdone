@@ -25,7 +25,7 @@ import androidx.preference.SwitchPreferenceCompat
 import com.afterroot.tmdbapi.model.config.Country
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.watchdone.base.Constants
-import com.afterroot.watchdone.data.daos.CountriesDao
+import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.settings.Settings
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

@@ -12,9 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.database
 
-interface DeleteListener {
-    fun onDeleteSuccess()
-    fun onDeleteFailed()
+package com.afterroot.watchdone.database.util
+
+import androidx.room.TypeConverter
+import kotlinx.datetime.Instant
+
+class InstantConverter {
+    @TypeConverter
+    fun longToInstant(value: Long?): Instant? = value?.let(Instant::fromEpochMilliseconds)
+
+    @TypeConverter
+    fun instantToLong(instant: Instant?): Long? = instant?.toEpochMilliseconds()
 }

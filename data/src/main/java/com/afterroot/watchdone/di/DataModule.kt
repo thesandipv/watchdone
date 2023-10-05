@@ -12,17 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.diff
 
-import androidx.recyclerview.widget.DiffUtil
-import info.movito.themoviedbapi.model.people.Person
+package com.afterroot.watchdone.di
 
-class CastDiffCallback : DiffUtil.ItemCallback<Person>() {
-    override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
-        return oldItem.id == newItem.id
-    }
+import com.afterroot.watchdone.data.repository.MediaRepository
+import com.afterroot.watchdone.data.repository.MediaRepositoryImpl
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-    override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
-        return oldItem == newItem
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+interface DataModule {
+    @Binds
+    fun bindsMediaRepository(mediaRepository: MediaRepositoryImpl): MediaRepository
 }

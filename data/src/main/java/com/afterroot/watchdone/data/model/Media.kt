@@ -13,19 +13,28 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.domain.observers
+package com.afterroot.watchdone.data.model
 
-import app.tivi.domain.SubjectInteractor
-import com.afterroot.tmdbapi.model.Genre
-import com.afterroot.watchdone.database.dao.GenreDao
-import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
+import com.afterroot.watchdone.data.network.model.NetworkMedia
+import com.afterroot.watchdone.database.model.MediaEntity
 
-class ObserveGenres @Inject constructor(private val genreDao: GenreDao) :
-    SubjectInteractor<ObserveGenres.Params, List<Genre>>() {
-    data class Params(val ids: List<Int>)
+fun NetworkMedia.asEntity() = MediaEntity(
+    id = id,
+    releaseDate = releaseDate,
+    title = title,
+    isWatched = isWatched,
+    posterPath = posterPath,
+    mediaType = mediaType,
+    rating = rating,
+)
 
-    override suspend fun createObservable(params: Params): Flow<List<Genre>> {
-        return genreDao.getGenres(params.ids)
-    }
-}
+fun MediaEntity.asExternalModel() = Media(
+    id = id,
+    releaseDate = releaseDate,
+    title = title,
+    isWatched = isWatched,
+    posterPath = posterPath,
+    mediaType = mediaType,
+    rating = rating,
+    watched = listOf(),
+)

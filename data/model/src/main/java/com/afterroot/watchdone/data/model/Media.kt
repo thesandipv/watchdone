@@ -12,17 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.diff
 
-import androidx.recyclerview.widget.DiffUtil
-import info.movito.themoviedbapi.model.people.Person
+package com.afterroot.watchdone.data.model
 
-class PeopleDiffCallback : DiffUtil.ItemCallback<Person>() {
-    override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
-        return oldItem.id == newItem.id
-    }
+import info.movito.themoviedbapi.model.Multi
+import kotlinx.datetime.Instant
 
-    override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
-        return oldItem == newItem
-    }
-}
+/**
+ * External data layer for Media
+ */
+data class Media(
+    val id: Int,
+    val releaseDate: Instant,
+    val title: String,
+    val isWatched: Boolean,
+    val posterPath: String?,
+    val mediaType: Multi.MediaType,
+    val rating: Double?,
+    val watched: List<String>,
+)

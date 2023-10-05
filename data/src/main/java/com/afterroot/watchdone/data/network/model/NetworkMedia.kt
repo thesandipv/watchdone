@@ -12,17 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.diff
 
-import androidx.recyclerview.widget.DiffUtil
-import com.afterroot.watchdone.data.model.TV
+package com.afterroot.watchdone.data.network.model
 
-class TVDiffCallback : DiffUtil.ItemCallback<TV>() {
-    override fun areItemsTheSame(oldItem: TV, newItem: TV): Boolean {
-        return oldItem.id == newItem.id
-    }
+import info.movito.themoviedbapi.model.Multi
+import kotlinx.datetime.Instant
 
-    override fun areContentsTheSame(oldItem: TV, newItem: TV): Boolean {
-        return oldItem == newItem
-    }
-}
+data class NetworkMedia(
+    val id: Int,
+    val releaseDate: Instant,
+    val title: String,
+    val isWatched: Boolean,
+    val posterPath: String?,
+    val mediaType: Multi.MediaType,
+    val rating: Double?,
+    val watched: List<String> = listOf(),
+)
