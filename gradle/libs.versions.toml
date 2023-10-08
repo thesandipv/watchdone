@@ -92,21 +92,22 @@ commonsCodec = "commons-codec:commons-codec:1.16.0"
 commonsIo = "org.apache.commons:commons-io:1.3.2"
 commonsLang = "org.apache.commons:commons-lang3:3.13.0"
 materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
-store = "com.dropbox.mobile.store:store4:4.0.5"
+store = "org.mobilenativefoundation.store:store5:5.0.0"
 coil = { module = "io.coil-kt:coil-compose", version = "2.4.0" }
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 
 afterroot-utils = { module = "com.afterroot:utils", version.ref = "ar-utils" }
 
 kotlin-stdLib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlin-anko = { module = "org.jetbrains.anko:anko-commons", version.ref = "ankoCommons" }
 kotlin-pluginGradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
-kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
-kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
-kotlin-coroutines-play = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
-kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
-kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-play = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.22.0"
+kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
@@ -228,9 +229,6 @@ retrofit-jackson = { module = "com.squareup.retrofit2:converter-jackson", versio
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 retrofit-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
-epoxy-epoxy = { module = "com.airbnb.android:epoxy", version.ref = "epoxy" }
-epoxy-processor = { module = "com.airbnb.android:epoxy-processor", version.ref = "epoxy" }
-
 accompanist-insetsui = { module = "com.google.accompanist:accompanist-insets-ui", version.ref = "accompanist" }
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
 accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
@@ -284,7 +282,7 @@ lifecycle = [
     "androidx-lifecycle-viewmodel"
 ]
 coroutines = [
-    "kotlin-coroutines-core",
-    "kotlin-coroutines-android",
-    "kotlin-coroutines-play"
+    "kotlinx-coroutines-core",
+    "kotlinx-coroutines-android",
+    "kotlinx-coroutines-play"
 ]

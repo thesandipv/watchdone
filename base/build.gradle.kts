@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    api(libs.kotlin.coroutines.core)
+    api(libs.kotlinx.coroutines.core)
 
     implementation(libs.androidx.recyclerView)
     api(libs.androidx.lifecycle.common)

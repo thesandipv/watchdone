@@ -14,5 +14,5 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.core)
     implementation(libs.firebase.firestore)
-    implementation(libs.kotlin.datetime)
+    implementation(libs.kotlinx.datetime)
 }

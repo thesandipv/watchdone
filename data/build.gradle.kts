@@ -81,7 +81,7 @@ dependencies {
     testImplementation(libs.androidx.test.archCore)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.hilt.testing)
-    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.junit)
     testImplementation(libs.androidx.test.junitExt)
@@ -93,10 +93,10 @@ dependencies {
     androidTestImplementation(libs.androidx.test.junitExt)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.hilt.testing)
-    androidTestImplementation(libs.kotlin.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.test.junit)
 
     implementation(libs.coil)
 
-    implementation(libs.kotlin.datetime)
+    implementation(libs.kotlinx.datetime)
 }

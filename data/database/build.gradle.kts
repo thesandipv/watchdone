@@ -29,5 +29,5 @@ dependencies {
 
     implementation(libs.bundles.coroutines)
 
-    implementation(libs.kotlin.datetime)
+    implementation(libs.kotlinx.datetime)
 }

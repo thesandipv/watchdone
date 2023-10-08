@@ -35,7 +35,7 @@ dependencies {
     implementation(libs.androidx.test.core)
     implementation(libs.androidx.test.runner)
     implementation(libs.hilt.testing)
-    implementation(libs.kotlin.coroutines.test)
+    implementation(libs.kotlinx.coroutines.test)
     implementation(libs.test.junit)
     kapt(libs.hilt.compiler)
 }
