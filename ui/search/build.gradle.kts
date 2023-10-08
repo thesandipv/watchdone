@@ -29,7 +29,6 @@ android {
 dependencies {
     implementation(projects.data)
     implementation(projects.domain)
-    implementation(projects.common)
     implementation(projects.ui.media)
 
     implementation(libs.androidx.fragment)

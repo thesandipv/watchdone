@@ -16,7 +16,6 @@
 package com.afterroot.watchdone.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -35,7 +34,7 @@ interface MediaDao {
     @Query(
         value = """
         SELECT * FROM media
-        WHERE id IS id
+        WHERE id IS :id
     """,
     )
     fun getMedia(id: Int): MediaEntity
@@ -52,7 +51,12 @@ interface MediaDao {
     )
     fun getMedia(ids: Set<Int>, filterIds: Boolean = false): Flow<List<MediaEntity>>
 
-    @Delete
+    @Query(
+        value = """
+        DELETE FROM media
+        WHERE id IS :id
+    """,
+    )
     suspend fun deleteMedia(id: Int)
 
     @Query(

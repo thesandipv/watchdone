@@ -22,6 +22,7 @@ plugins {
 
 android {
     namespace = "com.afterroot.watchdone.domain"
+    buildFeatures.dataBinding = true
 }
 
 dependencies {

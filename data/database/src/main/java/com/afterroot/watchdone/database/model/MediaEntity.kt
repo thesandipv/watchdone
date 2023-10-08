@@ -17,11 +17,13 @@ package com.afterroot.watchdone.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import info.movito.themoviedbapi.model.Multi
 import kotlinx.datetime.Instant
 
 @Entity(tableName = "media")
 data class MediaEntity(
+    @PrimaryKey
     val id: Int,
     @ColumnInfo(name = "release_date")
     val releaseDate: Instant,

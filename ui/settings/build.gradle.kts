@@ -32,7 +32,6 @@ android {
 
 dependencies {
     implementation(projects.data)
-    implementation(projects.common)
 
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.core)

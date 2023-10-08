@@ -93,7 +93,7 @@ android {
 dependencies {
 
     implementation(projects.data)
-    implementation(projects.common)
+    implementation(projects.domain)
     implementation(projects.ui.discover)
     implementation(projects.ui.media)
     implementation(projects.ui.profile)

@@ -73,7 +73,6 @@ include(
     ":app",
     ":ards",
     ":base",
-    ":common",
     ":common:ui:compose",
     ":common:ui:resources",
     ":data",
