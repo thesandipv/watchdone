@@ -15,6 +15,7 @@
 
 plugins {
     id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
 }
 
 android {

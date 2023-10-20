@@ -13,18 +13,19 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.data.network.model
+package com.afterroot.watchdone.core.testing
 
-import info.movito.themoviedbapi.model.Multi
-import kotlinx.datetime.Instant
+import android.app.Application
+import android.content.Context
+import androidx.test.runner.AndroidJUnitRunner
+import dagger.hilt.android.testing.HiltTestApplication
 
-data class NetworkMedia(
-    val id: Int,
-    val releaseDate: Instant,
-    val title: String,
-    val isWatched: Boolean,
-    val posterPath: String?,
-    val mediaType: Multi.MediaType,
-    val rating: Double?,
-    val watched: List<String> = listOf(),
-)
+class WatchdoneTestRunner : AndroidJUnitRunner() {
+    override fun newApplication(
+        cl: ClassLoader?,
+        className: String?,
+        context: Context?,
+    ): Application {
+        return super.newApplication(cl, HiltTestApplication::class.java.name, context)
+    }
+}

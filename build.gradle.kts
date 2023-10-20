@@ -43,6 +43,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.jvm) apply false
 }
 
 val versionProperties = readProperties(from = rootProject.file("version.properties"))
@@ -54,22 +55,6 @@ val versionCode: Int by extra { libs.versions.minSdk.get().toInt() * 10000000 + 
 val versionName: String by extra { "$major.$minor.$patch" }
 
 println("- INFO: Build version code: $versionCode")
-
-allprojects {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
-        compilerOptions {
-            // Treat all Kotlin warnings as errors
-            // allWarningsAsErrors.set(true)
-
-            // Enable experimental coroutines APIs, including Flow
-            freeCompilerArgs.addAll(
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-opt-in=kotlinx.coroutines.FlowPreview",
-                // "-opt-in=kotlin.Experimental"
-            )
-        }
-    }
-}
 
 subprojects {
     plugins.withId(rootProject.libs.plugins.hilt.get().pluginId) {

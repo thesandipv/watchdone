@@ -16,6 +16,7 @@
 plugins {
     id(afterroot.plugins.android.test.get().pluginId)
     id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.watchdone.android.common.get().pluginId)
     alias(libs.plugins.kotlin.kapt)
 }
 
@@ -24,12 +25,13 @@ android {
     targetProjectPath = ":app"
 
     defaultConfig {
-        testInstrumentationRunner = "com.afterroot.watchdone.test.HiltTestRunner"
+        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
     }
 }
 
 dependencies {
     implementation(projects.app)
+    implementation(projects.core.testing)
     implementation(projects.data)
 
     implementation(libs.androidx.test.core)

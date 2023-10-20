@@ -14,6 +14,7 @@
  */
 package com.afterroot.watchdone.test
 
+import com.afterroot.watchdone.core.testing.AppTest
 import com.afterroot.watchdone.settings.Settings
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject

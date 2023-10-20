@@ -18,20 +18,22 @@ package com.afterroot.watchdone.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import info.movito.themoviedbapi.model.Multi
-import kotlinx.datetime.Instant
+import app.moviebase.tmdb.model.TmdbMediaType
+import com.afterroot.watchdone.data.model.TmdbIdEntity
+import com.afterroot.watchdone.data.model.WDEntity
 
 @Entity(tableName = "media")
 data class MediaEntity(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    override val id: Long = 0,
     @ColumnInfo(name = "release_date")
-    val releaseDate: Instant,
-    val title: String,
+    val releaseDate: String?,
+    val title: String?,
     val isWatched: Boolean,
     @ColumnInfo(name = "poster_path")
     val posterPath: String?,
     @ColumnInfo(name = "media_type")
-    val mediaType: Multi.MediaType,
+    val mediaType: TmdbMediaType?,
     val rating: Double?,
-)
+    override val tmdbId: Int?,
+) : WDEntity, TmdbIdEntity

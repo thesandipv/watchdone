@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 Sandip Vaghela
+ * Copyright (C) 2020-2023 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,19 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.test
+package com.afterroot.watchdone.core.testing
 
-import android.app.Application
-import android.content.Context
-import androidx.test.runner.AndroidJUnitRunner
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
+import org.junit.Before
+import org.junit.Rule
+import org.robolectric.annotation.Config
 
-class HiltTestRunner : AndroidJUnitRunner() {
-    override fun newApplication(
-        cl: ClassLoader?,
-        className: String?,
-        context: Context?,
-    ): Application {
-        return super.newApplication(cl, HiltTestApplication::class.java.name, context)
+@HiltAndroidTest
+@Config(application = HiltTestApplication::class, manifest = Config.NONE)
+abstract class AppTest {
+    @get:Rule(order = 0)
+    val hiltRule: HiltAndroidRule by lazy { HiltAndroidRule(this) }
+
+    @Before
+    fun init() {
+        hiltRule.inject()
     }
 }

@@ -45,7 +45,7 @@ android {
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"].toString()
 
-        testInstrumentationRunner = "com.afterroot.watchdone.di.HiltTestRunner"
+        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
 
         manifestPlaceholders += mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
 
@@ -87,11 +87,13 @@ android {
         "fabric/*.properties",
         "META-INF/*.properties",
         "META-INF/LICENSE*.md",
+        "META-INF/**/previous-compilation-data.bin",
     )
 }
 
 dependencies {
 
+    implementation(projects.api.tmdb)
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.ui.discover)

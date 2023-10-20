@@ -15,26 +15,16 @@
 
 package com.afterroot.watchdone.data.model
 
-import com.afterroot.watchdone.data.network.model.NetworkMedia
-import com.afterroot.watchdone.database.model.MediaEntity
+interface DiscoverEntry : PaginatedEntry
 
-fun NetworkMedia.asEntity() = MediaEntity(
-    id = id,
-    releaseDate = releaseDate,
-    title = title,
-    isWatched = isWatched,
-    posterPath = posterPath,
-    mediaType = mediaType,
-    rating = rating,
-)
+data class DiscoverMovieEntry(
+    override val mediaId: Long,
+    override val page: Int,
+    override val id: Long = 0,
+) : DiscoverEntry
 
-fun MediaEntity.asExternalModel() = Media(
-    id = id,
-    releaseDate = releaseDate,
-    title = title,
-    isWatched = isWatched,
-    posterPath = posterPath,
-    mediaType = mediaType,
-    rating = rating,
-    watched = listOf(),
-)
+data class DiscoverTVEntry(
+    override val mediaId: Long,
+    override val page: Int,
+    override val id: Long = 0,
+) : DiscoverEntry

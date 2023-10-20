@@ -22,15 +22,15 @@ data class DBMedia(
     val id: Int = 0,
     val releaseDate: String? = null,
     val title: String? = null,
-    @field:JvmField var isWatched: Boolean? = false,
-    var posterPath: String? = null,
-    @ServerTimestamp var timestamp: Timestamp = Timestamp.now(),
-    var mediaType: Multi.MediaType? = null,
-    var rating: Double? = null,
+    @field:JvmField
+    val isWatched: Boolean = false,
+    val posterPath: String? = null,
+    @ServerTimestamp
+    val timestamp: Timestamp = Timestamp.now(),
+    val mediaType: Multi.MediaType? = null,
+    val rating: Double? = null,
     // TODO update in ards
-    @Deprecated("Use watched instead.")
-    var watchStatus: Map<String, Boolean> = emptyMap(),
-    var watched: List<String> = emptyList(),
+    val watched: List<String> = emptyList(),
 ) {
     companion object {
         val Empty = DBMedia()

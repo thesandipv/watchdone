@@ -18,3 +18,7 @@ package com.afterroot.watchdone.data.model
 interface WDEntity {
     val id: Long
 }
+
+interface TmdbIdEntity {
+    val tmdbId: Int?
+}

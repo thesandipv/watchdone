@@ -28,6 +28,9 @@ interface MediaDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOrIgnoreMedia(entities: List<MediaEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(entity: MediaEntity)
+
     @Upsert
     suspend fun upsertMedia(entities: List<MediaEntity>)
 

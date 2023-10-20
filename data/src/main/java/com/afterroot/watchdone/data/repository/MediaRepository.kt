@@ -15,10 +15,9 @@
 
 package com.afterroot.watchdone.data.repository
 
+import com.afterroot.watchdone.data.mapper.MediaEntityToMedia
 import com.afterroot.watchdone.data.model.Media
-import com.afterroot.watchdone.data.model.asExternalModel
 import com.afterroot.watchdone.database.dao.MediaDao
-import com.afterroot.watchdone.database.model.MediaEntity
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -29,13 +28,14 @@ interface MediaRepository {
     fun getMedia(query: MediaQuery = MediaQuery(mediaIds = null)): Flow<List<Media>>
 }
 
-class MediaRepositoryImpl @Inject constructor(private val mediaDao: MediaDao) : MediaRepository {
+class MediaRepositoryImpl @Inject constructor(
+    private val mediaDao: MediaDao,
+    private val mapper: MediaEntityToMedia,
+) : MediaRepository {
     override fun getMedia(query: MediaQuery): Flow<List<Media>> {
         return mediaDao.getMedia(
             ids = query.mediaIds ?: emptySet(),
             filterIds = query.mediaIds != null,
-        ).map {
-            it.map(MediaEntity::asExternalModel)
-        }
+        ).map { it.map(mapper::map) }
     }
 }

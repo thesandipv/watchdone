@@ -15,19 +15,19 @@
 
 package com.afterroot.watchdone.data.model
 
-import info.movito.themoviedbapi.model.Multi
-import kotlinx.datetime.Instant
+import app.moviebase.tmdb.model.TmdbMediaType
 
 /**
  * External data layer for Media
  */
 data class Media(
-    val id: Int,
-    val releaseDate: Instant,
-    val title: String,
-    val isWatched: Boolean,
-    val posterPath: String?,
-    val mediaType: Multi.MediaType,
-    val rating: Double?,
-    val watched: List<String>,
-)
+    override val id: Long = 0,
+    override val tmdbId: Int? = null,
+    val releaseDate: String? = null,
+    val title: String? = null,
+    val isWatched: Boolean = false,
+    val posterPath: String? = null,
+    val mediaType: TmdbMediaType? = null,
+    val rating: Double? = null,
+    val watched: List<String>? = null,
+) : WDEntity, TmdbIdEntity

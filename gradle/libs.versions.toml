@@ -172,12 +172,16 @@ androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-gfonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 
 androidx-test-archCore = "androidx.arch.core:core-testing:2.2.0"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-test-junitExt = "androidx.test.ext:junit:1.1.5"
+androidx-test-rules = "androidx.test:rules:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.2"
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -236,6 +240,7 @@ accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiper
 accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 accompanist-navigation = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
 accompanist-suc = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
 
 test-junit = "junit:junit:4.13.2"
 test-mockk = "io.mockk:mockk:1.13.8"

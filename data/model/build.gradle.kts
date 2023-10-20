@@ -15,4 +15,5 @@ dependencies {
     implementation(libs.firebase.core)
     implementation(libs.firebase.firestore)
     implementation(libs.kotlinx.datetime)
+    api(libs.tmdb.api)
 }

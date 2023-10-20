@@ -69,7 +69,7 @@ fun DBMedia.toMovie(): Movie = Movie(
     id = id,
     releaseDate = releaseDate,
     title = title,
-    isWatched = isWatched ?: false,
+    isWatched = isWatched,
     posterPath = posterPath,
     voteAverage = rating,
 )

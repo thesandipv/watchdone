@@ -33,7 +33,7 @@ android {
     buildFeatures.buildConfig = true
 
     defaultConfig {
-        testInstrumentationRunner = "com.afterroot.watchdone.data.test.DataTestRunner"
+        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
 
         val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
         buildConfigField(
@@ -63,13 +63,16 @@ dependencies {
 
     api(libs.store)
 
-    implementation(libs.okhttp.okhttp)
-    implementation(libs.okhttp.logging)
-    implementation(libs.retrofit.retrofit)
-    implementation(libs.retrofit.jackson)
+    api(libs.okhttp.okhttp)
+    api(libs.okhttp.logging)
+    api(libs.retrofit.retrofit)
+    api(libs.retrofit.jackson)
 
     implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.messaging)
 
     implementation(libs.bundles.coroutines)
 

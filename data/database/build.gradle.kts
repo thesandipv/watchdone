@@ -11,7 +11,7 @@ android {
     namespace = "com.afterroot.watchdone.database"
 
     defaultConfig {
-        testInstrumentationRunner = "com.afterroot.watchdone.data.test.DataTestRunner"
+        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
     }
 }
 
@@ -30,4 +30,6 @@ dependencies {
     implementation(libs.bundles.coroutines)
 
     implementation(libs.kotlinx.datetime)
+
+    androidTestImplementation(projects.core.testing)
 }

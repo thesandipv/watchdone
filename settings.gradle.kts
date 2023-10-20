@@ -71,12 +71,16 @@ rootProject.name = "watchdone"
 
 include(
     ":app",
+    ":api:tmdb",
     ":ards",
     ":base",
     ":common:ui:compose",
     ":common:ui:resources",
+    ":core:testing",
     ":data",
     ":data:database",
+    ":data:discover",
+    ":data:media",
     ":data:model",
     ":domain",
     ":themoviedbapi",

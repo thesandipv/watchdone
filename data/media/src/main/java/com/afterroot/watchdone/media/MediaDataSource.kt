@@ -12,20 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.test
 
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
-import org.junit.Rule
+package com.afterroot.watchdone.media
 
-@HiltAndroidTest
-abstract class AppTest {
-    @get:Rule(order = 0)
-    val hiltRule: HiltAndroidRule by lazy { HiltAndroidRule(this) }
+import com.afterroot.watchdone.data.model.Media
 
-    @Before
-    fun init() {
-        hiltRule.inject()
-    }
+interface MediaDataSource {
+    suspend fun getMedia(media: Media): Media
 }
