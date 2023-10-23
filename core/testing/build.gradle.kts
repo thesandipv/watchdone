@@ -24,7 +24,6 @@ dependencies {
     api(libs.test.junit)
     api(libs.test.robolectric)
 
-
     debugApi(libs.androidx.compose.ui.testManifest)
 
     implementation(projects.data.model)

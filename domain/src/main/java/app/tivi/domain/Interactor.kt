@@ -18,47 +18,60 @@ package app.tivi.domain
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.afterroot.watchdone.base.InvokeError
-import com.afterroot.watchdone.base.InvokeStarted
-import com.afterroot.watchdone.base.InvokeStatus
-import com.afterroot.watchdone.base.InvokeSuccess
-import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.TimeoutCancellationException
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeout
 
-abstract class Interactor<in P> {
-    operator fun invoke(
+abstract class Interactor<in P, R> {
+    private val count = atomic(0)
+    private val loadingState = MutableStateFlow(count.value)
+
+    val inProgress: Flow<Boolean> = loadingState
+        .map { it > 0 }
+        .distinctUntilChanged()
+
+    private fun addLoader() {
+        loadingState.value = count.incrementAndGet()
+    }
+
+    private fun removeLoader() {
+        loadingState.value = count.decrementAndGet()
+    }
+
+    suspend operator fun invoke(
         params: P,
-        timeoutMs: Long = defaultTimeoutMs,
-    ): Flow<InvokeStatus> = flow {
-        try {
-            withTimeout(timeoutMs) {
-                emit(InvokeStarted)
+        timeout: Duration = DefaultTimeout,
+    ): Result<R> = try {
+        addLoader()
+        runCatching {
+            withTimeout(timeout) {
                 doWork(params)
-                emit(InvokeSuccess)
             }
-        } catch (t: TimeoutCancellationException) {
-            emit(InvokeError(t))
         }
-    }.catch { t -> emit(InvokeError(t)) }
+    } finally {
+        removeLoader()
+    }
 
-    suspend fun executeSync(params: P) = doWork(params)
-
-    protected abstract suspend fun doWork(params: P)
+    protected abstract suspend fun doWork(params: P): R
 
     companion object {
-        private val defaultTimeoutMs = TimeUnit.MINUTES.toMillis(5)
+        internal val DefaultTimeout = 5.minutes
     }
 }
 
-suspend inline fun Interactor<Unit>.executeSync() = executeSync(Unit)
+suspend operator fun <R> Interactor<Unit, R>.invoke(
+    timeout: Duration = Interactor.DefaultTimeout,
+) = invoke(Unit, timeout)
 
 abstract class ResultInteractor<in P, R> {
     operator fun invoke(params: P): Flow<R> = flow {
@@ -78,14 +91,7 @@ abstract class PagingInteractor<P : PagingInteractor.Parameters<T>, T : Any> : S
     }
 }
 
-abstract class SuspendingWorkInteractor<P : Any, T> : SubjectInteractor<P, T>() {
-    override suspend fun createObservable(params: P): Flow<T> = flow {
-        emit(doWork(params))
-    }
-
-    abstract suspend fun doWork(params: P): T
-}
-
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class SubjectInteractor<P : Any, T> {
     // Ideally this would be buffer = 0, since we use flatMapLatest below, BUT invoke is not
     // suspending. This means that we can't suspend while flatMapLatest cancels any

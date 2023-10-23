@@ -16,9 +16,9 @@
 plugins {
     id(afterroot.plugins.android.library.get().pluginId)
     id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.android.compose.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    id("dagger.hilt.android.plugin")
     alias(libs.plugins.kotlin.kapt)
 }
 
@@ -32,6 +32,7 @@ android {
 
 dependencies {
     implementation(projects.data)
+    implementation(projects.data.databaseRoom)
 
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.core)
@@ -42,9 +43,7 @@ dependencies {
     implementation(libs.androidx.transition)
     implementation(libs.bundles.lifecycle)
 
-    implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
-    kapt(libs.hilt.compiler)
 
     implementation(libs.google.ossLic)
     implementation(libs.google.material)

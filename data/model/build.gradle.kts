@@ -9,11 +9,12 @@ android {
 }
 
 dependencies {
+    api(libs.tmdb.api)
     api(projects.themoviedbapi)
-    implementation(projects.ards)
-    implementation(platform(libs.firebase.bom))
+    implementation(libs.androidx.room.common)
     implementation(libs.firebase.core)
     implementation(libs.firebase.firestore)
     implementation(libs.kotlinx.datetime)
-    api(libs.tmdb.api)
+    implementation(platform(libs.firebase.bom))
+    implementation(projects.ards)
 }

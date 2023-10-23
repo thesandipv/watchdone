@@ -27,6 +27,9 @@ android {
 
 dependencies {
     implementation(projects.data)
+    implementation(projects.data.databaseRoom)
+    api(projects.data.media)
+    api(projects.data.discover)
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.viewmodel)

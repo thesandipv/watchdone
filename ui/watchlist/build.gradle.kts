@@ -17,9 +17,9 @@ plugins {
     id(afterroot.plugins.android.library.get().pluginId)
     id(afterroot.plugins.kotlin.android.get().pluginId)
     id(afterroot.plugins.android.compose.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
 }
 
 android {
@@ -38,9 +38,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.bundles.lifecycle)
 
-    implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
-    kapt(libs.hilt.compiler)
 
     implementation(libs.coil)
 }

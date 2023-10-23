@@ -1,0 +1,72 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "e1a123b70f96ee5f6fbd9753248c2b2e",
+    "entities": [
+      {
+        "tableName": "genres",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "countries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`iso` TEXT NOT NULL, `englishName` TEXT NOT NULL, `nativeName` TEXT NOT NULL, PRIMARY KEY(`iso`))",
+        "fields": [
+          {
+            "fieldPath": "iso",
+            "columnName": "iso",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "englishName",
+            "columnName": "englishName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nativeName",
+            "columnName": "nativeName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "iso"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e1a123b70f96ee5f6fbd9753248c2b2e')"
+    ]
+  }
+}

@@ -11,5 +11,5 @@ android {
 
 dependencies {
     implementation(projects.data)
-    implementation(projects.data.model)
+    implementation(projects.data.databaseRoom)
 }

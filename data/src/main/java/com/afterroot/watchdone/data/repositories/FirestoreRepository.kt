@@ -116,17 +116,21 @@ class FirestoreRepository @Inject constructor(
         }
     }
 
-    private suspend fun getDocumentId(media: DBMedia, source: Source = Source.CACHE) = getDocumentId(
-        media.id,
-        source,
-    )
+    private suspend fun getDocumentId(media: DBMedia, source: Source = Source.CACHE) =
+        getDocumentId(
+            media.id,
+            source,
+        )
 
     private suspend fun getDocumentId(mediaId: Int, source: Source = Source.CACHE): String? {
         val qs = watchlistItemsRef.whereEqualTo(Field.ID, mediaId).get(source).await()
         return if (qs.documents.size > 0) qs.documents[0].id else null
     }
 
-    private fun DocumentReference.updateTotalItemsCounter(by: Long, doOnSuccess: (() -> Unit)? = null) {
+    private fun DocumentReference.updateTotalItemsCounter(
+        by: Long,
+        doOnSuccess: (() -> Unit)? = null,
+    ) {
         this.set(
             hashMapOf(Field.TOTAL_ITEMS to FieldValue.increment(by)),
             SetOptions.merge(),

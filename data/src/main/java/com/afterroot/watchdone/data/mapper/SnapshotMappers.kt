@@ -68,4 +68,5 @@ fun QuerySnapshot.toMovies(): List<Movie> {
     return list
 }
 
-fun QuerySnapshot.toNetworkUser(): NetworkUser = this.documents[0].toObject(NetworkUser::class.java) ?: NetworkUser()
+fun QuerySnapshot.toNetworkUser(): NetworkUser =
+    this.documents[0].toObject(NetworkUser::class.java) ?: NetworkUser()

@@ -16,18 +16,17 @@
 package com.afterroot.watchdone.media
 
 import app.moviebase.tmdb.Tmdb3
-import com.afterroot.watchdone.data.mapper.TmdbMovieDetailToMedia
+import com.afterroot.watchdone.data.mapper.toMedia
 import com.afterroot.watchdone.data.model.Media
 import javax.inject.Inject
 
 class TmdbMovieDataSource @Inject constructor(
     private val tmdb: Tmdb3,
-    private val movieMapper: TmdbMovieDetailToMedia,
 ) : MovieDataSource {
     override suspend fun getMovie(media: Media): Media {
         val tmdbId = media.tmdbId
             ?: throw IllegalArgumentException("TmdbId for movie does not exist [$media]")
 
-        return tmdb.movies.getDetails(tmdbId).let { movieMapper.map(it) }
+        return tmdb.movies.getDetails(tmdbId).toMedia()
     }
 }

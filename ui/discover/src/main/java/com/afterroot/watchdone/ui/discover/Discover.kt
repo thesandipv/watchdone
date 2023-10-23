@@ -58,7 +58,7 @@ import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MovieCard
 import com.afterroot.ui.common.compose.components.TVCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
-import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
@@ -95,7 +95,8 @@ fun Discover(
     itemSelectedCallback: ItemSelectedCallback<Multi>,
 ) {
     val viewState by discoverViewModel.state.collectAsState()
-    val movieItems = discoverViewModel.discoverMovies.collectAsLazyPagingItems()
+    val movieItems_old = discoverViewModel.discoverMovies.collectAsLazyPagingItems()
+    val movieItems = discoverViewModel.pagedList.collectAsLazyPagingItems()
     val tvItems = discoverViewModel.discoverTV.collectAsLazyPagingItems()
 
     Discover(
@@ -129,7 +130,7 @@ fun Discover(
 @Composable
 internal fun Discover(
     state: DiscoverViewState,
-    movieItems: LazyPagingItems<Movie>,
+    movieItems: LazyPagingItems<DiscoverEntryWithMedia>,
     tvItems: LazyPagingItems<TV>,
     itemSelectedCallback: ItemSelectedCallback<Multi>,
     onMovieChipSelected: () -> Unit,
@@ -180,14 +181,14 @@ internal fun Discover(
                     if (state.mediaType == Multi.MediaType.MOVIE) {
                         items(
                             count = movieItems.itemCount,
-                            key = movieItems.itemKey { it.id },
+                            key = movieItems.itemKey { it.media.id },
                         ) { index ->
                             val movie = movieItems[index]
                             if (movie != null) {
                                 MovieCard(
-                                    movie = movie,
+                                    movie = movie.media,
                                     onClick = {
-                                        itemSelectedCallback.onClick(0, null, movie)
+                                        // itemSelectedCallback.onClick(0, null, movie)
                                     },
                                     modifier = Modifier
                                         .animateItemPlacement()

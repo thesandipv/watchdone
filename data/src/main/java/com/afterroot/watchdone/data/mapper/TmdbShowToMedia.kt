@@ -15,11 +15,11 @@
 
 package com.afterroot.watchdone.data.mapper
 
-import app.moviebase.tmdb.model.TmdbMediaType
 import app.moviebase.tmdb.model.TmdbShow
 import app.moviebase.tmdb.model.TmdbShowDetail
 import app.tivi.data.mappers.Mapper
 import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
 
 class TmdbShowToMedia @Inject constructor() : Mapper<TmdbShow, Media> {
@@ -29,9 +29,8 @@ class TmdbShowToMedia @Inject constructor() : Mapper<TmdbShow, Media> {
         title = from.name,
         isWatched = false,
         posterPath = from.posterPath,
-        mediaType = TmdbMediaType.SHOW,
-        rating = from.voteAverage.toDouble(),
-        watched = null,
+        mediaType = MediaType.SHOW,
+        rating = from.voteAverage,
     )
 }
 
@@ -42,8 +41,35 @@ class TmdbShowDetailToMedia @Inject constructor() : Mapper<TmdbShowDetail, Media
         title = from.name,
         isWatched = false,
         posterPath = from.posterPath,
-        mediaType = TmdbMediaType.SHOW,
-        rating = from.voteAverage.toDouble(),
-        watched = null,
+        mediaType = MediaType.SHOW,
+        rating = from.voteAverage,
     )
 }
+
+@Deprecated(
+    "Use com.afterroot.watchdone.data.mapper.TmdbShowToMedia",
+    replaceWith = ReplaceWith(""),
+)
+fun TmdbShow.toMedia() = Media(
+    tmdbId = id,
+    releaseDate = firstAirDate.toString(),
+    title = name,
+    isWatched = false,
+    posterPath = posterPath,
+    mediaType = MediaType.SHOW,
+    rating = voteAverage,
+)
+
+@Deprecated(
+    "Use com.afterroot.watchdone.data.mapper.TmdbShowDetailToMedia",
+    replaceWith = ReplaceWith(""),
+)
+fun TmdbShowDetail.toMedia() = Media(
+    tmdbId = id,
+    releaseDate = firstAirDate.toString(),
+    title = name,
+    isWatched = false,
+    posterPath = posterPath,
+    mediaType = MediaType.SHOW,
+    rating = voteAverage,
+)

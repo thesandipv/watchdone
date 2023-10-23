@@ -15,19 +15,28 @@
 
 package com.afterroot.watchdone.data.model
 
-import app.moviebase.tmdb.model.TmdbMediaType
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
-/**
- * External data layer for Media
- */
+@Entity(
+    tableName = "media",
+    indices = [
+        Index(value = ["tmdb_id"], unique = true),
+    ],
+)
 data class Media(
-    override val id: Long = 0,
-    override val tmdbId: Int? = null,
-    val releaseDate: String? = null,
-    val title: String? = null,
-    val isWatched: Boolean = false,
-    val posterPath: String? = null,
-    val mediaType: TmdbMediaType? = null,
-    val rating: Double? = null,
-    val watched: List<String>? = null,
-) : WDEntity, TmdbIdEntity
+    @PrimaryKey(autoGenerate = true) override val id: Long = 0,
+    @ColumnInfo(name = "tmdb_id") override val tmdbId: Int? = null,
+    @ColumnInfo(name = "release_date") val releaseDate: String? = null,
+    @ColumnInfo(name = "title") val title: String? = null,
+    @ColumnInfo(name = "is_watched") val isWatched: Boolean = false,
+    @ColumnInfo(name = "poster_path") val posterPath: String? = null,
+    @ColumnInfo(name = "media_type") val mediaType: MediaType? = null,
+    @ColumnInfo(name = "rating") val rating: Float? = null,
+) : WDEntity, TmdbIdEntity {
+    companion object {
+        val EMPTY = Media()
+    }
+}

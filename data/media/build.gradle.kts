@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation(projects.api.tmdb)
     implementation(projects.data)
+    implementation(projects.data.database)
     implementation(projects.data.model)
 
     testImplementation(projects.core.testing)

@@ -16,17 +16,16 @@
 package com.afterroot.watchdone.media
 
 import app.moviebase.tmdb.Tmdb3
-import com.afterroot.watchdone.data.mapper.TmdbShowDetailToMedia
+import com.afterroot.watchdone.data.mapper.toMedia
 import com.afterroot.watchdone.data.model.Media
 
 class TmdbShowDataSource(
     private val tmdb: Tmdb3,
-    private val showMapper: TmdbShowDetailToMedia,
 ) : ShowDataSource {
     override suspend fun getShow(media: Media): Media {
         val tmdbId = media.tmdbId
             ?: throw IllegalArgumentException("TmdbId for show does not exist [$media]")
 
-        return tmdb.show.getDetails(tmdbId).let { showMapper.map(it) }
+        return tmdb.show.getDetails(tmdbId).toMedia()
     }
 }

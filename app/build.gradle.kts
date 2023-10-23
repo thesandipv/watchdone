@@ -81,14 +81,15 @@ android {
 
     lint.abortOnError = false
 
-    packaging.resources.excludes += setOf(
-        "META-INF/proguard/*",
-        "/*.properties",
-        "fabric/*.properties",
-        "META-INF/*.properties",
-        "META-INF/LICENSE*.md",
-        "META-INF/**/previous-compilation-data.bin",
-    )
+    packaging.resources.excludes +=
+        setOf(
+            "META-INF/proguard/*",
+            "/*.properties",
+            "fabric/*.properties",
+            "META-INF/*.properties",
+            "META-INF/LICENSE*.md",
+            "META-INF/**/previous-compilation-data.bin",
+        )
 }
 
 dependencies {

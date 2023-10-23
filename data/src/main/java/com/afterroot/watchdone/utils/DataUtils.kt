@@ -22,7 +22,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versionCode: Int): String {
+fun getMailBodyForFeedback(
+    firebaseUtils: FirebaseUtils,
+    version: String,
+    versionCode: Int,
+): String {
     val builder = StringBuilder().apply {
         appendLine("----Do not remove this info----")
         appendLine("Version : $version")
@@ -33,12 +37,10 @@ fun getMailBodyForFeedback(firebaseUtils: FirebaseUtils, version: String, versio
     return builder.toString()
 }
 
-fun <T> resultFlow(
-    value: T,
-    coroutineContext: CoroutineContext = Dispatchers.IO,
-) = resultFlow(coroutineContext = coroutineContext) {
-    emit(State.success(value))
-}
+fun <T> resultFlow(value: T, coroutineContext: CoroutineContext = Dispatchers.IO) =
+    resultFlow(coroutineContext = coroutineContext) {
+        emit(State.success(value))
+    }
 
 fun <T> resultFlow(
     result: T,

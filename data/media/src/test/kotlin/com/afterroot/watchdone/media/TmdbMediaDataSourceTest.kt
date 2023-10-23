@@ -18,20 +18,23 @@ class TmdbMediaDataSourceTest : AppTest() {
 
     @Test
     fun test_Movie_Response() = runTest {
-        val media = tmdbMediaDataSource.getMedia(Media(tmdbId = 550, mediaType = TmdbMediaType.MOVIE))
+        val media = tmdbMediaDataSource.getMedia(
+            Media(tmdbId = 550, mediaType = TmdbMediaType.MOVIE),
+        )
         assertEquals(
             expected = "Fight Club",
-            actual = media.title
+            actual = media.title,
         )
     }
 
     @Test
     fun test_Series_Response() = runTest {
-        val media = tmdbMediaDataSource.getMedia(Media(tmdbId = 1399, mediaType = TmdbMediaType.SHOW))
+        val media = tmdbMediaDataSource.getMedia(
+            Media(tmdbId = 1399, mediaType = TmdbMediaType.SHOW),
+        )
         assertEquals(
             expected = "Game of Thrones",
-            actual = media.title
+            actual = media.title,
         )
     }
-
 }

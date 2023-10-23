@@ -25,6 +25,7 @@ import dagger.hilt.components.SingletonComponent
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.http.HttpStatusCode
+import javax.inject.Named
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
 
@@ -34,7 +35,7 @@ object TmdbModule {
     @Provides
     @Singleton
     fun provideTmdb3(
-        okHttpClient: OkHttpClient,
+        @Named("tmdb") okHttpClient: OkHttpClient,
         tmdbOAuthInfo: TmdbOAuthInfo,
     ): Tmdb3 = Tmdb3 {
         tmdbApiKey = tmdbOAuthInfo.apiKey
@@ -62,5 +63,6 @@ object TmdbModule {
     fun provideTmdbOAuthInfo() = TmdbOAuthInfo(apiKey = BuildConfig.TMDB_API)
 
     @Provides
+    @Named("tmdb")
     fun provideOkHttpClient() = OkHttpClient().newBuilder().build()
 }

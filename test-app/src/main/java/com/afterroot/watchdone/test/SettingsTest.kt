@@ -29,7 +29,7 @@ class SettingsTest : AppTest() {
 
     @Test
     fun settingsWorking() {
-        launch() {
+        launch {
             Assert.assertNotNull(settings)
         }
     }

@@ -16,25 +16,30 @@
 package com.afterroot.watchdone.discover
 
 import app.moviebase.tmdb.Tmdb3
-import com.afterroot.watchdone.data.mapper.TmdbMovieToMedia
-import com.afterroot.watchdone.data.mapper.TmdbShowToMedia
+import app.moviebase.tmdb.model.TmdbMovie
+import app.moviebase.tmdb.model.TmdbShow
+import com.afterroot.watchdone.data.mapper.toMedia
 import com.afterroot.watchdone.data.model.Media
 import javax.inject.Inject
 
 class TmdbDiscoverMovieDataSource @Inject constructor(
     private val tmdb: Tmdb3,
-    private val mapper: TmdbMovieToMedia,
 ) : DiscoverDataSource {
     override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
-        return tmdb.discover.discoverMovie(page, parameters = parameters).results.map(mapper::map)
+        return tmdb.discover.discoverMovie(
+            page,
+            parameters = parameters,
+        ).results.map(TmdbMovie::toMedia)
     }
 }
 
 class TmdbDiscoverShowDataSource @Inject constructor(
     private val tmdb: Tmdb3,
-    private val mapper: TmdbShowToMedia,
 ) : DiscoverDataSource {
     override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
-        return tmdb.discover.discoverShow(page, parameters = parameters).results.map(mapper::map)
+        return tmdb.discover.discoverShow(
+            page,
+            parameters = parameters,
+        ).results.map(TmdbShow::toMedia)
     }
 }

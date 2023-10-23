@@ -15,12 +15,11 @@
 
 package com.afterroot.watchdone.data.mapper
 
-import app.moviebase.tmdb.model.TmdbMediaType
 import app.moviebase.tmdb.model.TmdbMovie
 import app.moviebase.tmdb.model.TmdbMovieDetail
 import app.tivi.data.mappers.Mapper
 import com.afterroot.watchdone.data.model.Media
-import com.afterroot.watchdone.database.model.MediaEntity
+import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
 
 class TmdbMovieToMedia @Inject constructor() : Mapper<TmdbMovie, Media> {
@@ -30,9 +29,8 @@ class TmdbMovieToMedia @Inject constructor() : Mapper<TmdbMovie, Media> {
         title = from.title,
         isWatched = false,
         posterPath = from.posterPath,
-        mediaType = TmdbMediaType.MOVIE,
-        rating = from.voteAverage.toDouble(),
-        watched = null,
+        mediaType = MediaType.MOVIE,
+        rating = from.voteAverage,
     )
 }
 
@@ -43,33 +41,35 @@ class TmdbMovieDetailToMedia @Inject constructor() : Mapper<TmdbMovieDetail, Med
         title = from.title,
         isWatched = false,
         posterPath = from.posterPath,
-        mediaType = TmdbMediaType.MOVIE,
-        rating = from.voteAverage.toDouble(),
-        watched = null,
+        mediaType = MediaType.MOVIE,
+        rating = from.voteAverage,
     )
 }
 
-class MediaToMediaEntity @Inject constructor() : Mapper<Media, MediaEntity> {
-    override fun map(from: Media) = MediaEntity(
-        tmdbId = from.tmdbId,
-        releaseDate = from.releaseDate.toString(),
-        title = from.title,
-        isWatched = from.isWatched,
-        posterPath = from.posterPath,
-        mediaType = from.mediaType,
-        rating = from.rating,
-    )
-}
+@Deprecated(
+    "Use com.afterroot.watchdone.data.mapper.TmdbMovieToMedia",
+    replaceWith = ReplaceWith(""),
+)
+fun TmdbMovie.toMedia() = Media(
+    tmdbId = id,
+    releaseDate = releaseDate.toString(),
+    title = title,
+    isWatched = false,
+    posterPath = posterPath,
+    mediaType = MediaType.MOVIE,
+    rating = voteAverage,
+)
 
-class MediaEntityToMedia @Inject constructor() : Mapper<MediaEntity, Media> {
-    override fun map(from: MediaEntity) = Media(
-        tmdbId = from.tmdbId,
-        releaseDate = from.releaseDate,
-        title = from.title,
-        isWatched = from.isWatched,
-        posterPath = from.posterPath,
-        mediaType = from.mediaType,
-        rating = from.rating,
-        watched = listOf(),
-    )
-}
+@Deprecated(
+    "Use com.afterroot.watchdone.data.mapper.TmdbMovieDetailToMedia",
+    replaceWith = ReplaceWith(""),
+)
+fun TmdbMovieDetail.toMedia() = Media(
+    tmdbId = id,
+    releaseDate = releaseDate.toString(),
+    title = title,
+    isWatched = false,
+    posterPath = posterPath,
+    mediaType = MediaType.MOVIE,
+    rating = voteAverage,
+)

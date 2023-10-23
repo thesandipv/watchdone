@@ -79,6 +79,7 @@ include(
     ":core:testing",
     ":data",
     ":data:database",
+    ":data:database-room",
     ":data:discover",
     ":data:media",
     ":data:model",

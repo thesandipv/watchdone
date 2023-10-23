@@ -17,7 +17,9 @@ package com.afterroot.watchdone.data.model
 import info.movito.themoviedbapi.model.Multi
 
 enum class WatchStateValues {
-    WATCHED, PENDING, STARTED
+    WATCHED,
+    PENDING,
+    STARTED,
 }
 
 data class Filters(

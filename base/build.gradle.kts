@@ -18,7 +18,7 @@ import com.afterroot.gradle.readProperties
 plugins {
     id(afterroot.plugins.android.library.get().pluginId)
     id(afterroot.plugins.kotlin.android.get().pluginId)
-    alias(libs.plugins.kotlin.kapt)
+    id(afterroot.plugins.android.hilt.get().pluginId)
 }
 
 android {
@@ -27,9 +27,10 @@ android {
     buildFeatures.buildConfig = true
 
     defaultConfig {
-        val commitHash = providers.exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-        }.standardOutput.asText.get()
+        val commitHash =
+            providers.exec {
+                commandLine("git", "rev-parse", "--short", "HEAD")
+            }.standardOutput.asText.get()
 
         val commit = System.getenv("COMMIT_ID") ?: commitHash.trim()
         buildConfigField("String", "COMMIT_ID", "\"$commit\"")
@@ -59,7 +60,4 @@ dependencies {
     implementation(libs.commonsCodec)
 
     api(libs.timber)
-
-    implementation(libs.hilt.hilt)
-    kapt(libs.hilt.compiler)
 }

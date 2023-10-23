@@ -10,21 +10,39 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under         the License.
  */
 
 package com.afterroot.watchdone.data.model
 
-interface DiscoverEntry : PaginatedEntry
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
-data class DiscoverMovieEntry(
-    override val mediaId: Long,
-    override val page: Int,
+@Entity(
+    tableName = "discover_entries",
+    indices = [
+        Index(value = ["media_id"], unique = true),
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = Media::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("media_id"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+)
+data class DiscoverEntry(
+    @PrimaryKey(autoGenerate = true)
     override val id: Long = 0,
-) : DiscoverEntry
-
-data class DiscoverTVEntry(
+    @ColumnInfo(name = "media_id")
     override val mediaId: Long,
+    @ColumnInfo(name = "page")
     override val page: Int,
-    override val id: Long = 0,
-) : DiscoverEntry
+    @ColumnInfo(name = "media_type")
+    val mediaType: MediaType,
+) : PaginatedEntry
