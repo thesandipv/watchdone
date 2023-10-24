@@ -12,7 +12,17 @@
 #   public *;
 #}
 
--keepattributes SourceFile,LineNumberTable,Signature
+-verbose
+-allowaccessmodification
+-repackageclasses
+
+-keepattributes SourceFile,
+                LineNumberTable,
+                Signature,
+                RuntimeVisibleAnnotations,
+                RuntimeVisibleParameterAnnotations,
+                RuntimeVisibleTypeAnnotations,
+                AnnotationDefault
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
@@ -41,7 +51,7 @@
   public static final android.os.Parcelable$Creator *;
 }
 
-# We only need to keep ComposeView + FragmentContainerView
+# We only need to keep ComposeView
 -keep public class androidx.compose.ui.platform.ComposeView {
     public <init>(android.content.Context, android.util.AttributeSet);
 }
@@ -53,7 +63,8 @@
 # With R8 full mode generic signatures are stripped for classes that are not
 # kept. Suspend functions are wrapped in continuations where the type argument
 # is used.
--keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+#-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
-# See https://github.com/firebase/firebase-android-sdk/issues/2124
--keep class com.google.android.gms.internal.** { *; }
+# Using ktor client in Android has missing proguard rule
+# See https://youtrack.jetbrains.com/issue/KTOR-5528
+-dontwarn org.slf4j.**
