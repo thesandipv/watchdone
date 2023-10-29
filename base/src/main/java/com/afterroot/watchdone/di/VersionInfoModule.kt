@@ -24,7 +24,7 @@ import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
-object VersionInfo {
+object VersionInfoModule {
     @Provides
     @Named("version_Code")
     fun provideVersionCode(): Int = BuildConfig.VERSION_CODE

@@ -18,10 +18,8 @@ import android.app.Application
 import androidx.annotation.Keep
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.afterroot.watchdone.utils.whenBuildIs
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
 
 @Keep
 @HiltAndroidApp
@@ -29,9 +27,6 @@ class App : Application(), ImageLoaderFactory {
     override fun onCreate() {
         DynamicColors.applyToActivitiesIfAvailable(this)
         super.onCreate()
-        whenBuildIs {
-            Timber.plant(Timber.DebugTree())
-        }
     }
 
     override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this)

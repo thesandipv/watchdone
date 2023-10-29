@@ -30,7 +30,6 @@ import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
-import timber.log.Timber
 
 class DiscoverStore @Inject constructor(
     dataSource: DiscoverDataSource,
@@ -45,7 +44,6 @@ class DiscoverStore @Inject constructor(
             withContext(dispatchers.databaseWrite) {
                 transactionRunner {
                     response.map { media ->
-                        Timber.d("TEST: $media")
                         DiscoverEntry(
                             mediaId = mediaDao.getIdOrSaveMedia(media),
                             page = page,
@@ -60,7 +58,7 @@ class DiscoverStore @Inject constructor(
         reader = { page -> discoverDao.entriesForPage(page) },
         writer = { page, response ->
             transactionRunner {
-                if (page == 0) {
+                if (page == 1) {
                     discoverDao.deleteAll()
                     discoverDao.upsertAll(response)
                 } else {

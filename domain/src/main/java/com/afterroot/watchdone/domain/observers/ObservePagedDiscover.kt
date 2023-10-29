@@ -21,6 +21,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import app.tivi.domain.PaginatedEntryRemoteMediator
 import app.tivi.domain.PagingInteractor
+import app.tivi.util.Logger
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.domain.interactors.UpdateDiscover
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 class ObservePagedDiscover @Inject constructor(
     private val discoverDao: DiscoverDao,
     private val updateDiscover: UpdateDiscover,
+    private val logger: Logger,
 ) : PagingInteractor<ObservePagedDiscover.Params, DiscoverEntryWithMedia>() {
 
     data class Params(override val pagingConfig: PagingConfig) : Parameters<DiscoverEntryWithMedia>
@@ -41,6 +43,7 @@ class ObservePagedDiscover @Inject constructor(
         return Pager(
             config = params.pagingConfig,
             remoteMediator = PaginatedEntryRemoteMediator { page ->
+                logger.d { "PagingMediator: Requesting Page: $page" }
                 updateDiscover(UpdateDiscover.Params(page, true))
             },
             pagingSourceFactory = discoverDao::entriesPagingSource,

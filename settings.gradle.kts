@@ -76,6 +76,7 @@ include(
     ":base",
     ":common:ui:compose",
     ":common:ui:resources",
+    ":core:logging",
     ":core:testing",
     ":data",
     ":data:database",

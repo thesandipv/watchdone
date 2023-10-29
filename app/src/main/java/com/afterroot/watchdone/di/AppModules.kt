@@ -16,8 +16,6 @@ package com.afterroot.watchdone.di
 
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.base.CoroutineDispatchers
-import com.afterroot.watchdone.di.VersionInfo.provideVersionCode
-import com.afterroot.watchdone.di.VersionInfo.provideVersionName
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -48,11 +46,15 @@ object AppModules {
 
     @Provides
     @Named("feedback_body")
-    fun provideFeedbackBody(firebaseUtils: FirebaseUtils): String =
+    fun provideFeedbackBody(
+        firebaseUtils: FirebaseUtils,
+        @Named("version_name") version: String,
+        @Named("version_Code") versionCode: Int,
+    ): String =
         getMailBodyForFeedback(
             firebaseUtils,
-            version = provideVersionName(),
-            versionCode = provideVersionCode(),
+            version = version,
+            versionCode = versionCode,
         )
 
     @Provides

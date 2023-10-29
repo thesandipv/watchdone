@@ -18,6 +18,7 @@ import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.whenBuildIs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
@@ -62,4 +63,7 @@ object FirebaseModule {
 
     @Provides
     fun provideFirebaseMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
+
+    @Provides
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 }

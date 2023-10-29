@@ -41,4 +41,6 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+
+    implementation(projects.core.logging)
 }
