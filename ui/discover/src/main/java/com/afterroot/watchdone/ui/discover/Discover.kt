@@ -59,6 +59,7 @@ import com.afterroot.ui.common.compose.components.MovieCard
 import com.afterroot.ui.common.compose.components.TVCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
@@ -95,8 +96,7 @@ fun Discover(
     itemSelectedCallback: ItemSelectedCallback<Multi>,
 ) {
     val viewState by discoverViewModel.state.collectAsState()
-    val movieItems_old = discoverViewModel.discoverMovies.collectAsLazyPagingItems()
-    val movieItems = discoverViewModel.pagedList.collectAsLazyPagingItems()
+    val movieItems = discoverViewModel.pagedMoviesList.collectAsLazyPagingItems()
     val tvItems = discoverViewModel.discoverTV.collectAsLazyPagingItems()
 
     Discover(
@@ -107,15 +107,15 @@ fun Discover(
         tvItems = tvItems,
         itemSelectedCallback = itemSelectedCallback,
         onMovieChipSelected = {
-            discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.MOVIE))
+            discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.MOVIE))
         },
         onTVChipSelected = {
-            discoverViewModel.submitAction(DiscoverActions.SetMediaType(Multi.MediaType.TV_SERIES))
+            discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.SHOW))
         },
         refresh = {
-            if (viewState.mediaType == Multi.MediaType.MOVIE) {
+            if (viewState.mediaType == MediaType.MOVIE) {
                 movieItems.refresh()
-            } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+            } else if (viewState.mediaType == MediaType.SHOW) {
                 tvItems.refresh()
             }
         },
@@ -160,8 +160,7 @@ internal fun Discover(
                 .pullRefresh(state = refreshState)
                 .fillMaxWidth(),
         ) {
-            if ((state.mediaType == Multi.MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == Multi.MediaType.TV_SERIES && tvItems.itemCount != 0) || !state.isLoading
-            ) {
+            if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && tvItems.itemCount != 0) || !state.isLoading) {
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(3),
@@ -178,7 +177,7 @@ internal fun Discover(
                             onTVSelected = { onTVChipSelected() },
                         )
                     }
-                    if (state.mediaType == Multi.MediaType.MOVIE) {
+                    if (state.mediaType == MediaType.MOVIE) {
                         items(
                             count = movieItems.itemCount,
                             key = movieItems.itemKey { it.media.id },
@@ -188,7 +187,7 @@ internal fun Discover(
                                 MovieCard(
                                     movie = movie.media,
                                     onClick = {
-                                        // itemSelectedCallback.onClick(0, null, movie)
+                                        // itemSelectedCallback.onClick(0, null, movie) TODO
                                     },
                                     modifier = Modifier
                                         .animateItemPlacement()
@@ -197,7 +196,7 @@ internal fun Discover(
                                 )
                             }
                         }
-                    } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
+                    } else if (state.mediaType == MediaType.SHOW) {
                         items(count = tvItems.itemCount, key = tvItems.itemKey { it.id }) { index ->
                             val tv = tvItems[index]
                             if (tv != null) {

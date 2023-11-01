@@ -1,9 +1,9 @@
 package com.afterroot.watchdone.media
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import app.moviebase.tmdb.model.TmdbMediaType
 import com.afterroot.watchdone.core.testing.AppTest
 import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlin.test.assertEquals
@@ -19,7 +19,7 @@ class TmdbMediaDataSourceTest : AppTest() {
     @Test
     fun test_Movie_Response() = runTest {
         val media = tmdbMediaDataSource.getMedia(
-            Media(tmdbId = 550, mediaType = TmdbMediaType.MOVIE),
+            Media(tmdbId = 550, mediaType = MediaType.MOVIE),
         )
         assertEquals(
             expected = "Fight Club",
@@ -30,7 +30,7 @@ class TmdbMediaDataSourceTest : AppTest() {
     @Test
     fun test_Series_Response() = runTest {
         val media = tmdbMediaDataSource.getMedia(
-            Media(tmdbId = 1399, mediaType = TmdbMediaType.SHOW),
+            Media(tmdbId = 1399, mediaType = MediaType.SHOW),
         )
         assertEquals(
             expected = "Game of Thrones",

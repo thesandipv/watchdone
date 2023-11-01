@@ -16,8 +16,8 @@
 package com.afterroot.watchdone.ui.discover
 
 import com.afterroot.watchdone.base.compose.Actions
-import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.data.model.MediaType
 
 sealed class DiscoverActions : Actions() {
-    data class SetMediaType(val mediaType: Multi.MediaType) : DiscoverActions()
+    data class SetMediaType(val mediaType: MediaType) : DiscoverActions()
 }
