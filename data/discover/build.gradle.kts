@@ -10,6 +10,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.logging)
     implementation(projects.data)
     implementation(projects.data.databaseRoom)
 }

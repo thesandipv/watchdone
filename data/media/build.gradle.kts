@@ -11,6 +11,7 @@ android {
 
 dependencies {
     implementation(projects.api.tmdb)
+    implementation(projects.core.logging)
     implementation(projects.data)
     implementation(projects.data.database)
     implementation(projects.data.model)

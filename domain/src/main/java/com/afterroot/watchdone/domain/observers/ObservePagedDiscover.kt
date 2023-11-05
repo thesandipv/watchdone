@@ -43,7 +43,7 @@ class ObservePagedDiscover @Inject constructor(
         return Pager(
             config = params.pagingConfig,
             remoteMediator = PaginatedEntryRemoteMediator { page ->
-                logger.d { "PagingMediator: Requesting Page: $page" }
+                logger.d { "APPEND: Requesting Page: $page" }
                 updateDiscover(UpdateDiscover.Params(page, true))
             },
             pagingSourceFactory = discoverDao::entriesPagingSource,

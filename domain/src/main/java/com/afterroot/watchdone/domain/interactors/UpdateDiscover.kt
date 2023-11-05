@@ -17,6 +17,7 @@ package com.afterroot.watchdone.domain.interactors
 
 import app.tivi.data.util.fetch
 import app.tivi.domain.Interactor
+import app.tivi.util.Logger
 import app.tivi.util.parallelForEach
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.DiscoverDao
@@ -30,6 +31,7 @@ class UpdateDiscover @Inject constructor(
     private val discoverDao: DiscoverDao,
     private val mediaStore: MovieStore,
     private val dispatchers: CoroutineDispatchers,
+    private val logger: Logger,
 ) : Interactor<UpdateDiscover.Params, Unit>() {
     data class Params(val page: Int, val forceRefresh: Boolean = false)
 
@@ -47,9 +49,9 @@ class UpdateDiscover @Inject constructor(
                     if (lastPage != null) lastPage + 1 else 0
                 }
 
-                else -> 0
+                else -> 1
             }
-
+            logger.d { "APPEND: Fetching page $page" }
             discoverStore.fetch(page, params.forceRefresh).parallelForEach {
                 mediaStore.fetch(it.mediaId)
             }

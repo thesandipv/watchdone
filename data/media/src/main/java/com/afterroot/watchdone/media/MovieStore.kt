@@ -17,6 +17,7 @@ package com.afterroot.watchdone.media
 
 import app.tivi.data.db.DatabaseTransactionRunner
 import app.tivi.data.util.storeBuilder
+import app.tivi.util.Logger
 import com.afterroot.watchdone.data.daos.MediaDao
 import com.afterroot.watchdone.data.daos.getMediaByIdOrThrow
 import com.afterroot.watchdone.data.model.Media
@@ -30,6 +31,7 @@ class MovieStore @Inject constructor(
     mediaDao: MediaDao,
     tmdbMovieDataSource: TmdbMovieDataSource,
     transactionRunner: DatabaseTransactionRunner,
+    logger: Logger,
 ) : Store<Long, Media> by storeBuilder(
     fetcher = Fetcher.of { id: Long ->
         val savedMedia = mediaDao.getMediaByIdOrThrow(id)
@@ -41,6 +43,9 @@ class MovieStore @Inject constructor(
             mediaDao.getMediaByIdFlow(movieId)
         },
         writer = { id, response ->
+            logger.d {
+                "Writing in database:media $response"
+            }
             transactionRunner {
                 mediaDao.upsert(
                     mergeMedia(local = mediaDao.getMediaByIdOrThrow(id), tmdb = response),

@@ -19,6 +19,7 @@ import app.moviebase.tmdb.model.TmdbDiscover
 import app.tivi.data.daos.updatePage
 import app.tivi.data.db.DatabaseTransactionRunner
 import app.tivi.data.util.storeBuilder
+import app.tivi.util.Logger
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.daos.MediaDao
@@ -38,6 +39,7 @@ class DiscoverStore @Inject constructor(
     discover: TmdbDiscover,
     transactionRunner: DatabaseTransactionRunner,
     dispatchers: CoroutineDispatchers,
+    logger: Logger,
 ) : Store<Int, List<DiscoverEntry>> by storeBuilder(
     fetcher = Fetcher.of { page: Int ->
         dataSource(page, discover.buildParameters()).let { response ->
@@ -55,9 +57,17 @@ class DiscoverStore @Inject constructor(
         }
     },
     sourceOfTruth = SourceOfTruth.of(
-        reader = { page -> discoverDao.entriesForPage(page) },
+        reader = { page ->
+            logger.d {
+                "Reading from database:discover page:$page"
+            }
+            discoverDao.entriesForPage(page)
+        },
         writer = { page, response ->
             transactionRunner {
+                logger.d {
+                    "Writing in database:discover page:$page"
+                }
                 if (page == 1) {
                     discoverDao.deleteAll()
                     discoverDao.upsertAll(response)
