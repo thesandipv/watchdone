@@ -167,9 +167,9 @@ dependencies {
     // androidTestImplementation(libs.androidx.test.junitExt)
     // androidTestImplementation(libs.androidx.test.espresso)
 
-    // testImplementation(libs.androidx.test.core)
-    // testImplementation("org.mockito:mockito-core:5.5.0")
-    // androidTestImplementation("org.mockito:mockito-android:5.5.0")
+    testImplementation(libs.androidx.test.core)
+    testImplementation("org.mockito:mockito-core:5.7.0")
+    androidTestImplementation("org.mockito:mockito-android:5.7.0")
 
     // implementation(libs.androidx.work)
     // implementation(libs.google.auth)
