@@ -14,10 +14,11 @@
  */
 
 plugins {
-    id("com.afterroot.android.library")
-    id("com.afterroot.kotlin.android")
-    id("com.afterroot.android.compose")
-    id("com.afterroot.watchdone.android.common")
+    id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
+    id(afterroot.plugins.android.compose.get().pluginId)
+    id(afterroot.plugins.watchdone.android.common.get().pluginId)
     alias(libs.plugins.kotlin.kapt)
 }
 
@@ -28,15 +29,12 @@ android {
 dependencies {
     implementation(projects.data)
     implementation(projects.domain)
-    implementation(projects.common)
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.transition)
 
-    implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
-    kapt(libs.hilt.compiler)
 
     implementation(libs.firebase.ui.auth)
 

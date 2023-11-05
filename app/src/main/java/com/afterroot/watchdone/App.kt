@@ -14,21 +14,22 @@
  */
 package com.afterroot.watchdone
 
+import android.app.Application
 import androidx.annotation.Keep
-import androidx.multidex.MultiDexApplication
-import com.afterroot.watchdone.utils.whenBuildIs
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
 
 @Keep
 @HiltAndroidApp
-class App : MultiDexApplication() {
+class App : Application(), ImageLoaderFactory {
     override fun onCreate() {
         DynamicColors.applyToActivitiesIfAvailable(this)
         super.onCreate()
-        whenBuildIs {
-            Timber.plant(Timber.DebugTree())
-        }
     }
+
+    override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this)
+        .crossfade(true)
+        .build()
 }

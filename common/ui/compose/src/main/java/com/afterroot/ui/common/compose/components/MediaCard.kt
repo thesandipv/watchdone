@@ -41,6 +41,7 @@ import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.AutoSizedCircularProgressIndicator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import info.movito.themoviedbapi.model.Multi
@@ -74,6 +75,16 @@ fun <T : Multi> PosterCard(
 
 @Composable
 fun MovieCard(movie: Movie, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
+    BasePosterCard(
+        title = movie.title,
+        posterPath = movie.posterPath,
+        modifier = modifier,
+        onClick = onClick,
+    )
+}
+
+@Composable
+fun MovieCard(movie: Media, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
     BasePosterCard(
         title = movie.title,
         posterPath = movie.posterPath,

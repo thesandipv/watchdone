@@ -60,11 +60,10 @@ object TestApiModule {
     fun provideOkHttpClient(
         tmdbInterceptor: TMDbInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
-    ) =
-        OkHttpClient().newBuilder()
-            .addInterceptor(tmdbInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
+    ) = OkHttpClient().newBuilder()
+        .addInterceptor(tmdbInterceptor)
+        .addInterceptor(httpLoggingInterceptor)
+        .build()
 
     @Provides
     @Singleton
@@ -130,9 +129,8 @@ object RetrofitApisModule {
 
     @Provides
     @Singleton
-    fun provideDiscoverApi(
-        retrofit: Retrofit,
-    ): DiscoverApi = retrofit.create(DiscoverApi::class.java)
+    fun provideDiscoverApi(retrofit: Retrofit): DiscoverApi =
+        retrofit.create(DiscoverApi::class.java)
 
     @Provides
     @Singleton

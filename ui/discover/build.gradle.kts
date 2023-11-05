@@ -14,13 +14,13 @@
  */
 
 plugins {
-    id("com.afterroot.android.library")
-    id("com.afterroot.kotlin.android")
-    id("com.afterroot.android.compose")
-    id("com.afterroot.watchdone.android.common")
+    id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
+    id(afterroot.plugins.android.compose.get().pluginId)
+    id(afterroot.plugins.watchdone.android.common.get().pluginId)
     id("androidx.navigation.safeargs")
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
 }
 
 android {
@@ -32,10 +32,8 @@ android {
 }
 
 dependencies {
-    // All compose dependencies applied with compose.gradle
     implementation(projects.data)
     implementation(projects.domain)
-    implementation(projects.common)
     implementation(projects.ui.media)
 
     implementation(libs.androidx.constraintLayout)
@@ -47,9 +45,7 @@ dependencies {
     implementation(libs.androidx.transition)
     implementation(libs.bundles.lifecycle)
 
-    implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
-    kapt(libs.hilt.compiler)
 
     implementation(libs.materialProgress)
 }

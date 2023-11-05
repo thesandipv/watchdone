@@ -69,7 +69,7 @@ fun DBMedia.toTV(): TV = TV(
     id = id,
     firstAirDate = releaseDate,
     name = title,
-    isWatched = isWatched ?: false,
+    isWatched = isWatched,
     posterPath = posterPath,
     voteAverage = rating,
 )

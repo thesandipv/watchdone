@@ -38,7 +38,8 @@ fun FirebaseFirestore.collectionWatchdone(
 
 fun CollectionReference.documentWatchlist(): DocumentReference = document(Collection.WATCHLIST)
 fun DocumentReference.collectionWatchlistItems(): CollectionReference = collection(Collection.ITEMS)
-fun CollectionReference.collectionWatchlistItems(): CollectionReference = documentWatchlist().collectionWatchlistItems()
+fun CollectionReference.collectionWatchlistItems(): CollectionReference =
+    documentWatchlist().collectionWatchlistItems()
 
 fun FirebaseFirestore.collectionUsers() = collection(Collection.USERS)
 

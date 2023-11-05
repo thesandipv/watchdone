@@ -16,9 +16,9 @@
 import com.afterroot.gradle.readProperties
 
 plugins {
-    id("com.afterroot.android.library")
-    id("com.afterroot.kotlin.android")
-    alias(libs.plugins.kotlin.kapt)
+    id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
 }
 
 android {
@@ -27,9 +27,10 @@ android {
     buildFeatures.buildConfig = true
 
     defaultConfig {
-        val commitHash = providers.exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-        }.standardOutput.asText.get()
+        val commitHash =
+            providers.exec {
+                commandLine("git", "rev-parse", "--short", "HEAD")
+            }.standardOutput.asText.get()
 
         val commit = System.getenv("COMMIT_ID") ?: commitHash.trim()
         buildConfigField("String", "COMMIT_ID", "\"$commit\"")
@@ -48,7 +49,7 @@ android {
 }
 
 dependencies {
-    api(libs.kotlin.coroutines.core)
+    api(libs.kotlinx.coroutines.core)
 
     implementation(libs.androidx.recyclerView)
     api(libs.androidx.lifecycle.common)
@@ -59,7 +60,4 @@ dependencies {
     implementation(libs.commonsCodec)
 
     api(libs.timber)
-
-    implementation(libs.hilt.hilt)
-    kapt(libs.hilt.compiler)
 }

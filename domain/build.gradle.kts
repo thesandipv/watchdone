@@ -14,29 +14,33 @@
  */
 
 plugins {
-    id("com.afterroot.android.library")
-    id("com.afterroot.kotlin.android")
-    id("com.afterroot.watchdone.android.common")
-    alias(libs.plugins.kotlin.kapt)
+    id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
+    id(afterroot.plugins.watchdone.android.common.get().pluginId)
 }
 
 android {
     namespace = "com.afterroot.watchdone.domain"
+    buildFeatures.dataBinding = true
 }
 
 dependencies {
     implementation(projects.data)
+    implementation(projects.data.databaseRoom)
+    api(projects.data.media)
+    api(projects.data.discover)
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.viewmodel)
 
-    implementation(libs.hilt.hilt)
     implementation(libs.hilt.compose)
-    kapt(libs.hilt.compiler)
 
     api(libs.androidx.paging.common)
     implementation(libs.androidx.paging)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+
+    implementation(projects.core.logging)
 }

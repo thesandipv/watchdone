@@ -266,7 +266,7 @@ class MediaInfoViewModel @Inject constructor(
             ).collectLatest { result ->
                 result.whenSuccess {
                     dbMedia.value = it
-                    isWatched.value = it.isWatched ?: false
+                    isWatched.value = it.isWatched
                 }
             }
         }

@@ -19,18 +19,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.afterroot.watchdone.domain.interactors.GetDiscoverMovies
+import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.domain.interactors.GetDiscoverTV
-import com.afterroot.watchdone.domain.observers.DiscoverMoviePagingSource
 import com.afterroot.watchdone.domain.observers.DiscoverTVPagingSource
+import com.afterroot.watchdone.domain.observers.ObservePagedDiscover
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.discover.DiscoverActions
 import com.afterroot.watchdone.ui.discover.DiscoverViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.movito.themoviedbapi.model.Discover
-import info.movito.themoviedbapi.model.Multi
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,29 +45,20 @@ import timber.log.Timber
 class DiscoverViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
     val settings: Settings,
-    private val getDiscoverMovies: GetDiscoverMovies,
     private val getDiscoverTV: GetDiscoverTV,
+    observePagedDiscover: ObservePagedDiscover,
 ) : ViewModel() {
     private val actions = MutableSharedFlow<DiscoverActions>()
-    private val mediaType = MutableSharedFlow<Multi.MediaType>()
+    private val mediaType = MutableSharedFlow<MediaType>()
     private val discover = Discover()
 
-    val state: StateFlow<DiscoverViewState> = combine(mediaType) { it ->
+    val state: StateFlow<DiscoverViewState> = combine(mediaType) {
         DiscoverViewState(it[0])
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = DiscoverViewState.Empty,
     )
-
-    val discoverMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
-        DiscoverMoviePagingSource(
-            discover.apply {
-                settings.country?.let { region(it) }
-            },
-            getDiscoverMovies,
-        )
-    }.flow.cachedIn(viewModelScope)
 
     val discoverTV = Pager(PagingConfig(20, initialLoadSize = 40)) {
         DiscoverTVPagingSource(
@@ -75,6 +68,10 @@ class DiscoverViewModel @Inject constructor(
             getDiscoverTV,
         )
     }.flow.cachedIn(viewModelScope)
+
+    val pagedMoviesList: Flow<PagingData<DiscoverEntryWithMedia>> = observePagedDiscover.flow.cachedIn(
+        viewModelScope,
+    )
 
     init {
         Timber.d("init: Start")
@@ -88,6 +85,8 @@ class DiscoverViewModel @Inject constructor(
                 }
             }
         }
+
+        observePagedDiscover(ObservePagedDiscover.Params(PagingConfig(19, initialLoadSize = 40)))
     }
 
     internal fun submitAction(action: DiscoverActions) {

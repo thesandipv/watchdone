@@ -44,6 +44,12 @@ dependencyResolutionManagement {
             }
         }
     }
+
+    versionCatalogs {
+        create("afterroot") {
+            from(files("gradle/build-logic/convention.versions.toml"))
+        }
+    }
 }
 
 plugins {
@@ -65,14 +71,22 @@ rootProject.name = "watchdone"
 
 include(
     ":app",
+    ":api:tmdb",
     ":ards",
     ":base",
-    ":common",
     ":common:ui:compose",
     ":common:ui:resources",
+    ":core:logging",
+    ":core:testing",
     ":data",
+    ":data:database",
+    ":data:database-room",
+    ":data:discover",
+    ":data:media",
+    ":data:model",
     ":domain",
     ":themoviedbapi",
+    ":test-app",
     ":ui:discover",
     ":ui:media",
     ":ui:profile",
@@ -80,11 +94,11 @@ include(
     ":ui:search",
     ":ui:settings",
     ":ui:watchlist",
-    ":utils",
+    // ":utils",
 )
 
 project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure
-project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
+// project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
 
 fun readProperties(propertiesFile: File): Properties {
     if (!propertiesFile.exists()) {

@@ -17,10 +17,11 @@ import com.afterroot.gradle.readProperties
 
 
 plugins {
-    id("com.afterroot.android.library")
-    id("com.afterroot.kotlin.android")
-    id("com.afterroot.android.compose")
-    id("com.afterroot.watchdone.android.common")
+    id(afterroot.plugins.android.library.get().pluginId)
+    id(afterroot.plugins.kotlin.android.get().pluginId)
+    id(afterroot.plugins.android.compose.get().pluginId)
+    id(afterroot.plugins.android.hilt.get().pluginId)
+    id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
@@ -32,7 +33,7 @@ android {
     buildFeatures.buildConfig = true
 
     defaultConfig {
-        testInstrumentationRunner = "com.afterroot.watchdone.data.test.DataTestRunner"
+        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
 
         val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
         buildConfigField(
@@ -51,6 +52,7 @@ ksp {
 
 dependencies {
     api(projects.ards)
+    api(projects.data.model)
     api(projects.themoviedbapi)
 
     implementation(libs.androidx.preference)
@@ -61,13 +63,17 @@ dependencies {
 
     api(libs.store)
 
-    implementation(libs.okhttp.okhttp)
-    implementation(libs.okhttp.logging)
-    implementation(libs.retrofit.retrofit)
-    implementation(libs.retrofit.jackson)
+    api(libs.okhttp.okhttp)
+    api(libs.okhttp.logging)
+    api(libs.retrofit.retrofit)
+    api(libs.retrofit.jackson)
 
     implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.crashlytics)
 
     implementation(libs.bundles.coroutines)
 
@@ -75,30 +81,26 @@ dependencies {
     api(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
-    implementation(libs.hilt.hilt)
-    kapt(libs.hilt.compiler)
-
     testImplementation(libs.androidx.room.test)
     testImplementation(libs.androidx.test.archCore)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.hilt.testing)
-    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.junit)
     testImplementation(libs.androidx.test.junitExt)
     testImplementation(libs.test.robolectric)
 
-    kaptTest(libs.hilt.compiler)
     kaptTest(libs.androidx.room.compiler)
 
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.junitExt)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.hilt.testing)
-    androidTestImplementation(libs.kotlin.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.test.junit)
 
-    kaptAndroidTest(libs.hilt.compiler)
-
     implementation(libs.coil)
+
+    implementation(libs.kotlinx.datetime)
 }

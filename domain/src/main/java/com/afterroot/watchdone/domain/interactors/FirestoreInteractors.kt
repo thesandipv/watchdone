@@ -28,7 +28,9 @@ class WatchlistInteractor @Inject constructor(private val firestoreRepository: F
     data class Params(val id: Int, val media: DBMedia = DBMedia.Empty, val method: Method)
 
     enum class Method {
-        ADD, REMOVE, EXIST
+        ADD,
+        REMOVE,
+        EXIST,
     }
 
     override suspend fun doWork(params: Params): Flow<State<Boolean>> {
@@ -56,7 +58,8 @@ class WatchStateInteractor @Inject constructor(private val firestoreRepository: 
     )
 
     enum class Method {
-        MEDIA, EPISODE
+        MEDIA,
+        EPISODE,
     }
 
     override suspend fun doWork(params: Params): Flow<State<Boolean>> {
