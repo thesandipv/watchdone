@@ -23,7 +23,11 @@ import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Discover
 import timber.log.Timber
 
-class DiscoverMoviePagingSource(private val discover: Discover, private val getDiscoverMovies: GetDiscoverMovies) :
+@Deprecated("")
+class DiscoverMoviePagingSource(
+    private val discover: Discover,
+    private val getDiscoverMovies: GetDiscoverMovies,
+) :
     PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? = null
 

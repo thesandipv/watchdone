@@ -12,27 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.di
 
-import android.content.Context
-import app.tivi.util.Logger
-import com.afterroot.watchdone.settings.Settings
-import com.google.gson.Gson
+package com.afterroot.watchdone.discover
+
+import app.moviebase.tmdb.model.TmdbDiscover
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class SettingsModule {
+object DiscoverDataSourceProvides {
     @Provides
-    @Singleton
-    fun provideSettings(
-        @ApplicationContext context: Context,
-        gson: Gson,
-        logger: Logger,
-    ) = Settings(context, gson, logger)
+    fun provideTmdbDiscoverMovie() = TmdbDiscover.Movie(
+        includeAdult = true,
+    )
+
+    @Provides
+    fun provideTmdbDiscoverShow() = TmdbDiscover.Show()
 }

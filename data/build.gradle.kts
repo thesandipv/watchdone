@@ -54,6 +54,7 @@ dependencies {
     api(projects.ards)
     api(projects.data.model)
     api(projects.themoviedbapi)
+    implementation(projects.core.logging)
 
     implementation(libs.androidx.preference)
     implementation(libs.androidx.paging)

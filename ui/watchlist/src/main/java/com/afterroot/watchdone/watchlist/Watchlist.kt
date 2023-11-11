@@ -341,7 +341,7 @@ fun FiltersRow(
                         )
 
                         Multi.MediaType.TV_SERIES -> stringResource(
-                            id = CommonR.string.text_search_tv,
+                            id = CommonR.string.text_search_show,
                         )
 
                         else -> null
@@ -635,7 +635,7 @@ fun GridWatchlistItem(
                     } else {
                         Icon(
                             imageVector = Icons.Rounded.LiveTv,
-                            contentDescription = stringResource(id = CommonR.string.text_search_tv),
+                            contentDescription = stringResource(id = CommonR.string.text_search_show),
                             modifier = Modifier.align(Alignment.CenterVertically),
                             tint = Color.White,
                         )
@@ -750,7 +750,7 @@ private fun MediaTypeFilter(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         list = listOf(
             stringResource(id = CommonR.string.text_search_movies),
-            stringResource(id = CommonR.string.text_search_tv),
+            stringResource(id = CommonR.string.text_search_show),
         ),
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
         preSelectItem = preSelect,

@@ -17,15 +17,16 @@ package com.afterroot.watchdone.settings
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import app.tivi.util.Logger
 import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.WatchlistType
 import com.afterroot.watchdone.data.model.LocalUser
+import com.afterroot.watchdone.data.model.MediaType
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import timber.log.Timber
 import com.afterroot.watchdone.resources.R as CommonR
 
 /**
@@ -33,11 +34,12 @@ import com.afterroot.watchdone.resources.R as CommonR
  */
 class Settings @Inject constructor(
     @ApplicationContext val context: Context,
-    val gson: Gson,
+    private val gson: Gson,
+    private val logger: Logger,
 ) {
 
     init {
-        Timber.d("Initializing Settings...")
+        logger.d { "Initializing Settings..." }
     }
 
     private val preferences: SharedPreferences = context.getPrefs()
@@ -45,44 +47,44 @@ class Settings @Inject constructor(
     fun putString(key: String, value: String?) = preferences.edit(true) {
         putString(key, value)
     }.also {
-        Timber.d("putString: $key, $value")
+        logger.d { "putString: $key, $value" }
     }
 
     fun getString(key: String, value: String?): String? = preferences.getString(key, value).also {
-        Timber.d("getString: $key, $it")
+        logger.d { "getString: $key, $it" }
     }
 
     fun putInt(key: String, value: Int) = preferences.edit(true) {
         putInt(key, value)
     }.also {
-        Timber.d("putInt: $key, $value")
+        logger.d { "putInt: $key, $value" }
     }
 
     fun getInt(key: String, value: Int): Int = preferences.getInt(key, value).also {
-        Timber.d("getInt: $key, $it")
+        logger.d { "getInt: $key, $it" }
     }
 
     fun putBoolean(key: String, value: Boolean) = preferences.edit(true) {
         putBoolean(key, value)
     }.also {
-        Timber.d("putBoolean: $key, $value")
+        logger.d { "putBoolean: $key, $value" }
     }
 
     fun getBoolean(key: String, value: Boolean): Boolean = preferences.getBoolean(key, value).also {
-        Timber.d("getBoolean: $key, $it")
+        logger.d { "getBoolean: $key, $it" }
     }
 
     fun getStringSet(key: String, value: MutableSet<String>?) = preferences.getStringSet(
         key,
         value,
     ).also {
-        Timber.d("getStringSet: $key, $it")
+        logger.d { "getStringSet: $key, $it" }
     }
 
     private fun putStringSet(key: String, value: MutableSet<String>?) = preferences.edit(true) {
         putStringSet(key, value)
     }.also {
-        Timber.d("putStringSet: $key, $value")
+        logger.d { "putStringSet: $key, $value" }
     }
 
     val defaultImagesSize = "w342"
@@ -145,6 +147,12 @@ class Settings @Inject constructor(
             getString("watchlist_type", WatchlistType.GRID.name) ?: WatchlistType.GRID.name,
         )
         set(value) = putString("watchlist_type", value.name)
+
+    var discoverMediaType: MediaType
+        get() = MediaType.valueOf(
+            getString("discover_media_type", MediaType.MOVIE.name) ?: MediaType.MOVIE.name,
+        )
+        set(value) = putString("discover_media_type", value.name)
 
     // Helper Functions
     fun createPosterUrl(path: String) = baseUrl + imageSize + path

@@ -21,19 +21,22 @@ import app.tivi.util.Logger
 import app.tivi.util.parallelForEach
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.DiscoverDao
-import com.afterroot.watchdone.discover.DiscoverStore
+import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.discover.DiscoverMovieStore
+import com.afterroot.watchdone.discover.DiscoverShowsStore
 import com.afterroot.watchdone.media.MovieStore
 import javax.inject.Inject
 import kotlinx.coroutines.withContext
 
 class UpdateDiscover @Inject constructor(
-    private val discoverStore: DiscoverStore,
+    private val discoverMovieStore: DiscoverMovieStore,
+    private val discoverShowStore: DiscoverShowsStore,
     private val discoverDao: DiscoverDao,
     private val mediaStore: MovieStore,
     private val dispatchers: CoroutineDispatchers,
     private val logger: Logger,
 ) : Interactor<UpdateDiscover.Params, Unit>() {
-    data class Params(val page: Int, val forceRefresh: Boolean = false)
+    data class Params(val mediaType: MediaType, val page: Int, val forceRefresh: Boolean = false)
 
     object Page {
         const val NEXT_PAGE = -1
@@ -52,8 +55,20 @@ class UpdateDiscover @Inject constructor(
                 else -> 1
             }
             logger.d { "APPEND: Fetching page $page" }
-            discoverStore.fetch(page, params.forceRefresh).parallelForEach {
-                mediaStore.fetch(it.mediaId)
+            when (params.mediaType) {
+                MediaType.MOVIE -> {
+                    discoverMovieStore.fetch(page, params.forceRefresh).parallelForEach {
+                        mediaStore.fetch(it.mediaId)
+                    }
+                }
+
+                MediaType.SHOW -> {
+                    discoverShowStore.fetch(page, params.forceRefresh).parallelForEach {
+                        mediaStore.fetch(it.mediaId)
+                    }
+                }
+
+                else -> {}
             }
         }
     }

@@ -55,12 +55,10 @@ import app.tivi.common.compose.fullSpanItem
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FilterChipGroup
-import com.afterroot.ui.common.compose.components.MovieCard
-import com.afterroot.ui.common.compose.components.TVCard
+import com.afterroot.ui.common.compose.components.MediaCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.MediaType
-import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
 import info.movito.themoviedbapi.model.Multi
@@ -69,22 +67,21 @@ import com.afterroot.watchdone.resources.R as CommonR
 @Composable
 fun DiscoverChips(
     onMovieSelected: () -> Unit,
-    onTVSelected: () -> Unit,
+    onShowSelected: () -> Unit,
 ) {
+    val movieText = stringResource(id = CommonR.string.text_search_movies)
+    val showText = stringResource(id = CommonR.string.text_search_show)
     FilterChipGroup(
         modifier = Modifier.padding(vertical = 8.dp),
         chipSpacing = 12.dp,
         horizontalPadding = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-        list = listOf(
-            stringResource(id = CommonR.string.text_search_movies),
-            stringResource(id = CommonR.string.text_search_tv),
-        ),
-        preSelect = listOf(stringResource(id = CommonR.string.text_search_movies)),
+        list = listOf(movieText, showText),
+        preSelect = listOf(movieText),
         onSelectedChanged = { selected, _ ->
             when (selected) {
-                "Movies" -> onMovieSelected()
-                "TV" -> onTVSelected()
+                movieText -> onMovieSelected()
+                showText -> onShowSelected()
             }
         },
     )
@@ -96,29 +93,22 @@ fun Discover(
     itemSelectedCallback: ItemSelectedCallback<Multi>,
 ) {
     val viewState by discoverViewModel.state.collectAsState()
-    val movieItems = discoverViewModel.pagedMoviesList.collectAsLazyPagingItems()
-    val tvItems = discoverViewModel.discoverTV.collectAsLazyPagingItems()
+    val discoverItems = discoverViewModel.pagedDiscoverList.collectAsLazyPagingItems()
 
     Discover(
         state = viewState.copy(
-            isLoading = movieItems.loadState.refresh is LoadState.Loading || tvItems.loadState.refresh is LoadState.Loading,
+            isLoading = discoverItems.loadState.refresh is LoadState.Loading,
         ),
-        movieItems = movieItems,
-        tvItems = tvItems,
+        movieItems = discoverItems,
+        showItems = discoverItems,
         itemSelectedCallback = itemSelectedCallback,
         onMovieChipSelected = {
             discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.MOVIE))
         },
-        onTVChipSelected = {
+        onShowChipSelected = {
             discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.SHOW))
         },
-        refresh = {
-            if (viewState.mediaType == MediaType.MOVIE) {
-                movieItems.refresh()
-            } else if (viewState.mediaType == MediaType.SHOW) {
-                tvItems.refresh()
-            }
-        },
+        refresh = discoverItems::refresh,
     )
 }
 
@@ -131,10 +121,10 @@ fun Discover(
 internal fun Discover(
     state: DiscoverViewState,
     movieItems: LazyPagingItems<DiscoverEntryWithMedia>,
-    tvItems: LazyPagingItems<TV>,
+    showItems: LazyPagingItems<DiscoverEntryWithMedia>,
     itemSelectedCallback: ItemSelectedCallback<Multi>,
     onMovieChipSelected: () -> Unit,
-    onTVChipSelected: () -> Unit,
+    onShowChipSelected: () -> Unit,
     refresh: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -160,7 +150,7 @@ internal fun Discover(
                 .pullRefresh(state = refreshState)
                 .fillMaxWidth(),
         ) {
-            if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && tvItems.itemCount != 0) || !state.isLoading) {
+            if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && showItems.itemCount != 0) || !state.isLoading) {
                 LazyVerticalGrid(
                     state = listState,
                     columns = GridCells.Fixed(3),
@@ -174,7 +164,7 @@ internal fun Discover(
                     fullSpanItem {
                         DiscoverChips(
                             onMovieSelected = { onMovieChipSelected() },
-                            onTVSelected = { onTVChipSelected() },
+                            onShowSelected = { onShowChipSelected() },
                         )
                     }
                     if (state.mediaType == MediaType.MOVIE) {
@@ -184,8 +174,8 @@ internal fun Discover(
                         ) { index ->
                             val movie = movieItems[index]
                             if (movie != null) {
-                                MovieCard(
-                                    movie = movie.media,
+                                MediaCard(
+                                    media = movie.media,
                                     onClick = {
                                         // itemSelectedCallback.onClick(0, null, movie) TODO
                                     },
@@ -197,13 +187,16 @@ internal fun Discover(
                             }
                         }
                     } else if (state.mediaType == MediaType.SHOW) {
-                        items(count = tvItems.itemCount, key = tvItems.itemKey { it.id }) { index ->
-                            val tv = tvItems[index]
-                            if (tv != null) {
-                                TVCard(
-                                    tv = tv,
+                        items(
+                            count = showItems.itemCount,
+                            key = showItems.itemKey { it.media.id },
+                        ) { index ->
+                            val show = showItems[index]
+                            if (show != null) {
+                                MediaCard(
+                                    media = show.media,
                                     onClick = {
-                                        itemSelectedCallback.onClick(0, null, tv)
+                                        // itemSelectedCallback.onClick(0, null, show) TODO
                                     },
                                     modifier = Modifier
                                         .animateItemPlacement()
