@@ -84,10 +84,10 @@ fun MovieCard(movie: Movie, modifier: Modifier = Modifier, onClick: (() -> Unit)
 }
 
 @Composable
-fun MovieCard(movie: Media, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
+fun MediaCard(media: Media, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
     BasePosterCard(
-        title = movie.title,
-        posterPath = movie.posterPath,
+        title = media.title,
+        posterPath = media.posterPath,
         modifier = modifier,
         onClick = onClick,
     )
