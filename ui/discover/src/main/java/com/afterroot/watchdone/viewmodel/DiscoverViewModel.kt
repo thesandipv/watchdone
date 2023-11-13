@@ -87,7 +87,7 @@ class DiscoverViewModel @Inject constructor(
     companion object {
         fun discoverParams(mediaType: MediaType) = ObservePagedDiscover.Params(
             mediaType = mediaType,
-            pagingConfig = PagingConfig(19, initialLoadSize = 40)
+            pagingConfig = PagingConfig(20, initialLoadSize = 40),
         )
     }
 }
