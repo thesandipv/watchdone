@@ -24,6 +24,6 @@ interface SearchDataSource {
     data class Params(
         val mediaType: MediaType,
         val query: String,
-        val page: Int,
+        val page: Int = 1,
     )
 }

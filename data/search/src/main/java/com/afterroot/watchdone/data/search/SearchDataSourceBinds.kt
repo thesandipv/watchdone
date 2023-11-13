@@ -13,24 +13,18 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.search
+package com.afterroot.watchdone.data.search
 
-import androidx.compose.runtime.Immutable
-import app.tivi.api.UiMessage
-import com.afterroot.tmdbapi.model.Query
-import com.afterroot.watchdone.base.compose.ViewState
-import com.afterroot.watchdone.data.model.MediaType
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-@Immutable
-data class SearchViewState(
-    val mediaType: MediaType? = MediaType.MOVIE,
-    val query: Query = Query(),
-    val isLoading: Boolean = false,
-    val refresh: Boolean = false,
-    val empty: Boolean = true,
-    override val message: UiMessage? = null,
-) : ViewState() {
-    companion object {
-        val Empty = SearchViewState()
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class SearchDataSourceBinds {
+    @Binds
+    abstract fun bindSearchMediaDataSource(
+        tmdbSearchMediaDataSource: TmdbSearchMediaDataSource,
+    ): SearchDataSource
 }

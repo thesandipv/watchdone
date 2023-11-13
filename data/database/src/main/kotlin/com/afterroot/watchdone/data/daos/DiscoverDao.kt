@@ -15,17 +15,7 @@
 
 package com.afterroot.watchdone.data.daos
 
-import androidx.paging.PagingSource
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.DiscoverEntry
-import com.afterroot.watchdone.data.model.MediaType
-import kotlinx.coroutines.flow.Flow
 
-interface DiscoverDao : PaginatedEntryDao<DiscoverEntry, DiscoverEntryWithMedia> {
-    fun entriesForPage(page: Int): Flow<List<DiscoverEntry>>
-    fun entriesObservable(count: Int, offset: Int): Flow<List<DiscoverEntryWithMedia>>
-    fun entriesPagingSource(mediaType: MediaType): PagingSource<Int, DiscoverEntryWithMedia>
-    override suspend fun deleteAll(mediaType: MediaType)
-    override suspend fun deletePage(page: Int, mediaType: MediaType)
-    override suspend fun getLastPage(mediaType: MediaType): Int?
-}
+interface DiscoverDao : ObservablePaginatedEntryDao<DiscoverEntry, DiscoverEntryWithMedia>

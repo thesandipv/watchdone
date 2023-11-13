@@ -28,6 +28,7 @@ android {
 
 dependencies {
     implementation(projects.data)
+    implementation(projects.data.search)
     implementation(projects.domain)
     implementation(projects.ui.media)
 

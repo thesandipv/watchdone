@@ -67,6 +67,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,18 +77,17 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.FilterChipGroup
-import com.afterroot.ui.common.compose.components.MovieCard
-import com.afterroot.ui.common.compose.components.TVCard
-import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.data.model.TV
+import com.afterroot.ui.common.compose.components.MediaCard
+import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.SearchViewModel
-import info.movito.themoviedbapi.model.Multi
 
 @Composable
 fun Search(
     viewModel: SearchViewModel = hiltViewModel(),
-    itemSelectedCallback: ItemSelectedCallback<Multi>,
+    itemSelectedCallback: ItemSelectedCallback<Media>,
 ) {
     val viewState by viewModel.state.collectAsState()
     val movieItems = viewModel.searchMovies.collectAsLazyPagingItems()
@@ -95,19 +95,19 @@ fun Search(
 
     if (viewState.refresh) {
         when (viewState.mediaType) {
-            Multi.MediaType.MOVIE -> movieItems.refresh()
-            Multi.MediaType.TV_SERIES -> tvItems.refresh()
+            MediaType.MOVIE -> movieItems.refresh()
+            MediaType.SHOW -> tvItems.refresh()
             else -> {}
         }
     }
 
     when (viewState.mediaType) {
-        Multi.MediaType.MOVIE -> {
+        MediaType.MOVIE -> {
             viewModel.setLoading(movieItems.loadState.refresh == LoadState.Loading)
             viewModel.setEmpty(movieItems.itemCount == 0 || viewState.query.getQuery().isBlank())
         }
 
-        Multi.MediaType.TV_SERIES -> {
+        MediaType.SHOW -> {
             viewModel.setLoading(tvItems.loadState.refresh == LoadState.Loading)
             viewModel.setEmpty(tvItems.itemCount == 0 || viewState.query.getQuery().isBlank())
         }
@@ -126,10 +126,10 @@ fun Search(
             }
         },
         onMovieSelected = {
-            viewModel.setMediaType(Multi.MediaType.MOVIE)
+            viewModel.setMediaType(MediaType.MOVIE)
         },
         onTVSelected = {
-            viewModel.setMediaType(Multi.MediaType.TV_SERIES)
+            viewModel.setMediaType(MediaType.SHOW)
         },
     )
 }
@@ -138,9 +138,9 @@ fun Search(
 @Composable
 internal fun Search(
     state: SearchViewState,
-    itemSelectedCallback: ItemSelectedCallback<Multi>,
-    movieItems: LazyPagingItems<Movie>,
-    tvItems: LazyPagingItems<TV>,
+    itemSelectedCallback: ItemSelectedCallback<Media>,
+    movieItems: LazyPagingItems<Media>,
+    tvItems: LazyPagingItems<Media>,
     onSearch: (String) -> Unit = {},
     onMovieSelected: () -> Unit = {},
     onTVSelected: () -> Unit = {},
@@ -195,7 +195,7 @@ internal fun Search(
                     .padding(4.dp),
             ) {
                 SearchChips(
-                    preselect = state.mediaType ?: Multi.MediaType.MOVIE,
+                    preselect = state.mediaType ?: MediaType.MOVIE,
                     onMovieSelected = onMovieSelected,
                     onTVSelected = onTVSelected,
                     modifier = Modifier.padding(horizontal = 8.dp),
@@ -228,15 +228,15 @@ internal fun Search(
                         // .nestedScroll(nsc)
                         .fillMaxHeight(),
                 ) {
-                    if (state.mediaType == Multi.MediaType.MOVIE) {
+                    if (state.mediaType == MediaType.MOVIE) {
                         items(
                             count = movieItems.itemCount,
                             key = movieItems.itemKey { it.id },
                         ) { index ->
                             val movie = movieItems[index]
                             if (movie != null) {
-                                MovieCard(
-                                    movie = movie,
+                                MediaCard(
+                                    media = movie,
                                     onClick = {
                                         itemSelectedCallback.onClick(index, null, movie)
                                     },
@@ -247,12 +247,12 @@ internal fun Search(
                                 )
                             }
                         }
-                    } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
+                    } else if (state.mediaType == MediaType.SHOW) {
                         items(count = tvItems.itemCount, key = tvItems.itemKey { it.id }) { index ->
                             val tv = tvItems[index]
                             if (tv != null) {
-                                TVCard(
-                                    tv = tv,
+                                MediaCard(
+                                    media = tv,
                                     onClick = {
                                         itemSelectedCallback.onClick(index, null, tv)
                                     },
@@ -338,21 +338,23 @@ fun SearchTextInput(
 
 @Composable
 fun SearchChips(
-    preselect: Multi.MediaType,
+    preselect: MediaType,
     onMovieSelected: () -> Unit,
     onTVSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val movieText = stringResource(id = R.string.text_search_movies)
+    val showText = stringResource(id = R.string.text_search_show)
     FilterChipGroup(
         modifier = modifier,
         chipSpacing = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-        list = listOf("Movie", "TV"),
-        preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV"),
+        list = listOf(movieText, showText),
+        preSelect = listOf(if (preselect == MediaType.MOVIE) movieText else showText),
         onSelectedChanged = { selected, _ ->
             when (selected) {
-                "Movie" -> onMovieSelected()
-                "TV" -> onTVSelected()
+                movieText -> onMovieSelected()
+                showText -> onTVSelected()
             }
         },
     )

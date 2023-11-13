@@ -21,14 +21,13 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.afterroot.tmdbapi.model.Query
-import com.afterroot.watchdone.domain.interactors.SearchMovieInteractor
-import com.afterroot.watchdone.domain.interactors.SearchTVInteractor
-import com.afterroot.watchdone.domain.observers.SearchMoviePagingSource
-import com.afterroot.watchdone.domain.observers.SearchTVPagingSource
+import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.data.search.SearchDataSource
+import com.afterroot.watchdone.data.search.SearchMediaPagingSource
+import com.afterroot.watchdone.data.search.SearchRepository
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.search.SearchViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import info.movito.themoviedbapi.model.Multi
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,10 +44,9 @@ import timber.log.Timber
 class SearchViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
     val settings: Settings,
-    private val searchMovieInteractor: SearchMovieInteractor,
-    private val searchTVInteractor: SearchTVInteractor,
+    private val searchRepository: SearchRepository,
 ) : ViewModel() {
-    private val mediaType = MutableStateFlow(Multi.MediaType.MOVIE)
+    private val mediaType = MutableStateFlow(MediaType.MOVIE)
     private var searchQuery = MutableStateFlow(Query())
     private var _query = MutableSharedFlow<Query>()
     private var isRefresh = MutableStateFlow(false)
@@ -80,12 +78,24 @@ class SearchViewModel @Inject constructor(
 
     val searchMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
         isRefresh.value = false
-        SearchMoviePagingSource(searchQuery.value, searchMovieInteractor)
+        SearchMediaPagingSource(
+            SearchDataSource.Params(
+                MediaType.MOVIE,
+                searchQuery.value.getQuery(),
+            ),
+            searchRepository,
+        )
     }.flow.cachedIn(viewModelScope)
 
     val searchTV = Pager(PagingConfig(20, initialLoadSize = 40)) {
         isRefresh.value = false
-        SearchTVPagingSource(searchQuery.value, searchTVInteractor)
+        SearchMediaPagingSource(
+            SearchDataSource.Params(
+                MediaType.SHOW,
+                searchQuery.value.getQuery(),
+            ),
+            searchRepository,
+        )
     }.flow.cachedIn(viewModelScope)
 
     init {
@@ -105,7 +115,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun setMediaType(type: Multi.MediaType) {
+    fun setMediaType(type: MediaType) {
         mediaType.value = type
         isRefresh.value = true
     }
