@@ -17,6 +17,7 @@ package com.afterroot.watchdone.data.mapper
 
 import app.moviebase.tmdb.model.TmdbMovie
 import app.moviebase.tmdb.model.TmdbMovieDetail
+import app.moviebase.tmdb.model.TmdbMoviePageResult
 import app.tivi.data.mappers.Mapper
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
@@ -46,30 +47,10 @@ class TmdbMovieDetailToMedia @Inject constructor() : Mapper<TmdbMovieDetail, Med
     )
 }
 
-@Deprecated(
-    "Use com.afterroot.watchdone.data.mapper.TmdbMovieToMedia",
-    replaceWith = ReplaceWith(""),
-)
-fun TmdbMovie.toMedia() = Media(
-    tmdbId = id,
-    releaseDate = releaseDate.toString(),
-    title = title,
-    isWatched = false,
-    posterPath = posterPath,
-    mediaType = MediaType.MOVIE,
-    rating = voteAverage,
-)
-
-@Deprecated(
-    "Use com.afterroot.watchdone.data.mapper.TmdbMovieDetailToMedia",
-    replaceWith = ReplaceWith(""),
-)
-fun TmdbMovieDetail.toMedia() = Media(
-    tmdbId = id,
-    releaseDate = releaseDate.toString(),
-    title = title,
-    isWatched = false,
-    posterPath = posterPath,
-    mediaType = MediaType.MOVIE,
-    rating = voteAverage,
-)
+class TmdbMoviePageResultToMedias @Inject constructor(
+    private val tmdbMovieToMedia: TmdbMovieToMedia,
+) : Mapper<TmdbMoviePageResult, List<Media>> {
+    override fun map(from: TmdbMoviePageResult): List<Media> {
+        return from.results.map(tmdbMovieToMedia::map)
+    }
+}

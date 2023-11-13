@@ -16,18 +16,18 @@
 package com.afterroot.watchdone.discover
 
 import app.moviebase.tmdb.Tmdb3
-import app.moviebase.tmdb.model.TmdbShow
-import com.afterroot.watchdone.data.mapper.toMedia
+import com.afterroot.watchdone.data.mapper.TmdbShowToMedia
 import com.afterroot.watchdone.data.model.Media
 import javax.inject.Inject
 
 class TmdbDiscoverShowDataSource @Inject constructor(
     private val tmdb: Tmdb3,
+    private val tmdbShowToMedia: TmdbShowToMedia,
 ) : DiscoverDataSource {
     override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
         return tmdb.discover.discoverShow(
             page,
             parameters = parameters,
-        ).results.map(TmdbShow::toMedia)
+        ).results.map(tmdbShowToMedia::map)
     }
 }

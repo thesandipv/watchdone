@@ -17,6 +17,7 @@ package com.afterroot.watchdone.data.mapper
 
 import app.moviebase.tmdb.model.TmdbShow
 import app.moviebase.tmdb.model.TmdbShowDetail
+import app.moviebase.tmdb.model.TmdbShowPageResult
 import app.tivi.data.mappers.Mapper
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
@@ -46,30 +47,10 @@ class TmdbShowDetailToMedia @Inject constructor() : Mapper<TmdbShowDetail, Media
     )
 }
 
-@Deprecated(
-    "Use com.afterroot.watchdone.data.mapper.TmdbShowToMedia",
-    replaceWith = ReplaceWith(""),
-)
-fun TmdbShow.toMedia() = Media(
-    tmdbId = id,
-    releaseDate = firstAirDate.toString(),
-    title = name,
-    isWatched = false,
-    posterPath = posterPath,
-    mediaType = MediaType.SHOW,
-    rating = voteAverage,
-)
-
-@Deprecated(
-    "Use com.afterroot.watchdone.data.mapper.TmdbShowDetailToMedia",
-    replaceWith = ReplaceWith(""),
-)
-fun TmdbShowDetail.toMedia() = Media(
-    tmdbId = id,
-    releaseDate = firstAirDate.toString(),
-    title = name,
-    isWatched = false,
-    posterPath = posterPath,
-    mediaType = MediaType.SHOW,
-    rating = voteAverage,
-)
+class TmdbShowPageResultToMedias @Inject constructor(
+    private val tmdbShowToMedia: TmdbShowToMedia,
+) : Mapper<TmdbShowPageResult, List<Media>> {
+    override fun map(from: TmdbShowPageResult): List<Media> {
+        return from.results.map(tmdbShowToMedia::map)
+    }
+}
