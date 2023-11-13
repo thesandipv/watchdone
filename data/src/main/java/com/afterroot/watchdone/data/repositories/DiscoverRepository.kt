@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
+@Deprecated("")
 class DiscoverRepository @Inject constructor(private val discoverApi: DiscoverApi) {
     fun getMoviesDiscover(discover: Discover) = flow {
         emit(State.loading())

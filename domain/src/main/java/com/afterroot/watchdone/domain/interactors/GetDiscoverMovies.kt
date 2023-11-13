@@ -22,6 +22,7 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
+@Deprecated("")
 class GetDiscoverMovies @Inject constructor(private val discoverRepository: DiscoverRepository) :
     ResultInteractor<GetDiscoverMovies.Params, Flow<State<MovieResultsPage>>>() {
     data class Params(val discover: Discover)
