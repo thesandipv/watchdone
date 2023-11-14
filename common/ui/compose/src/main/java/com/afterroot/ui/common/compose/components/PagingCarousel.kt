@@ -33,17 +33,15 @@ import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.data.model.TV
-import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.data.model.Media
 
 @Composable
-fun <T : Multi> PagingCarousel(
-    items: LazyPagingItems<T>,
+fun PagingCarousel(
+    items: LazyPagingItems<Media>,
     title: String,
     refreshing: Boolean,
     modifier: Modifier = Modifier,
-    onItemClick: (T, Int) -> Unit,
+    onItemClick: (Media, Int) -> Unit,
     onMoreClick: (() -> Unit)? = null,
 ) {
     Column(modifier) {
@@ -77,9 +75,9 @@ fun <T : Multi> PagingCarousel(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun <T : Multi> PagingCarouselInt(
-    items: LazyPagingItems<T>,
-    onItemClick: (T, Int) -> Unit,
+internal fun PagingCarouselInt(
+    items: LazyPagingItems<Media>,
+    onItemClick: (Media, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
@@ -94,11 +92,7 @@ internal fun <T : Multi> PagingCarouselInt(
         items(
             count = items.itemCount,
             key = items.itemKey { item ->
-                when (item) {
-                    is TV -> (item as TV).id
-                    is Movie -> (item as Movie).id
-                    else -> null
-                }!!
+                item.id
             },
         ) { index ->
             items[index]?.let { item ->

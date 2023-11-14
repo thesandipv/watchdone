@@ -17,45 +17,17 @@ package com.afterroot.watchdone.data.mapper
 import com.afterroot.data.model.NetworkUser
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.data.model.TV
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
-import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.NetworkMovie
 
-fun QuerySnapshot.toMulti(): List<Multi> {
-    val list = mutableListOf<Multi>()
-    this.forEach { queryDocumentSnapshot ->
-        val multi: Multi = when (queryDocumentSnapshot.getString(Field.MEDIA_TYPE)) {
-            Multi.MediaType.MOVIE.name -> {
-                queryDocumentSnapshot.toObject(DBMedia::class.java).toMovie()
-            }
-            Multi.MediaType.TV_SERIES.name -> {
-                queryDocumentSnapshot.toObject(DBMedia::class.java).toTV()
-            }
-            else -> {
-                Movie()
-            }
-        }
-        list.add(multi)
-    }
-    return list
+fun QuerySnapshot.toMedia(): List<Media> = toObjects(DBMedia::class.java).map {
+    it.toMedia()
 }
 
-fun DocumentSnapshot.toMulti(): Multi {
-    return when (getString(Field.MEDIA_TYPE)) {
-        Multi.MediaType.MOVIE.name -> {
-            toObject(DBMedia::class.java)?.toMovie() ?: Movie()
-        }
-        Multi.MediaType.TV_SERIES.name -> {
-            toObject(DBMedia::class.java)?.toTV() ?: TV()
-        }
-        else -> {
-            Movie()
-        }
-    }
-}
+fun DocumentSnapshot.toMedia(): Media = toObject(DBMedia::class.java)?.toMedia() ?: Media.EMPTY
 
 fun QuerySnapshot.toMovies(): List<Movie> {
     val list = mutableListOf<Movie>()
