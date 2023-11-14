@@ -23,6 +23,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import app.tivi.extensions.combine
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.domain.interactors.MediaInfoInteractor
@@ -44,7 +45,6 @@ import com.afterroot.watchdone.domain.observers.RecommendedShowPagingSource
 import com.afterroot.watchdone.ui.media.MediaInfoViewState
 import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
-import info.movito.themoviedbapi.model.Multi
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -79,7 +79,7 @@ class MediaInfoViewModel @Inject constructor(
     private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
     private val _mediaType = savedStateHandle.getStateFlow("type", "")
 
-    val mediaType = Multi.MediaType.valueOf(_mediaType.value.uppercase())
+    val mediaType = MediaType.valueOf(_mediaType.value.uppercase())
 
     private val isInWL = MutableStateFlow(false)
     private val isWatched = MutableStateFlow(false)
@@ -143,11 +143,11 @@ class MediaInfoViewModel @Inject constructor(
     }
 
     val state: StateFlow<MediaInfoViewState> = when (mediaType) {
-        Multi.MediaType.MOVIE -> {
+        MediaType.MOVIE -> {
             stateMovie
         }
 
-        Multi.MediaType.TV_SERIES -> {
+        MediaType.SHOW -> {
             stateTV
         }
 
@@ -163,11 +163,11 @@ class MediaInfoViewModel @Inject constructor(
     }
 
     init {
-        if (mediaType == Multi.MediaType.MOVIE) {
+        if (mediaType == MediaType.MOVIE) {
             observeMovieInfo(ObserveMovieInfo.Params(mediaId.value))
             observeMovieCredits(ObserveMovieCredits.Params(mediaId.value))
             observeMovieWatchProviders(ObserveMovieWatchProviders.Params(mediaId.value))
-        } else if (mediaType == Multi.MediaType.TV_SERIES) {
+        } else if (mediaType == MediaType.SHOW) {
             observeTVInfo(ObserveTVInfo.Params(mediaId.value))
             observeTVCredits(ObserveTVCredits.Params(mediaId.value))
             observeTVWatchProviders(ObserveTVWatchProviders.Params(mediaId.value))

@@ -19,8 +19,10 @@ import androidx.paging.PagingState
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.mapper.toMulti
+import com.afterroot.watchdone.data.mapper.toMedia
 import com.afterroot.watchdone.data.model.Filters
+import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.collectionWatchdone
@@ -28,7 +30,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.Source
-import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
@@ -39,19 +40,17 @@ class WatchlistPagingSource(
     private val settings: Settings,
     private val firebaseUtils: FirebaseUtils,
     private val filters: Filters = Filters.EMPTY,
-) : PagingSource<QuerySnapshot, Multi>() {
-    override fun getRefreshKey(state: PagingState<QuerySnapshot, Multi>): QuerySnapshot? {
+) : PagingSource<QuerySnapshot, Media>() {
+    override fun getRefreshKey(state: PagingState<QuerySnapshot, Media>): QuerySnapshot? {
         return null
     }
 
-    override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Multi> {
+    override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Media> {
         return try {
             val baseQuery = firestore.collectionWatchdone(
                 id = firebaseUtils.uid!!,
                 settings.isUseProdDb,
-            )
-                .document(Collection.WATCHLIST)
-                .collection(Collection.ITEMS)
+            ).document(Collection.WATCHLIST).collection(Collection.ITEMS)
 
             val orderBy: ExtendedQuery = {
                 val defaultOrder: ExtendedQuery = {
@@ -69,14 +68,16 @@ class WatchlistPagingSource(
             val filterBy: ExtendedQuery = {
                 val mediaTypeFilter: ExtendedQuery = {
                     when (filters.mediaType) {
-                        Multi.MediaType.MOVIE -> whereEqualTo(
+                        MediaType.MOVIE -> whereEqualTo(
                             Field.MEDIA_TYPE,
-                            Multi.MediaType.MOVIE.name,
+                            MediaType.MOVIE.value,
                         )
-                        Multi.MediaType.TV_SERIES -> whereEqualTo(
+
+                        MediaType.SHOW -> whereEqualTo(
                             Field.MEDIA_TYPE,
-                            Multi.MediaType.TV_SERIES.name,
+                            MediaType.SHOW.value,
                         )
+
                         else -> this
                     }
                 }
@@ -89,6 +90,7 @@ class WatchlistPagingSource(
                             Field.WATCHED_EPISODES,
                             emptyList<String>(),
                         )
+
                         else -> this
                     }
                 }
@@ -102,11 +104,11 @@ class WatchlistPagingSource(
             val cachedSnapshot = baseQuery.limit(3).get(Source.CACHE).await()
 
             if (!cachedSnapshot.isEmpty && cachedSnapshot.size() > 2) {
-                val latestPointerSnapshot = baseQuery.limit(1).get().await()
-                val latestPointer = latestPointerSnapshot.documents.first().toMulti()
-                val cachedPointer = cachedSnapshot.documents.first().toMulti()
+                val latestSnapshot = baseQuery.limit(1).get().await()
+                val latestItem = latestSnapshot.documents.first().toMedia()
+                val cachedItem = cachedSnapshot.documents.first().toMedia()
 
-                if (latestPointer != cachedPointer) {
+                if (latestItem != cachedItem) {
                     currentPageSource = Source.DEFAULT
                 }
             } else {
@@ -142,7 +144,7 @@ class WatchlistPagingSource(
             }
 
             LoadResult.Page(
-                data = currentPage.toMulti(),
+                data = currentPage.toMedia(),
                 prevKey = null,
                 nextKey = nextPage,
             )

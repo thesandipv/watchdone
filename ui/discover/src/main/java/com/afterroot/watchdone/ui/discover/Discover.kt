@@ -58,10 +58,10 @@ import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MediaCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
+import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
-import info.movito.themoviedbapi.model.Multi
 import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
@@ -90,7 +90,7 @@ fun DiscoverChips(
 @Composable
 fun Discover(
     discoverViewModel: DiscoverViewModel = hiltViewModel(),
-    itemSelectedCallback: ItemSelectedCallback<Multi>,
+    itemSelectedCallback: ItemSelectedCallback<Media>,
 ) {
     val viewState by discoverViewModel.state.collectAsState()
     val discoverItems = discoverViewModel.pagedDiscoverList.collectAsLazyPagingItems()
@@ -122,7 +122,7 @@ internal fun Discover(
     state: DiscoverViewState,
     movieItems: LazyPagingItems<DiscoverEntryWithMedia>,
     showItems: LazyPagingItems<DiscoverEntryWithMedia>,
-    itemSelectedCallback: ItemSelectedCallback<Multi>,
+    itemSelectedCallback: ItemSelectedCallback<Media>,
     onMovieChipSelected: () -> Unit,
     onShowChipSelected: () -> Unit,
     refresh: () -> Unit,
@@ -177,7 +177,7 @@ internal fun Discover(
                                 MediaCard(
                                     media = movie.media,
                                     onClick = {
-                                        // itemSelectedCallback.onClick(0, null, movie) TODO
+                                        itemSelectedCallback.onClick(0, null, movie.media)
                                     },
                                     modifier = Modifier
                                         .animateItemPlacement()
@@ -196,7 +196,7 @@ internal fun Discover(
                                 MediaCard(
                                     media = show.media,
                                     onClick = {
-                                        // itemSelectedCallback.onClick(0, null, show) TODO
+                                        itemSelectedCallback.onClick(0, null, show.media)
                                     },
                                     modifier = Modifier
                                         .animateItemPlacement()

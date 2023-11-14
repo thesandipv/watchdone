@@ -51,13 +51,14 @@ import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Episode
+import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.viewmodel.MediaInfoViewModel
-import info.movito.themoviedbapi.model.Multi
 
 @Composable
 fun MediaInfo(
     navigateUp: () -> Unit,
-    onRecommendedClick: (media: Multi) -> Unit,
+    onRecommendedClick: (media: Media) -> Unit,
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
@@ -74,12 +75,12 @@ fun MediaInfo(
 internal fun MediaInfo(
     viewModel: MediaInfoViewModel,
     navigateUp: () -> Unit,
-    onRecommendedClick: (media: Multi) -> Unit,
+    onRecommendedClick: (media: Media) -> Unit,
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
     val viewState by viewModel.state.collectAsState()
-    if (viewState.mediaType == Multi.MediaType.MOVIE) {
+    if (viewState.mediaType == MediaType.MOVIE) {
         val recommended = viewModel.getRecommendedMovies(
             viewState.mediaId,
         ).collectAsLazyPagingItems()
@@ -93,7 +94,7 @@ internal fun MediaInfo(
             shareToIG = shareToIG,
             navigateUp = navigateUp,
         )
-    } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+    } else if (viewState.mediaType == MediaType.SHOW) {
         val recommended = viewModel.getRecommendedShows(
             viewState.mediaId,
         ).collectAsLazyPagingItems()
@@ -116,12 +117,12 @@ internal fun MediaInfo(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun <T : Multi> MediaInfo(
+internal fun MediaInfo(
     viewState: MediaInfoViewState,
-    recommended: LazyPagingItems<T>,
+    recommended: LazyPagingItems<Media>,
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onRecommendedClick: (media: T) -> Unit = {},
+    onRecommendedClick: (media: Media) -> Unit = {},
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
@@ -134,11 +135,11 @@ internal fun <T : Multi> MediaInfo(
     Scaffold(
         topBar = {
             val title = when (viewState.mediaType) {
-                Multi.MediaType.MOVIE -> {
+                MediaType.MOVIE -> {
                     viewState.movie.title
                 }
 
-                Multi.MediaType.TV_SERIES -> {
+                MediaType.SHOW -> {
                     viewState.tv.name
                 }
 
@@ -150,11 +151,11 @@ internal fun <T : Multi> MediaInfo(
                 windowInsets = TopBarWindowInsets,
                 actions = {
                     IconButton(onClick = {
-                        if (viewState.mediaType == Multi.MediaType.MOVIE) {
+                        if (viewState.mediaType == MediaType.MOVIE) {
                             viewState.movie.posterPath?.let {
                                 shareToIG?.invoke(viewState.movie.id, it)
                             }
-                        } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+                        } else if (viewState.mediaType == MediaType.SHOW) {
                             viewState.tv.posterPath?.let {
                                 shareToIG?.invoke(viewState.tv.id, it)
                             }
@@ -199,14 +200,14 @@ internal fun <T : Multi> MediaInfo(
 }
 
 @Composable
-internal fun <T : Multi> MediaInfoContent(
+internal fun MediaInfoContent(
     viewState: MediaInfoViewState,
-    recommended: LazyPagingItems<T>,
+    recommended: LazyPagingItems<Media>,
     listState: LazyListState,
     contentPadding: PaddingValues,
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onRecommendedClick: (media: T) -> Unit = {},
+    onRecommendedClick: (media: Media) -> Unit = {},
     onSeasonSelected: (Int) -> Unit = {},
     onEpisodeWatchAction: (episode: Episode, isWatched: Boolean) -> Unit = { _, _ -> },
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
@@ -219,8 +220,8 @@ internal fun <T : Multi> MediaInfoContent(
         item {
             Backdrop(
                 backdropPath = when (viewState.mediaType) {
-                    Multi.MediaType.MOVIE -> viewState.movie.backdropPath
-                    Multi.MediaType.TV_SERIES -> viewState.tv.backdropPath
+                    MediaType.MOVIE -> viewState.movie.backdropPath
+                    MediaType.SHOW -> viewState.tv.backdropPath
                     else -> null
                 },
                 modifier = Modifier
@@ -243,7 +244,7 @@ internal fun <T : Multi> MediaInfoContent(
             )
         }
 
-        if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+        if (viewState.mediaType == MediaType.SHOW) {
             item(key = "seasons") {
                 Seasons(
                     tv = viewState.tv,
@@ -279,7 +280,7 @@ internal fun <T : Multi> MediaInfoContent(
                 })
         }
 
-        if (viewState.mediaType == Multi.MediaType.MOVIE) {
+        if (viewState.mediaType == MediaType.MOVIE) {
             item(key = "rec-movies") {
                 PagingCarousel(
                     items = recommended,
@@ -292,7 +293,7 @@ internal fun <T : Multi> MediaInfoContent(
                     onMoreClick = null,
                 )
             }
-        } else if (viewState.mediaType == Multi.MediaType.TV_SERIES) {
+        } else if (viewState.mediaType == MediaType.SHOW) {
             item(key = "rec-tv") {
                 PagingCarousel(
                     items = recommended,

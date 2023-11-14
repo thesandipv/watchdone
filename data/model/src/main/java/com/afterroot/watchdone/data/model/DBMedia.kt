@@ -16,7 +16,6 @@ package com.afterroot.watchdone.data.model
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
-import info.movito.themoviedbapi.model.Multi
 
 data class DBMedia(
     val id: Int = 0,
@@ -27,8 +26,8 @@ data class DBMedia(
     val posterPath: String? = null,
     @ServerTimestamp
     val timestamp: Timestamp = Timestamp.now(),
-    val mediaType: Multi.MediaType? = null,
-    val rating: Double? = null,
+    val mediaType: MediaType? = null,
+    val rating: Float? = null,
     // TODO update in ards
     val watched: List<String> = emptyList(),
 ) {
