@@ -20,24 +20,13 @@ import app.tivi.domain.SubjectInteractor
 import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.data.model.WatchProviderResult
 import com.afterroot.watchdone.data.repositories.TVRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.core.TvResultsPage
-import info.movito.themoviedbapi.model.providers.ProviderResults
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-
-@Deprecated("Use ObserveTVSeason")
-class TVSeasonInteractor @Inject constructor(private val tvRepository: TVRepository) :
-    ResultInteractor<TVSeasonInteractor.Params, Flow<State<Season>>>() {
-
-    data class Params(val tvId: Int, val season: Int)
-
-    override suspend fun doWork(params: Params): Flow<State<Season>> {
-        return tvRepository.season(params.tvId, params.season)
-    }
-}
 
 class TVEpisodeInteractor @Inject constructor(private val tvRepository: TVRepository) :
     ResultInteractor<TVEpisodeInteractor.Params, Flow<State<Episode>>>() {
@@ -46,17 +35,6 @@ class TVEpisodeInteractor @Inject constructor(private val tvRepository: TVReposi
 
     override suspend fun doWork(params: Params): Flow<State<Episode>> {
         return tvRepository.episode(params.tvId, params.season, params.episode)
-    }
-}
-
-@Deprecated("Use ObserveTVCredits")
-class TVCreditsInteractor @Inject constructor(private val tvRepository: TVRepository) :
-    ResultInteractor<TVCreditsInteractor.Params, Flow<State<Credits>>>() {
-
-    data class Params(val tvId: Int)
-
-    override suspend fun doWork(params: Params): Flow<State<Credits>> {
-        return tvRepository.credits(params.tvId)
     }
 }
 
@@ -98,10 +76,10 @@ class ObserveTVSeason @Inject constructor(private val tvRepository: TVRepository
 }
 
 class ObserveTVWatchProviders @Inject constructor(private val tvRepository: TVRepository) :
-    SubjectInteractor<ObserveTVWatchProviders.Params, State<ProviderResults>>() {
+    SubjectInteractor<ObserveTVWatchProviders.Params, State<WatchProviderResult>>() {
     data class Params(val tvId: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<ProviderResults>> {
+    override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> {
         return tvRepository.watchProviders(params.tvId)
     }
 }

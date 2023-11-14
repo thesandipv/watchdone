@@ -18,11 +18,11 @@ package com.afterroot.watchdone.domain.interactors
 import app.tivi.domain.ResultInteractor
 import app.tivi.domain.SubjectInteractor
 import com.afterroot.watchdone.data.model.Movie
+import com.afterroot.watchdone.data.model.WatchProviderResult
 import com.afterroot.watchdone.data.repositories.MovieRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.core.MovieResultsPage
-import info.movito.themoviedbapi.model.providers.ProviderResults
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -54,10 +54,10 @@ class ObserveRecommendedMovies @Inject constructor(private val movieRepository: 
 }
 
 class ObserveMovieWatchProviders @Inject constructor(private val movieRepository: MovieRepository) :
-    SubjectInteractor<ObserveMovieWatchProviders.Params, State<ProviderResults>>() {
+    SubjectInteractor<ObserveMovieWatchProviders.Params, State<WatchProviderResult>>() {
     data class Params(val id: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<ProviderResults>> {
+    override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> {
         return movieRepository.watchProviders(params.id)
     }
 }

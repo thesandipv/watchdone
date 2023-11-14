@@ -15,7 +15,9 @@
 
 package com.afterroot.watchdone.data.repositories
 
+import app.moviebase.tmdb.Tmdb3
 import com.afterroot.tmdbapi.api.MoviesApi
+import com.afterroot.watchdone.data.mapper.TmdbWatchProviderResultToWatchProviderResult
 import com.afterroot.watchdone.data.mapper.toMovie
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.resultFlow
@@ -25,7 +27,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class MovieRepository @Inject constructor(private val moviesApi: MoviesApi) {
+class MovieRepository @Inject constructor(
+    private val moviesApi: MoviesApi,
+    private val tmdb: Tmdb3,
+    private val watchProviderMapper: TmdbWatchProviderResultToWatchProviderResult,
+) {
 
     // TODO Migrate to resultFlow()
     fun credits(id: Int) = flow {
@@ -39,5 +45,7 @@ class MovieRepository @Inject constructor(private val moviesApi: MoviesApi) {
 
     suspend fun recommended(id: Int, page: Int) = resultFlow(moviesApi.getRecommended(id, page))
 
-    suspend fun watchProviders(id: Int) = resultFlow(moviesApi.getWatchProviders(id))
+    suspend fun watchProviders(id: Int) = resultFlow(
+        watchProviderMapper.map(tmdb.movies.getWatchProviders(id)),
+    )
 }

@@ -15,14 +15,20 @@
 
 package com.afterroot.watchdone.data.repositories
 
+import app.moviebase.tmdb.Tmdb3
 import com.afterroot.tmdbapi.api.TVApi
+import com.afterroot.watchdone.data.mapper.TmdbWatchProviderResultToWatchProviderResult
 import com.afterroot.watchdone.data.mapper.toEpisode
 import com.afterroot.watchdone.data.mapper.toSeason
 import com.afterroot.watchdone.data.mapper.toTV
 import com.afterroot.watchdone.utils.resultFlow
 import javax.inject.Inject
 
-class TVRepository @Inject constructor(private val tvApi: TVApi) {
+class TVRepository @Inject constructor(
+    private val tvApi: TVApi,
+    private val tmdb: Tmdb3,
+    private val watchProviderMapper: TmdbWatchProviderResultToWatchProviderResult,
+) {
 
     suspend fun season(id: Int, season: Int) = resultFlow(tvApi.getSeason(id, season).toSeason())
 
@@ -36,5 +42,7 @@ class TVRepository @Inject constructor(private val tvApi: TVApi) {
 
     suspend fun recommended(id: Int, page: Int) = resultFlow(tvApi.getRecommended(id, page))
 
-    suspend fun watchProviders(id: Int) = resultFlow(tvApi.getWatchProviders(id))
+    suspend fun watchProviders(id: Int) = resultFlow(
+        watchProviderMapper.map(tmdb.show.getWatchProviders(id)),
+    )
 }
