@@ -24,5 +24,5 @@ interface TmdbIdEntity {
 }
 
 interface Watchable {
-    val watched: Boolean?
+    val isWatched: Boolean?
 }

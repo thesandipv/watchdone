@@ -31,11 +31,11 @@ data class Media(
     @ColumnInfo(name = "tmdb_id") override val tmdbId: Int? = null,
     @ColumnInfo(name = "release_date") val releaseDate: String? = null,
     @ColumnInfo(name = "title") val title: String? = null,
-    @ColumnInfo(name = "is_watched") val isWatched: Boolean = false,
+    @ColumnInfo(name = "is_watched") override val isWatched: Boolean = false,
     @ColumnInfo(name = "poster_path") val posterPath: String? = null,
     @ColumnInfo(name = "media_type") val mediaType: MediaType? = null,
     @ColumnInfo(name = "rating") val rating: Float? = null,
-) : WDEntity, TmdbIdEntity {
+) : WDEntity, TmdbIdEntity, Watchable {
     companion object {
         val EMPTY = Media()
     }

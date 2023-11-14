@@ -15,8 +15,9 @@
 package com.afterroot.watchdone.data.mapper
 
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.Movie
-import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.NetworkMovie
 import info.movito.themoviedbapi.model.core.MovieResultsPage
 
@@ -24,7 +25,7 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage
  * Maps [NetworkMovie] to [Movie]
  */
 fun NetworkMovie.toMovie(isWatched: Boolean = false): Movie = Movie(
-    id = id,
+    tmdbId = id,
     adult = adult,
     backdropPath = backdropPath,
     belongsToCollection = belongsToCollection,
@@ -48,7 +49,7 @@ fun NetworkMovie.toMovie(isWatched: Boolean = false): Movie = Movie(
     tagline = tagline,
     title = title,
     video = video,
-    voteAverage = voteAverage,
+    voteAverage = voteAverage?.toFloat(),
     voteCount = voteCount,
     userRating = userRating,
     recommendedMovies = recommendedMovies,
@@ -66,7 +67,7 @@ fun NetworkMovie.toMovie(isWatched: Boolean = false): Movie = Movie(
 )
 
 fun DBMedia.toMovie(): Movie = Movie(
-    id = id,
+    tmdbId = id,
     releaseDate = releaseDate,
     title = title,
     isWatched = isWatched,
@@ -74,13 +75,22 @@ fun DBMedia.toMovie(): Movie = Movie(
     voteAverage = rating,
 )
 
-fun Movie.toDBMedia() = DBMedia(
-    id = id,
+fun DBMedia.toMedia(): Media = Media(
+    tmdbId = id,
     releaseDate = releaseDate,
     title = title,
     isWatched = isWatched,
     posterPath = posterPath,
-    mediaType = Multi.MediaType.MOVIE,
+    rating = rating,
+)
+
+fun Movie.toDBMedia() = DBMedia(
+    id = tmdbId ?: throw Exception("tmdbId is null"),
+    releaseDate = releaseDate,
+    title = title,
+    isWatched = isWatched,
+    posterPath = posterPath,
+    mediaType = MediaType.MOVIE,
     rating = voteAverage,
 )
 
