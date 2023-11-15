@@ -13,6 +13,6 @@ dependencies {
     api(libs.okhttp.okhttp)
     api(libs.tmdb.api)
 
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.okhttp)
 }
