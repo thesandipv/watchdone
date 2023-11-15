@@ -96,7 +96,7 @@ include(
     ":ui:settings",
     ":ui:watchlist",
     // ":utils",
-    ":tmdb-api"
+    ":tmdb-api",
 )
 
 project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure
