@@ -17,6 +17,7 @@ package com.afterroot.watchdone.helpers
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.mapper.toDBMedia
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.utils.collectionWatchdone
@@ -24,7 +25,6 @@ import com.afterroot.watchdone.utils.collectionWatchlistItems
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
-import info.movito.themoviedbapi.model.Multi
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -45,8 +45,8 @@ fun migrateFirestore(
 ) {
     firestore.runBatch { batch ->
         watchlistSnapshot.documents.forEach {
-            when (it.getString(Field.MEDIA_TYPE)?.let { type -> Multi.MediaType.valueOf(type) }) {
-                Multi.MediaType.MOVIE -> {
+            when (it.getString(Field.MEDIA_TYPE)?.let { type -> MediaType.valueOf(type) }) {
+                MediaType.MOVIE -> {
                     // Decide whether to run migration by checking value of 'voteAverage' field
                     val isRunMigration = it.getDouble("voteAverage") != null
                     if (isRunMigration) {
@@ -64,7 +64,8 @@ fun migrateFirestore(
                         }
                     }
                 }
-                Multi.MediaType.TV_SERIES -> {
+
+                MediaType.SHOW -> {
                     // Decide whether to run migration by checking value of 'voteAverage' field
                     val isRunMigration = it.getDouble("voteAverage") != null
                     if (isRunMigration) {
@@ -82,6 +83,7 @@ fun migrateFirestore(
                         }
                     }
                 }
+
                 else -> {
                     // NOT SUPPORTED
                 }
