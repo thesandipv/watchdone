@@ -9,7 +9,7 @@ android {
 }
 
 dependencies {
-    api(libs.tmdb.api)
+    api(projects.tmdbApi)
     api(projects.themoviedbapi)
     implementation(libs.androidx.room.common)
     implementation(libs.firebase.core)
