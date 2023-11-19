@@ -20,10 +20,12 @@ import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.PaginatedEntry
 
 interface PaginatedEntryDao<EC : PaginatedEntry, LI : EntryWithMedia<EC>> : EntryDao<EC, LI> {
-    suspend fun deletePage(page: Int)
-    suspend fun deletePage(page: Int, mediaType: MediaType)
-    suspend fun getLastPage(): Int?
-    suspend fun getLastPage(mediaType: MediaType): Int?
+    suspend fun deletePage(page: Int): Unit = TODO("Not Implemented")
+    suspend fun deletePage(page: Int, mediaType: MediaType): Unit = TODO("Not Implemented")
+    suspend fun deletePage(page: Int, mediaType: MediaType, ofMedia: Int): Unit = TODO("Not Implemented")
+    suspend fun getLastPage(): Int? = TODO("Not Implemented")
+    suspend fun getLastPage(mediaType: MediaType): Int? = TODO("Not Implemented")
+    suspend fun getLastPage(mediaType: MediaType, ofMedia: Int): Int? = TODO("Not Implemented")
 }
 
 suspend fun <EC : PaginatedEntry, LI : EntryWithMedia<EC>> PaginatedEntryDao<EC, LI>.updatePage(
@@ -36,5 +38,15 @@ suspend fun <EC : PaginatedEntry, LI : EntryWithMedia<EC>> PaginatedEntryDao<EC,
     } else {
         deletePage(page, mediaType)
     }
+    upsertAll(entities)
+}
+
+suspend fun <EC : PaginatedEntry, LI : EntryWithMedia<EC>> PaginatedEntryDao<EC, LI>.updatePage(
+    page: Int,
+    recOf: Int,
+    mediaType: MediaType,
+    entities: List<EC>,
+) {
+    deletePage(page, mediaType, recOf)
     upsertAll(entities)
 }

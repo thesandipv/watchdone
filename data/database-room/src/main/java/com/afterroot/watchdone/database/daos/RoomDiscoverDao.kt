@@ -56,7 +56,4 @@ abstract class RoomDiscoverDao : DiscoverDao, RoomPaginatedEntryDao<DiscoverEntr
 
     @Query("SELECT MAX(page) FROM discover_entries WHERE media_type = :mediaType")
     abstract override suspend fun getLastPage(mediaType: MediaType): Int?
-    override suspend fun deletePage(page: Int) {}
-
-    override suspend fun getLastPage(): Int? = null
 }
