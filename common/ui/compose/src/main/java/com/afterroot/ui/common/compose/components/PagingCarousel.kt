@@ -33,11 +33,12 @@ import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
+import com.afterroot.watchdone.data.compoundmodel.EntryWithMedia
 import com.afterroot.watchdone.data.model.Media
 
 @Composable
-fun PagingCarousel(
-    items: LazyPagingItems<Media>,
+fun <EWM : EntryWithMedia<*>> PagingCarousel(
+    items: LazyPagingItems<EWM>,
     title: String,
     refreshing: Boolean,
     modifier: Modifier = Modifier,
@@ -75,8 +76,8 @@ fun PagingCarousel(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun PagingCarouselInt(
-    items: LazyPagingItems<Media>,
+internal fun <EWM : EntryWithMedia<*>> PagingCarouselInt(
+    items: LazyPagingItems<EWM>,
     onItemClick: (Media, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -92,13 +93,13 @@ internal fun PagingCarouselInt(
         items(
             count = items.itemCount,
             key = items.itemKey { item ->
-                item.id
+                item.media.id
             },
         ) { index ->
             items[index]?.let { item ->
                 PosterCard(
-                    media = item,
-                    onClick = { onItemClick(item, index) },
+                    media = item.media,
+                    onClick = { onItemClick(item.media, index) },
                     modifier = Modifier
                         .animateItemPlacement()
                         .fillParentMaxHeight()
