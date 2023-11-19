@@ -107,11 +107,9 @@ import com.afterroot.watchdone.base.WatchlistType
 import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
-import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.media.MetaText
-import info.movito.themoviedbapi.model.Multi
 import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
@@ -245,7 +243,7 @@ private fun Watchlist(
                     items(
                         count = watchlist.itemCount,
                         key = watchlist.itemKey { item ->
-                            item.id
+                            item.tmdbId ?: item.id
                         },
                     ) { index ->
                         watchlist[index]?.let {
@@ -333,11 +331,11 @@ fun FiltersRow(
                 MediaTypeFilter(
                     modifier = Modifier,
                     preSelect = when (state.filters.mediaType) {
-                        Multi.MediaType.MOVIE -> stringResource(
+                        MediaType.MOVIE -> stringResource(
                             id = CommonR.string.text_search_movies,
                         )
 
-                        Multi.MediaType.TV_SERIES -> stringResource(
+                        MediaType.SHOW -> stringResource(
                             id = CommonR.string.text_search_show,
                         )
 
@@ -351,12 +349,12 @@ fun FiltersRow(
 
                     if (index == 0) { // Movie
                         filter(
-                            state.filters.copy(mediaType = Multi.MediaType.MOVIE),
+                            state.filters.copy(mediaType = MediaType.MOVIE),
                         )
                     } else { // TV
                         filter(
                             state.filters.copy(
-                                mediaType = Multi.MediaType.TV_SERIES,
+                                mediaType = MediaType.SHOW,
                             ),
                         )
                     }
@@ -421,7 +419,7 @@ private fun LazyGridItemScope.WatchlistItem(
                             .animateItemPlacement()
                             .fillMaxWidth(),
                         isWatched = item.isWatched,
-                        mediaType = item.mediaType,
+                        mediaType = MediaType.MOVIE,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
                     )
                 }
@@ -441,27 +439,26 @@ private fun LazyGridItemScope.WatchlistItem(
                                 end = if (index % 2 == 0) 0.dp else 16.dp,
                             ),
                         isWatched = item.isWatched,
-                        mediaType = item.mediaType,
+                        mediaType = MediaType.MOVIE,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
                     )
                 }
             }
         }
 
-        Multi.MediaType.TV_SERIES -> {
-            item as TV
+        MediaType.SHOW -> {
             when (type) {
                 WatchlistType.LIST -> {
                     ListWatchlistItem(
                         poster = item.posterPath,
-                        title = item.name,
-                        rating = item.rating(),
+                        title = item.title,
+                        rating = item.rating,
                         releaseDate = item.releaseDate,
                         modifier = Modifier
                             .animateItemPlacement()
                             .fillMaxWidth(),
                         isWatched = item.isWatched,
-                        mediaType = item.mediaType,
+                        mediaType = MediaType.SHOW,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
                     )
                 }
@@ -469,8 +466,8 @@ private fun LazyGridItemScope.WatchlistItem(
                 WatchlistType.GRID -> {
                     GridWatchlistItem(
                         poster = item.posterPath,
-                        title = item.name,
-                        rating = item.rating(),
+                        title = item.title,
+                        rating = item.rating,
                         releaseDate = item.releaseDate,
                         modifier = Modifier
                             .animateItemPlacement()
@@ -481,7 +478,7 @@ private fun LazyGridItemScope.WatchlistItem(
                                 end = if (index % 2 == 0) 0.dp else 16.dp,
                             ),
                         isWatched = item.isWatched,
-                        mediaType = item.mediaType,
+                        mediaType = MediaType.SHOW,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
                     )
                 }
@@ -570,9 +567,9 @@ fun ListWatchlistItem(
 fun GridWatchlistItem(
     poster: String?,
     title: String?,
-    rating: String?,
+    rating: Float?,
     releaseDate: String?,
-    mediaType: Multi.MediaType,
+    mediaType: MediaType,
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     isWatched: Boolean = false,
@@ -619,7 +616,7 @@ fun GridWatchlistItem(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    if (mediaType == Multi.MediaType.MOVIE) {
+                    if (mediaType == MediaType.MOVIE) {
                         Icon(
                             imageVector = Icons.Rounded.Movie,
                             contentDescription = stringResource(
@@ -668,7 +665,7 @@ fun GridWatchlistItem(
                         }
                         rating?.let {
                             MetaText(
-                                text = it,
+                                text = it.toString(),
                                 modifier = Modifier.align(Alignment.Bottom),
                                 icon = Icons.Rounded.Star,
                             )
@@ -731,7 +728,6 @@ private fun FilterChips(
                     }
                 }
             },
-
         )
     }
 }
