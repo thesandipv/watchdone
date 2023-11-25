@@ -46,6 +46,7 @@ import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.logFirstStart
 import com.afterroot.watchdone.utils.shareToInstagram
+import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.ads.MobileAds
@@ -85,6 +86,7 @@ class MainActivity : AppCompatActivity() {
     @Named("feedback_body")
     lateinit var feedbackBody: String
     private val networkViewModel: NetworkViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -140,6 +142,9 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun initialize() {
+        lifecycleScope.launch {
+            homeViewModel.checkForMigrations()
+        }
         if (settings.isFirstInstalled) {
             logFirstStart()
             settings.isFirstInstalled = false

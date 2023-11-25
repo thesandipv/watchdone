@@ -28,7 +28,6 @@ data class DBMedia(
     val timestamp: Timestamp = Timestamp.now(),
     val mediaType: MediaType? = null,
     val rating: Float? = null,
-    // TODO update in ards
     val watched: List<String> = emptyList(),
 ) {
     companion object {

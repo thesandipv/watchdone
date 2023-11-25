@@ -38,14 +38,14 @@ class FirestoreRepository @Inject constructor(
     firebaseUtils: FirebaseUtils,
 ) {
 
-    private val watchListRef by lazy {
+    val watchListRef by lazy {
         firestore.collectionWatchdone(
             id = firebaseUtils.uid.toString(),
             isUseOnlyProdDB = settings.isUseProdDb,
         ).documentWatchlist()
     }
 
-    private val watchlistItemsRef by lazy {
+    val watchlistItemsRef by lazy {
         watchListRef.collectionWatchlistItems()
     }
 

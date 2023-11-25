@@ -95,6 +95,7 @@ android {
 dependencies {
 
     implementation(projects.api.tmdb)
+    implementation(projects.core.logging)
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.ui.discover)
