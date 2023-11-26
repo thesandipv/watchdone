@@ -30,7 +30,6 @@ pluginManagement {
 dependencyResolutionManagement {
     val properties = readProperties(file("private.properties"))
 
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
