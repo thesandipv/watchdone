@@ -23,19 +23,22 @@ import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.tmdbapi.model.config.Country
 import com.afterroot.watchdone.data.model.DiscoverEntry
 import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.RecommendedEntry
 import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.database.dao.GenreDao
 import com.afterroot.watchdone.database.daos.RoomDiscoverDao
 import com.afterroot.watchdone.database.daos.RoomMediaDao
+import com.afterroot.watchdone.database.daos.RoomRecommendedDao
 import com.afterroot.watchdone.database.migrations.MigrateFrom2to3
 import com.afterroot.watchdone.database.util.InstantConverter
 
 @Database(
-    entities = [Genre::class, Country::class, Media::class, DiscoverEntry::class],
-    version = 3,
+    entities = [Genre::class, Country::class, Media::class, DiscoverEntry::class, RecommendedEntry::class],
+    version = 4,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3, spec = MigrateFrom2to3::class),
+        AutoMigration(from = 3, to = 4),
     ],
 )
 @TypeConverters(InstantConverter::class)
@@ -44,4 +47,5 @@ abstract class WatchdoneDatabase : RoomDatabase() {
     abstract fun countriesDao(): CountriesDao
     abstract fun mediaDao(): RoomMediaDao
     abstract fun discoverDao(): RoomDiscoverDao
+    abstract fun recommendedDao(): RoomRecommendedDao
 }

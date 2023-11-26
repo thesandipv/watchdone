@@ -24,7 +24,6 @@ import com.afterroot.watchdone.data.model.WatchProviderResult
 import com.afterroot.watchdone.data.repositories.TVRepository
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
-import info.movito.themoviedbapi.model.core.TvResultsPage
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -44,15 +43,6 @@ class ObserveTVInfo @Inject constructor(private val tvRepository: TVRepository) 
 
     override suspend fun createObservable(params: Params): Flow<State<TV>> {
         return tvRepository.info(params.tvId)
-    }
-}
-
-class ObserveRecommendedShows @Inject constructor(private val tvRepository: TVRepository) :
-    ResultInteractor<ObserveRecommendedShows.Params, Flow<State<TvResultsPage>>>() {
-    data class Params(val id: Int, val page: Int = 1)
-
-    override suspend fun doWork(params: Params): Flow<State<TvResultsPage>> {
-        return tvRepository.recommended(params.id, params.page)
     }
 }
 

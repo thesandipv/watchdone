@@ -49,6 +49,7 @@ import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
+import com.afterroot.watchdone.data.compoundmodel.RecommendedEntryWithMedia
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.data.model.Media
@@ -80,10 +81,9 @@ internal fun MediaInfo(
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
     val viewState by viewModel.state.collectAsState()
+    val recommended = viewModel.pagedRecommendedList.collectAsLazyPagingItems()
+
     if (viewState.mediaType == MediaType.MOVIE) {
-        val recommended = viewModel.getRecommendedMovies(
-            viewState.mediaId,
-        ).collectAsLazyPagingItems()
         MediaInfo(
             viewState = viewState,
             recommended = recommended,
@@ -95,9 +95,6 @@ internal fun MediaInfo(
             navigateUp = navigateUp,
         )
     } else if (viewState.mediaType == MediaType.SHOW) {
-        val recommended = viewModel.getRecommendedShows(
-            viewState.mediaId,
-        ).collectAsLazyPagingItems()
         MediaInfo(
             viewState = viewState,
             recommended = recommended,
@@ -119,7 +116,7 @@ internal fun MediaInfo(
 @Composable
 internal fun MediaInfo(
     viewState: MediaInfoViewState,
-    recommended: LazyPagingItems<Media>,
+    recommended: LazyPagingItems<RecommendedEntryWithMedia>,
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onRecommendedClick: (media: Media) -> Unit = {},
@@ -152,12 +149,16 @@ internal fun MediaInfo(
                 actions = {
                     IconButton(onClick = {
                         if (viewState.mediaType == MediaType.MOVIE) {
-                            viewState.movie.posterPath?.let {
-                                shareToIG?.invoke(viewState.movie.id, it)
+                            viewState.movie.posterPath?.let { poster ->
+                                viewState.movie.tmdbId?.let { id ->
+                                    shareToIG?.invoke(id, poster)
+                                }
                             }
                         } else if (viewState.mediaType == MediaType.SHOW) {
-                            viewState.tv.posterPath?.let {
-                                shareToIG?.invoke(viewState.tv.id, it)
+                            viewState.tv.posterPath?.let { poster ->
+                                viewState.tv.tmdbId?.let { id ->
+                                    shareToIG?.invoke(id, poster)
+                                }
                             }
                         }
                     }) {
@@ -202,7 +203,7 @@ internal fun MediaInfo(
 @Composable
 internal fun MediaInfoContent(
     viewState: MediaInfoViewState,
-    recommended: LazyPagingItems<Media>,
+    recommended: LazyPagingItems<RecommendedEntryWithMedia>,
     listState: LazyListState,
     contentPadding: PaddingValues,
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
