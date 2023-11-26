@@ -22,6 +22,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:key="key_debug"
+        app:isPreferenceVisible="false"
         app:title="Debug">
         <SwitchPreferenceCompat
             android:defaultValue="false"
@@ -31,6 +32,13 @@
             android:defaultValue="false"
             app:key="http_logging"
             app:title="HTTP Request Logging" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="key_enable_emulator"
+            app:title="Enable Emulator on Firestore" />
+        <Preference
+            app:key="key_clear_persistence"
+            app:title="Clear Persistence" />
     </PreferenceCategory>
     <PreferenceCategory app:title="About">
         <Preference

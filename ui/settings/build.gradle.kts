@@ -47,4 +47,7 @@ dependencies {
 
     implementation(libs.google.ossLic)
     implementation(libs.google.material)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 }

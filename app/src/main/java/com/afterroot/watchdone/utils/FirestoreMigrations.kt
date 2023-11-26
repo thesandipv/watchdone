@@ -29,7 +29,6 @@ class FirestoreMigrations @Inject constructor(
     private val logger: Logger,
 ) {
     suspend fun start() {
-
         val ref = firestoreRepository.watchListRef.get().await()
         when (ref.getLong(Field.VERSION)?.toInt()) {
             0 -> {

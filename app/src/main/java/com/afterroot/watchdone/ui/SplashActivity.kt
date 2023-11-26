@@ -23,6 +23,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import app.tivi.util.Logger
 import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
@@ -34,6 +35,7 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.jetbrains.anko.browse
@@ -48,6 +50,10 @@ class SplashActivity : AppCompatActivity() {
     private val networkViewModel: NetworkViewModel by viewModels()
 
     @Inject lateinit var firebaseAuth: FirebaseAuth
+
+    @Inject lateinit var firestore: FirebaseFirestore
+
+    @Inject lateinit var logger : Logger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(
@@ -96,6 +102,14 @@ class SplashActivity : AppCompatActivity() {
 
             else -> {
                 launchMain()
+            }
+        }
+
+        // Use Firebase emulators
+        runCatching {
+            if (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)) {
+                firestore.useEmulator("10.0.2.2", 8080)
+                logger.d { "Using firestore emulator" }
             }
         }
     }
