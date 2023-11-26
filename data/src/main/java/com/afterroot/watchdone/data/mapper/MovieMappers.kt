@@ -82,7 +82,7 @@ fun DBMedia.toMedia(): Media = Media(
     isWatched = isWatched,
     posterPath = posterPath,
     rating = rating,
-    mediaType = mediaType
+    mediaType = mediaType,
 )
 
 fun Movie.toDBMedia() = DBMedia(

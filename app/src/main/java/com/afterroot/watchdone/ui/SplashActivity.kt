@@ -53,7 +53,7 @@ class SplashActivity : AppCompatActivity() {
 
     @Inject lateinit var firestore: FirebaseFirestore
 
-    @Inject lateinit var logger : Logger
+    @Inject lateinit var logger: Logger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(
