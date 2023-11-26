@@ -70,12 +70,12 @@ class WatchlistPagingSource(
                     when (filters.mediaType) {
                         MediaType.MOVIE -> whereEqualTo(
                             Field.MEDIA_TYPE,
-                            MediaType.MOVIE.value,
+                            MediaType.MOVIE,
                         )
 
                         MediaType.SHOW -> whereEqualTo(
                             Field.MEDIA_TYPE,
-                            MediaType.SHOW.value,
+                            MediaType.SHOW,
                         )
 
                         else -> this
