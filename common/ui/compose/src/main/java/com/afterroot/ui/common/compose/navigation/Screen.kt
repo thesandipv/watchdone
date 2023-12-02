@@ -21,7 +21,7 @@ sealed class Screen(private val route: String, @StringRes val title: Int) {
 
     data object MediaInfo : Screen("media/{type}/{mediaId}", CommonR.string.title_home) {
         fun createRoute(root: RootScreen, type: MediaType, id: Int): String {
-            return "${root.route}/media/${type.value}/$id"
+            return "${root.route}/media/${type.name}/$id"
         }
     }
 
