@@ -18,16 +18,10 @@ package com.afterroot.watchdone.ui.home
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -38,16 +32,13 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DashboardCustomize
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -56,18 +47,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
-import app.tivi.common.compose.ui.copy
-import com.afterroot.ui.common.compose.components.navigationBarEnterAlwaysScrollBehavior
-import com.afterroot.ui.common.compose.components.settleAppBar
 import com.afterroot.ui.common.compose.navigation.RootScreen
 import com.afterroot.watchdone.ui.navigation.AppNavigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -75,7 +60,7 @@ import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.afterroot.watchdone.resources.R as CommonR
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun Home(
     onWatchProviderClick: (link: String) -> Unit = { _ -> },
@@ -84,7 +69,6 @@ fun Home(
 ) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
-    val scrollBehavior = navigationBarEnterAlwaysScrollBehavior()
 
     Scaffold(bottomBar = {
         val currentSelectedItem by navController.currentScreenAsState()
@@ -102,14 +86,12 @@ fun Home(
             },
             modifier = Modifier
                 .fillMaxWidth(),
-            scrollBehavior = scrollBehavior,
         )
     }) { paddingValues ->
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues.copy(copyBottom = false))
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                .padding(paddingValues),
         ) {
             ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
                 AppNavigation(
@@ -165,50 +147,13 @@ private fun NavController.currentScreenAsState(): State<RootScreen> {
     return selectedItem
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeNavigationBar(
     selectedRootScreen: RootScreen,
     onNavigationSelected: (RootScreen) -> Unit,
     modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior?,
 ) {
-    val heightOffsetLimit =
-        with(LocalDensity.current) { -(80.dp.toPx() + WindowInsets.navigationBars.getBottom(this)) }
-    SideEffect {
-        if (scrollBehavior?.state?.heightOffsetLimit != heightOffsetLimit) {
-            scrollBehavior?.state?.heightOffsetLimit = heightOffsetLimit
-        }
-    }
-
-    val appBarDragModifier = if (scrollBehavior != null && !scrollBehavior.isPinned) {
-        Modifier.draggable(
-            orientation = Orientation.Vertical,
-            state = rememberDraggableState { delta ->
-                scrollBehavior.state.heightOffset = scrollBehavior.state.heightOffset + delta
-            },
-            onDragStopped = { velocity ->
-                settleAppBar(
-                    scrollBehavior.state,
-                    velocity,
-                    scrollBehavior.flingAnimationSpec,
-                    scrollBehavior.snapAnimationSpec,
-                )
-            },
-        )
-    } else {
-        Modifier
-    }
-
-    val height = LocalDensity.current.run {
-        (scrollBehavior?.state?.heightOffset ?: 0f).toDp()
-    }
-
-    NavigationBar(
-        modifier = modifier
-            .then(appBarDragModifier)
-            .offset(y = -height),
-    ) {
+    NavigationBar(modifier = modifier) {
         for (item in homeNavigationItems) {
             NavigationBarItem(
                 selected = selectedRootScreen == item.screen,
