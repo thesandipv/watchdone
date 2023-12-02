@@ -44,7 +44,7 @@ class RecommendedMediaStore @Inject constructor(
                     response.map { media ->
                         RecommendedEntry(
                             mediaId = mediaDao.getIdOrSaveMedia(media),
-                            page = 1,
+                            page = key.page,
                             mediaType = media.mediaType ?: MediaType.MOVIE,
                             recommendationOf = key.mediaId,
                         )
@@ -53,7 +53,7 @@ class RecommendedMediaStore @Inject constructor(
             }
         }
     },
-    sourceOfTruth = SourceOfTruth.Companion.of(
+    sourceOfTruth = SourceOfTruth.of(
         reader = { key ->
             recommendedDao.entriesForPage(key.page, key.mediaId)
         },
