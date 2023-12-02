@@ -28,7 +28,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getResponseRequestToken() {
-    // FIXME ClassCastException
+        // FIXME ClassCastException
         /*return liveData(Dispatchers.IO) {
             emit( // TODO Deeplink properly
                 authRepository.createRequestToken(RequestBodyToken(Deeplink.launch)),
