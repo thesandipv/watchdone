@@ -24,7 +24,7 @@ object Deeplink {
         .scheme(Constants.SCHEME_HTTPS)
         .host(Constants.WATCHDONE_HOST)
         .addPathSegment("media")
-        .addPathSegment(mediaType.value)
+        .addPathSegment(mediaType.name)
         .addPathSegment(mediaId.toString())
         .build().toString().toUri()
 
