@@ -33,6 +33,12 @@ abstract class RoomDiscoverDao : DiscoverDao, RoomPaginatedEntryDao<DiscoverEntr
     abstract override fun entriesForPage(page: Int): Flow<List<DiscoverEntry>>
 
     @Transaction
+    @Query(
+        "SELECT * FROM discover_entries WHERE page = :page AND media_type = :mediaType ORDER BY id ASC",
+    )
+    abstract override fun entriesForPage(page: Int, mediaType: MediaType): Flow<List<DiscoverEntry>>
+
+    @Transaction
     @Query("SELECT * FROM discover_entries ORDER BY page ASC, id ASC LIMIT :count OFFSET :offset")
     abstract override fun entriesObservable(
         count: Int,

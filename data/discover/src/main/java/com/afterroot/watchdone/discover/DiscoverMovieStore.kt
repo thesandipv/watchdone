@@ -59,25 +59,16 @@ class DiscoverMovieStore @Inject constructor(
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { page ->
-            logger.d {
-                "Reading from database:discover page:$page"
-            }
-            discoverDao.entriesForPage(page)
+            logger.d { "Reading from database:discover page:$page" }
+            discoverDao.entriesForPage(page, MediaType.MOVIE)
         },
         writer = { page, response ->
             transactionRunner {
-                logger.d {
-                    "Writing in database:discover page:$page"
-                }
-                if (page == 1) {
-                    discoverDao.deleteAll()
-                    discoverDao.upsertAll(response)
-                } else {
-                    discoverDao.updatePage(page, response)
-                }
+                logger.d { "Writing in database:discover page:$page" }
+                discoverDao.updatePage(page, response, MediaType.MOVIE)
             }
         },
-        delete = discoverDao::deletePage,
+        delete = { discoverDao.deletePage(it, MediaType.MOVIE) },
         deleteAll = discoverDao::deleteAll,
     ),
 ).build()

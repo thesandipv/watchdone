@@ -50,7 +50,7 @@ class DiscoverShowsStore @Inject constructor(
                         DiscoverEntry(
                             mediaId = mediaDao.getIdOrSaveMedia(media),
                             page = page,
-                            mediaType = media.mediaType ?: MediaType.MOVIE,
+                            mediaType = media.mediaType ?: MediaType.SHOW,
                         )
                     }
                 }
@@ -59,25 +59,16 @@ class DiscoverShowsStore @Inject constructor(
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { page ->
-            logger.d {
-                "Reading from database:discover page:$page"
-            }
-            discoverDao.entriesForPage(page)
+            logger.d { "Reading from database:discover page:$page" }
+            discoverDao.entriesForPage(page, MediaType.SHOW)
         },
         writer = { page, response ->
             transactionRunner {
-                logger.d {
-                    "Writing in database:discover page:$page"
-                }
-                if (page == 1) {
-                    discoverDao.deleteAll()
-                    discoverDao.upsertAll(response)
-                } else {
-                    discoverDao.updatePage(page, response)
-                }
+                logger.d { "Writing in database:discover page:$page" }
+                discoverDao.updatePage(page, response, MediaType.SHOW)
             }
         },
-        delete = discoverDao::deletePage,
+        delete = { discoverDao.deletePage(it, MediaType.SHOW) },
         deleteAll = discoverDao::deleteAll,
     ),
 ).build()
