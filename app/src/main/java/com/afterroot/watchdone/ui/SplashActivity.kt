@@ -23,6 +23,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import app.tivi.util.Logger
 import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.BuildConfig
@@ -56,6 +57,8 @@ class SplashActivity : AppCompatActivity() {
     @Inject lateinit var logger: Logger
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition { true }
         AppCompatDelegate.setDefaultNightMode(
             when (
                 getPrefs().getString(

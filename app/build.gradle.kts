@@ -114,6 +114,7 @@ dependencies {
     // implementation(libs.androidx.cardView)
     implementation(libs.androidx.constraintLayout)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.core.splash)
     implementation(libs.androidx.fragment)
     implementation(libs.bundles.lifecycle)
     // implementation(libs.androidx.multiDex)
