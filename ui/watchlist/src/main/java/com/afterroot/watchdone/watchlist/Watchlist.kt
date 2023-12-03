@@ -512,6 +512,7 @@ fun ListWatchlistItem(
                 if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
             ),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             poster?.let {
                 BasePosterCard(
@@ -527,7 +528,7 @@ fun ListWatchlistItem(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .weight(1f)
                     .align(Alignment.CenterVertically),
             ) {
                 title?.let {
@@ -547,17 +548,29 @@ fun ListWatchlistItem(
                 releaseDate?.let {
                     ProvideTextStyle(value = ubuntuTypography.labelSmall) {
                         MetaText(text = it, icon = Icons.Rounded.Event) {
-                            Text(text = it, modifier = Modifier)
+                            Text(text = it)
                         }
                     }
                 }
                 rating?.let {
-                    MetaText(
-                        text = it.toString(),
-                        modifier = Modifier,
-                        icon = Icons.Rounded.Star,
-                    )
+                    ProvideTextStyle(value = ubuntuTypography.bodySmall) {
+                        MetaText(text = it.toString(), icon = Icons.Rounded.Star) {
+                            Text(text = it)
+                        }
+                    }
                 }
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            if (isWatched) {
+                Icon(
+                    imageVector = Icons.Rounded.Done,
+                    contentDescription = "Watched",
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                )
+
+                Spacer(modifier = Modifier.size(16.dp))
             }
         }
     }
