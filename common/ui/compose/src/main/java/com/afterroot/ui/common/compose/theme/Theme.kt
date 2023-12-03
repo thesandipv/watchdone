@@ -113,7 +113,7 @@ fun Theme(context: Context, settings: Settings, content: @Composable () -> Unit)
         typography = ubuntuTypography,
         content = {
             CompositionLocalProvider(
-                LocalContentColor provides contentColorFor(backgroundColor = finalColorScheme.background),
+                LocalContentColor provides contentColorFor(backgroundColor = finalColorScheme.surface),
                 LocalSettings provides settings,
                 content = content,
             )
