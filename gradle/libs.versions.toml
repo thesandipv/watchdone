@@ -1,5 +1,6 @@
 [versions]
 agp = "8.2.0"
+androidTools = "31.2.0"
 accompanist = "0.32.0"
 activity = "1.8.1"
 ankoCommons = "0.10.8"
@@ -98,6 +99,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
 android-pluginGradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 spotless-pluginGradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 
