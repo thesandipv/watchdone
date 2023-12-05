@@ -143,7 +143,7 @@ dependencies {
 
     // ksp(libs.androidx.room.compiler)
 
-    // implementation(libs.google.ossLic)
+    implementation(libs.google.ossLic)
     // implementation(libs.google.material)
 
     implementation(platform(libs.firebase.bom))
