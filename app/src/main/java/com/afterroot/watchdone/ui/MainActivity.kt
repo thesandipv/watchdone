@@ -127,14 +127,14 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
-            startActivity(Intent(this, SplashActivity::class.java))
+            startActivity(Intent(this, OnboardingActivity::class.java))
             finish()
         } else {
             initialize()
         }
         firebaseUtils.auth.addAuthStateListener {
             if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
-                startActivity(Intent(applicationContext, SplashActivity::class.java))
+                startActivity(Intent(applicationContext, OnboardingActivity::class.java))
                 finish()
             }
         }

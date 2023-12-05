@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -43,11 +42,9 @@ import org.jetbrains.anko.browse
 import com.afterroot.watchdone.resources.R as CommonR
 import com.google.android.material.R as MaterialR
 
-@SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
-class SplashActivity : AppCompatActivity() {
+class OnboardingActivity : AppCompatActivity() {
 
-    private val _tag = "SplashActivity"
     private val networkViewModel: NetworkViewModel by viewModels()
 
     @Inject lateinit var firebaseAuth: FirebaseAuth
