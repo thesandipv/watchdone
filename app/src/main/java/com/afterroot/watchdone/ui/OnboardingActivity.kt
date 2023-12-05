@@ -18,9 +18,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import app.tivi.util.Logger
@@ -43,7 +43,7 @@ import com.afterroot.watchdone.resources.R as CommonR
 import com.google.android.material.R as MaterialR
 
 @AndroidEntryPoint
-class OnboardingActivity : AppCompatActivity() {
+class OnboardingActivity : ComponentActivity() {
 
     private val networkViewModel: NetworkViewModel by viewModels()
 

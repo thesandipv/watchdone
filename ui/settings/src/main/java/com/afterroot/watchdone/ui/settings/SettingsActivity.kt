@@ -16,9 +16,9 @@ package com.afterroot.watchdone.ui.settings
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentActivity
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.watchdone.settings.Settings
@@ -27,10 +27,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : FragmentActivity() {
 
     @Inject lateinit var settings: Settings
-    lateinit var binding: FragmentSettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
 
     @SuppressLint("CommitTransaction")
     @OptIn(ExperimentalMaterial3Api::class)
