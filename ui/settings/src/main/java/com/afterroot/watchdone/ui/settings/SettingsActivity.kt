@@ -41,7 +41,7 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.fragmentSettingsAppBarCompose.apply {
             setContent {
-                Theme(context = this@SettingsActivity, settings = settings) {
+                Theme(settings = settings) {
                     CommonAppBar(withTitle = "Settings")
                 }
             }

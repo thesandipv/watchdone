@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 onDispose {}
             }
 
-            Theme(context = this, settings = settings) {
+            Theme(settings = settings) {
                 Home(
                     onWatchProviderClick = { link ->
                         browse(link, true)
