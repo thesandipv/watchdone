@@ -42,9 +42,9 @@ hilt = "2.49"
 jackson = "2.13.4"
 koin = "2.2.2"
 koin3 = "3.5.0"
-kotlin = "1.9.20"
+kotlin = "1.9.21"
 kotlinxCoroutines = "1.7.3"
-kotlinxDatetime = "0.4.1"
+kotlinxDatetime = "0.5.0"
 ktlint = "0.50.0"
 ktor = "2.3.7"
 legacySupportV13 = "1.0.0"
@@ -82,7 +82,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-ksp = "com.google.devtools.ksp:1.9.10-1.0.13"
+ksp = "com.google.devtools.ksp:1.9.21-1.0.15"
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
@@ -109,8 +109,8 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-play = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlinx-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.22.0"
-kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+kotlinx-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.23.1"
+kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
