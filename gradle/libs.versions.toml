@@ -24,7 +24,7 @@ epoxy = "4.6.4"
 firebaseAds = "22.6.0"
 firebaseAnalytics = "21.2.2"
 firebaseAuth = "22.0.0"
-firebaseBom = "32.6.0"
+firebaseBom = "32.7.0"
 firebaseConfig = "21.4.0"
 firebaseCore = "21.1.1"
 firebaseCrashlytics = "18.3.7"
@@ -93,7 +93,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = "com.google.devtools.ksp:1.9.20-1.0.13"
+ksp = "com.google.devtools.ksp:1.9.21-1.0.15"
 maven-publish = { id = "com.vanniktech.maven.publish", version = "0.25.3" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
