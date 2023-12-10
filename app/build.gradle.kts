@@ -108,11 +108,11 @@ dependencies {
 
     // implementation(libs.kotlin.stdLib)
 
-    implementation(libs.androidx.appCompat)
+    // implementation(libs.androidx.appCompat)
     implementation(libs.androidx.activity)
     // implementation(libs.androidx.billing)
     // implementation(libs.androidx.cardView)
-    implementation(libs.androidx.constraintLayout)
+    // implementation(libs.androidx.constraintLayout)
     implementation(libs.androidx.core)
     implementation(libs.androidx.core.splash)
     implementation(libs.androidx.fragment)
