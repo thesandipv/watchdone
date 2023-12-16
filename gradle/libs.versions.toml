@@ -2,7 +2,7 @@
 agp = "8.2.0"
 androidTools = "31.2.0"
 accompanist = "0.32.0"
-activity = "1.8.1"
+activity = "1.8.2"
 ankoCommons = "0.10.8"
 appcompat = "1.6.1"
 ar-utils = "0.6.0" # AfterROOT Core
@@ -37,7 +37,7 @@ fragmentKtx = "1.6.2"
 glide = "4.16.0"
 googleAds = "22.6.0"
 googleAuth = "20.7.0"
-googleMaterial = "1.10.0"
+googleMaterial = "1.11.0"
 gson = "2.10.1"
 hilt = "2.49"
 jackson = "2.13.4"
@@ -57,7 +57,7 @@ materialDialogs = "3.3.0"
 mockito-inline = "5.2.0"
 mockito-kotlin = "5.1.0"
 multidex = "2.0.1"
-navigation = "2.7.5"
+navigation = "2.7.6"
 okhttp = "5.0.0-alpha.11"
 paging = "3.2.1"
 palette = "1.0.0"
@@ -93,7 +93,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = "com.google.devtools.ksp:1.9.21-1.0.15"
+ksp = "com.google.devtools.ksp:1.9.21-1.0.16"
 maven-publish = { id = "com.vanniktech.maven.publish", version = "0.25.3" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
