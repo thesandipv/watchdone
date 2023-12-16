@@ -30,7 +30,6 @@ import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.data.BuildConfig
-import com.afterroot.watchdone.data.repositories.DiscoverRepository
 import com.afterroot.watchdone.utils.whenBuildIs
 import dagger.Module
 import dagger.Provides
@@ -94,10 +93,6 @@ object TestRepositoriesModule {
     @Provides
     @Singleton
     fun provideAuthRepository(authApi: AuthApi) = AuthRepository(authApi)
-
-    @Provides
-    @Singleton
-    fun provideDiscoverRepository(discoverApi: DiscoverApi) = DiscoverRepository(discoverApi)
 
     @Provides
     @Singleton

@@ -72,9 +72,16 @@ jobs:
         id: grant-execute-permissions-for-gradle
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        id: build
-        uses: gradle/gradle-build-action@v2.10.0
+      - name: Setup Gradle
+        id: setup-gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: wrapper
+          cache-read-only: false
+
+      - name: Assemble Release Build
+        id: assemble-release-build
+        run: ./gradlew :app:assembleRelease :app:bundleRelease --stacktrace
         env:
           CI: true
           GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,16 +92,10 @@ jobs:
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
           COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
           FB_APP_ID: ${{ secrets.FB_APP_ID }}
-        with:
-          cache-read-only: false
-          arguments: :app:assembleRelease :app:bundleRelease --stacktrace
 
       - name: Run Tests in app module
-        uses: gradle/gradle-build-action@v2.10.0
         id: run-tests
-        with:
-          cache-read-only: false
-          arguments: :app:test
+        run: ./gradlew testReleaseUnitTest
         env:
           TMDB_API: ${{ secrets.TMDB_API }}
           TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
