@@ -37,6 +37,7 @@ import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.discover.Discover
 import com.afterroot.watchdone.ui.media.MediaInfo
+import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile
 import com.afterroot.watchdone.ui.search.Search
 import com.afterroot.watchdone.watchlist.Watchlist
@@ -198,13 +199,20 @@ private fun NavGraphBuilder.addProfileRoot(navController: NavHostController) {
         startDestination = Screen.Profile.createRoute(RootScreen.Profile),
     ) {
         addProfile(navController, RootScreen.Profile)
+        addEditProfile(navController, RootScreen.Profile)
     }
 }
 
 private fun NavGraphBuilder.addProfile(navController: NavHostController, rootScreen: RootScreen) {
     composable(route = Screen.Profile.createRoute(rootScreen)) {
         Profile {
-            // TODO
+            navController.navigate(Screen.EditProfile.createRoute(rootScreen))
         }
+    }
+}
+
+private fun NavGraphBuilder.addEditProfile(navController: NavHostController, rootScreen: RootScreen) {
+    composable(route = Screen.EditProfile.createRoute(rootScreen)) {
+        EditProfile()
     }
 }
