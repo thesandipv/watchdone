@@ -129,7 +129,7 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
                             ),
                         )
                     }
-                }
+                },
             )
         },
         floatingActionButton = {
@@ -139,14 +139,13 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
                     actions(ProfileActions.EditProfile)
                 },
             )
-        }
+        },
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxWidth(),
         ) {
-
         }
     }
 }

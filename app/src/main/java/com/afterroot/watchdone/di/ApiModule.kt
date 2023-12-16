@@ -86,7 +86,9 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideTmdbApi(okHttpClient: OkHttpClient): TmdbApi = TmdbApi(BuildConfig.TMDB_API, okHttpClient)
+    fun provideTmdbApi(
+        okHttpClient: OkHttpClient,
+    ): TmdbApi = TmdbApi(BuildConfig.TMDB_API, okHttpClient)
 }
 
 @Module
