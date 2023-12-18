@@ -32,14 +32,16 @@ class SearchRepository @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) {
 
-    private val cache by lazy { LruCache<String, List<Long>>(20) }
+    private data class CacheKey(val page: Int, val query: String)
+
+    private val cache by lazy { LruCache<CacheKey, List<Long>>(20) }
 
     suspend fun search(params: Params): List<Media> {
         if (params.query.isBlank()) {
             return emptyList()
         }
 
-        val cacheValues = cache[params.query]
+        val cacheValues = cache[CacheKey(params.page, params.query)]
         if (cacheValues != null) {
             return cacheValues.mapNotNull { mediaDao.getMediaWithId(it) }
         }
@@ -51,7 +53,7 @@ class SearchRepository @Inject constructor(
                         mediaDao.getIdOrSaveMedia(media)
                     }
                 }
-            }.also { cache.put(params.query, it) }
+            }.also { cache.put(CacheKey(params.page, params.query), it) }
                 .mapNotNull { mediaDao.getMediaWithId(it) }
         }
 

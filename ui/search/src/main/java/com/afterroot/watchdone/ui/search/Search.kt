@@ -179,7 +179,7 @@ internal fun Search(
                 onActiveChange = {},
                 leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
                 placeholder = {
-                    Text(text = "Search movie or tv show...")
+                    Text(text = "Search ${state.mediaType?.value}...")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
