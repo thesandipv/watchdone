@@ -40,7 +40,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -89,12 +88,12 @@ fun Search(
     when (viewState.mediaType) {
         MediaType.MOVIE -> {
             viewModel.setLoading(movieItems.loadState.refresh == LoadState.Loading)
-            viewModel.setEmpty(movieItems.itemCount == 0 || viewState.query.getQuery().isBlank())
+            viewModel.setEmpty(movieItems.itemCount == 0 && viewState.query.getQuery().isNotBlank())
         }
 
         MediaType.SHOW -> {
             viewModel.setLoading(tvItems.loadState.refresh == LoadState.Loading)
-            viewModel.setEmpty(tvItems.itemCount == 0 || viewState.query.getQuery().isBlank())
+            viewModel.setEmpty(tvItems.itemCount == 0 && viewState.query.getQuery().isNotBlank())
         }
 
         else -> {}
@@ -161,7 +160,6 @@ internal fun Search(
 
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(4.dp),
