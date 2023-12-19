@@ -20,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import app.tivi.util.Logger
 import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.search.SearchDataSource
@@ -38,20 +39,20 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
     val settings: Settings,
     private val searchRepository: SearchRepository,
+    private val logger: Logger,
 ) : ViewModel() {
     private val mediaType = MutableStateFlow(MediaType.MOVIE)
-    private var searchQuery = MutableStateFlow(Query())
-    private var _query = MutableSharedFlow<Query>()
-    private var isRefresh = MutableStateFlow(false)
-    private var isLoading = MutableStateFlow(false)
-    private var isEmpty = MutableStateFlow(true)
+    private val searchQuery = MutableStateFlow(Query())
+    private val _query = MutableSharedFlow<Query>()
+    private val isRefresh = MutableStateFlow(false)
+    private val isLoading = MutableStateFlow(false)
+    private val isEmpty = MutableStateFlow(true)
 
     val state: StateFlow<SearchViewState> =
         combine(
@@ -68,7 +69,7 @@ class SearchViewModel @Inject constructor(
                 isLoading = isLoading,
                 empty = isEmpty,
             ).apply {
-                Timber.d("load: State: $this")
+                logger.d { "load: State: $this" }
             }
         }.stateIn(
             scope = viewModelScope,
@@ -99,7 +100,7 @@ class SearchViewModel @Inject constructor(
     }.flow.cachedIn(viewModelScope)
 
     init {
-        Timber.d("init: Start")
+        logger.d { "init: Start" }
 
         viewModelScope.launch {
             _query.debounce(300).collectLatest {

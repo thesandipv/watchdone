@@ -140,8 +140,4 @@ object RetrofitApisModule {
     @Provides
     @Singleton
     fun provideTVApi(retrofit: Retrofit): TVApi = retrofit.create(TVApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideSearchApi(retrofit: Retrofit): SearchApi = retrofit.create(SearchApi::class.java)
 }

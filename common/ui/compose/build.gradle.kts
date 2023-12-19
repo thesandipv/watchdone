@@ -26,6 +26,7 @@ android {
 
 dependencies {
     implementation(projects.data)
+    api(projects.core.logging)
 
     implementation(libs.google.material)
     implementation(libs.coil)
