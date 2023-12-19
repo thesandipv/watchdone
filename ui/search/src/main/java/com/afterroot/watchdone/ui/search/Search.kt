@@ -32,43 +32,28 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Tv
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -147,20 +132,7 @@ internal fun Search(
 ) {
     var searchQuery by remember { mutableStateOf(state.query) }
     val listState = rememberLazyGridState()
-    val searchHeight = TextFieldDefaults.MinHeight + 32.dp
-    val searchHeightPx = with(LocalDensity.current) { searchHeight.roundToPx().toFloat() }
-    val searchHeightOffset = remember { mutableFloatStateOf(0f) }
     var searchText by rememberSaveable { mutableStateOf(state.query.getQuery()) }
-
-    val nsc = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val newOffset = searchHeightOffset.floatValue + available.y
-                searchHeightOffset.floatValue = newOffset.coerceIn(-searchHeightPx, 0f)
-                return Offset.Zero
-            }
-        }
-    }
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -211,6 +183,15 @@ internal fun Search(
                 modifier = Modifier.align(Alignment.Center),
             ) {
                 CircularProgressIndicator()
+            }
+
+            AnimatedVisibility(
+                visible = state.empty,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.align(Alignment.Center),
+            ) {
+                Text(text = "No results found for ${state.mediaType?.value} $searchText")
             }
 
             AnimatedVisibility(
@@ -267,72 +248,6 @@ internal fun Search(
                 }
             }
         }
-    }
-}
-
-/**
- * [OutlinedTextField] with Validation
- * TODO Extract Composable
- */
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun SearchTextInput(
-    modifier: Modifier = Modifier,
-    label: String,
-    hint: String = "",
-    prefillValue: String = "",
-    errorText: String = "",
-    showLabel: Boolean = true,
-    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-    keyboardActions: KeyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
-    validate: (String) -> Boolean = { true },
-    onChange: (String) -> Unit,
-    onError: (String) -> Unit = {},
-) {
-    var value by remember { mutableStateOf(prefillValue) }
-    var error by remember { mutableStateOf(false) }
-    Column {
-        OutlinedTextField(
-            leadingIcon = {
-                Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search")
-            },
-            trailingIcon = {
-                if (value.isNotBlank()) {
-                    IconButton(onClick = {
-                        value = ""
-                    }) {
-                        Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
-                    }
-                }
-            },
-            placeholder = { Text(text = hint) },
-            value = value,
-            onValueChange = {
-                value = it // always update state
-                when {
-                    validate(it) || it.isBlank() -> {
-                        error = false
-                        onChange(it)
-                    }
-
-                    else -> {
-                        error = true
-                        onError(it)
-                    }
-                }
-            },
-            isError = error,
-            label = {
-                if (showLabel) Text(text = label)
-            },
-            singleLine = true,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-        )
     }
 }
 
