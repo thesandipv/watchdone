@@ -74,7 +74,7 @@ jobs:
 
       - name: Build with Gradle
         id: build
-        uses: gradle/gradle-build-action@v2.11.0
+        uses: gradle/gradle-build-action@v2.11.1
         env:
           CI: true
           GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
           arguments: :app:assembleRelease :app:bundleRelease --stacktrace
 
       - name: Run Tests in app module
-        uses: gradle/gradle-build-action@v2.11.0
+        uses: gradle/gradle-build-action@v2.11.1
         id: run-tests
         with:
           cache-read-only: false
