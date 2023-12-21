@@ -9,8 +9,13 @@ on:
     paths-ignore:
       - '.idea/**'
       - '**/README.md'
+      - 'CHANGES.md'
   pull_request:
     branches: [ main, dev ]
+    paths-ignore:
+      - '.idea/**'
+      - '**/README.md'
+      - 'CHANGES.md'
 
 jobs:
   build:
