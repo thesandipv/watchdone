@@ -68,7 +68,7 @@ room = "2.6.1"
 spotless = "6.23.3"
 startUp = "1.1.1"
 transition = "1.4.1"
-truth = "1.1.5"
+truth = "1.2.0"
 vectorDrawable = "1.2.0-beta01"
 work = "2.9.0"
 
