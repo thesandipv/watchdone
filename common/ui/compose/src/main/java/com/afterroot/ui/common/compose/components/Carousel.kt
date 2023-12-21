@@ -33,15 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.data.model.Media
 
 @Composable
-fun <T : Multi> Carousel(
-    items: List<T>,
+fun Carousel(
+    items: List<Media>,
     title: String,
     refreshing: Boolean,
     modifier: Modifier = Modifier,
-    onItemClick: (T, Int) -> Unit,
+    onItemClick: (Media, Int) -> Unit,
     onMoreClick: () -> Unit,
 ) {
     Column(modifier) {
@@ -73,9 +73,9 @@ fun <T : Multi> Carousel(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun <T : Multi> CarouselInt(
-    items: List<T>,
-    onItemClick: (T, Int) -> Unit,
+internal fun CarouselInt(
+    items: List<Media>,
+    onItemClick: (Media, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()

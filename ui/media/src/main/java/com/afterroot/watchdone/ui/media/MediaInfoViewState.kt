@@ -20,13 +20,13 @@ import app.tivi.api.UiMessage
 import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.watchdone.base.compose.ViewState
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.data.model.WatchProviderResult
 import com.afterroot.watchdone.utils.State
 import info.movito.themoviedbapi.model.Credits
-import info.movito.themoviedbapi.model.Multi
-import info.movito.themoviedbapi.model.providers.ProviderResults
 
 @Immutable
 data class MediaInfoViewState(
@@ -35,7 +35,7 @@ data class MediaInfoViewState(
     val isLoading: Boolean = false,
     val mediaId: Int = 0,
     val media: DBMedia = DBMedia.Empty,
-    val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
+    val mediaType: MediaType? = MediaType.MOVIE,
     val movie: Movie = Movie.Empty,
     val refresh: Boolean = false,
     val seasonInfo: State<Season> = State.loading(),
@@ -44,7 +44,7 @@ data class MediaInfoViewState(
     val isInWatchlist: Boolean = false,
     val isWatched: Boolean = false,
     val genres: List<Genre> = emptyList(),
-    val watchProviders: State<ProviderResults> = State.loading(),
+    val watchProviders: State<WatchProviderResult> = State.loading(),
     override val message: UiMessage? = null,
 ) : ViewState() {
     companion object {

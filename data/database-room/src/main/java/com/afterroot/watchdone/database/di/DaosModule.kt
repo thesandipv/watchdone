@@ -17,6 +17,7 @@ package com.afterroot.watchdone.database.di
 
 import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.daos.MediaDao
+import com.afterroot.watchdone.data.daos.RecommendedDao
 import com.afterroot.watchdone.database.WatchdoneDatabase
 import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.database.dao.GenreDao
@@ -39,4 +40,10 @@ object DaosModule {
 
     @Provides
     fun provideDiscoverDao(database: WatchdoneDatabase): DiscoverDao = database.discoverDao()
+
+    @Provides
+    fun provideRecommendedDao(
+        database: WatchdoneDatabase,
+    ): RecommendedDao = database
+        .recommendedDao()
 }

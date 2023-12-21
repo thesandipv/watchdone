@@ -24,8 +24,10 @@ import app.tivi.domain.PagingInteractor
 import app.tivi.util.Logger
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.daos.DiscoverDao
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.domain.interactors.UpdateDiscover
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 
 class ObservePagedDiscover @Inject constructor(
@@ -34,7 +36,10 @@ class ObservePagedDiscover @Inject constructor(
     private val logger: Logger,
 ) : PagingInteractor<ObservePagedDiscover.Params, DiscoverEntryWithMedia>() {
 
-    data class Params(override val pagingConfig: PagingConfig) : Parameters<DiscoverEntryWithMedia>
+    data class Params(
+        val mediaType: MediaType,
+        override val pagingConfig: PagingConfig,
+    ) : Parameters<DiscoverEntryWithMedia>
 
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun createObservable(
@@ -43,10 +48,17 @@ class ObservePagedDiscover @Inject constructor(
         return Pager(
             config = params.pagingConfig,
             remoteMediator = PaginatedEntryRemoteMediator { page ->
-                logger.d { "APPEND: Requesting Page: $page" }
-                updateDiscover(UpdateDiscover.Params(page, true))
+                try {
+                    logger.d { "APPEND: Requesting Page: $page" }
+                    updateDiscover(UpdateDiscover.Params(params.mediaType, page, true))
+                } catch (ce: CancellationException) {
+                    throw ce
+                } catch (t: Throwable) {
+                    logger.e(t) { "Error while fetching from RemoteMediator" }
+                    throw t
+                }
             },
-            pagingSourceFactory = discoverDao::entriesPagingSource,
+            pagingSourceFactory = { discoverDao.entriesPagingSource(params.mediaType) },
         ).flow
     }
 }

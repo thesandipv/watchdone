@@ -76,10 +76,11 @@ import com.afterroot.watchdone.data.mapper.toDBMedia
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.data.model.WatchProvider
+import com.afterroot.watchdone.data.model.WatchProviderResult
+import com.afterroot.watchdone.data.model.getProvidersForCountry
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
-import info.movito.themoviedbapi.model.providers.Provider
-import info.movito.themoviedbapi.model.providers.ProviderResults
 
 @Composable
 fun OverviewContent(
@@ -88,7 +89,7 @@ fun OverviewContent(
     tv: TV? = null,
     isInWatchlist: Boolean = false,
     isWatched: Boolean = false,
-    watchProviders: State<ProviderResults> = State.loading(),
+    watchProviders: State<WatchProviderResult> = State.loading(),
     onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
     onWatchProvidersClick: (link: String) -> Unit = { _ -> },
@@ -105,7 +106,6 @@ fun OverviewContent(
                     .padding(start = bodyMargin)
                     .height(192.dp)
                     .aspectRatio(2 / 3f),
-
             )
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 SuggestionChipGroup(
@@ -159,11 +159,12 @@ fun OverviewContent(
                     val providersForCountry = providers.getProvidersForCountry(
                         LocalSettings.current.country ?: "IN",
                     )
+
                     WatchProviders(
                         modifier = Modifier.padding(horizontal = bodyMargin),
                         text = "Available On",
                         link = providersForCountry?.link,
-                        providers = providersForCountry?.flatrateProviders,
+                        providers = providersForCountry?.flatrate,
                         onClick = {
                             if (it != null) {
                                 onWatchProvidersClick(it)
@@ -171,11 +172,13 @@ fun OverviewContent(
                         },
                     )
 
+                    // FIXME rent providers will load after this pull request is
+                    // merged https://github.com/MoviebaseApp/tmdb-kotlin/pull/115
                     WatchProviders(
                         modifier = Modifier.padding(horizontal = bodyMargin),
                         text = "Available for Rent on",
                         link = providersForCountry?.link,
-                        providers = providersForCountry?.rentProviders,
+                        providers = providersForCountry?.rent,
                         onClick = {
                             if (it != null) {
                                 onWatchProvidersClick(it)
@@ -225,7 +228,7 @@ fun WatchProviders(
     modifier: Modifier = Modifier,
     text: String? = null,
     link: String? = null,
-    providers: List<Provider>? = emptyList(),
+    providers: List<WatchProvider>? = emptyList(),
     onClick: (link: String?) -> Unit = { _ -> },
 ) {
     if (providers?.isNotEmpty() == true) {
@@ -417,7 +420,7 @@ fun TwoStateOutlinedButton(
 fun PreviewOverviewContent() {
     PreviewTheme {
         val movie = Movie(
-            voteAverage = 7.2,
+            voteAverage = 7.2f,
             overview = "After his retirement is interrupted by Gorr the God Butcher, a galactic killer who seeks the extinction of the gods, Thor Odinson enlists the help of King Valkyrie, Korg, and ex-girlfriend Jane Foster, who now wields Mjolnir as the Mighty Thor. Together they embark upon a harrowing cosmic adventure to uncover the mystery of the God Butcher’s vengeance and stop him before it’s too late.",
             releaseDate = "21/08/22",
         )

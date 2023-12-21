@@ -30,7 +30,6 @@ pluginManagement {
 dependencyResolutionManagement {
     val properties = readProperties(file("private.properties"))
 
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
@@ -84,6 +83,7 @@ include(
     ":data:discover",
     ":data:media",
     ":data:model",
+    ":data:search",
     ":domain",
     ":themoviedbapi",
     ":test-app",
@@ -95,10 +95,12 @@ include(
     ":ui:settings",
     ":ui:watchlist",
     // ":utils",
+    ":tmdb-api",
 )
 
 project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure
 // project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
+project(":tmdb-api").projectDir = file("tmdb-kotlin/tmdb-api")
 
 fun readProperties(propertiesFile: File): Properties {
     if (!propertiesFile.exists()) {

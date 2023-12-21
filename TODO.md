@@ -5,10 +5,12 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 ### Pending
 - [ ] Add - Metrics by Genres on User Profile
 - [ ] Imp - Migrate from `kapt` to `ksp`
-- [ ] Imp - Migrate from `Jackson` to `KS`
+- [ ] Imp - Enable gradle configuration cache
+- [ ] Imp - Remove app compat lib usages
 
 ### Upcoming
 
+- [X] Imp - Migrate from `Jackson` to `KS`
 - [X] Imp - Get ig share image from cache if exists
 - [X] Add - Media Share action
 - [X] Add - Cast info Screen

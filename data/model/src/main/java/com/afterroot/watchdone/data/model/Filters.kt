@@ -14,8 +14,6 @@
  */
 package com.afterroot.watchdone.data.model
 
-import info.movito.themoviedbapi.model.Multi
-
 enum class WatchStateValues {
     WATCHED,
     PENDING,
@@ -24,7 +22,7 @@ enum class WatchStateValues {
 
 data class Filters(
     val watchState: WatchStateValues? = null,
-    val mediaType: Multi.MediaType? = null,
+    val mediaType: MediaType? = null,
 ) {
     companion object {
         val EMPTY = Filters()

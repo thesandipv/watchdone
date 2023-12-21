@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.di
 
 import android.content.Context
+import app.tivi.util.Logger
 import com.afterroot.watchdone.settings.Settings
 import com.google.gson.Gson
 import dagger.Module
@@ -29,5 +30,9 @@ import javax.inject.Singleton
 class SettingsModule {
     @Provides
     @Singleton
-    fun provideSettings(@ApplicationContext context: Context, gson: Gson) = Settings(context, gson)
+    fun provideSettings(
+        @ApplicationContext context: Context,
+        gson: Gson,
+        logger: Logger,
+    ) = Settings(context, gson, logger)
 }

@@ -23,6 +23,7 @@ import app.tivi.data.daos.RoomPaginatedEntryDao
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.model.DiscoverEntry
+import com.afterroot.watchdone.data.model.MediaType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -32,6 +33,12 @@ abstract class RoomDiscoverDao : DiscoverDao, RoomPaginatedEntryDao<DiscoverEntr
     abstract override fun entriesForPage(page: Int): Flow<List<DiscoverEntry>>
 
     @Transaction
+    @Query(
+        "SELECT * FROM discover_entries WHERE page = :page AND media_type = :mediaType ORDER BY id ASC",
+    )
+    abstract override fun entriesForPage(page: Int, mediaType: MediaType): Flow<List<DiscoverEntry>>
+
+    @Transaction
     @Query("SELECT * FROM discover_entries ORDER BY page ASC, id ASC LIMIT :count OFFSET :offset")
     abstract override fun entriesObservable(
         count: Int,
@@ -39,15 +46,20 @@ abstract class RoomDiscoverDao : DiscoverDao, RoomPaginatedEntryDao<DiscoverEntr
     ): Flow<List<DiscoverEntryWithMedia>>
 
     @Transaction
-    @Query("SELECT * FROM discover_entries ORDER BY page ASC, id ASC")
-    abstract override fun entriesPagingSource(): PagingSource<Int, DiscoverEntryWithMedia>
+    @Query("SELECT * FROM discover_entries WHERE media_type = :mediaType ORDER BY page ASC, id ASC")
+    abstract override fun entriesPagingSource(
+        mediaType: MediaType,
+    ): PagingSource<Int, DiscoverEntryWithMedia>
 
-    @Query("DELETE FROM discover_entries WHERE page = :page")
-    abstract override suspend fun deletePage(page: Int)
+    @Query("DELETE FROM discover_entries WHERE page = :page AND media_type = :mediaType")
+    abstract override suspend fun deletePage(page: Int, mediaType: MediaType)
 
     @Query("DELETE FROM discover_entries")
     abstract override suspend fun deleteAll()
 
-    @Query("SELECT MAX(page) FROM discover_entries")
-    abstract override suspend fun getLastPage(): Int?
+    @Query("DELETE FROM discover_entries WHERE media_type = :mediaType")
+    abstract override suspend fun deleteAll(mediaType: MediaType)
+
+    @Query("SELECT MAX(page) FROM discover_entries WHERE media_type = :mediaType")
+    abstract override suspend fun getLastPage(mediaType: MediaType): Int?
 }

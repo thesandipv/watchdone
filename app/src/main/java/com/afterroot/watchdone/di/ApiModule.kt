@@ -86,7 +86,9 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideTmdbApi(): TmdbApi = TmdbApi(BuildConfig.TMDB_API)
+    fun provideTmdbApi(
+        okHttpClient: OkHttpClient,
+    ): TmdbApi = TmdbApi(BuildConfig.TMDB_API, okHttpClient)
 }
 
 @Module
@@ -145,8 +147,4 @@ object RetrofitApisModule {
     @Provides
     @Singleton
     fun provideTVApi(retrofit: Retrofit): TVApi = retrofit.create(TVApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideSearchApi(retrofit: Retrofit): SearchApi = retrofit.create(SearchApi::class.java)
 }

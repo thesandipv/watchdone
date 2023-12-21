@@ -38,8 +38,11 @@ object Field {
     const val MEDIA_TYPE_MOVIE = "MOVIE"
     const val MEDIA_TYPE_TV = "TV_SERIES"
     const val TIMESTAMP = "timestamp"
+
+    @Deprecated("Deprecated in favor of WATCHED_EPISODES")
     const val WATCH_STATUS = "watchStatus"
     const val WATCHED_EPISODES = "watched"
+    const val VERSION = "version"
 }
 
 object Constants {

@@ -16,7 +16,6 @@
 package com.afterroot.watchdone.discover
 
 import app.moviebase.tmdb.model.TmdbDiscover
-import app.tivi.data.daos.updatePage
 import app.tivi.data.db.DatabaseTransactionRunner
 import app.tivi.data.util.storeBuilder
 import app.tivi.util.Logger
@@ -24,19 +23,21 @@ import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.daos.MediaDao
 import com.afterroot.watchdone.data.daos.getIdOrSaveMedia
+import com.afterroot.watchdone.data.daos.updatePage
 import com.afterroot.watchdone.data.model.DiscoverEntry
 import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
 
-class DiscoverStore @Inject constructor(
-    dataSource: DiscoverDataSource,
+class DiscoverMovieStore @Inject constructor(
+    @Named("tmdbDiscoverMovieDataSource") dataSource: DiscoverDataSource,
     discoverDao: DiscoverDao,
     mediaDao: MediaDao,
-    discover: TmdbDiscover,
+    discover: TmdbDiscover.Movie,
     transactionRunner: DatabaseTransactionRunner,
     dispatchers: CoroutineDispatchers,
     logger: Logger,
@@ -58,25 +59,16 @@ class DiscoverStore @Inject constructor(
     },
     sourceOfTruth = SourceOfTruth.of(
         reader = { page ->
-            logger.d {
-                "Reading from database:discover page:$page"
-            }
-            discoverDao.entriesForPage(page)
+            logger.d { "Reading from database:discover page:$page" }
+            discoverDao.entriesForPage(page, MediaType.MOVIE)
         },
         writer = { page, response ->
             transactionRunner {
-                logger.d {
-                    "Writing in database:discover page:$page"
-                }
-                if (page == 1) {
-                    discoverDao.deleteAll()
-                    discoverDao.upsertAll(response)
-                } else {
-                    discoverDao.updatePage(page, response)
-                }
+                logger.d { "Writing in database:discover page:$page" }
+                discoverDao.updatePage(page, response, MediaType.MOVIE)
             }
         },
-        delete = discoverDao::deletePage,
+        delete = { discoverDao.deletePage(it, MediaType.MOVIE) },
         deleteAll = discoverDao::deleteAll,
     ),
 ).build()

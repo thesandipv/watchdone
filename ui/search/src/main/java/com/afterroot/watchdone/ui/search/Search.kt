@@ -32,42 +32,27 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Tv
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -76,18 +61,17 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.FilterChipGroup
-import com.afterroot.ui.common.compose.components.MovieCard
-import com.afterroot.ui.common.compose.components.TVCard
-import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.data.model.TV
+import com.afterroot.ui.common.compose.components.MediaCard
+import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.viewmodel.SearchViewModel
-import info.movito.themoviedbapi.model.Multi
 
 @Composable
 fun Search(
     viewModel: SearchViewModel = hiltViewModel(),
-    itemSelectedCallback: ItemSelectedCallback<Multi>,
+    itemSelectedCallback: ItemSelectedCallback<Media>,
 ) {
     val viewState by viewModel.state.collectAsState()
     val movieItems = viewModel.searchMovies.collectAsLazyPagingItems()
@@ -95,21 +79,21 @@ fun Search(
 
     if (viewState.refresh) {
         when (viewState.mediaType) {
-            Multi.MediaType.MOVIE -> movieItems.refresh()
-            Multi.MediaType.TV_SERIES -> tvItems.refresh()
+            MediaType.MOVIE -> movieItems.refresh()
+            MediaType.SHOW -> tvItems.refresh()
             else -> {}
         }
     }
 
     when (viewState.mediaType) {
-        Multi.MediaType.MOVIE -> {
+        MediaType.MOVIE -> {
             viewModel.setLoading(movieItems.loadState.refresh == LoadState.Loading)
-            viewModel.setEmpty(movieItems.itemCount == 0 || viewState.query.getQuery().isBlank())
+            viewModel.setEmpty(movieItems.itemCount == 0 && viewState.query.getQuery().isNotBlank())
         }
 
-        Multi.MediaType.TV_SERIES -> {
+        MediaType.SHOW -> {
             viewModel.setLoading(tvItems.loadState.refresh == LoadState.Loading)
-            viewModel.setEmpty(tvItems.itemCount == 0 || viewState.query.getQuery().isBlank())
+            viewModel.setEmpty(tvItems.itemCount == 0 && viewState.query.getQuery().isNotBlank())
         }
 
         else -> {}
@@ -126,10 +110,10 @@ fun Search(
             }
         },
         onMovieSelected = {
-            viewModel.setMediaType(Multi.MediaType.MOVIE)
+            viewModel.setMediaType(MediaType.MOVIE)
         },
         onTVSelected = {
-            viewModel.setMediaType(Multi.MediaType.TV_SERIES)
+            viewModel.setMediaType(MediaType.SHOW)
         },
     )
 }
@@ -138,29 +122,16 @@ fun Search(
 @Composable
 internal fun Search(
     state: SearchViewState,
-    itemSelectedCallback: ItemSelectedCallback<Multi>,
-    movieItems: LazyPagingItems<Movie>,
-    tvItems: LazyPagingItems<TV>,
+    itemSelectedCallback: ItemSelectedCallback<Media>,
+    movieItems: LazyPagingItems<Media>,
+    tvItems: LazyPagingItems<Media>,
     onSearch: (String) -> Unit = {},
     onMovieSelected: () -> Unit = {},
     onTVSelected: () -> Unit = {},
 ) {
     var searchQuery by remember { mutableStateOf(state.query) }
     val listState = rememberLazyGridState()
-    val searchHeight = TextFieldDefaults.MinHeight + 32.dp
-    val searchHeightPx = with(LocalDensity.current) { searchHeight.roundToPx().toFloat() }
-    val searchHeightOffset = remember { mutableFloatStateOf(0f) }
     var searchText by rememberSaveable { mutableStateOf(state.query.getQuery()) }
-
-    val nsc = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val newOffset = searchHeightOffset.floatValue + available.y
-                searchHeightOffset.floatValue = newOffset.coerceIn(-searchHeightPx, 0f)
-                return Offset.Zero
-            }
-        }
-    }
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -179,7 +150,7 @@ internal fun Search(
                 onActiveChange = {},
                 leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
                 placeholder = {
-                    Text(text = "Search movie or tv show...")
+                    Text(text = "Search ${state.mediaType?.value}...")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,13 +160,12 @@ internal fun Search(
 
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(4.dp),
             ) {
                 SearchChips(
-                    preselect = state.mediaType ?: Multi.MediaType.MOVIE,
+                    preselect = state.mediaType ?: MediaType.MOVIE,
                     onMovieSelected = onMovieSelected,
                     onTVSelected = onTVSelected,
                     modifier = Modifier.padding(horizontal = 8.dp),
@@ -214,6 +184,15 @@ internal fun Search(
             }
 
             AnimatedVisibility(
+                visible = state.empty,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.align(Alignment.Center),
+            ) {
+                Text(text = "No results found for ${state.mediaType?.value} $searchText")
+            }
+
+            AnimatedVisibility(
                 visible = !state.isLoading || state.empty,
                 enter = fadeIn(),
                 exit = fadeOut(),
@@ -228,15 +207,15 @@ internal fun Search(
                         // .nestedScroll(nsc)
                         .fillMaxHeight(),
                 ) {
-                    if (state.mediaType == Multi.MediaType.MOVIE) {
+                    if (state.mediaType == MediaType.MOVIE) {
                         items(
                             count = movieItems.itemCount,
                             key = movieItems.itemKey { it.id },
                         ) { index ->
                             val movie = movieItems[index]
                             if (movie != null) {
-                                MovieCard(
-                                    movie = movie,
+                                MediaCard(
+                                    media = movie,
                                     onClick = {
                                         itemSelectedCallback.onClick(index, null, movie)
                                     },
@@ -247,12 +226,12 @@ internal fun Search(
                                 )
                             }
                         }
-                    } else if (state.mediaType == Multi.MediaType.TV_SERIES) {
+                    } else if (state.mediaType == MediaType.SHOW) {
                         items(count = tvItems.itemCount, key = tvItems.itemKey { it.id }) { index ->
                             val tv = tvItems[index]
                             if (tv != null) {
-                                TVCard(
-                                    tv = tv,
+                                MediaCard(
+                                    media = tv,
                                     onClick = {
                                         itemSelectedCallback.onClick(index, null, tv)
                                     },
@@ -270,89 +249,25 @@ internal fun Search(
     }
 }
 
-/**
- * [OutlinedTextField] with Validation
- * TODO Extract Composable
- */
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun SearchTextInput(
-    modifier: Modifier = Modifier,
-    label: String,
-    hint: String = "",
-    prefillValue: String = "",
-    errorText: String = "",
-    showLabel: Boolean = true,
-    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-    keyboardActions: KeyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
-    validate: (String) -> Boolean = { true },
-    onChange: (String) -> Unit,
-    onError: (String) -> Unit = {},
-) {
-    var value by remember { mutableStateOf(prefillValue) }
-    var error by remember { mutableStateOf(false) }
-    Column {
-        OutlinedTextField(
-            leadingIcon = {
-                Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search")
-            },
-            trailingIcon = {
-                if (value.isNotBlank()) {
-                    IconButton(onClick = {
-                        value = ""
-                    }) {
-                        Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
-                    }
-                }
-            },
-            placeholder = { Text(text = hint) },
-            value = value,
-            onValueChange = {
-                value = it // always update state
-                when {
-                    validate(it) || it.isBlank() -> {
-                        error = false
-                        onChange(it)
-                    }
-
-                    else -> {
-                        error = true
-                        onError(it)
-                    }
-                }
-            },
-            isError = error,
-            label = {
-                if (showLabel) Text(text = label)
-            },
-            singleLine = true,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-        )
-    }
-}
-
 @Composable
 fun SearchChips(
-    preselect: Multi.MediaType,
+    preselect: MediaType,
     onMovieSelected: () -> Unit,
     onTVSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val movieText = stringResource(id = R.string.text_search_movies)
+    val showText = stringResource(id = R.string.text_search_show)
     FilterChipGroup(
         modifier = modifier,
         chipSpacing = 8.dp,
         icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-        list = listOf("Movie", "TV"),
-        preSelect = listOf(if (preselect == Multi.MediaType.MOVIE) "Movie" else "TV"),
+        list = listOf(movieText, showText),
+        preSelect = listOf(if (preselect == MediaType.MOVIE) movieText else showText),
         onSelectedChanged = { selected, _ ->
             when (selected) {
-                "Movie" -> onMovieSelected()
-                "TV" -> onTVSelected()
+                movieText -> onMovieSelected()
+                showText -> onTVSelected()
             }
         },
     )

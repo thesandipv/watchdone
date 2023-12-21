@@ -22,7 +22,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.databinding.FragmentEditProfileBinding
-import com.afterroot.watchdone.ui.SplashActivity
+import com.afterroot.watchdone.ui.OnboardingActivity
 import com.afterroot.watchdone.utils.getGravatarUrl
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseUser
@@ -86,7 +86,7 @@ class EditProfileFragment : Fragment() {
                 ).load(getGravatarUrl(user.email.toString())).circleCrop().into(binding.avatar)
             }
         } else {
-            startActivity(Intent(this.context, SplashActivity::class.java))
+            startActivity(Intent(this.context, OnboardingActivity::class.java))
         }
     }
 }

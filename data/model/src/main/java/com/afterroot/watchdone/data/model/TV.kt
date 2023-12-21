@@ -19,7 +19,6 @@ import info.movito.themoviedbapi.model.ContentRating
 import info.movito.themoviedbapi.model.Credits
 import info.movito.themoviedbapi.model.ExternalIds
 import info.movito.themoviedbapi.model.MovieImages
-import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.core.ResultsPage
 import info.movito.themoviedbapi.model.people.Person
 import info.movito.themoviedbapi.model.tv.Network
@@ -27,7 +26,8 @@ import info.movito.themoviedbapi.model.tv.TvSeries
 
 data class TV(
     // Info
-    val id: Int = 0,
+    override val id: Long = 0,
+    override val tmdbId: Int? = null,
     val name: String? = null,
     var createdBy: List<Person>? = null,
     var episodeRuntime: List<Int>? = null,
@@ -47,7 +47,7 @@ data class TV(
     var seasons: Seasons = null,
     var recommendations: ResultsPage<TvSeries>? = null,
     var userRating: Float = 0f,
-    val voteAverage: Double? = null,
+    val voteAverage: Float? = null,
     var voteCount: Int = 0,
     var status: String? = null,
     private var contentRatings: List<ContentRating>? = null,
@@ -58,11 +58,11 @@ data class TV(
     val videos: Videos = null,
     val keywords: Keywords = null,
     // Additional Data
-    var isWatched: Boolean = false,
-) : Multi {
+    override val isWatched: Boolean = false,
+) : WDEntity, TmdbIdEntity, Watchable {
 
-    override val mediaType: Multi.MediaType
-        get() = Multi.MediaType.TV_SERIES
+    val mediaType: MediaType
+        get() = MediaType.SHOW
 
     // Just for Firestore
     var releaseDate = firstAirDate

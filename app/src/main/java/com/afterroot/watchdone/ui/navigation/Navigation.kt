@@ -31,29 +31,26 @@ import androidx.navigation.navigation
 import com.afterroot.ui.common.compose.navigation.RootScreen
 import com.afterroot.ui.common.compose.navigation.Screen
 import com.afterroot.watchdone.base.Constants
-import com.afterroot.watchdone.data.model.Movie
-import com.afterroot.watchdone.data.model.TV
+import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.discover.Discover
 import com.afterroot.watchdone.ui.media.MediaInfo
+import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile
 import com.afterroot.watchdone.ui.search.Search
 import com.afterroot.watchdone.watchlist.Watchlist
-import info.movito.themoviedbapi.model.Multi
 
-fun itemSelectedCallback(navController: NavHostController) = object : ItemSelectedCallback<Multi> {
-    override fun onClick(position: Int, view: View?, item: Multi) {
-        if (item is Movie) {
-            val request = NavDeepLinkRequest.Builder
-                .fromUri(Deeplink.media(item.id, Multi.MediaType.MOVIE))
-                .build()
-            navController.navigate(request)
-        } else if (item is TV) {
-            val request = NavDeepLinkRequest.Builder
-                .fromUri(Deeplink.media(item.id, Multi.MediaType.TV_SERIES))
-                .build()
-            navController.navigate(request)
+fun itemSelectedCallback(navController: NavHostController) = object : ItemSelectedCallback<Media> {
+    override fun onClick(position: Int, view: View?, item: Media) {
+        if (item.mediaType == MediaType.MOVIE || item.mediaType == MediaType.SHOW) {
+            item.tmdbId?.let {
+                val request = NavDeepLinkRequest.Builder
+                    .fromUri(Deeplink.media(it, item.mediaType!!))
+                    .build()
+                navController.navigate(request)
+            }
         }
     }
 }
@@ -139,14 +136,12 @@ private fun NavGraphBuilder.addMediaInfo(
                 navController.navigateUp()
             },
             onRecommendedClick = {
-                if (it is Movie) {
-                    navController.navigate(
-                        Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id),
-                    )
-                } else if (it is TV) {
-                    navController.navigate(
-                        Screen.MediaInfo.createRoute(rootScreen, it.mediaType, it.id),
-                    )
+                if (it.tmdbId != null) {
+                    it.mediaType?.let { mediaType ->
+                        navController.navigate(
+                            Screen.MediaInfo.createRoute(rootScreen, mediaType, it.tmdbId!!),
+                        )
+                    }
                 }
             },
             onWatchProviderClick = onWatchProviderClick,
@@ -204,13 +199,20 @@ private fun NavGraphBuilder.addProfileRoot(navController: NavHostController) {
         startDestination = Screen.Profile.createRoute(RootScreen.Profile),
     ) {
         addProfile(navController, RootScreen.Profile)
+        addEditProfile(navController, RootScreen.Profile)
     }
 }
 
 private fun NavGraphBuilder.addProfile(navController: NavHostController, rootScreen: RootScreen) {
     composable(route = Screen.Profile.createRoute(rootScreen)) {
         Profile {
-            // TODO
+            navController.navigate(Screen.EditProfile.createRoute(rootScreen))
         }
+    }
+}
+
+private fun NavGraphBuilder.addEditProfile(navController: NavHostController, rootScreen: RootScreen) {
+    composable(route = Screen.EditProfile.createRoute(rootScreen)) {
+        EditProfile()
     }
 }

@@ -29,6 +29,7 @@ import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.settings.Settings
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.firestore.FirebaseFirestore
 import com.jakewharton.processphoenix.ProcessPhoenix
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -55,6 +56,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject lateinit var countriesDao: CountriesDao
 
+    @Inject lateinit var firestore: FirebaseFirestore
+
     @Inject
     @Named("version_string")
     lateinit var versionString: String
@@ -78,25 +81,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         CommonR.string.theme_device_default,
                     ),
                     -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+
                     getString(
                         CommonR.string.theme_battery,
                     ),
                     -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+
                     getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
                     getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
                     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 },
             )
             return@setOnPreferenceChangeListener true
-        }
-
-        findPreference<PreferenceCategory>("key_debug")?.isVisible = BuildConfig.DEBUG
-
-        findPreference<SwitchPreferenceCompat>(
-            "http_logging",
-        )?.setOnPreferenceChangeListener { _, _ ->
-            ProcessPhoenix.triggerRebirth(requireContext())
-            true
         }
 
         findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
@@ -110,6 +106,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>(getString(CommonR.string.key_version))?.summary = versionString
 
         updateCountryPref()
+        setUpDebugPreferences()
     }
 
     private fun updateCountryPref() {
@@ -158,6 +155,44 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         }
                     }
                 dialog?.show()
+            }
+        }
+    }
+
+    private fun setUpDebugPreferences() {
+        if (!BuildConfig.DEBUG) return
+        findPreference<PreferenceCategory>("key_debug")?.isVisible = true
+
+        findPreference<SwitchPreferenceCompat>(
+            "http_logging",
+        )?.setOnPreferenceChangeListener { _, _ ->
+            ProcessPhoenix.triggerRebirth(requireContext())
+            true
+        }
+
+        findPreference<SwitchPreferenceCompat>(
+            "key_enable_emulator",
+        )?.setOnPreferenceChangeListener { _, _ ->
+            ProcessPhoenix.triggerRebirth(requireContext())
+            true
+        }
+
+        findPreference<SwitchPreferenceCompat>(
+            "use_prod_db",
+        )?.setOnPreferenceChangeListener { _, _ ->
+            ProcessPhoenix.triggerRebirth(requireContext())
+            true
+        }
+
+        findPreference<Preference>("key_clear_persistence")?.apply {
+            onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                firestore.terminate().also {
+                    if (it.isSuccessful) {
+                        firestore.clearPersistence()
+                        ProcessPhoenix.triggerRebirth(requireContext())
+                    }
+                }
+                true
             }
         }
     }

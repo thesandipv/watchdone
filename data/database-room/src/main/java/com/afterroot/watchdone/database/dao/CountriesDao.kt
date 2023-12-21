@@ -26,10 +26,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CountriesDao {
-    @Query("SELECT * from countries")
+    @Query("SELECT * from countries ORDER BY englishName ASC")
     fun getCountries(): LiveData<List<Country>>
 
-    @Query("SELECT * from countries")
+    @Query("SELECT * from countries ORDER BY englishName ASC")
     fun getCountriesFlow(): Flow<List<Country>>
 
     @Query("SELECT * from countries WHERE iso LIKE :iso")

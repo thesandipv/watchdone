@@ -14,7 +14,6 @@
  */
 package com.afterroot.ui.common.compose.theme
 
-import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -27,6 +26,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.afterroot.ui.common.compose.components.LocalSettings
 import com.afterroot.utils.getMaterialColor
@@ -35,7 +35,8 @@ import com.afterroot.watchdone.resources.R as CommonR
 import com.google.android.material.R as MaterialR
 
 @Composable
-fun Theme(context: Context, settings: Settings, content: @Composable () -> Unit) {
+fun Theme(settings: Settings, content: @Composable () -> Unit) {
+    val context = LocalContext.current
     val background = if (isSystemInDarkTheme()) {
         Color(ContextCompat.getColor(context, CommonR.color.md_theme_dark_background))
     } else {
@@ -113,7 +114,7 @@ fun Theme(context: Context, settings: Settings, content: @Composable () -> Unit)
         typography = ubuntuTypography,
         content = {
             CompositionLocalProvider(
-                LocalContentColor provides contentColorFor(backgroundColor = finalColorScheme.background),
+                LocalContentColor provides contentColorFor(backgroundColor = finalColorScheme.surface),
                 LocalSettings provides settings,
                 content = content,
             )

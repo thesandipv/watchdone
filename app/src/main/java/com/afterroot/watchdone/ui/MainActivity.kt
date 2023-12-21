@@ -20,10 +20,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.Color
@@ -46,6 +46,7 @@ import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.logFirstStart
 import com.afterroot.watchdone.utils.shareToInstagram
+import com.afterroot.watchdone.viewmodel.HomeViewModel
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.ads.MobileAds
@@ -61,7 +62,7 @@ import org.jetbrains.anko.startActivity
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val manifestPermissions by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -85,6 +86,7 @@ class MainActivity : AppCompatActivity() {
     @Named("feedback_body")
     lateinit var feedbackBody: String
     private val networkViewModel: NetworkViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 onDispose {}
             }
 
-            Theme(context = this, settings = settings) {
+            Theme(settings = settings) {
                 Home(
                     onWatchProviderClick = { link ->
                         browse(link, true)
@@ -125,14 +127,14 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
-            startActivity(Intent(this, SplashActivity::class.java))
+            startActivity(Intent(this, OnboardingActivity::class.java))
             finish()
         } else {
             initialize()
         }
         firebaseUtils.auth.addAuthStateListener {
             if (!firebaseUtils.isUserSignedIn) { // If not logged in, go to login.
-                startActivity(Intent(applicationContext, SplashActivity::class.java))
+                startActivity(Intent(applicationContext, OnboardingActivity::class.java))
                 finish()
             }
         }
@@ -140,6 +142,9 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun initialize() {
+        lifecycleScope.launch {
+            homeViewModel.checkForMigrations()
+        }
         if (settings.isFirstInstalled) {
             logFirstStart()
             settings.isFirstInstalled = false

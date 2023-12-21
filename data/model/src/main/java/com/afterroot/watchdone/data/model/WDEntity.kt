@@ -22,3 +22,7 @@ interface WDEntity {
 interface TmdbIdEntity {
     val tmdbId: Int?
 }
+
+interface Watchable {
+    val isWatched: Boolean?
+}

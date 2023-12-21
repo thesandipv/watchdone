@@ -15,6 +15,10 @@
 package com.afterroot.ui.common.compose.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -283,13 +287,15 @@ fun DynamicChipGroup(
                 } else {
                     true
                 },
+                enter = fadeIn() + expandHorizontally(expandFrom = Alignment.CenterHorizontally),
+                exit = fadeOut() + shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally),
             ) {
                 chipContent(
-                    index = index,
-                    title = label,
-                    icon = if (icons.isNotEmpty()) icons[index] else null,
-                    selected = selectedList.contains(index),
-                    onClick = { selected ->
+                    index,
+                    label,
+                    if (icons.isNotEmpty()) icons[index] else null,
+                    selectedList.contains(index),
+                    { selected ->
                         when (selectionType) {
                             SelectionType.Single -> {
                                 selectedList.apply {
@@ -309,7 +315,7 @@ fun DynamicChipGroup(
 
                         onSelectedChanged?.invoke(index, label, selected, list, selectedList)
                     },
-                    clearSelection = {
+                    {
                         selectedList.clear()
                         onSelectedChanged?.invoke(index, label, false, list, selectedList)
                     },

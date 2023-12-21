@@ -21,7 +21,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -41,7 +44,7 @@ import androidx.compose.ui.unit.dp
 /**
  * [TextField] with Validation
  */
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TextInput(
     modifier: Modifier = Modifier,
@@ -67,6 +70,7 @@ fun TextInput(
                         error = false
                         onChange(it)
                     }
+
                     else -> {
                         error = true
                         onError(it)
@@ -100,13 +104,18 @@ fun TextInput(
 /**
  * [OutlinedTextField] with Validation
  */
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OutlinedTextInput(
     modifier: Modifier = Modifier,
     label: String,
+    hint: String = "",
+    prefillValue: String = "",
     maxLines: Int = 1,
     errorText: String = "",
+    showLabel: Boolean = true,
+    singleLine: Boolean = false,
+    leadingIcon: @Composable (() -> Unit)? = null,
     keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
@@ -114,7 +123,7 @@ fun OutlinedTextInput(
     onChange: (String) -> Unit,
     onError: (String) -> Unit = {},
 ) {
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(prefillValue) }
     var error by remember { mutableStateOf(false) }
     Column {
         OutlinedTextField(
@@ -126,6 +135,7 @@ fun OutlinedTextInput(
                         error = false
                         onChange(it)
                     }
+
                     else -> {
                         error = true
                         onError(it)
@@ -133,14 +143,31 @@ fun OutlinedTextInput(
                 }
             },
             isError = error,
-            label = { Text(text = label) },
+            label = {
+                if (showLabel) {
+                    if (!error) {
+                        Text(text = label)
+                    } else {
+                        Text(text = errorText)
+                    }
+                }
+            },
             maxLines = maxLines,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp),
+            singleLine = singleLine,
+            modifier = modifier,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
+            leadingIcon = leadingIcon,
+            trailingIcon = {
+                if (value.isNotBlank()) {
+                    IconButton(onClick = {
+                        value = ""
+                    }) {
+                        Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
+                    }
+                }
+            },
+            placeholder = { Text(text = hint) },
         )
         AnimatedVisibility(visible = error) {
             Text(

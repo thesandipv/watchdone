@@ -59,11 +59,14 @@ object FirebaseModule {
     }
 
     @Provides
+    @Singleton
     fun provideFirebaseUtils(firebaseAuth: FirebaseAuth) = FirebaseUtils(firebaseAuth)
 
     @Provides
+    @Singleton
     fun provideFirebaseMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
 
     @Provides
+    @Singleton
     fun provideFirebaseCrashlytics(): FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 }

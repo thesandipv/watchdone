@@ -12,20 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.data.mapper
 
-import info.movito.themoviedbapi.model.Multi
-import info.movito.themoviedbapi.model.core.MovieResultsPage
-import info.movito.themoviedbapi.model.core.TvResultsPage
+package com.afterroot.watchdone.discover
 
-fun MovieResultsPage.toMulti(): List<Multi> {
-    return this.results.mapNotNull {
-        it?.toMovie()
-    }
-}
+import app.moviebase.tmdb.Tmdb3
+import com.afterroot.watchdone.data.mapper.TmdbShowToMedia
+import com.afterroot.watchdone.data.model.Media
+import javax.inject.Inject
 
-fun TvResultsPage.toMulti(): List<Multi> {
-    return this.results.mapNotNull {
-        it?.toTV()
+class TmdbDiscoverShowDataSource @Inject constructor(
+    private val tmdb: Tmdb3,
+    private val tmdbShowToMedia: TmdbShowToMedia,
+) : DiscoverDataSource {
+    override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
+        return tmdb.discover.discoverShow(
+            page,
+            parameters = parameters,
+        ).results.map(tmdbShowToMedia::map)
     }
 }

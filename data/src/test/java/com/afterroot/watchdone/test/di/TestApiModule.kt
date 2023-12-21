@@ -30,7 +30,6 @@ import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.data.BuildConfig
-import com.afterroot.watchdone.data.repositories.DiscoverRepository
 import com.afterroot.watchdone.utils.whenBuildIs
 import dagger.Module
 import dagger.Provides
@@ -81,7 +80,9 @@ object TestApiModule {
 
     @Provides
     @Singleton
-    fun provideTmdbApi(): TmdbApi = TmdbApi(BuildConfig.TMDB_API)
+    fun provideTmdbApi(
+        okHttpClient: OkHttpClient,
+    ): TmdbApi = TmdbApi(BuildConfig.TMDB_API, okHttpClient)
 }
 
 @Module
@@ -94,10 +95,6 @@ object TestRepositoriesModule {
     @Provides
     @Singleton
     fun provideAuthRepository(authApi: AuthApi) = AuthRepository(authApi)
-
-    @Provides
-    @Singleton
-    fun provideDiscoverRepository(discoverApi: DiscoverApi) = DiscoverRepository(discoverApi)
 
     @Provides
     @Singleton
@@ -143,8 +140,4 @@ object RetrofitApisModule {
     @Provides
     @Singleton
     fun provideTVApi(retrofit: Retrofit): TVApi = retrofit.create(TVApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideSearchApi(retrofit: Retrofit): SearchApi = retrofit.create(SearchApi::class.java)
 }

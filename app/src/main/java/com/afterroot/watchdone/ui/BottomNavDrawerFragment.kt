@@ -19,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.afterroot.tmdbapi.repository.AuthRepository
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.databinding.FragmentBottomBinding
 import com.afterroot.watchdone.databinding.NavHeaderBinding
@@ -32,7 +31,6 @@ import javax.inject.Inject
 import javax.inject.Named
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.email
-import org.jetbrains.anko.toast
 import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
@@ -65,7 +63,8 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                     }
                     R.id.tmdb_login -> {
                         // val dialog = requireContext().showStaticProgressDialog("Loading...")
-                        homeViewModel.getResponseRequestToken().observe(
+                        // FIXME ClassCastException
+                        /*homeViewModel.getResponseRequestToken().observe(
                             viewLifecycleOwner,
                         ) { response ->
                             if (response.success) {
@@ -85,7 +84,7 @@ class BottomNavDrawerFragment : BottomSheetDialogFragment() {
                                 // dialog.dismiss()
                                 dismiss()
                             }
-                        }
+                        }*/
                     }
                     R.id.send_feedback -> {
                         requireContext().email(

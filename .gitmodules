@@ -10,3 +10,7 @@
 [submodule "gradle/build-logic"]
 	path = gradle/build-logic
 	url = https://github.com/afterroot/build-logic.git
+[submodule "tmdb-kotlin"]
+	path = tmdb-kotlin
+	url = https://github.com/thesandipv/tmdb-kotlin.git
+	branch = thesandipv/main

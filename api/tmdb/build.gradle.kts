@@ -11,8 +11,8 @@ android {
 
 dependencies {
     api(libs.okhttp.okhttp)
-    api(libs.tmdb.api)
+    api(projects.tmdbApi)
 
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.okhttp)
 }

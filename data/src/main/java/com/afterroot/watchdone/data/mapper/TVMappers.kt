@@ -15,13 +15,13 @@
 package com.afterroot.watchdone.data.mapper
 
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.TV
-import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.core.TvResultsPage
 import info.movito.themoviedbapi.model.tv.TvSeries
 
 fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
-    id = id,
+    id = id.toLong(),
     name = name,
     createdBy = createdBy,
     episodeRuntime = episodeRuntime,
@@ -41,7 +41,7 @@ fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
     seasons = seasons.toSeasons(),
     recommendations = recommendations,
     userRating = userRating,
-    voteAverage = voteAverage,
+    voteAverage = voteAverage?.toFloat(),
     voteCount = voteCount,
     status = status,
     // Appendable Responses
@@ -56,17 +56,17 @@ fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
 )
 
 fun TV.toDBMedia() = DBMedia(
-    id = id,
+    id = id.toInt(),
     releaseDate = releaseDate,
     title = name,
     isWatched = isWatched,
     posterPath = posterPath,
-    mediaType = Multi.MediaType.TV_SERIES,
+    mediaType = MediaType.SHOW,
     rating = voteAverage,
 )
 
 fun DBMedia.toTV(): TV = TV(
-    id = id,
+    id = id.toLong(),
     firstAirDate = releaseDate,
     name = title,
     isWatched = isWatched,

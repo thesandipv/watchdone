@@ -15,30 +15,24 @@
 
 package com.afterroot.watchdone.discover
 
-import app.moviebase.tmdb.model.TmdbDiscover
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DiscoverDataSourceBinds {
     @Binds
-    abstract fun bindDiscoverDataSource(
+    @Named("tmdbDiscoverMovieDataSource")
+    abstract fun bindDiscoverMovieDataSource(
         tmdbDiscoverMovieDataSource: TmdbDiscoverMovieDataSource,
     ): DiscoverDataSource
 
     @Binds
-    abstract fun bindTmdbDiscover(discover: TmdbDiscover.Movie): TmdbDiscover
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object DiscoverDataSourceProvides {
-    @Provides
-    fun provideTmdbDiscoverMovie() = TmdbDiscover.Movie(
-        includeAdult = true,
-    )
+    @Named("tmdbDiscoverShowDataSource")
+    abstract fun bindDiscoverShowDataSource(
+        tmdbDiscoverShowDataSource: TmdbDiscoverShowDataSource,
+    ): DiscoverDataSource
 }

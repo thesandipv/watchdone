@@ -95,6 +95,7 @@ android {
 dependencies {
 
     implementation(projects.api.tmdb)
+    implementation(projects.core.logging)
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.ui.discover)
@@ -107,12 +108,13 @@ dependencies {
 
     // implementation(libs.kotlin.stdLib)
 
-    implementation(libs.androidx.appCompat)
+    // implementation(libs.androidx.appCompat)
     implementation(libs.androidx.activity)
     // implementation(libs.androidx.billing)
     // implementation(libs.androidx.cardView)
-    implementation(libs.androidx.constraintLayout)
+    // implementation(libs.androidx.constraintLayout)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.core.splash)
     implementation(libs.androidx.fragment)
     implementation(libs.bundles.lifecycle)
     // implementation(libs.androidx.multiDex)
@@ -141,7 +143,7 @@ dependencies {
 
     // ksp(libs.androidx.room.compiler)
 
-    // implementation(libs.google.ossLic)
+    implementation(libs.google.ossLic)
     // implementation(libs.google.material)
 
     implementation(platform(libs.firebase.bom))

@@ -18,11 +18,14 @@ package com.afterroot.watchdone.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import app.tivi.extensions.combine
+import app.tivi.util.Logger
+import com.afterroot.watchdone.data.compoundmodel.RecommendedEntryWithMedia
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.domain.interactors.MediaInfoInteractor
@@ -30,8 +33,6 @@ import com.afterroot.watchdone.domain.interactors.ObserveMediaInfo
 import com.afterroot.watchdone.domain.interactors.ObserveMovieCredits
 import com.afterroot.watchdone.domain.interactors.ObserveMovieInfo
 import com.afterroot.watchdone.domain.interactors.ObserveMovieWatchProviders
-import com.afterroot.watchdone.domain.interactors.ObserveRecommendedMovies
-import com.afterroot.watchdone.domain.interactors.ObserveRecommendedShows
 import com.afterroot.watchdone.domain.interactors.ObserveTVCredits
 import com.afterroot.watchdone.domain.interactors.ObserveTVInfo
 import com.afterroot.watchdone.domain.interactors.ObserveTVSeason
@@ -39,13 +40,12 @@ import com.afterroot.watchdone.domain.interactors.ObserveTVWatchProviders
 import com.afterroot.watchdone.domain.interactors.TVEpisodeInteractor
 import com.afterroot.watchdone.domain.interactors.WatchStateInteractor
 import com.afterroot.watchdone.domain.interactors.WatchlistInteractor
-import com.afterroot.watchdone.domain.observers.RecommendedMoviePagingSource
-import com.afterroot.watchdone.domain.observers.RecommendedShowPagingSource
+import com.afterroot.watchdone.domain.observers.ObservePagedRecommended
 import com.afterroot.watchdone.ui.media.MediaInfoViewState
 import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
-import info.movito.themoviedbapi.model.Multi
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -55,7 +55,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class MediaInfoViewModel @Inject constructor(
@@ -67,9 +66,9 @@ class MediaInfoViewModel @Inject constructor(
     observeTVSeason: ObserveTVSeason,
     observeMovieWatchProviders: ObserveMovieWatchProviders,
     observeTVWatchProviders: ObserveTVWatchProviders,
+    observePagedRecommended: ObservePagedRecommended,
+    private val logger: Logger,
     private val observeMediaInfo: ObserveMediaInfo,
-    private val observeRecommendedMovies: ObserveRecommendedMovies,
-    private val observeRecommendedShows: ObserveRecommendedShows,
     private val watchlistInteractor: WatchlistInteractor,
     private val watchStateInteractor: WatchStateInteractor,
     private val tvEpisodeInteractor: TVEpisodeInteractor,
@@ -79,7 +78,7 @@ class MediaInfoViewModel @Inject constructor(
     private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
     private val _mediaType = savedStateHandle.getStateFlow("type", "")
 
-    val mediaType = Multi.MediaType.valueOf(_mediaType.value.uppercase())
+    val mediaType = MediaType.valueOf(_mediaType.value.uppercase())
 
     private val isInWL = MutableStateFlow(false)
     private val isWatched = MutableStateFlow(false)
@@ -143,31 +142,23 @@ class MediaInfoViewModel @Inject constructor(
     }
 
     val state: StateFlow<MediaInfoViewState> = when (mediaType) {
-        Multi.MediaType.MOVIE -> {
-            stateMovie
-        }
-
-        Multi.MediaType.TV_SERIES -> {
-            stateTV
-        }
-
-        else -> {
-            flow {
-                emit(MediaInfoViewState.Empty)
-            }.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(),
-                initialValue = MediaInfoViewState.Empty,
-            )
-        }
+        MediaType.MOVIE -> stateMovie
+        MediaType.SHOW -> stateTV
+        else -> flow {
+            emit(MediaInfoViewState.Empty)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = MediaInfoViewState.Empty,
+        )
     }
 
     init {
-        if (mediaType == Multi.MediaType.MOVIE) {
+        if (mediaType == MediaType.MOVIE) {
             observeMovieInfo(ObserveMovieInfo.Params(mediaId.value))
             observeMovieCredits(ObserveMovieCredits.Params(mediaId.value))
             observeMovieWatchProviders(ObserveMovieWatchProviders.Params(mediaId.value))
-        } else if (mediaType == Multi.MediaType.TV_SERIES) {
+        } else if (mediaType == MediaType.SHOW) {
             observeTVInfo(ObserveTVInfo.Params(mediaId.value))
             observeTVCredits(ObserveTVCredits.Params(mediaId.value))
             observeTVWatchProviders(ObserveTVWatchProviders.Params(mediaId.value))
@@ -190,19 +181,13 @@ class MediaInfoViewModel @Inject constructor(
         }
 
         getMediaInfo()
+
+        observePagedRecommended(recommendedParams(mediaId.value, mediaType))
     }
 
-    fun getRecommendedShows(mediaId: Int) = Pager(
-        PagingConfig(pageSize = 20, initialLoadSize = 20),
-    ) {
-        RecommendedShowPagingSource(mediaId, observeRecommendedShows)
-    }.flow.cachedIn(viewModelScope)
-
-    fun getRecommendedMovies(mediaId: Int) = Pager(
-        PagingConfig(pageSize = 20, initialLoadSize = 20),
-    ) {
-        RecommendedMoviePagingSource(mediaId, observeRecommendedMovies)
-    }.flow.cachedIn(viewModelScope)
+    val pagedRecommendedList: Flow<PagingData<RecommendedEntryWithMedia>> = observePagedRecommended.flow.cachedIn(
+        viewModelScope,
+    )
 
     fun watchlistAction(isAdd: Boolean, media: DBMedia) {
         viewModelScope.launch {
@@ -235,7 +220,7 @@ class MediaInfoViewModel @Inject constructor(
                 result.whenSuccess {
                     isWatched.value = it
                 }.whenFailed { message, exception ->
-                    Timber.e(exception, "watchStateAction: $message")
+                    logger.e(exception) { "watchStateAction: $message" }
                 }
             }
         }
@@ -274,5 +259,13 @@ class MediaInfoViewModel @Inject constructor(
 
     fun selectSeason(season: Int) {
         selectedSeason.value = season
+    }
+
+    companion object {
+        fun recommendedParams(mediaId: Int, mediaType: MediaType) = ObservePagedRecommended.Params(
+            mediaId,
+            mediaType,
+            PagingConfig(20, initialLoadSize = 20),
+        )
     }
 }

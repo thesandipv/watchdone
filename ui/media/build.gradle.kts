@@ -27,6 +27,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.logging)
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.ui.recommended)

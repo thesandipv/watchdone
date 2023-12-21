@@ -23,7 +23,6 @@ import info.movito.themoviedbapi.model.Language
 import info.movito.themoviedbapi.model.MovieImages
 import info.movito.themoviedbapi.model.MovieList
 import info.movito.themoviedbapi.model.MovieTranslations
-import info.movito.themoviedbapi.model.Multi
 import info.movito.themoviedbapi.model.NetworkMovie
 import info.movito.themoviedbapi.model.ProductionCompany
 import info.movito.themoviedbapi.model.ProductionCountry
@@ -34,7 +33,8 @@ import info.movito.themoviedbapi.model.core.ResultsPage
 
 data class Movie(
     // Movie Info
-    val id: Int = 0,
+    override val id: Long = 0,
+    override val tmdbId: Int? = null,
     val adult: Boolean? = null,
     val backdropPath: String? = null,
     val belongsToCollection: Collection? = null,
@@ -58,7 +58,7 @@ data class Movie(
     val tagline: String? = null,
     val title: String? = null,
     val video: Boolean? = null,
-    val voteAverage: Double? = null,
+    val voteAverage: Float? = null,
     val voteCount: Int? = null,
     var userRating: Float = 0f,
     // Appendable responses
@@ -74,11 +74,10 @@ data class Movie(
     private var videos: Video.Results? = null,
     var credits: Credits? = null,
     // Additional Data
-    @field:JvmField
-    var isWatched: Boolean = false,
-) : Multi {
-    override val mediaType: Multi.MediaType
-        get() = Multi.MediaType.MOVIE
+    override val isWatched: Boolean = false,
+) : WDEntity, TmdbIdEntity, Watchable {
+    val mediaType: MediaType
+        get() = MediaType.MOVIE
 
     fun rating(): String = String.format("%.1f", voteAverage)
 

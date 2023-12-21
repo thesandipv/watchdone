@@ -19,15 +19,15 @@ import androidx.compose.runtime.Immutable
 import app.tivi.api.UiMessage
 import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.base.compose.ViewState
-import info.movito.themoviedbapi.model.Multi
+import com.afterroot.watchdone.data.model.MediaType
 
 @Immutable
 data class SearchViewState(
-    val mediaType: Multi.MediaType? = Multi.MediaType.MOVIE,
+    val mediaType: MediaType? = MediaType.MOVIE,
     val query: Query = Query(),
     val isLoading: Boolean = false,
     val refresh: Boolean = false,
-    val empty: Boolean = true,
+    val empty: Boolean = false,
     override val message: UiMessage? = null,
 ) : ViewState() {
     companion object {

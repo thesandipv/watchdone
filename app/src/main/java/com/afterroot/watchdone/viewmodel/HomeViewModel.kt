@@ -16,23 +16,27 @@ package com.afterroot.watchdone.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import com.afterroot.tmdbapi.model.RequestBodyToken
-import com.afterroot.tmdbapi.repository.AuthRepository
-import com.afterroot.watchdone.helpers.Deeplink
+import com.afterroot.watchdone.utils.FirestoreMigrations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val savedState: SavedStateHandle? = null,
-    private val authRepository: AuthRepository,
+    // private val authRepository: AuthRepository,
+    private val firestoreMigrations: FirestoreMigrations,
 ) : ViewModel() {
 
-    fun getResponseRequestToken() = liveData(Dispatchers.IO) {
-        emit( // TODO Deeplink properly
-            authRepository.createRequestToken(RequestBodyToken(Deeplink.launch)),
-        )
+    fun getResponseRequestToken() {
+        // FIXME ClassCastException
+        /*return liveData(Dispatchers.IO) {
+            emit( // TODO Deeplink properly
+                authRepository.createRequestToken(RequestBodyToken(Deeplink.launch)),
+            )
+        }*/
+    }
+
+    suspend fun checkForMigrations() {
+        firestoreMigrations.start()
     }
 }

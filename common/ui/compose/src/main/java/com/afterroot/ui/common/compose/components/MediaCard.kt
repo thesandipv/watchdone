@@ -44,33 +44,19 @@ import coil.request.ImageRequest
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
-import info.movito.themoviedbapi.model.Multi
 
 @Composable
-fun <T : Multi> PosterCard(
-    media: T,
+fun PosterCard(
+    media: Media,
     modifier: Modifier = Modifier,
-    type: Multi.MediaType = media.mediaType ?: Multi.MediaType.MOVIE,
     onClick: (() -> Unit)? = null,
 ) {
-    var title: String? = null
-    var posterPath: String? = null
-    when (type) {
-        Multi.MediaType.MOVIE -> {
-            media as Movie
-            title = media.title
-            posterPath = media.posterPath
-        }
-
-        Multi.MediaType.TV_SERIES -> {
-            media as TV
-            title = media.name
-            posterPath = media.posterPath
-        }
-
-        else -> {}
-    }
-    BasePosterCard(title = title, posterPath = posterPath, modifier = modifier, onClick = onClick)
+    BasePosterCard(
+        title = media.title,
+        posterPath = media.posterPath,
+        modifier = modifier,
+        onClick = onClick,
+    )
 }
 
 @Composable
@@ -84,10 +70,10 @@ fun MovieCard(movie: Movie, modifier: Modifier = Modifier, onClick: (() -> Unit)
 }
 
 @Composable
-fun MovieCard(movie: Media, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
+fun MediaCard(media: Media, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
     BasePosterCard(
-        title = movie.title,
-        posterPath = movie.posterPath,
+        title = media.title,
+        posterPath = media.posterPath,
         modifier = modifier,
         onClick = onClick,
     )

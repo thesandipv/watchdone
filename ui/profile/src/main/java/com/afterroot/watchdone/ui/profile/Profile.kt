@@ -14,19 +14,20 @@
  */
 package com.afterroot.watchdone.ui.profile
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHost
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,11 +35,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.tivi.api.UiMessage
+import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FABEdit
-import com.afterroot.ui.common.compose.components.SwipeDismissSnackbar
+import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.ui.common.compose.utils.rememberFlowWithLifecycle
+import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
@@ -112,48 +117,36 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        scaffoldState = scaffoldState,
+        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            AppBar(
-                title = "Profile",
+            CommonAppBar(
+                withTitle = stringResource(id = R.string.title_profile),
+                windowInsets = TopBarWindowInsets,
                 actions = {
-                    IconButton(
-                        onClick = {
-                            actions(ProfileActions.SignOut)
-                        },
-                    ) {
-                        Icon(imageVector = Icons.Rounded.Logout, contentDescription = "Logout")
+                    IconButton(onClick = { actions(ProfileActions.SignOut) }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Logout,
+                            contentDescription = stringResource(
+                                id = R.string.action_sign_out,
+                            ),
+                        )
                     }
                 },
             )
         },
         floatingActionButton = {
             FABEdit(
-                modifier = Modifier
-                    .navigationBarsPadding(),
+                modifier = Modifier.offset(y = 24.dp), // TODO Find better solution
                 onClick = {
                     actions(ProfileActions.EditProfile)
                 },
             )
         },
-        snackbarHost = { snackbarHostState ->
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = { snackbarData ->
-                    SwipeDismissSnackbar(
-                        data = snackbarData,
-                        onDismiss = { viewModel.clearMessage() },
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth(),
-            )
-        },
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(paddingValues = paddingValues),
+                .padding(paddingValues)
+                .fillMaxWidth(),
         ) {
         }
     }
