@@ -83,7 +83,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
-ben-manes-versions = { id = "com.github.ben-manes.versions", version = "0.47.0" }
+ben-manes-versions = { id = "com.github.ben-manes.versions", version = "0.50.0" }
 dokka = { id = "org.jetbrains.dokka", version = "1.8.20" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crshlyticsPlugin" }
 gms-googleServices = "com.google.gms.google-services:4.4.0"
