@@ -23,10 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "com.afterroot.watchdone.recommended"
-    buildFeatures {
-        dataBinding = true
-    }
+    namespace = "com.afterroot.watchdone.ui.recommended"
 }
 
 dependencies {

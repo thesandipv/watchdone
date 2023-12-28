@@ -25,10 +25,6 @@ plugins {
 
 android {
     namespace = "com.afterroot.watchdone.ui.discover"
-    buildFeatures {
-        dataBinding = true
-        viewBinding = true
-    }
 }
 
 dependencies {

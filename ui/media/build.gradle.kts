@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "com.afterroot.watchdone.media"
+    namespace = "com.afterroot.watchdone.ui.media"
 }
 
 dependencies {

@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "com.afterroot.watchdone.search"
+    namespace = "com.afterroot.watchdone.ui.search"
 }
 
 dependencies {

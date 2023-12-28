@@ -34,11 +34,7 @@ val ci by extra { System.getenv("CI") == "true" }
 android {
     namespace = "com.afterroot.watchdone"
 
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-        buildConfig = true
-    }
+    buildFeatures.buildConfig = true
 
     defaultConfig {
         applicationId = "com.afterroot.watchdone"

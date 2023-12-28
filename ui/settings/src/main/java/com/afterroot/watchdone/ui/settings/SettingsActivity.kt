@@ -17,12 +17,11 @@ package com.afterroot.watchdone.ui.settings
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.databinding.DataBindingUtil
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentActivity
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.ui.settings.databinding.FragmentSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -30,16 +29,15 @@ import javax.inject.Inject
 class SettingsActivity : FragmentActivity() {
 
     @Inject lateinit var settings: Settings
-    private lateinit var binding: FragmentSettingsBinding
 
     @SuppressLint("CommitTransaction")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.fragment_settings)
+        setContentView(R.layout.fragment_settings)
 
-        binding.fragmentSettingsAppBarCompose.apply {
+        findViewById<ComposeView>(R.id.fragment_settings_app_bar_compose).apply {
             setContent {
                 Theme(settings = settings) {
                     CommonAppBar(withTitle = "Settings")
@@ -49,7 +47,7 @@ class SettingsActivity : FragmentActivity() {
 
         val fragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(
-            binding.fragmentSettingsContainer.id,
+            R.id.fragment_settings_container,
             fragment,
         ).commit()
     }

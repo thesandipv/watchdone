@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "com.afterroot.watchdone.watchlist"
+    namespace = "com.afterroot.watchdone.ui.watchlist"
 }
 
 dependencies {

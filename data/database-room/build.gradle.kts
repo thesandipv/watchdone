@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.afterroot.watchdone.database"
+    namespace = "com.afterroot.watchdone.database.room"
 
     defaultConfig {
         testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
