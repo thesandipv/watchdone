@@ -52,6 +52,7 @@ ksp {
 
 dependencies {
     api(projects.ards)
+    api(projects.data.datastore)
     api(projects.data.model)
     api(projects.themoviedbapi)
     implementation(projects.api.tmdb)
@@ -59,7 +60,6 @@ dependencies {
 
     implementation(libs.androidx.preference)
     implementation(libs.androidx.paging)
-    api(libs.androidx.datastore)
 
     api(libs.google.gson)
 

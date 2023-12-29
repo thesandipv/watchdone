@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_package = "com.afterroot.watchdone.datastore";
+option java_multiple_files = true;
+
+message UserSettings {
+  bool is_first_installed = 15;
+  bool use_dynamic_color = 2;
+
+  DarkThemeConfigProto dark_theme_config = 3;
+
+  map<string, bool> tmdb_poster_sizes = 1;
+  string tmdb_base_url = 4;
+  string pref_image_size = 5;
+
+  bool sort_asc = 6;
+}
+
+enum DarkThemeConfigProto {
+  DARK_THEME_CONFIG_UNSPECIFIED = 0;
+  DARK_THEME_CONFIG_FOLLOW_SYSTEM = 1;
+  DARK_THEME_CONFIG_LIGHT = 2;
+  DARK_THEME_CONFIG_DARK = 3;
+}
