@@ -27,7 +27,6 @@ import com.google.firebase.firestore.Query
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import com.afterroot.watchdone.resources.R as CommonR
 
 /**
  * Helper Class for managing main preferences of App
@@ -115,12 +114,6 @@ class Settings @Inject constructor(
         set(value) {
             ascSort = value == Query.Direction.ASCENDING
         }
-
-    val theme: String?
-        get() = getString(
-            Constants.PREF_KEY_THEME,
-            context.getString(CommonR.string.theme_device_default),
-        )
 
     @DebugPref
     val isUseProdDb: Boolean

@@ -21,34 +21,43 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.os.ConfigurationCompat
-import androidx.core.view.WindowCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.ui.common.compose.theme.Theme
+import com.afterroot.ui.common.compose.utils.darkScrim
+import com.afterroot.ui.common.compose.utils.lightScrim
+import com.afterroot.ui.common.compose.utils.shouldUseDarkTheme
 import com.afterroot.utils.onVersionGreaterThanEqualTo
 import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.base.Field
 import com.afterroot.watchdone.data.model.LocalUser
+import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.common.showNetworkDialog
 import com.afterroot.watchdone.ui.home.Home
 import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.PermissionChecker
+import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.logFirstStart
 import com.afterroot.watchdone.utils.shareToInstagram
-import com.afterroot.watchdone.viewmodel.HomeViewModel
+import com.afterroot.watchdone.viewmodel.MainActivityViewModel
 import com.afterroot.watchdone.viewmodel.NetworkViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
@@ -56,6 +65,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
@@ -72,41 +83,72 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Inject lateinit var settings: Settings
+    @Inject
+    lateinit var settings: Settings
 
-    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject
+    lateinit var firebaseUtils: FirebaseUtils
 
-    @Inject lateinit var configRepository: ConfigRepository
+    @Inject
+    lateinit var configRepository: ConfigRepository
 
-    @Inject lateinit var firestore: FirebaseFirestore
+    @Inject
+    lateinit var firestore: FirebaseFirestore
 
-    @Inject lateinit var firebaseMessaging: FirebaseMessaging
+    @Inject
+    lateinit var firebaseMessaging: FirebaseMessaging
 
     @Inject
     @Named("feedback_body")
     lateinit var feedbackBody: String
     private val networkViewModel: NetworkViewModel by viewModels()
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        var uiState: State<UserData> by mutableStateOf(State.loading())
+
+        // Update the uiState
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainActivityViewModel.uiState
+                    .onEach { uiState = it }
+                    .collect()
+            }
+        }
+
+        // Keep the splash screen on-screen until the UI state is loaded. This condition is
+        // evaluated each time the app needs to be redrawn so it should be fast to avoid blocking
+        // the UI.
+        splashScreen.setKeepOnScreenCondition {
+            when (uiState) {
+                is State.Loading -> true
+                is State.Failed -> false
+                is State.Success -> false
+            }
+        }
+
+        enableEdgeToEdge()
         setContent {
-            val systemUiController = rememberSystemUiController()
-            val useDarkIcons = !isSystemInDarkTheme()
+            val darkTheme = shouldUseDarkTheme(uiState)
 
-            DisposableEffect(systemUiController, useDarkIcons) {
-                // Update all of the system bar colors to be transparent, and use
-                // dark icons if we're in light theme
-                systemUiController.setSystemBarsColor(
-                    color = Color.Transparent,
-                    darkIcons = useDarkIcons,
+            DisposableEffect(darkTheme) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(
+                        android.graphics.Color.TRANSPARENT,
+                        android.graphics.Color.TRANSPARENT,
+                    ) { darkTheme },
+                    navigationBarStyle = SystemBarStyle.auto(
+                        lightScrim,
+                        darkScrim,
+                    ) { darkTheme },
                 )
-
                 onDispose {}
             }
 
-            Theme(settings = settings) {
+            Theme(settings = settings, darkTheme = darkTheme) {
                 Home(
                     onWatchProviderClick = { link ->
                         browse(link, true)
@@ -143,7 +185,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("MissingPermission")
     private fun initialize() {
         lifecycleScope.launch {
-            homeViewModel.checkForMigrations()
+            mainActivityViewModel.checkForMigrations()
         }
         if (settings.isFirstInstalled) {
             logFirstStart()
@@ -156,6 +198,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         if (settings.posterSizes == null) {
+            // TODO Move to viewmodel
             lifecycleScope.launch {
                 val set = mutableSetOf<String>()
                 try {
@@ -206,6 +249,7 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Add user info in FireStore Database
+     * TODO Move to viewmodel
      */
     private fun addUserInfoInDB() {
         try {
@@ -258,7 +302,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             RC_PERMISSION -> {
