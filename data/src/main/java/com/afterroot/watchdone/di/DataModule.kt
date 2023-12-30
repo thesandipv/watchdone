@@ -26,5 +26,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
     @Binds
-    abstract fun bindsUserDataRepository(userDataRepository: UserDataRepositoryImpl): UserDataRepository
+    abstract fun bindsUserDataRepository(
+        userDataRepository: UserDataRepositoryImpl,
+    ): UserDataRepository
 }
