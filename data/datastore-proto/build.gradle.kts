@@ -1,7 +1,7 @@
 plugins {
     id(afterroot.plugins.android.library.get().pluginId)
     id(afterroot.plugins.kotlin.android.get().pluginId)
-    alias(libs.plugins.protobuf)
+    alias(libs.plugins.google.protobuf)
 }
 
 android {

@@ -23,8 +23,8 @@ plugins {
     id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
+    alias(libs.plugins.google.ksp)
 }
 
 android {

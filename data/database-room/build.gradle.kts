@@ -4,7 +4,7 @@ plugins {
     id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
