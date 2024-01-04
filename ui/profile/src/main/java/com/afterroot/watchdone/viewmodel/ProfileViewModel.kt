@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.tivi.api.UiMessage
 import app.tivi.api.UiMessageManager
-import com.afterroot.data.model.NetworkUser
+import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.domain.interactors.GetProfile
@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -48,6 +47,7 @@ class ProfileViewModel @Inject constructor(
     private val setProfile: SetProfile,
     val firebaseUtils: FirebaseUtils,
     private val settings: Settings,
+    private val logger: Logger,
 ) : ViewModel() {
 
     private val uiMessageManager = UiMessageManager()
@@ -66,14 +66,14 @@ class ProfileViewModel @Inject constructor(
     internal fun getAction(): SharedFlow<ProfileActions> = actions
 
     internal fun submitAction(action: ProfileActions) {
-        Timber.d("submitAction: $action")
+        logger.d { "submitAction: $action" }
         viewModelScope.launch {
             actions.emit(action)
         }
     }
 
     init {
-        Timber.d("init: Start")
+        logger.d { "init: Start" }
         refresh()
 
         viewModelScope.launch {
@@ -88,11 +88,10 @@ class ProfileViewModel @Inject constructor(
                             isUsernameSet = localUser.isUserNameAvailable
                         }
                     }
+
                     is ProfileActions.ShowMessage -> showMessageAction(action)
                     ProfileActions.Refresh -> refresh(true)
-                    else -> Timber.d(
-                        "collectAction: This action not handled by ProfileViewModel. Action: $action",
-                    )
+                    else -> logger.d { "collectAction: This action not handled by ProfileViewModel. Action: $action" }
                 }
             }
         }
@@ -101,10 +100,10 @@ class ProfileViewModel @Inject constructor(
     private fun getUserProfile(cached: Boolean = false) {
         viewModelScope.launch {
             if (firebaseUtils.isUserSignedIn) {
-                Timber.d("getUserProfile: Getting Profile Info. Cached:$cached")
                 getProfile(firebaseUtils.uid!!, cached).distinctUntilChanged().collect { state ->
+                logger.d { "getUserProfile: Getting Profile Info. Cached:$cached" }
                     profile.emit(state)
-                    Timber.d("getUserProfile: State: $state")
+                    logger.d { "getUserProfile: State: $state" }
                 }
             } else {
                 profile.emit(State.failed("Not Signed In."))
@@ -116,17 +115,19 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             if (firebaseUtils.isUserSignedIn) {
                 setProfile(firebaseUtils.uid!!, action.localUser).collect { state ->
-                    Timber.d("saveProfileAction: $state")
+                    logger.d { "saveProfileAction: $state" }
                     when (state) {
                         is State.Success -> {
                             submitAction(ProfileActions.ShowMessage(UiMessage("Profile Saved.")))
                             onSave(action.localUser)
                         }
+
                         is State.Failed -> {
                             submitAction(
                                 ProfileActions.ShowMessage(UiMessage("Failed to save Profile")),
                             )
                         }
+
                         else -> {
                         }
                     }
@@ -148,7 +149,7 @@ class ProfileViewModel @Inject constructor(
         setProfile.executeSync(SetProfile.Params(uid, localUser))
 
     private fun refresh(fromUser: Boolean = false) {
-        Timber.d("refresh: Start Refresh. From User: $fromUser")
+        logger.d { "refresh: Start Refresh. From User: $fromUser" }
         getUserProfile()
     }
 
