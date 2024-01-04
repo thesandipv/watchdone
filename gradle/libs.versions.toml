@@ -187,7 +187,8 @@ androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", ver
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-iconsCore = { module = "androidx.compose.material:material-icons-core" }
 androidx-compose-iconsExt = { module = "androidx.compose.material:material-icons-extended" }
-androidx-compose-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
+androidx-compose-runtime-android = { module = "androidx.compose.runtime:runtime-android" }
 androidx-compose-material = { module = "androidx.compose.material:material" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-compose-material3-windowsizeclass = { module = "androidx.compose.material3:material3-window-size-class" }
@@ -320,7 +321,8 @@ compose = [
     "androidx-compose-material3",
     "androidx-compose-iconsCore",
     "androidx-compose-iconsExt",
-    "androidx-compose-livedata",
+    "androidx-compose-runtime",
+    "androidx-compose-runtime-android",
     "androidx-compose-viewmodel",
     "androidx-compose-paging",
     "accompanist-insetsui",
