@@ -26,6 +26,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,8 +37,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
+import com.afterroot.ui.common.compose.components.LocalLogger
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.ui.common.compose.utils.darkScrim
 import com.afterroot.ui.common.compose.utils.lightScrim
@@ -83,20 +86,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Inject
-    lateinit var settings: Settings
+    @Inject lateinit var settings: Settings
 
-    @Inject
-    lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var firebaseUtils: FirebaseUtils
 
-    @Inject
-    lateinit var configRepository: ConfigRepository
+    @Inject lateinit var configRepository: ConfigRepository
 
-    @Inject
-    lateinit var firestore: FirebaseFirestore
+    @Inject lateinit var firestore: FirebaseFirestore
 
-    @Inject
-    lateinit var firebaseMessaging: FirebaseMessaging
+    @Inject lateinit var firebaseMessaging: FirebaseMessaging
+
+    @Inject lateinit var logger: Logger
 
     @Inject
     @Named("feedback_body")
@@ -148,20 +148,22 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
 
-            Theme(settings = settings, darkTheme = darkTheme) {
-                Home(
-                    onWatchProviderClick = { link ->
-                        browse(link, true)
-                    },
-                    settingsAction = {
-                        startActivity<SettingsActivity>()
-                    },
-                    shareToIG = { mediaId, poster ->
-                        lifecycleScope.launch {
-                            shareToInstagram(poster, mediaId, settings)
-                        }
-                    },
-                )
+            CompositionLocalProvider(LocalLogger provides logger) {
+                Theme(settings = settings, darkTheme = darkTheme) {
+                    Home(
+                        onWatchProviderClick = { link ->
+                            browse(link, true)
+                        },
+                        settingsAction = {
+                            startActivity<SettingsActivity>()
+                        },
+                        shareToIG = { mediaId, poster ->
+                            lifecycleScope.launch {
+                                shareToInstagram(poster, mediaId, settings)
+                            }
+                        },
+                    )
+                }
             }
         }
     }

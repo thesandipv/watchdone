@@ -15,6 +15,7 @@
 package com.afterroot.ui.common.compose.components
 
 import androidx.compose.runtime.compositionLocalOf
+import app.tivi.util.Logger
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.settings.Settings
 
@@ -27,3 +28,5 @@ val LocalLogoSize = compositionLocalOf { "w92" }
 val LocalRegion = compositionLocalOf { "IN" }
 val LocalSettings =
     compositionLocalOf<Settings> { throw IllegalStateException("LocalSettings is not initialized") }
+val LocalLogger =
+    compositionLocalOf<Logger> { throw IllegalStateException("LocalLogger is not initialized") }
