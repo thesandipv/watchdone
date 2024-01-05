@@ -21,6 +21,7 @@ import app.tivi.api.UiMessage
 import app.tivi.api.UiMessageManager
 import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
+import com.afterroot.watchdone.data.mapper.toLocalUser
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.domain.interactors.GetProfile
 import com.afterroot.watchdone.domain.interactors.SetProfile
@@ -32,11 +33,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -52,18 +53,20 @@ class ProfileViewModel @Inject constructor(
 
     private val uiMessageManager = UiMessageManager()
 
-    val state: StateFlow<ProfileViewState> = combine(uiMessageManager.message) { msg ->
-        ProfileViewState(msg[0])
+    val profile = MutableStateFlow<State<LocalUser>>(State.loading())
+
+    val state: StateFlow<ProfileViewState> = combine(
+        uiMessageManager.message,
+        profile,
+    ) { msg, profile ->
+        ProfileViewState(msg, profile)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ProfileViewState.Empty,
     )
 
-    val profile = MutableStateFlow<State<NetworkUser>>(State.loading())
-
     private val actions = MutableSharedFlow<ProfileActions>()
-    internal fun getAction(): SharedFlow<ProfileActions> = actions
 
     internal fun submitAction(action: ProfileActions) {
         logger.d { "submitAction: $action" }
@@ -100,8 +103,18 @@ class ProfileViewModel @Inject constructor(
     private fun getUserProfile(cached: Boolean = false) {
         viewModelScope.launch {
             if (firebaseUtils.isUserSignedIn) {
-                getProfile(firebaseUtils.uid!!, cached).distinctUntilChanged().collect { state ->
                 logger.d { "getUserProfile: Getting Profile Info. Cached:$cached" }
+                getProfile(firebaseUtils.uid!!, cached).distinctUntilChanged().map { networkState ->
+                    when (networkState) {
+                        is State.Failed -> State.failed(
+                            message = networkState.message,
+                            exception = networkState.exception,
+                        )
+
+                        is State.Loading -> State.loading()
+                        is State.Success -> State.success(networkState.data.toLocalUser())
+                    }
+                }.collect { state ->
                     profile.emit(state)
                     logger.d { "getUserProfile: State: $state" }
                 }
