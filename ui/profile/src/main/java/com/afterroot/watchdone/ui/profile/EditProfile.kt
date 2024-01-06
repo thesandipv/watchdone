@@ -195,7 +195,10 @@ internal fun EditProfile(
                     onChange = {
                         enteredState.value = enteredState.value.copy(userName = it.trim())
                     },
-                    keyboardOptions = KeyboardOptions(autoCorrect = false, imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrect = false,
+                        imeAction = ImeAction.Done,
+                    ),
                     validate = {
                         when {
                             it.length > Constants.USERNAME_LENGTH -> {
@@ -229,10 +232,11 @@ internal fun EditProfile(
                     validate = {
                         if (it.length > Constants.NAME_LENGTH) {
                             State.failed("Name is too long.")
-                        } else State.success(true)
+                        } else {
+                            State.success(true)
+                        }
                     },
                     onError = {
-
                     },
                     trailingIcon = {},
                 )
@@ -248,7 +252,10 @@ internal fun EditProfile(
                         enteredState.value = enteredState.value.copy(name = it)
                     },
                     trailingIcon = {},
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Email)
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Email,
+                    ),
                 )
             }
         }

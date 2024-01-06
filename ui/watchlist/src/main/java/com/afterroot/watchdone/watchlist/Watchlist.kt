@@ -87,6 +87,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import app.tivi.common.compose.Layout
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.afterroot.data.utils.valueOrBlank
@@ -226,9 +227,8 @@ private fun Watchlist(
                     state = listState,
                     columns = GridCells.Fixed(
                         when (state.watchlistType) {
-                            // TODO Columns should be dynamics by display size
-                            WatchlistType.GRID -> 2
-                            WatchlistType.LIST -> 1
+                            WatchlistType.GRID -> Layout.gridColumns
+                            WatchlistType.LIST -> Layout.listColumns
                         },
                     ),
                     contentPadding = paddingValues,

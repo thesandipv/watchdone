@@ -311,6 +311,7 @@ firebase = [
 compose = [
     "androidx-activity-compose",
     "androidx-navigation-compose",
+    "androidx-compose-animation",
     "androidx-compose-ui",
     "androidx-compose-compiler",
     "androidx-compose-ui-gfonts",
@@ -319,6 +320,7 @@ compose = [
     "androidx-lifecycle-runtime-compose",
     "androidx-compose-material",
     "androidx-compose-material3",
+    "androidx-compose-material3-windowsizeclass",
     "androidx-compose-iconsCore",
     "androidx-compose-iconsExt",
     "androidx-compose-runtime",

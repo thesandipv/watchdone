@@ -26,6 +26,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -41,6 +43,7 @@ import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.ui.common.compose.components.LocalLogger
+import com.afterroot.ui.common.compose.components.LocalWindowSizeClass
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.ui.common.compose.utils.darkScrim
 import com.afterroot.ui.common.compose.utils.lightScrim
@@ -104,6 +107,7 @@ class MainActivity : ComponentActivity() {
     private val networkViewModel: NetworkViewModel by viewModels()
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -148,7 +152,10 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
 
-            CompositionLocalProvider(LocalLogger provides logger) {
+            CompositionLocalProvider(
+                LocalLogger provides logger,
+                LocalWindowSizeClass provides calculateWindowSizeClass(this),
+            ) {
                 Theme(settings = settings, darkTheme = darkTheme) {
                     Home(
                         onWatchProviderClick = { link ->
