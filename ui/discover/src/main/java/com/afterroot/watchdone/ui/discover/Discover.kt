@@ -37,13 +37,11 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +55,7 @@ import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MediaCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
+import com.afterroot.ui.common.compose.utils.topAppBarScrollBehavior
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
@@ -127,14 +126,13 @@ internal fun Discover(
     onShowChipSelected: () -> Unit,
     refresh: () -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyGridState()
 
     Scaffold(
         topBar = {
             CommonAppBar(
                 withTitle = "Discover",
-                scrollBehavior = scrollBehavior,
+                scrollBehavior = topAppBarScrollBehavior(),
                 windowInsets = TopBarWindowInsets,
             )
         },
@@ -157,9 +155,7 @@ internal fun Discover(
                     contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight(),
                 ) {
                     fullSpanItem {
                         DiscoverChips(

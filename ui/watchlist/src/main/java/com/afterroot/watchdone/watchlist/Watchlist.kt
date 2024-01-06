@@ -67,7 +67,6 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -78,7 +77,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -89,7 +87,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import app.tivi.common.compose.fullSpanItem
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.afterroot.data.utils.valueOrBlank
@@ -103,6 +100,7 @@ import com.afterroot.ui.common.compose.theme.ListStyleWatchlistItemShape
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
+import com.afterroot.ui.common.compose.utils.topAppBarScrollBehavior
 import com.afterroot.watchdone.base.WatchlistType
 import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Media
@@ -157,7 +155,6 @@ private fun Watchlist(
     watchlistTypeAction: (WatchlistType) -> Unit,
     filter: (Filters) -> Unit = {},
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyGridState()
 
     Scaffold(
@@ -165,7 +162,7 @@ private fun Watchlist(
             Column {
                 CommonAppBar(
                     withTitle = stringResource(id = CommonR.string.title_watchlist),
-                    scrollBehavior = scrollBehavior,
+                    scrollBehavior = topAppBarScrollBehavior(),
                     windowInsets = TopBarWindowInsets,
                     actions = {
                         IconButton(onClick = { settingsAction() }) {
@@ -229,6 +226,7 @@ private fun Watchlist(
                     state = listState,
                     columns = GridCells.Fixed(
                         when (state.watchlistType) {
+                            // TODO Columns should be dynamics by display size
                             WatchlistType.GRID -> 2
                             WatchlistType.LIST -> 1
                         },
@@ -236,9 +234,7 @@ private fun Watchlist(
                     contentPadding = paddingValues,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight(),
                 ) {
                     items(
                         count = watchlist.itemCount,
@@ -254,10 +250,6 @@ private fun Watchlist(
                                 itemSelectedCallback = itemSelectedCallback,
                             )
                         }
-                    }
-
-                    fullSpanItem {
-                        Spacer(modifier = Modifier.height(8.dp)) // Adjustment
                     }
                 }
             }

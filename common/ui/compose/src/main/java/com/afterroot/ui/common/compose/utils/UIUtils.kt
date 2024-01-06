@@ -18,12 +18,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.afterroot.watchdone.data.model.DarkThemeConfig
 import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.utils.State
@@ -34,16 +33,6 @@ fun CenteredRow(modifier: Modifier = Modifier, content: @Composable (RowScope) -
         content(this)
     }
 }
-
-fun Modifier.bottomNavigationPadding() = this.padding(bottom = 56.dp)
-
-fun Modifier.sidePadding(padding: Dp = 16.dp, applyBottom: Boolean = false) =
-    padding(
-        start = padding,
-        top = padding,
-        end = padding,
-        bottom = if (applyBottom) padding else 0.dp,
-    )
 
 val TopBarWindowInsets = WindowInsets(top = 0)
 
@@ -80,3 +69,7 @@ val lightScrim = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
  * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:activity/activity/src/main/java/androidx/activity/EdgeToEdge.kt;l=40-44;drc=27e7d52e8604a080133e8b842db10c89b4482598
  */
 val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun topAppBarScrollBehavior() = TopAppBarDefaults.pinnedScrollBehavior()
