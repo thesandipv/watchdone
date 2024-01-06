@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.ui.profile
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,18 +23,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +55,7 @@ import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FABSave
 import com.afterroot.ui.common.compose.components.LocalLogger
+import com.afterroot.ui.common.compose.components.OutlinedTextInput
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.mapper.toLocalUser
@@ -139,12 +141,6 @@ internal fun EditProfile(
     val enteredState = remember { mutableStateOf(LocalUser()) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    LaunchedEffect(viewState.user) {
-        if (viewState.user is State.Success) {
-            enteredState.value = (viewState.user as State.Success<LocalUser>).data
-        }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.systemBars,
@@ -174,64 +170,87 @@ internal fun EditProfile(
             )
         },
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .padding(paddingValues),
-        ) {
-            TextField(
-                modifier = textFieldModifier,
-                enabled = enteredState.value.isUserNameAvailable.not(),
-                value = enteredState.value.userName.valueOrBlank(),
-                maxLines = 1,
-                label = {
-                    Text("Username") // TODO Replace all hardcoded strings with string resources
-                },
-                placeholder = {
-                    Text("Enter desired username")
-                },
-                onValueChange = {
-                    if (it.length < Constants.USERNAME_LENGTH) {
+        AnimatedVisibility(visible = viewState.user is State.Loading) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+        AnimatedVisibility(visible = viewState.user is State.Success) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .padding(paddingValues),
+            ) {
+                val localUser = (viewState.user as State.Success<LocalUser>).data
+                OutlinedTextInput(
+                    modifier = textFieldModifier,
+                    enabled = localUser.isUserNameAvailable.not(),
+                    prefillValue = localUser.userName.valueOrBlank(),
+                    maxLines = 1,
+                    label = {
+                        Text("Username") // TODO Replace all hardcoded strings with string resources
+                    },
+                    placeholder = {
+                        Text("Enter desired username")
+                    },
+                    onChange = {
                         enteredState.value = enteredState.value.copy(userName = it.trim())
-                    }
-                },
-                keyboardOptions = KeyboardOptions(autoCorrect = false, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() },
-                ),
-            )
-            TextField(
-                modifier = textFieldModifier,
-                value = enteredState.value.name.valueOrBlank(),
-                maxLines = 1,
-                label = {
-                    Text("Name")
-                },
-                placeholder = {
-                    Text("Enter full name")
-                },
-                onValueChange = {
-                    if (it.length < Constants.NAME_LENGTH) {
+                    },
+                    keyboardOptions = KeyboardOptions(autoCorrect = false, imeAction = ImeAction.Done),
+                    validate = {
+                        when {
+                            it.length > Constants.USERNAME_LENGTH -> {
+                                State.failed("Username is too long.")
+                            }
+
+                            it.contains(" ") -> {
+                                State.failed("Username cannot contain space.")
+                            }
+
+                            else -> State.success(true)
+                        }
+                    },
+                    trailingIcon = {},
+                )
+
+                OutlinedTextInput(
+                    modifier = textFieldModifier,
+                    prefillValue = localUser.name.valueOrBlank(),
+                    maxLines = 1,
+                    label = {
+                        Text("Name")
+                    },
+                    placeholder = {
+                        Text("Enter full name")
+                    },
+                    onChange = {
                         enteredState.value = enteredState.value.copy(name = it)
-                    }
-                },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() },
-                ),
-            )
-            TextField(
-                modifier = textFieldModifier,
-                value = enteredState.value.email.valueOrBlank(),
-                maxLines = 1,
-                label = {
-                    Text("Email")
-                },
-                enabled = false,
-                onValueChange = {
-                },
-            )
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    validate = {
+                        if (it.length > Constants.NAME_LENGTH) {
+                            State.failed("Name is too long.")
+                        } else State.success(true)
+                    },
+                    onError = {
+
+                    },
+                    trailingIcon = {},
+                )
+                OutlinedTextInput(
+                    modifier = textFieldModifier,
+                    prefillValue = localUser.email.valueOrBlank(),
+                    maxLines = 1,
+                    label = {
+                        Text("Email")
+                    },
+                    enabled = false,
+                    onChange = {
+                        enteredState.value = enteredState.value.copy(name = it)
+                    },
+                    trailingIcon = {},
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Email)
+                )
+            }
         }
     }
 }
