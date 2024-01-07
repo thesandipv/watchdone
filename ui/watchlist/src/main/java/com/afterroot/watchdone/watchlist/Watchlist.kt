@@ -58,6 +58,7 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -89,6 +90,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import app.tivi.common.compose.Layout
+import app.tivi.common.compose.bodyWidth
+import app.tivi.common.compose.fullSpanItem
 import app.tivi.common.compose.ui.plus
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -208,7 +211,7 @@ private fun Watchlist(
                     sortAction = sortAction,
                     refresh = refresh,
                     filter = filter,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
@@ -237,9 +240,11 @@ private fun Watchlist(
                         },
                     ),
                     contentPadding = paddingValues + PaddingValues(horizontal = bodyMargin, vertical = gutter),
-                    horizontalArrangement = Arrangement.spacedBy(bodyMargin),
+                    horizontalArrangement = Arrangement.spacedBy(gutter),
                     verticalArrangement = Arrangement.spacedBy(gutter),
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier
+                        .bodyWidth()
+                        .fillMaxHeight(),
                 ) {
                     items(
                         count = watchlist.itemCount,
@@ -255,8 +260,21 @@ private fun Watchlist(
                             )
                         }
                     }
+
+                    if (watchlist.loadState.append == LoadState.Loading) {
+                        fullSpanItem {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(24.dp)
+                            ) {
+                                CircularProgressIndicator(Modifier.align(Alignment.Center))
+                            }
+                        }
+                    }
                 }
             }
+
 
             PullRefreshIndicator(
                 refreshing = state.loading,

@@ -49,8 +49,8 @@ object Layout {
     val gridColumns: Int
         @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
             WindowWidthSizeClass.Compact -> 2
-            WindowWidthSizeClass.Medium -> 4
-            else -> 8
+            WindowWidthSizeClass.Medium -> 3
+            else -> 4
         }
 
     val listColumns: Int
