@@ -266,7 +266,7 @@ private fun Watchlist(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(24.dp)
+                                    .padding(24.dp),
                             ) {
                                 CircularProgressIndicator(Modifier.align(Alignment.Center))
                             }
@@ -274,7 +274,6 @@ private fun Watchlist(
                     }
                 }
             }
-
 
             PullRefreshIndicator(
                 refreshing = state.loading,
