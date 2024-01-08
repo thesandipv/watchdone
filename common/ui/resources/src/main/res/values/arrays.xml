@@ -6,6 +6,5 @@
         <item>@string/theme_device_default</item>
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
-        <item>@string/theme_battery</item>
     </array>
 </resources>

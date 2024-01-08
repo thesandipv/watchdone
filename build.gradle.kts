@@ -37,14 +37,14 @@ plugins {
     alias(libs.plugins.android.lint) apply false
     alias(libs.plugins.android.test) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
-    alias(libs.plugins.gms.googleServices) apply false
-    alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.multiplatform) apply false
-    alias(libs.plugins.kotlin.kapt) apply false
-    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.google.gms) apply false
+    alias(libs.plugins.google.hilt) apply false
+    alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.jetbrains.kotlin.multiplatform) apply false
+    alias(libs.plugins.jetbrains.kotlin.kapt) apply false
+    alias(libs.plugins.google.ksp) apply false
     alias(libs.plugins.spotless)
-    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 val versionProperties = readProperties(from = rootProject.file("version.properties"))
@@ -58,10 +58,10 @@ val versionName: String by extra { "$major.$minor.$patch" }
 println("- INFO: Build version code: $versionCode")
 
 subprojects {
-    plugins.withId(rootProject.libs.plugins.hilt.get().pluginId) {
+    plugins.withId(rootProject.libs.plugins.google.hilt.get().pluginId) {
         extensions.getByType<HiltExtension>().enableAggregatingTask = true
     }
-    plugins.withId(rootProject.libs.plugins.kotlin.kapt.get().pluginId) {
+    plugins.withId(rootProject.libs.plugins.jetbrains.kotlin.kapt.get().pluginId) {
         extensions.getByType<org.jetbrains.kotlin.gradle.plugin.KaptExtension>().apply {
             correctErrorTypes = true
             useBuildCache = true

@@ -23,13 +23,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Logout
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,7 +40,6 @@ import app.tivi.api.UiMessage
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FABEdit
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
-import com.afterroot.ui.common.compose.utils.rememberFlowWithLifecycle
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
@@ -104,16 +101,7 @@ internal fun Profile(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
-    val scaffoldState = rememberScaffoldState()
-    val viewState by rememberFlowWithLifecycle(
-        viewModel.state,
-    ).collectAsState(initial = ProfileViewState.Empty)
-
-    LaunchedEffect(viewState.message) {
-        viewState.message?.let { uiMessage ->
-            scaffoldState.snackbarHostState.showSnackbar(uiMessage.message)
-        }
-    }
+    val viewState by viewModel.state.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

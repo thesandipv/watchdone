@@ -17,10 +17,13 @@ package com.afterroot.watchdone.ui.profile
 import androidx.compose.runtime.Immutable
 import app.tivi.api.UiMessage
 import com.afterroot.watchdone.base.compose.ViewState
+import com.afterroot.watchdone.data.model.LocalUser
+import com.afterroot.watchdone.utils.State
 
 @Immutable
 data class ProfileViewState(
     override val message: UiMessage? = null,
+    val user: State<LocalUser>? = null,
 ) : ViewState() {
     companion object {
         val Empty = ProfileViewState()

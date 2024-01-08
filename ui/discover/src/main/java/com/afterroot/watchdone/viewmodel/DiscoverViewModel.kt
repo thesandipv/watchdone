@@ -82,8 +82,6 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    internal fun getAction() = actions
-
     companion object {
         fun discoverParams(mediaType: MediaType) = ObservePagedDiscover.Params(
             mediaType = mediaType,

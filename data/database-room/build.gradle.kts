@@ -4,11 +4,11 @@ plugins {
     id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.database"
+    namespace = "com.afterroot.watchdone.database.room"
 
     defaultConfig {
         testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"

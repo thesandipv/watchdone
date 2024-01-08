@@ -80,6 +80,8 @@ include(
     ":data",
     ":data:database",
     ":data:database-room",
+    ":data:datastore",
+    ":data:datastore-proto",
     ":data:discover",
     ":data:media",
     ":data:model",

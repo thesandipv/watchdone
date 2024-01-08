@@ -15,6 +15,7 @@
 package com.afterroot.ui.common.compose.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,21 +26,29 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.afterroot.watchdone.utils.State
 
 /**
  * [TextField] with Validation
@@ -107,58 +116,93 @@ fun TextInput(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OutlinedTextInput(
+    // Default Parameters
     modifier: Modifier = Modifier,
-    label: String,
+    onValueChange: ((String) -> Unit)? = null,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = LocalTextStyle.current,
+    label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    shape: Shape = OutlinedTextFieldDefaults.shape,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    // Added Parameters
+    labelText: String? = null,
     hint: String = "",
     prefillValue: String = "",
-    maxLines: Int = 1,
-    errorText: String = "",
-    showLabel: Boolean = true,
-    singleLine: Boolean = false,
-    leadingIcon: @Composable (() -> Unit)? = null,
     keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
-    validate: (String) -> Boolean = { true },
+    validate: (String) -> State<Boolean> = { State.success(true) },
     onChange: (String) -> Unit,
     onError: (String) -> Unit = {},
 ) {
-    var value by remember { mutableStateOf(prefillValue) }
-    var error by remember { mutableStateOf(false) }
+    var value by rememberSaveable { mutableStateOf(prefillValue) }
+    LocalLogger.current.d {
+        "OutlinedTextInput $prefillValue $value"
+    }
+    var error by rememberSaveable { mutableStateOf(false) }
+    var errorText by rememberSaveable { mutableStateOf("") }
     Column {
         OutlinedTextField(
+            enabled = enabled,
+            readOnly = readOnly,
+            textStyle = textStyle,
+            prefix = prefix,
+            suffix = suffix,
+            supportingText = supportingText,
+            minLines = minLines,
+            visualTransformation = visualTransformation,
+            interactionSource = interactionSource,
+            shape = shape,
+            colors = colors,
             value = value,
-            onValueChange = {
-                value = it // always update state
-                when {
-                    validate(it) || it.isBlank() -> {
-                        error = false
-                        onChange(it)
-                    }
-
-                    else -> {
-                        error = true
-                        onError(it)
-                    }
-                }
-            },
-            isError = error,
-            label = {
-                if (showLabel) {
-                    if (!error) {
-                        Text(text = label)
-                    } else {
-                        Text(text = errorText)
-                    }
-                }
-            },
             maxLines = maxLines,
             singleLine = singleLine,
             modifier = modifier,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             leadingIcon = leadingIcon,
-            trailingIcon = {
+            placeholder = placeholder ?: { Text(text = hint) },
+            onValueChange = onValueChange ?: {
+                value = it // always update state
+                when (val validation = validate(it)) {
+                    is State.Failed -> {
+                        error = true
+                        errorText = validation.message
+                        onError(it)
+                    }
+
+                    is State.Success -> {
+                        if (validation.data || it.isBlank()) {
+                            error = false
+                            errorText = ""
+                            onChange(it)
+                        }
+                    }
+
+                    is State.Loading -> {} // NOTHING
+                }
+            },
+            isError = error,
+            label = {
+                if (labelText != null) {
+                    Text(text = labelText)
+                } else {
+                    label?.invoke()
+                }
+            },
+            trailingIcon = trailingIcon ?: {
                 if (value.isNotBlank()) {
                     IconButton(onClick = {
                         value = ""
@@ -167,7 +211,6 @@ fun OutlinedTextInput(
                     }
                 }
             },
-            placeholder = { Text(text = hint) },
         )
         AnimatedVisibility(visible = error) {
             Text(

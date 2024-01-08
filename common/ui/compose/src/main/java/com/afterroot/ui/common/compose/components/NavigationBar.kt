@@ -117,7 +117,7 @@ private class EnterAlwaysScrollBehavior(
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 if (!canScroll()) return Offset.Zero
                 val prevHeightOffset = state.heightOffset
-                state.heightOffset = state.heightOffset + available.y
+                state.heightOffset += available.y
                 return Offset.Zero
                 /*return if (prevHeightOffset != state.heightOffset) {
                     // We're in the middle of top app bar collapse or expand.
@@ -142,7 +142,7 @@ private class EnterAlwaysScrollBehavior(
                         state.contentOffset = 0f
                     }
                 }
-                state.heightOffset = state.heightOffset + consumed.y
+                state.heightOffset += consumed.y
                 return Offset.Zero
             }
 

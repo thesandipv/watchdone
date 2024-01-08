@@ -33,12 +33,10 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
@@ -49,6 +47,7 @@ import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
+import com.afterroot.ui.common.compose.utils.topAppBarScrollBehavior
 import com.afterroot.watchdone.data.compoundmodel.RecommendedEntryWithMedia
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Episode
@@ -126,7 +125,6 @@ internal fun MediaInfo(
     shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
     navigateUp: () -> Unit = {},
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyListState()
 
     Scaffold(
@@ -144,7 +142,7 @@ internal fun MediaInfo(
             }
             CommonAppBar(
                 withTitle = title ?: "",
-                scrollBehavior = scrollBehavior,
+                scrollBehavior = topAppBarScrollBehavior(),
                 windowInsets = TopBarWindowInsets,
                 actions = {
                     IconButton(onClick = {
@@ -180,7 +178,7 @@ internal fun MediaInfo(
                 },
             )
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
     ) { contentPadding ->
         Surface(modifier = Modifier.fillMaxWidth()) {
             MediaInfoContent(

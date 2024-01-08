@@ -15,7 +15,6 @@
 package com.afterroot.ui.common.compose.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -35,9 +34,9 @@ import com.afterroot.watchdone.resources.R as CommonR
 import com.google.android.material.R as MaterialR
 
 @Composable
-fun Theme(settings: Settings, content: @Composable () -> Unit) {
+fun Theme(settings: Settings, darkTheme: Boolean, content: @Composable () -> Unit) {
     val context = LocalContext.current
-    val background = if (isSystemInDarkTheme()) {
+    val background = if (darkTheme) {
         Color(ContextCompat.getColor(context, CommonR.color.md_theme_dark_background))
     } else {
         Color(ContextCompat.getColor(context, CommonR.color.md_theme_light_background))
@@ -107,7 +106,7 @@ fun Theme(settings: Settings, content: @Composable () -> Unit) {
         contextColorScheme
     }
 
-    val finalColorScheme = if (isSystemInDarkTheme()) colorScheme else lightColorScheme
+    val finalColorScheme = if (darkTheme) colorScheme else lightColorScheme
 
     MaterialTheme(
         colorScheme = finalColorScheme,

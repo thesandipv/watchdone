@@ -18,69 +18,53 @@ package app.tivi.common.compose
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.isFinite
+import com.afterroot.ui.common.compose.components.LocalWindowSizeClass
 
 object Layout {
 
     val bodyMargin: Dp
-        @Composable get() = when (LocalConfiguration.current.screenWidthDp) {
-            in 0..599 -> 16.dp
-            in 600..904 -> 32.dp
-            in 905..1239 -> 0.dp
-            in 1240..1439 -> 200.dp
-            else -> 0.dp
+        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 16.dp
+            WindowWidthSizeClass.Medium -> 32.dp
+            else -> 64.dp
         }
 
     val gutter: Dp
-        @Composable get() = when (LocalConfiguration.current.screenWidthDp) {
-            in 0..599 -> 8.dp
-            in 600..904 -> 16.dp
-            in 905..1239 -> 16.dp
-            in 1240..1439 -> 32.dp
-            else -> 32.dp
+        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 8.dp
+            WindowWidthSizeClass.Medium -> 16.dp
+            else -> 24.dp
         }
 
-    val bodyMaxWidth: Dp
-        @Composable get() = when (LocalConfiguration.current.screenWidthDp) {
-            in 0..599 -> Dp.Infinity
-            in 600..904 -> Dp.Infinity
-            in 905..1239 -> 840.dp
-            in 1240..1439 -> Dp.Infinity
-            else -> 1040.dp
+    val gridColumns: Int
+        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 2
+            WindowWidthSizeClass.Medium -> 3
+            else -> 4
         }
 
-    val columns: Int
-        @Composable get() = when (LocalConfiguration.current.screenWidthDp) {
-            in 0..599 -> 4
-            in 600..904 -> 8
-            else -> 12
+    val listColumns: Int
+        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 1
+            WindowWidthSizeClass.Medium -> 2
+            else -> 2
         }
 }
 
 fun Modifier.bodyWidth() = fillMaxWidth()
-    .wrapContentWidth(align = Alignment.CenterHorizontally)
     .composed {
-        val bodyMaxWidth = Layout.bodyMaxWidth
-        if (bodyMaxWidth.isFinite) widthIn(max = bodyMaxWidth) else this
-    }
-    .composed {
-        padding(
+        windowInsetsPadding(
             WindowInsets.systemBars
-                .only(WindowInsetsSides.Horizontal)
-                .asPaddingValues(),
+                .only(WindowInsetsSides.Horizontal),
         )
     }

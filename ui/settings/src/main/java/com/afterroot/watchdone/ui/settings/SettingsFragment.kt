@@ -16,7 +16,13 @@ package com.afterroot.watchdone.ui.settings
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -25,8 +31,11 @@ import androidx.preference.SwitchPreferenceCompat
 import com.afterroot.tmdbapi.model.config.Country
 import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.watchdone.base.Constants
+import com.afterroot.watchdone.data.model.DarkThemeConfig
+import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.utils.State
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,9 +45,11 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.startActivity
@@ -62,6 +73,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @Named("version_string")
     lateinit var versionString: String
 
+    private val settingsActivityViewModel: SettingsActivityViewModel by activityViewModels()
+
+    private var uiState: State<UserData> by mutableStateOf(State.loading())
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Update the uiState
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingsActivityViewModel.uiState
+                    .onEach { uiState = it }
+                    .collect()
+            }
+        }
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(CommonR.xml.pref_settings, rootKey)
 
@@ -75,23 +103,32 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>(
             Constants.PREF_KEY_THEME,
         )?.setOnPreferenceChangeListener { _, newValue ->
+            // TODO Remove AppCompat
             AppCompatDelegate.setDefaultNightMode(
                 when (newValue) {
                     getString(
                         CommonR.string.theme_device_default,
                     ),
                     -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-
-                    getString(
-                        CommonR.string.theme_battery,
-                    ),
-                    -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-
                     getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
                     getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
                     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 },
             )
+
+            settingsActivityViewModel.updateSettings {
+                val dtc = when (newValue) {
+                    getString(
+                        CommonR.string.theme_device_default,
+                    ),
+                    -> DarkThemeConfig.FOLLOW_SYSTEM
+                    getString(CommonR.string.theme_light) -> DarkThemeConfig.LIGHT
+                    getString(CommonR.string.theme_dark) -> DarkThemeConfig.DARK
+                    else -> DarkThemeConfig.FOLLOW_SYSTEM
+                }
+                setDarkThemeConfig(dtc)
+            }
+
             return@setOnPreferenceChangeListener true
         }
 

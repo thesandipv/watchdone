@@ -20,9 +20,9 @@ import com.afterroot.watchdone.data.model.LocalUser
 sealed class ProfileActions {
     data class SaveProfile(val localUser: LocalUser) : ProfileActions()
     data class ShowMessage(val message: UiMessage) : ProfileActions()
-    object EditProfile : ProfileActions()
-    object Nothing : ProfileActions()
-    object Refresh : ProfileActions()
-    object SignOut : ProfileActions()
-    object Up : ProfileActions()
+    data object EditProfile : ProfileActions()
+    data object Nothing : ProfileActions()
+    data object Refresh : ProfileActions()
+    data object SignOut : ProfileActions()
+    data object Up : ProfileActions()
 }

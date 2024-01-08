@@ -23,10 +23,10 @@ plugins {
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.gms.googleServices)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.gms)
+    alias(libs.plugins.google.ksp)
 
-    id("com.google.android.gms.oss-licenses-plugin")
+    id(libs.plugins.google.ossLic.get().pluginId)
 }
 
 val ci by extra { System.getenv("CI") == "true" }
@@ -34,11 +34,7 @@ val ci by extra { System.getenv("CI") == "true" }
 android {
     namespace = "com.afterroot.watchdone"
 
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-        buildConfig = true
-    }
+    buildFeatures.buildConfig = true
 
     defaultConfig {
         applicationId = "com.afterroot.watchdone"
@@ -93,7 +89,6 @@ android {
 }
 
 dependencies {
-
     implementation(projects.api.tmdb)
     implementation(projects.core.logging)
     implementation(projects.data)
@@ -106,80 +101,29 @@ dependencies {
     implementation(projects.ui.settings)
     implementation(projects.ui.watchlist)
 
-    // implementation(libs.kotlin.stdLib)
-
-    // implementation(libs.androidx.appCompat)
     implementation(libs.androidx.activity)
-    // implementation(libs.androidx.billing)
-    // implementation(libs.androidx.cardView)
-    // implementation(libs.androidx.constraintLayout)
     implementation(libs.androidx.core)
     implementation(libs.androidx.core.splash)
     implementation(libs.androidx.fragment)
-    implementation(libs.bundles.lifecycle)
-    // implementation(libs.androidx.multiDex)
-    // implementation(libs.androidx.navigation.fragment)
-    // implementation(libs.androidx.navigation.ui)
-    // implementation(libs.androidx.paging)
     implementation(libs.androidx.palette)
-    // implementation(libs.androidx.preference)
-    // implementation(libs.androidx.recyclerView)
-    // implementation(libs.androidx.startUp)
-    // implementation(libs.androidx.supportV13)
-    // implementation(libs.androidx.supportV4)
-    // implementation(libs.androidx.vectorDrawable)
-
-    // implementation(platform(libs.androidx.compose.bom))
-    // implementation(libs.bundles.compose)
-    // debugImplementation(libs.androidx.compose.tooling)
+    implementation(libs.bundles.lifecycle)
 
     implementation(libs.coil)
 
-    implementation(libs.firebase.ui.auth)
-    // implementation(libs.firebase.ui.firestore)
-    // implementation(libs.firebase.ui.storage)
-
-    implementation(libs.hilt.compose)
-
-    // ksp(libs.androidx.room.compiler)
-
-    implementation(libs.google.ossLic)
-    // implementation(libs.google.material)
-
     implementation(platform(libs.firebase.bom))
-    // implementation(libs.bundles.firebase)
     implementation(libs.firebase.ads)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.ui.auth)
 
-    // implementation(libs.commonsIo)
+    implementation(libs.google.ossLic)
 
-    // implementation(libs.kotlin.coroutines.android)
-    // testImplementation(libs.kotlin.coroutines.test)
+    implementation(libs.hilt.compose)
 
-    // implementation(libs.materialProgress)
-
-    implementation(libs.okhttp.okhttp)
     implementation(libs.okhttp.logging)
-    implementation(libs.retrofit.retrofit)
+    implementation(libs.okhttp.okhttp)
+
     implementation(libs.retrofit.jackson)
-
-    // testImplementation(libs.test.junit)
-    // androidTestImplementation(libs.androidx.test.junitExt)
-    // androidTestImplementation(libs.androidx.test.espresso)
-
-    testImplementation(libs.androidx.test.core)
-    testImplementation("org.mockito:mockito-core:5.8.0")
-    androidTestImplementation("org.mockito:mockito-android:5.8.0")
-
-    // implementation(libs.androidx.work)
-    // implementation(libs.google.auth)
-
-    // androidTestImplementation(libs.androidx.test.archCore)
-    // androidTestImplementation(libs.androidx.test.core)
-    // androidTestImplementation(libs.hilt.testing)
-    // androidTestImplementation(libs.kotlin.coroutines.test)
-    // androidTestImplementation(libs.test.mockk)
-    // androidTestImplementation(libs.test.robolectric)
+    implementation(libs.retrofit.retrofit)
 }

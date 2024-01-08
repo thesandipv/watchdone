@@ -19,11 +19,11 @@ plugins {
     id(afterroot.plugins.android.hilt.get().pluginId)
     id(afterroot.plugins.android.compose.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.media"
+    namespace = "com.afterroot.watchdone.ui.media"
 }
 
 dependencies {

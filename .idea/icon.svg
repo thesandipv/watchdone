@@ -7,7 +7,7 @@
 	.st1{fill:#FFFFFF;}
 </style>
 <g id="background">
-	<rect x="0" class="st0" width="24" height="24"/>
+	<rect x="0" rx="3px" ry="3px" class="st0" width="24" height="24"/>
 </g>
 <g id="main">
 	<path class="st1" d="M11.5,14.5l7-4.5l-7-4.5V14.5z M8,18c-0.5,0-1-0.2-1.4-0.6C6.2,17,6,16.5,6,16V4c0-0.5,0.2-1,0.6-1.4

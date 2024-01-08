@@ -21,6 +21,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -57,6 +58,7 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -67,7 +69,6 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -78,7 +79,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -89,7 +89,10 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import app.tivi.common.compose.Layout
+import app.tivi.common.compose.bodyWidth
 import app.tivi.common.compose.fullSpanItem
+import app.tivi.common.compose.ui.plus
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.afterroot.data.utils.valueOrBlank
@@ -103,6 +106,7 @@ import com.afterroot.ui.common.compose.theme.ListStyleWatchlistItemShape
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.CenteredRow
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
+import com.afterroot.ui.common.compose.utils.topAppBarScrollBehavior
 import com.afterroot.watchdone.base.WatchlistType
 import com.afterroot.watchdone.data.model.Filters
 import com.afterroot.watchdone.data.model.Media
@@ -157,7 +161,6 @@ private fun Watchlist(
     watchlistTypeAction: (WatchlistType) -> Unit,
     filter: (Filters) -> Unit = {},
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val listState = rememberLazyGridState()
 
     Scaffold(
@@ -165,7 +168,7 @@ private fun Watchlist(
             Column {
                 CommonAppBar(
                     withTitle = stringResource(id = CommonR.string.title_watchlist),
-                    scrollBehavior = scrollBehavior,
+                    scrollBehavior = topAppBarScrollBehavior(),
                     windowInsets = TopBarWindowInsets,
                     actions = {
                         IconButton(onClick = { settingsAction() }) {
@@ -208,7 +211,7 @@ private fun Watchlist(
                     sortAction = sortAction,
                     refresh = refresh,
                     filter = filter,
-                    modifier = Modifier.padding(vertical = 4.dp),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
@@ -218,6 +221,9 @@ private fun Watchlist(
             refreshing = state.loading,
             onRefresh = refresh,
         )
+
+        val bodyMargin = Layout.bodyMargin
+        val gutter = Layout.gutter
 
         Box(
             modifier = Modifier
@@ -229,15 +235,15 @@ private fun Watchlist(
                     state = listState,
                     columns = GridCells.Fixed(
                         when (state.watchlistType) {
-                            WatchlistType.GRID -> 2
-                            WatchlistType.LIST -> 1
+                            WatchlistType.GRID -> Layout.gridColumns
+                            WatchlistType.LIST -> Layout.listColumns
                         },
                     ),
-                    contentPadding = paddingValues,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = paddingValues + PaddingValues(horizontal = bodyMargin, vertical = gutter),
+                    horizontalArrangement = Arrangement.spacedBy(gutter),
+                    verticalArrangement = Arrangement.spacedBy(gutter),
                     modifier = Modifier
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .bodyWidth()
                         .fillMaxHeight(),
                 ) {
                     items(
@@ -248,7 +254,6 @@ private fun Watchlist(
                     ) { index ->
                         watchlist[index]?.let {
                             WatchlistItem(
-                                index = index,
                                 item = it,
                                 type = state.watchlistType,
                                 itemSelectedCallback = itemSelectedCallback,
@@ -256,8 +261,16 @@ private fun Watchlist(
                         }
                     }
 
-                    fullSpanItem {
-                        Spacer(modifier = Modifier.height(8.dp)) // Adjustment
+                    if (watchlist.loadState.append == LoadState.Loading) {
+                        fullSpanItem {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(24.dp),
+                            ) {
+                                CircularProgressIndicator(Modifier.align(Alignment.Center))
+                            }
+                        }
                     }
                 }
             }
@@ -284,14 +297,15 @@ fun FiltersRow(
     refresh: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val bodyMargin = Layout.bodyMargin
 
-    Surface(color = MaterialTheme.colorScheme.surface) {
+    Surface(color = MaterialTheme.colorScheme.surface, modifier = modifier) {
         Row(
-            modifier = modifier.then(Modifier.horizontalScroll(scrollState)),
+            modifier = Modifier.horizontalScroll(scrollState),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Spacer(modifier = Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(bodyMargin - 8.dp))
 
             AssistChip(
                 text = if (state.sortAscending) {
@@ -400,8 +414,6 @@ fun FiltersRow(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LazyGridItemScope.WatchlistItem(
-    modifier: Modifier = Modifier,
-    index: Int,
     item: Media,
     type: WatchlistType,
     itemSelectedCallback: ItemSelectedCallback<Media>,
@@ -433,11 +445,7 @@ private fun LazyGridItemScope.WatchlistItem(
                         modifier = Modifier
                             .animateItemPlacement()
                             .fillMaxWidth()
-                            .aspectRatio(2 / 3f)
-                            .padding(
-                                start = if (index % 2 == 0) 16.dp else 0.dp,
-                                end = if (index % 2 == 0) 0.dp else 16.dp,
-                            ),
+                            .aspectRatio(2 / 3f),
                         isWatched = item.isWatched,
                         mediaType = MediaType.MOVIE,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
@@ -472,11 +480,7 @@ private fun LazyGridItemScope.WatchlistItem(
                         modifier = Modifier
                             .animateItemPlacement()
                             .fillMaxWidth()
-                            .aspectRatio(2 / 3f)
-                            .padding(
-                                start = if (index % 2 == 0) 16.dp else 0.dp,
-                                end = if (index % 2 == 0) 0.dp else 16.dp,
-                            ),
+                            .aspectRatio(2 / 3f),
                         isWatched = item.isWatched,
                         mediaType = MediaType.SHOW,
                         onClick = { itemSelectedCallback.onClick(0, null, item) },
@@ -505,12 +509,10 @@ fun ListWatchlistItem(
     Surface(
         shape = ListStyleWatchlistItemShape,
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier,
     ) {
         Row(
-            modifier = modifier.then(
-                if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
-            ),
+            modifier = if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -554,7 +556,7 @@ fun ListWatchlistItem(
                 }
                 rating?.let {
                     ProvideTextStyle(value = ubuntuTypography.bodySmall) {
-                        MetaText(text = it.toString(), icon = Icons.Rounded.Star) {
+                        MetaText(text = "%.1f".format(it), icon = Icons.Rounded.Star) {
                             Text(text = it)
                         }
                     }
@@ -678,7 +680,7 @@ fun GridWatchlistItem(
                         }
                         rating?.let {
                             MetaText(
-                                text = it.toString(),
+                                text = "%.1f".format(it),
                                 modifier = Modifier.align(Alignment.Bottom),
                                 icon = Icons.Rounded.Star,
                             )

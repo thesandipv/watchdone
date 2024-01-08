@@ -12,19 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afterroot.watchdone.providers
 
-import android.content.SearchRecentSuggestionsProvider
-import com.afterroot.watchdone.BuildConfig
-import com.afterroot.watchdone.base.BASE_APP_ID
+package com.afterroot.watchdone.data.model
 
-class RecentSearchSuggestionsProvider : SearchRecentSuggestionsProvider() {
-    init {
-        setupSuggestions(AUTHORITY, MODE)
-    }
-
-    companion object {
-        val AUTHORITY: String = if (BuildConfig.BUILD_TYPE != "debug") BASE_APP_ID else "$BASE_APP_ID.debug"
-        const val MODE: Int = DATABASE_MODE_QUERIES
-    }
-}
+data class UserData(
+    val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
+    val useDynamicColor: Boolean = true,
+    val isUserSignedIn: Boolean = false,
+    val isFirstInstalled: Boolean = true,
+    val tmdbBaseUrl: String = "",
+    val tmdbPosterSizes: MutableSet<String>? = null,
+)

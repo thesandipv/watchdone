@@ -20,15 +20,11 @@ plugins {
     id(afterroot.plugins.android.compose.get().pluginId)
     id(afterroot.plugins.watchdone.android.common.get().pluginId)
     id("androidx.navigation.safeargs")
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
     namespace = "com.afterroot.watchdone.ui.discover"
-    buildFeatures {
-        dataBinding = true
-        viewBinding = true
-    }
 }
 
 dependencies {
