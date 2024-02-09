@@ -232,7 +232,7 @@ google-auth = { module = "com.google.android.gms:play-services-auth", version.re
 google-ossLic = "com.google.android.gms:play-services-oss-licenses:17.0.1"
 google-material = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-google-pluginGservices = "com.google.gms:google-services:4.4.0"
+google-pluginGservices = "com.google.gms:google-services:4.4.1"
 
 dagger-dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
