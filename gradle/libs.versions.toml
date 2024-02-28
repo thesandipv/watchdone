@@ -269,7 +269,7 @@ accompanist-testharness = { group = "com.google.accompanist", name = "accompanis
 
 junit = { module = "junit:junit", version.ref = "junit" }
 test-junit = { module = "junit:junit", version.ref = "junit" }
-test-mockk = "io.mockk:mockk:1.13.9"
+test-mockk = "io.mockk:mockk:1.13.10"
 test-robolectric = "org.robolectric:robolectric:4.11.1"
 
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
