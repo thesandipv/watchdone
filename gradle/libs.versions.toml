@@ -92,7 +92,7 @@ google-gms = "com.google.gms.google-services:4.4.1"
 google-ossLic = { id = "com.google.android.gms.oss-licenses-plugin", version.ref = "ossLicPlugin" }
 google-protobuf = { id = "com.google.protobuf", version = "0.9.4" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-ksp = "com.google.devtools.ksp:1.9.23-1.0.19"
+google-ksp = "com.google.devtools.ksp:1.9.23-1.0.20"
 
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
