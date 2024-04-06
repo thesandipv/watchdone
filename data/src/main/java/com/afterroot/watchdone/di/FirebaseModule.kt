@@ -17,16 +17,17 @@ package com.afterroot.watchdone.di
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.utils.whenBuildIs
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.auth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.firestoreSettings
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.PersistentCacheSettings
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.firestoreSettings
+import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.firebase.remoteconfig.remoteConfig
+import com.google.firebase.remoteconfig.remoteConfigSettings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,7 +41,7 @@ object FirebaseModule {
     @Singleton
     fun provideFirestore(): FirebaseFirestore = Firebase.firestore.apply {
         firestoreSettings = firestoreSettings {
-            isPersistenceEnabled = true
+            setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
         }
     }
 

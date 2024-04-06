@@ -34,7 +34,6 @@ dependencies {
     implementation(libs.firebase.firestore)
 
     implementation(libs.androidx.fragment)
-    implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.bundles.lifecycle)
 

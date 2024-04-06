@@ -228,8 +228,7 @@ class MainActivity : ComponentActivity() {
         }
 
         // Initialize AdMob SDK
-        MobileAds.initialize(this) {
-        }
+        MobileAds.initialize(this)
 
         onVersionGreaterThanEqualTo(Build.VERSION_CODES.M, ::checkPermissions)
 

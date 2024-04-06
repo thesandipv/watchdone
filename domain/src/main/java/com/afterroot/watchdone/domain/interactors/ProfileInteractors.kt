@@ -27,7 +27,7 @@ class GetProfile @Inject constructor(private val profileRepository: ProfileRepos
     data class Params(val uid: String, val cached: Boolean = false)
 
     override suspend fun doWork(params: Params): Flow<State<NetworkUser>> {
-        return profileRepository.getProfile(params.uid)
+        return profileRepository.getProfile(params.uid, params.cached)
     }
 }
 

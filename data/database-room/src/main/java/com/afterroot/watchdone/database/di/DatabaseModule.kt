@@ -39,6 +39,7 @@ object DatabaseModule {
         ).build()
 
     @Provides
+    @Singleton
     fun provideDatabaseTransactionRunner(
         runner: RoomTransactionRunner,
     ): DatabaseTransactionRunner = runner
