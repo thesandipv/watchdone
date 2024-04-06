@@ -56,58 +56,58 @@ import com.afterroot.watchdone.utils.State
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TextInput(
-    modifier: Modifier = Modifier,
-    label: String,
-    maxLines: Int = 1,
-    errorText: String = "",
-    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-    keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
-    validate: (String) -> Boolean = { true },
-    onChange: (String) -> Unit,
-    onError: (String) -> Unit = {},
+  modifier: Modifier = Modifier,
+  label: String,
+  maxLines: Int = 1,
+  errorText: String = "",
+  keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
+  keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+  keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+  validate: (String) -> Boolean = { true },
+  onChange: (String) -> Unit,
+  onError: (String) -> Unit = {},
 ) {
-    var value by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf(false) }
-    Column {
-        TextField(
-            value = value,
-            onValueChange = {
-                value = it // always update state
-                when {
-                    validate(it) || it.isBlank() -> {
-                        error = false
-                        onChange(it)
-                    }
+  var value by remember { mutableStateOf("") }
+  var error by remember { mutableStateOf(false) }
+  Column {
+    TextField(
+      value = value,
+      onValueChange = {
+        value = it // always update state
+        when {
+          validate(it) || it.isBlank() -> {
+            error = false
+            onChange(it)
+          }
 
-                    else -> {
-                        error = true
-                        onError(it)
-                    }
-                }
-            },
-            isError = error,
-            label = { Text(text = label) },
-            maxLines = maxLines,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp),
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-        )
-        AnimatedVisibility(visible = error) {
-            Text(
-                text = errorText,
-                modifier = Modifier
-                    .paddingFromBaseline(top = 16.dp)
-                    .padding(horizontal = (16.dp * 2)),
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-            )
+          else -> {
+            error = true
+            onError(it)
+          }
         }
+      },
+      isError = error,
+      label = { Text(text = label) },
+      maxLines = maxLines,
+      modifier = modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp)
+        .padding(top = 8.dp),
+      keyboardOptions = keyboardOptions,
+      keyboardActions = keyboardActions,
+    )
+    AnimatedVisibility(visible = error) {
+      Text(
+        text = errorText,
+        modifier = Modifier
+          .paddingFromBaseline(top = 16.dp)
+          .padding(horizontal = (16.dp * 2)),
+        maxLines = 1,
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodySmall,
+      )
     }
+  }
 }
 
 /**
@@ -116,112 +116,112 @@ fun TextInput(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OutlinedTextInput(
-    // Default Parameters
-    modifier: Modifier = Modifier,
-    onValueChange: ((String) -> Unit)? = null,
-    enabled: Boolean = true,
-    readOnly: Boolean = false,
-    textStyle: TextStyle = LocalTextStyle.current,
-    label: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)? = null,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    prefix: @Composable (() -> Unit)? = null,
-    suffix: @Composable (() -> Unit)? = null,
-    supportingText: @Composable (() -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    singleLine: Boolean = false,
-    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
-    minLines: Int = 1,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = OutlinedTextFieldDefaults.shape,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
-    // Added Parameters
-    labelText: String? = null,
-    hint: String = "",
-    prefillValue: String = "",
-    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-    keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
-    validate: (String) -> State<Boolean> = { State.success(true) },
-    onChange: (String) -> Unit,
-    onError: (String) -> Unit = {},
+  // Default Parameters
+  modifier: Modifier = Modifier,
+  onValueChange: ((String) -> Unit)? = null,
+  enabled: Boolean = true,
+  readOnly: Boolean = false,
+  textStyle: TextStyle = LocalTextStyle.current,
+  label: @Composable (() -> Unit)? = null,
+  placeholder: @Composable (() -> Unit)? = null,
+  leadingIcon: @Composable (() -> Unit)? = null,
+  trailingIcon: @Composable (() -> Unit)? = null,
+  prefix: @Composable (() -> Unit)? = null,
+  suffix: @Composable (() -> Unit)? = null,
+  supportingText: @Composable (() -> Unit)? = null,
+  visualTransformation: VisualTransformation = VisualTransformation.None,
+  singleLine: Boolean = false,
+  maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+  minLines: Int = 1,
+  interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+  shape: Shape = OutlinedTextFieldDefaults.shape,
+  colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+  // Added Parameters
+  labelText: String? = null,
+  hint: String = "",
+  prefillValue: String = "",
+  keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
+  keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+  keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+  validate: (String) -> State<Boolean> = { State.success(true) },
+  onChange: (String) -> Unit,
+  onError: (String) -> Unit = {},
 ) {
-    var value by rememberSaveable { mutableStateOf(prefillValue) }
-    LocalLogger.current.d {
-        "OutlinedTextInput $prefillValue $value"
-    }
-    var error by rememberSaveable { mutableStateOf(false) }
-    var errorText by rememberSaveable { mutableStateOf("") }
-    Column {
-        OutlinedTextField(
-            enabled = enabled,
-            readOnly = readOnly,
-            textStyle = textStyle,
-            prefix = prefix,
-            suffix = suffix,
-            supportingText = supportingText,
-            minLines = minLines,
-            visualTransformation = visualTransformation,
-            interactionSource = interactionSource,
-            shape = shape,
-            colors = colors,
-            value = value,
-            maxLines = maxLines,
-            singleLine = singleLine,
-            modifier = modifier,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            leadingIcon = leadingIcon,
-            placeholder = placeholder ?: { Text(text = hint) },
-            onValueChange = onValueChange ?: {
-                value = it // always update state
-                when (val validation = validate(it)) {
-                    is State.Failed -> {
-                        error = true
-                        errorText = validation.message
-                        onError(it)
-                    }
+  var value by rememberSaveable { mutableStateOf(prefillValue) }
+  LocalLogger.current.d {
+    "OutlinedTextInput $prefillValue $value"
+  }
+  var error by rememberSaveable { mutableStateOf(false) }
+  var errorText by rememberSaveable { mutableStateOf("") }
+  Column {
+    OutlinedTextField(
+      enabled = enabled,
+      readOnly = readOnly,
+      textStyle = textStyle,
+      prefix = prefix,
+      suffix = suffix,
+      supportingText = supportingText,
+      minLines = minLines,
+      visualTransformation = visualTransformation,
+      interactionSource = interactionSource,
+      shape = shape,
+      colors = colors,
+      value = value,
+      maxLines = maxLines,
+      singleLine = singleLine,
+      modifier = modifier,
+      keyboardOptions = keyboardOptions,
+      keyboardActions = keyboardActions,
+      leadingIcon = leadingIcon,
+      placeholder = placeholder ?: { Text(text = hint) },
+      onValueChange = onValueChange ?: {
+        value = it // always update state
+        when (val validation = validate(it)) {
+          is State.Failed -> {
+            error = true
+            errorText = validation.message
+            onError(it)
+          }
 
-                    is State.Success -> {
-                        if (validation.data || it.isBlank()) {
-                            error = false
-                            errorText = ""
-                            onChange(it)
-                        }
-                    }
+          is State.Success -> {
+            if (validation.data || it.isBlank()) {
+              error = false
+              errorText = ""
+              onChange(it)
+            }
+          }
 
-                    is State.Loading -> {} // NOTHING
-                }
-            },
-            isError = error,
-            label = {
-                if (labelText != null) {
-                    Text(text = labelText)
-                } else {
-                    label?.invoke()
-                }
-            },
-            trailingIcon = trailingIcon ?: {
-                if (value.isNotBlank()) {
-                    IconButton(onClick = {
-                        value = ""
-                    }) {
-                        Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
-                    }
-                }
-            },
-        )
-        AnimatedVisibility(visible = error) {
-            Text(
-                text = errorText,
-                modifier = Modifier
-                    .paddingFromBaseline(top = 16.dp)
-                    .padding(horizontal = (16.dp * 2)),
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-            )
+          is State.Loading -> {} // NOTHING
         }
+      },
+      isError = error,
+      label = {
+        if (labelText != null) {
+          Text(text = labelText)
+        } else {
+          label?.invoke()
+        }
+      },
+      trailingIcon = trailingIcon ?: {
+        if (value.isNotBlank()) {
+          IconButton(onClick = {
+            value = ""
+          }) {
+            Icon(imageVector = Icons.Rounded.Clear, contentDescription = "Clear")
+          }
+        }
+      },
+    )
+    AnimatedVisibility(visible = error) {
+      Text(
+        text = errorText,
+        modifier = Modifier
+          .paddingFromBaseline(top = 16.dp)
+          .padding(horizontal = (16.dp * 2)),
+        maxLines = 1,
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodySmall,
+      )
     }
+  }
 }

@@ -21,10 +21,10 @@ import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
 
 class TmdbMediaTypeToMediaType @Inject constructor() : Mapper<TmdbMediaType, MediaType> {
-    override fun map(from: TmdbMediaType): MediaType = when (from) {
-        TmdbMediaType.MOVIE -> MediaType.MOVIE
-        TmdbMediaType.SHOW -> MediaType.SHOW
-        TmdbMediaType.SEASON -> MediaType.SEASON
-        TmdbMediaType.EPISODE -> MediaType.EPISODE
-    }
+  override fun map(from: TmdbMediaType): MediaType = when (from) {
+    TmdbMediaType.MOVIE -> MediaType.MOVIE
+    TmdbMediaType.SHOW -> MediaType.SHOW
+    TmdbMediaType.SEASON -> MediaType.SEASON
+    TmdbMediaType.EPISODE -> MediaType.EPISODE
+  }
 }

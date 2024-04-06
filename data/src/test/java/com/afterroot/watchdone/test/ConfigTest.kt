@@ -25,14 +25,14 @@ import org.junit.Test
 @HiltAndroidTest
 class ConfigTest : DataTest() {
 
-    @Inject lateinit var configRepository: ConfigRepository
+  @Inject lateinit var configRepository: ConfigRepository
 
-    @Test
-    fun `Config Result`() {
-        runBlocking {
-            launch {
-                assertNotNull(configRepository.getConfig())
-            }
-        }
+  @Test
+  fun `Config Result`() {
+    runBlocking {
+      launch {
+        assertNotNull(configRepository.getConfig())
+      }
     }
+  }
 }

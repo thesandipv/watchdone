@@ -19,5 +19,5 @@ import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
 
 interface RecommendedDataSource {
-    suspend operator fun invoke(mediaId: Int, mediaType: MediaType, page: Int): List<Media>
+  suspend operator fun invoke(mediaId: Int, mediaType: MediaType, page: Int): List<Media>
 }

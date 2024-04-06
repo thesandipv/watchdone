@@ -24,33 +24,33 @@ import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
 
 class TmdbMovieToMedia @Inject constructor() : Mapper<TmdbMovie, Media> {
-    override fun map(from: TmdbMovie) = Media(
-        tmdbId = from.id,
-        releaseDate = from.releaseDate.toString(),
-        title = from.title,
-        isWatched = false,
-        posterPath = from.posterPath,
-        mediaType = MediaType.MOVIE,
-        rating = from.voteAverage,
-    )
+  override fun map(from: TmdbMovie) = Media(
+    tmdbId = from.id,
+    releaseDate = from.releaseDate.toString(),
+    title = from.title,
+    isWatched = false,
+    posterPath = from.posterPath,
+    mediaType = MediaType.MOVIE,
+    rating = from.voteAverage,
+  )
 }
 
 class TmdbMovieDetailToMedia @Inject constructor() : Mapper<TmdbMovieDetail, Media> {
-    override fun map(from: TmdbMovieDetail) = Media(
-        tmdbId = from.id,
-        releaseDate = from.releaseDate.toString(),
-        title = from.title,
-        isWatched = false,
-        posterPath = from.posterPath,
-        mediaType = MediaType.MOVIE,
-        rating = from.voteAverage,
-    )
+  override fun map(from: TmdbMovieDetail) = Media(
+    tmdbId = from.id,
+    releaseDate = from.releaseDate.toString(),
+    title = from.title,
+    isWatched = false,
+    posterPath = from.posterPath,
+    mediaType = MediaType.MOVIE,
+    rating = from.voteAverage,
+  )
 }
 
 class TmdbMoviePageResultToMedias @Inject constructor(
-    private val tmdbMovieToMedia: TmdbMovieToMedia,
+  private val tmdbMovieToMedia: TmdbMovieToMedia,
 ) : Mapper<TmdbMoviePageResult, List<Media>> {
-    override fun map(from: TmdbMoviePageResult): List<Media> {
-        return from.results.map(tmdbMovieToMedia::map)
-    }
+  override fun map(from: TmdbMoviePageResult): List<Media> {
+    return from.results.map(tmdbMovieToMedia::map)
+  }
 }

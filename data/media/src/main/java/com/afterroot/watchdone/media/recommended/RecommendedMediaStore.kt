@@ -31,42 +31,42 @@ import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
 
 class RecommendedMediaStore @Inject constructor(
-    dataSource: RecommendedDataSource,
-    recommendedDao: RecommendedDao,
-    mediaDao: MediaDao,
-    dispatchers: CoroutineDispatchers,
-    transactionRunner: DatabaseTransactionRunner,
+  dataSource: RecommendedDataSource,
+  recommendedDao: RecommendedDao,
+  mediaDao: MediaDao,
+  dispatchers: CoroutineDispatchers,
+  transactionRunner: DatabaseTransactionRunner,
 ) : Store<RecommendedMediaStoreKey, List<RecommendedEntry>> by storeBuilder(
-    fetcher = Fetcher.of { key: RecommendedMediaStoreKey ->
-        dataSource(key.mediaId, key.mediaType, key.page).let { response ->
-            withContext(dispatchers.databaseWrite) {
-                transactionRunner {
-                    response.map { media ->
-                        RecommendedEntry(
-                            mediaId = mediaDao.getIdOrSaveMedia(media),
-                            page = key.page,
-                            mediaType = media.mediaType ?: MediaType.MOVIE,
-                            recommendationOf = key.mediaId,
-                        )
-                    }
-                }
-            }
+  fetcher = Fetcher.of { key: RecommendedMediaStoreKey ->
+    dataSource(key.mediaId, key.mediaType, key.page).let { response ->
+      withContext(dispatchers.databaseWrite) {
+        transactionRunner {
+          response.map { media ->
+            RecommendedEntry(
+              mediaId = mediaDao.getIdOrSaveMedia(media),
+              page = key.page,
+              mediaType = media.mediaType ?: MediaType.MOVIE,
+              recommendationOf = key.mediaId,
+            )
+          }
         }
+      }
+    }
+  },
+  sourceOfTruth = SourceOfTruth.of(
+    reader = { key ->
+      recommendedDao.entriesForPage(key.page, key.mediaId)
     },
-    sourceOfTruth = SourceOfTruth.of(
-        reader = { key ->
-            recommendedDao.entriesForPage(key.page, key.mediaId)
-        },
-        writer = { key, response ->
-            transactionRunner {
-                recommendedDao.updatePage(key.page, key.mediaId, key.mediaType, response)
-            }
-        },
-        delete = { key ->
-            recommendedDao.deletePage(key.page, key.mediaType, key.mediaId)
-        },
-        deleteAll = { recommendedDao.deleteAll() },
-    ),
+    writer = { key, response ->
+      transactionRunner {
+        recommendedDao.updatePage(key.page, key.mediaId, key.mediaType, response)
+      }
+    },
+    delete = { key ->
+      recommendedDao.deletePage(key.page, key.mediaType, key.mediaId)
+    },
+    deleteAll = { recommendedDao.deleteAll() },
+  ),
 ).build()
 
 data class RecommendedMediaStoreKey(val mediaId: Int, val page: Int, val mediaType: MediaType)

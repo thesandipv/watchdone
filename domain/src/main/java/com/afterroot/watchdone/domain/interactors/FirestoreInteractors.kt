@@ -24,74 +24,74 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class WatchlistInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
-    ResultInteractor<WatchlistInteractor.Params, Flow<State<Boolean>>>() {
-    data class Params(val id: Int, val media: DBMedia = DBMedia.Empty, val method: Method)
+  ResultInteractor<WatchlistInteractor.Params, Flow<State<Boolean>>>() {
+  data class Params(val id: Int, val media: DBMedia = DBMedia.Empty, val method: Method)
 
-    enum class Method {
-        ADD,
-        REMOVE,
-        EXIST,
-    }
+  enum class Method {
+    ADD,
+    REMOVE,
+    EXIST,
+  }
 
-    override suspend fun doWork(params: Params): Flow<State<Boolean>> {
-        return when (params.method) {
-            Method.ADD -> {
-                firestoreRepository.addToWatchlist(params.media)
-            }
-            Method.REMOVE -> {
-                firestoreRepository.removeFromWatchlist(params.media)
-            }
-            Method.EXIST -> {
-                firestoreRepository.isInWatchlist(params.id)
-            }
-        }
+  override suspend fun doWork(params: Params): Flow<State<Boolean>> {
+    return when (params.method) {
+      Method.ADD -> {
+        firestoreRepository.addToWatchlist(params.media)
+      }
+      Method.REMOVE -> {
+        firestoreRepository.removeFromWatchlist(params.media)
+      }
+      Method.EXIST -> {
+        firestoreRepository.isInWatchlist(params.id)
+      }
     }
+  }
 }
 
 class WatchStateInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
-    ResultInteractor<WatchStateInteractor.Params, Flow<State<Boolean>>>() {
-    data class Params(
-        val id: Int,
-        val watchState: Boolean,
-        val episodeId: String? = null,
-        val method: Method,
-    )
+  ResultInteractor<WatchStateInteractor.Params, Flow<State<Boolean>>>() {
+  data class Params(
+    val id: Int,
+    val watchState: Boolean,
+    val episodeId: String? = null,
+    val method: Method,
+  )
 
-    enum class Method {
-        MEDIA,
-        EPISODE,
-    }
+  enum class Method {
+    MEDIA,
+    EPISODE,
+  }
 
-    override suspend fun doWork(params: Params): Flow<State<Boolean>> {
-        return when (params.method) {
-            Method.MEDIA -> {
-                firestoreRepository.setWatchStatus(params.id, params.watchState)
-            }
-            Method.EPISODE -> {
-                firestoreRepository.setEpisodeWatchStatus(
-                    params.id,
-                    params.episodeId,
-                    params.watchState,
-                )
-            }
-        }
+  override suspend fun doWork(params: Params): Flow<State<Boolean>> {
+    return when (params.method) {
+      Method.MEDIA -> {
+        firestoreRepository.setWatchStatus(params.id, params.watchState)
+      }
+      Method.EPISODE -> {
+        firestoreRepository.setEpisodeWatchStatus(
+          params.id,
+          params.episodeId,
+          params.watchState,
+        )
+      }
     }
+  }
 }
 
 class ObserveMediaInfo @Inject constructor(private val firestoreRepository: FirestoreRepository) :
-    SubjectInteractor<ObserveMediaInfo.Params, State<DBMedia>>() {
-    data class Params(val id: Int)
+  SubjectInteractor<ObserveMediaInfo.Params, State<DBMedia>>() {
+  data class Params(val id: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<DBMedia>> {
-        return firestoreRepository.getMediaInfo(params.id)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<DBMedia>> {
+    return firestoreRepository.getMediaInfo(params.id)
+  }
 }
 
 class MediaInfoInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
-    ResultInteractor<MediaInfoInteractor.Params, Flow<State<DBMedia>>>() {
-    data class Params(val id: Int)
+  ResultInteractor<MediaInfoInteractor.Params, Flow<State<DBMedia>>>() {
+  data class Params(val id: Int)
 
-    override suspend fun doWork(params: Params): Flow<State<DBMedia>> {
-        return firestoreRepository.getMediaInfo(params.id)
-    }
+  override suspend fun doWork(params: Params): Flow<State<DBMedia>> {
+    return firestoreRepository.getMediaInfo(params.id)
+  }
 }

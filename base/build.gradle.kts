@@ -16,48 +16,48 @@
 import com.afterroot.gradle.readProperties
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.base"
+  namespace = "com.afterroot.watchdone.base"
 
-    buildFeatures.buildConfig = true
+  buildFeatures.buildConfig = true
 
-    defaultConfig {
-        val commitHash =
-            providers.exec {
-                commandLine("git", "rev-parse", "--short", "HEAD")
-            }.standardOutput.asText.get()
+  defaultConfig {
+    val commitHash =
+      providers.exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+      }.standardOutput.asText.get()
 
-        val commit = System.getenv("COMMIT_ID") ?: commitHash.trim()
-        buildConfigField("String", "COMMIT_ID", "\"$commit\"")
-        buildConfigField("int", "VERSION_CODE", "${rootProject.extra["versionCode"]}")
-        buildConfigField("String", "VERSION_NAME", "\"${rootProject.extra["versionName"]}\"")
+    val commit = System.getenv("COMMIT_ID") ?: commitHash.trim()
+    buildConfigField("String", "COMMIT_ID", "\"$commit\"")
+    buildConfigField("int", "VERSION_CODE", "${rootProject.extra["versionCode"]}")
+    buildConfigField("String", "VERSION_NAME", "\"${rootProject.extra["versionName"]}\"")
 
-        val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
-        buildConfigField(
-            "String",
-            "TMDB_BEARER_TOKEN",
-            tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN"),
-        )
-        buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
-        buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
-    }
+    val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
+    buildConfigField(
+      "String",
+      "TMDB_BEARER_TOKEN",
+      tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN"),
+    )
+    buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
+    buildConfigField("String", "FB_APP_ID", tmdbProperties["fbAppId"] as String? ?: System.getenv("FB_APP_ID"))
+  }
 }
 
 dependencies {
-    api(libs.kotlinx.coroutines.core)
+  api(libs.kotlinx.coroutines.core)
 
-    implementation(libs.androidx.recyclerView)
-    api(libs.androidx.lifecycle.common)
-    api(libs.androidx.lifecycle.extensions)
+  implementation(libs.androidx.recyclerView)
+  api(libs.androidx.lifecycle.common)
+  api(libs.androidx.lifecycle.extensions)
 
-    api(libs.glide.glide)
+  api(libs.glide.glide)
 
-    implementation(libs.commonsCodec)
+  implementation(libs.commonsCodec)
 
-    api(libs.timber)
+  api(libs.timber)
 }

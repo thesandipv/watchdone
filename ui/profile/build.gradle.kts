@@ -14,29 +14,29 @@
  */
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.ui.profile"
+  namespace = "com.afterroot.watchdone.ui.profile"
 }
 
 dependencies {
-    implementation(projects.data)
-    implementation(projects.domain)
+  implementation(projects.data)
+  implementation(projects.domain)
 
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.transition)
+  implementation(libs.androidx.core)
+  implementation(libs.androidx.lifecycle.viewmodel)
+  implementation(libs.androidx.transition)
 
-    implementation(libs.hilt.compose)
+  implementation(libs.hilt.compose)
 
-    implementation(libs.firebase.ui.auth)
+  implementation(libs.firebase.ui.auth)
 
-    implementation(libs.bundles.coroutines)
+  implementation(libs.bundles.coroutines)
 }

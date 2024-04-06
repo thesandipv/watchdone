@@ -23,33 +23,33 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class UserDataRepositoryImpl @Inject constructor(
-    val settings: Settings,
-    private val userSettingsDataSource: UserSettingsDataSource,
+  val settings: Settings,
+  private val userSettingsDataSource: UserSettingsDataSource,
 ) : UserDataRepository {
-    override val userData: Flow<UserData>
-        get() = userSettingsDataSource.data
+  override val userData: Flow<UserData>
+    get() = userSettingsDataSource.data
 
-    override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
-        userSettingsDataSource.setDarkThemeConfig(darkThemeConfig)
-    }
+  override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
+    userSettingsDataSource.setDarkThemeConfig(darkThemeConfig)
+  }
 
-    override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
-        userSettingsDataSource.setUseDynamicColor(useDynamicColor)
-    }
+  override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
+    userSettingsDataSource.setUseDynamicColor(useDynamicColor)
+  }
 
-    override suspend fun setIsFirstInstalled(value: Boolean) {
-        userSettingsDataSource.setIsFirstInstalled(value)
-    }
+  override suspend fun setIsFirstInstalled(value: Boolean) {
+    userSettingsDataSource.setIsFirstInstalled(value)
+  }
 
-    override suspend fun setTMDbBaseUrl(baseUrl: String) {
-        userSettingsDataSource.setTMDbBaseUrl(baseUrl)
-    }
+  override suspend fun setTMDbBaseUrl(baseUrl: String) {
+    userSettingsDataSource.setTMDbBaseUrl(baseUrl)
+  }
 
-    override suspend fun setPrefImageSize(imageSize: String) {
-        userSettingsDataSource.setPrefImageSize(imageSize)
-    }
+  override suspend fun setPrefImageSize(imageSize: String) {
+    userSettingsDataSource.setPrefImageSize(imageSize)
+  }
 
-    override suspend fun setTMDbPosterSizes(posterSizes: Set<String>) {
-        userSettingsDataSource.setTMDbPosterSizes(posterSizes)
-    }
+  override suspend fun setTMDbPosterSizes(posterSizes: Set<String>) {
+    userSettingsDataSource.setTMDbPosterSizes(posterSizes)
+  }
 }

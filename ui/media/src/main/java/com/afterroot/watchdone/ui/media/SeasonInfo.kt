@@ -44,150 +44,150 @@ import com.afterroot.watchdone.utils.State
 
 @Composable
 fun Seasons(
-    tv: TV,
-    season: State<Season>,
-    watchedEpisodes: List<String>,
-    onSeasonSelected: (Int) -> Unit,
-    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
+  tv: TV,
+  season: State<Season>,
+  watchedEpisodes: List<String>,
+  onSeasonSelected: (Int) -> Unit,
+  onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
 ) {
-    ProvideTextStyle(value = ubuntuTypography.titleMedium) {
-        Text(
-            text = "Seasons",
-            modifier = Modifier.padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter),
-        )
-    }
-
-    SeasonsChips(tv = tv, onSeasonSelected = onSeasonSelected)
-    SeasonsDetail(
-        season = season,
-        watchedEpisodes = watchedEpisodes,
-        onWatchClicked = onWatchClicked,
+  ProvideTextStyle(value = ubuntuTypography.titleMedium) {
+    Text(
+      text = "Seasons",
+      modifier = Modifier.padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter),
     )
+  }
+
+  SeasonsChips(tv = tv, onSeasonSelected = onSeasonSelected)
+  SeasonsDetail(
+    season = season,
+    watchedEpisodes = watchedEpisodes,
+    onWatchClicked = onWatchClicked,
+  )
 }
 
 @Composable
 fun SeasonsChips(tv: TV, onSeasonSelected: (Int) -> Unit) {
-    val seasonsList = tv.seasons?.mapIndexed { index, season ->
-        season.name ?: "Season ${index + 1}"
-    }
+  val seasonsList = tv.seasons?.mapIndexed { index, season ->
+    season.name ?: "Season ${index + 1}"
+  }
 
-    FilterChipGroup(
-        horizontalPadding = 16.dp,
-        chipSpacing = 8.dp,
-        list = seasonsList ?: manufactureSeasonList(tv.numberOfSeasons),
-        onSelectedChangedIndexed = { index, _, _ ->
-            onSeasonSelected(index + 1)
-        },
-        preSelectItem = seasonsList?.first(),
-    )
+  FilterChipGroup(
+    horizontalPadding = 16.dp,
+    chipSpacing = 8.dp,
+    list = seasonsList ?: manufactureSeasonList(tv.numberOfSeasons),
+    onSelectedChangedIndexed = { index, _, _ ->
+      onSeasonSelected(index + 1)
+    },
+    preSelectItem = seasonsList?.first(),
+  )
 }
 
 fun manufactureSeasonList(numberOfSeasons: Int): List<String> = mutableListOf<String>().apply {
-    repeat(numberOfSeasons) {
-        this.add(it, "Season ${it + 1}")
-    }
+  repeat(numberOfSeasons) {
+    this.add(it, "Season ${it + 1}")
+  }
 }
 
 @Composable
 fun SeasonsDetail(
-    season: State<Season>,
-    watchedEpisodes: List<String>,
-    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
+  season: State<Season>,
+  watchedEpisodes: List<String>,
+  onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
 ) {
-    val bodyMargin = Layout.bodyMargin
-    val gutter = Layout.gutter
+  val bodyMargin = Layout.bodyMargin
+  val gutter = Layout.gutter
 
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.animateContentSize(),
-    ) {
-        when (season) {
-            is State.Success -> {
-                season.data.overview?.let {
-                    if (it.isNotBlank()) {
-                        OverviewText(
-                            text = it,
-                            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
-                        )
-                    }
-                }
-
-                season.data.episodes?.let { episodes ->
-                    Text(
-                        text = "${episodes.count()} Episodes",
-                        modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
-                    )
-                    episodes.forEach { episode ->
-                        val watched = watchedEpisodes.contains(episode.id.toString())
-                        EpisodeItem(
-                            episode = episode,
-                            isWatched = watched,
-                            onWatchClicked = onWatchClicked,
-                        )
-                    }
-                }
-            }
-            is State.Failed -> {
-                Text(
-                    text = "Error while loading",
-                    modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
-                )
-            }
-            is State.Loading -> {
-                EpisodeItemPlaceholder()
-            }
+  Column(
+    verticalArrangement = Arrangement.SpaceBetween,
+    modifier = Modifier.animateContentSize(),
+  ) {
+    when (season) {
+      is State.Success -> {
+        season.data.overview?.let {
+          if (it.isNotBlank()) {
+            OverviewText(
+              text = it,
+              modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
+            )
+          }
         }
+
+        season.data.episodes?.let { episodes ->
+          Text(
+            text = "${episodes.count()} Episodes",
+            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
+          )
+          episodes.forEach { episode ->
+            val watched = watchedEpisodes.contains(episode.id.toString())
+            EpisodeItem(
+              episode = episode,
+              isWatched = watched,
+              onWatchClicked = onWatchClicked,
+            )
+          }
+        }
+      }
+      is State.Failed -> {
+        Text(
+          text = "Error while loading",
+          modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
+        )
+      }
+      is State.Loading -> {
+        EpisodeItemPlaceholder()
+      }
     }
+  }
 }
 
 @Composable
 fun EpisodeItem(
-    episode: Episode,
-    isWatched: Boolean = false,
-    onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
+  episode: Episode,
+  isWatched: Boolean = false,
+  onWatchClicked: (episode: Episode, isWatched: Boolean) -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column {
-            ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-                episode.name?.let { Text(text = it) }
-                episode.airDate?.let { Text(text = it) }
-            }
-        }
-
-        FilledTonalIconToggleButton(
-            checked = isWatched,
-            onCheckedChange = {
-                onWatchClicked(episode, it)
-            },
-        ) {
-            if (isWatched) {
-                Icon(
-                    imageVector = Icons.Rounded.Clear,
-                    contentDescription = "Remove Episode from Watched",
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Rounded.Done,
-                    contentDescription = "Add Episode from Watched",
-                )
-            }
-        }
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = Layout.bodyMargin, vertical = Layout.gutter),
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Column {
+      ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+        episode.name?.let { Text(text = it) }
+        episode.airDate?.let { Text(text = it) }
+      }
     }
+
+    FilledTonalIconToggleButton(
+      checked = isWatched,
+      onCheckedChange = {
+        onWatchClicked(episode, it)
+      },
+    ) {
+      if (isWatched) {
+        Icon(
+          imageVector = Icons.Rounded.Clear,
+          contentDescription = "Remove Episode from Watched",
+        )
+      } else {
+        Icon(
+          imageVector = Icons.Rounded.Done,
+          contentDescription = "Add Episode from Watched",
+        )
+      }
+    }
+  }
 }
 
 @Composable
 fun EpisodeItemPlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height((32 * 8).dp),
-    ) {
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    }
+  Box(
+    modifier = Modifier
+      .fillMaxWidth()
+      .height((32 * 8).dp),
+  ) {
+    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+  }
 }

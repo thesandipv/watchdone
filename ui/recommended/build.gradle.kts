@@ -14,27 +14,27 @@
  */
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.ui.recommended"
+  namespace = "com.afterroot.watchdone.ui.recommended"
 }
 
 dependencies {
-    implementation(projects.data)
-    implementation(projects.domain)
+  implementation(projects.data)
+  implementation(projects.domain)
 
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.paging)
-    implementation(libs.bundles.lifecycle)
+  implementation(libs.androidx.fragment)
+  implementation(libs.androidx.paging)
+  implementation(libs.bundles.lifecycle)
 
-    implementation(libs.google.material)
+  implementation(libs.google.material)
 
-    implementation(libs.hilt.compose)
+  implementation(libs.hilt.compose)
 }

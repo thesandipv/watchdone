@@ -23,14 +23,14 @@ import com.afterroot.watchdone.utils.resultFlow
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
-    private val moviesApi: MoviesApi,
-    private val tmdb: Tmdb3,
-    private val watchProviderMapper: TmdbWatchProviderResultToWatchProviderResult,
+  private val moviesApi: MoviesApi,
+  private val tmdb: Tmdb3,
+  private val watchProviderMapper: TmdbWatchProviderResultToWatchProviderResult,
 ) {
-    suspend fun credits(id: Int) = resultFlow(moviesApi.getCredits(id))
-    suspend fun info(id: Int) = resultFlow(moviesApi.getMovieInfo(id).toMovie())
-    suspend fun recommended(id: Int, page: Int) = resultFlow(moviesApi.getRecommended(id, page))
-    suspend fun watchProviders(id: Int) = resultFlow(
-        watchProviderMapper.map(tmdb.movies.getWatchProviders(id)),
-    )
+  suspend fun credits(id: Int) = resultFlow(moviesApi.getCredits(id))
+  suspend fun info(id: Int) = resultFlow(moviesApi.getMovieInfo(id).toMovie())
+  suspend fun recommended(id: Int, page: Int) = resultFlow(moviesApi.getRecommended(id, page))
+  suspend fun watchProviders(id: Int) = resultFlow(
+    watchProviderMapper.map(tmdb.movies.getWatchProviders(id)),
+  )
 }

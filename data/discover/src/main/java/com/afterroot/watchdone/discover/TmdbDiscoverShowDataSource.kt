@@ -21,13 +21,13 @@ import com.afterroot.watchdone.data.model.Media
 import javax.inject.Inject
 
 class TmdbDiscoverShowDataSource @Inject constructor(
-    private val tmdb: Tmdb3,
-    private val tmdbShowToMedia: TmdbShowToMedia,
+  private val tmdb: Tmdb3,
+  private val tmdbShowToMedia: TmdbShowToMedia,
 ) : DiscoverDataSource {
-    override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
-        return tmdb.discover.discoverShow(
-            page,
-            parameters = parameters,
-        ).results.map(tmdbShowToMedia::map)
-    }
+  override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
+    return tmdb.discover.discoverShow(
+      page,
+      parameters = parameters,
+    ).results.map(tmdbShowToMedia::map)
+  }
 }

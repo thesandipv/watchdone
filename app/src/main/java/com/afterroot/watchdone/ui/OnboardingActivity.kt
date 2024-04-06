@@ -45,135 +45,135 @@ import com.google.android.material.R as MaterialR
 @AndroidEntryPoint
 class OnboardingActivity : ComponentActivity() {
 
-    private val networkViewModel: NetworkViewModel by viewModels()
+  private val networkViewModel: NetworkViewModel by viewModels()
 
-    @Inject lateinit var firebaseAuth: FirebaseAuth
+  @Inject lateinit var firebaseAuth: FirebaseAuth
 
-    @Inject lateinit var firestore: FirebaseFirestore
+  @Inject lateinit var firestore: FirebaseFirestore
 
-    @Inject lateinit var logger: Logger
+  @Inject lateinit var logger: Logger
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { true }
-        AppCompatDelegate.setDefaultNightMode(
-            when (
-                getPrefs().getString(
-                    Constants.PREF_KEY_THEME,
-                    getString(CommonR.string.theme_device_default),
-                )
-            ) {
-                getString(
-                    CommonR.string.theme_device_default,
-                ),
-                -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
-                getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            },
+  override fun onCreate(savedInstanceState: Bundle?) {
+    val splashScreen = installSplashScreen()
+    splashScreen.setKeepOnScreenCondition { true }
+    AppCompatDelegate.setDefaultNightMode(
+      when (
+        getPrefs().getString(
+          Constants.PREF_KEY_THEME,
+          getString(CommonR.string.theme_device_default),
         )
-        super.onCreate(savedInstanceState)
-    }
+      ) {
+        getString(
+          CommonR.string.theme_device_default,
+        ),
+        -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
+        getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
+        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+      },
+    )
+    super.onCreate(savedInstanceState)
+  }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        setUpNetworkObserver()
-        when {
-            firebaseAuth.currentUser == null -> {
-                tryLogin()
-            }
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
+    setUpNetworkObserver()
+    when {
+      firebaseAuth.currentUser == null -> {
+        tryLogin()
+      }
 
-            intent.extras != null -> {
-                intent.extras?.let {
-                    val link = it.getString("link")
-                    when {
-                        link != null -> {
-                            browse(link, true)
-                            finish()
-                        }
-
-                        else -> {
-                            launchMain()
-                        }
-                    }
-                }
+      intent.extras != null -> {
+        intent.extras?.let {
+          val link = it.getString("link")
+          when {
+            link != null -> {
+              browse(link, true)
+              finish()
             }
 
             else -> {
-                launchMain()
+              launchMain()
             }
+          }
         }
+      }
 
-        // Use Firebase emulators
-        runCatching {
-            if (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)) {
-                firestore.useEmulator("10.0.2.2", 8080)
-                logger.d { "Using firestore emulator" }
-            }
-        }
+      else -> {
+        launchMain()
+      }
     }
 
-    private fun tryLogin() {
-        val pickerLayout = AuthMethodPickerLayout.Builder(R.layout.layout_main_auth)
-            .setGoogleButtonId(R.id.button_auth_sign_in_google)
-            .setEmailButtonId(R.id.button_auth_sign_in_email)
-            .setTosAndPrivacyPolicyId(R.id.text_top_pp)
-            .build()
+    // Use Firebase emulators
+    runCatching {
+      if (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)) {
+        firestore.useEmulator("10.0.2.2", 8080)
+        logger.d { "Using firestore emulator" }
+      }
+    }
+  }
 
-        resultLauncher.launch(
-            AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAuthMethodPickerLayout(pickerLayout)
-                .setTheme(MaterialR.style.Theme_MaterialComponents_DayNight_NoActionBar)
-                .setLogo(CommonR.drawable.launch_icon)
-                .setTosAndPrivacyPolicyUrls(
-                    getString(CommonR.string.url_tos),
-                    getString(CommonR.string.url_privacy_policy),
-                )
-                .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
-                .setAvailableProviders(
-                    listOf(
-                        AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build(),
-                        AuthUI.IdpConfig.GoogleBuilder()
-                            .setSignInOptions(
-                                GoogleSignInOptions.Builder().requestProfile().requestEmail().requestId().build(),
-                            )
-                            .build(),
-                    ),
-                ).build(),
+  private fun tryLogin() {
+    val pickerLayout = AuthMethodPickerLayout.Builder(R.layout.layout_main_auth)
+      .setGoogleButtonId(R.id.button_auth_sign_in_google)
+      .setEmailButtonId(R.id.button_auth_sign_in_email)
+      .setTosAndPrivacyPolicyId(R.id.text_top_pp)
+      .build()
+
+    resultLauncher.launch(
+      AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setAuthMethodPickerLayout(pickerLayout)
+        .setTheme(MaterialR.style.Theme_MaterialComponents_DayNight_NoActionBar)
+        .setLogo(CommonR.drawable.launch_icon)
+        .setTosAndPrivacyPolicyUrls(
+          getString(CommonR.string.url_tos),
+          getString(CommonR.string.url_privacy_policy),
         )
-    }
+        .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
+        .setAvailableProviders(
+          listOf(
+            AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build(),
+            AuthUI.IdpConfig.GoogleBuilder()
+              .setSignInOptions(
+                GoogleSignInOptions.Builder().requestProfile().requestEmail().requestId().build(),
+              )
+              .build(),
+          ),
+        ).build(),
+    )
+  }
 
-    private val resultLauncher = registerForActivityResult(FirebaseAuthUIActivityResultContract()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            launchMain()
-        } else {
-            Toast.makeText(
-                this,
-                getString(CommonR.string.msg_login_failed),
-                Toast.LENGTH_SHORT,
-            ).show()
-            tryLogin()
-        }
+  private val resultLauncher = registerForActivityResult(FirebaseAuthUIActivityResultContract()) {
+    if (it.resultCode == Activity.RESULT_OK) {
+      launchMain()
+    } else {
+      Toast.makeText(
+        this,
+        getString(CommonR.string.msg_login_failed),
+        Toast.LENGTH_SHORT,
+      ).show()
+      tryLogin()
     }
+  }
 
-    private fun launchMain() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
-    }
+  private fun launchMain() {
+    startActivity(Intent(this, MainActivity::class.java))
+    finish()
+  }
 
-    private var dialog: AlertDialog? = null
-    private fun setUpNetworkObserver() {
-        networkViewModel.monitor(
-            this,
-            onConnect = {
-                if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
-            },
-            onDisconnect = {
-                dialog = showNetworkDialog(state = it, positive = {
-                    setUpNetworkObserver()
-                }, negative = { finish() })
-            },
-        )
-    }
+  private var dialog: AlertDialog? = null
+  private fun setUpNetworkObserver() {
+    networkViewModel.monitor(
+      this,
+      onConnect = {
+        if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
+      },
+      onDisconnect = {
+        dialog = showNetworkDialog(state = it, positive = {
+          setUpNetworkObserver()
+        }, negative = { finish() })
+      },
+    )
+  }
 }

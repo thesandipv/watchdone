@@ -28,50 +28,50 @@ import org.junit.Test
 @HiltAndroidTest
 class MovieInfoTest : DataTest() {
 
-    @Inject lateinit var moviesRepository: MoviesRepository
+  @Inject lateinit var moviesRepository: MoviesRepository
 
-    @Inject lateinit var searchRepository: SearchRepository
+  @Inject lateinit var searchRepository: SearchRepository
 
-    @Test
-    fun `MovieDb Working`() {
-        launch {
-            Assert.assertEquals("Fight Club", moviesRepository.getMovieInfo(550).title)
-        }
+  @Test
+  fun `MovieDb Working`() {
+    launch {
+      Assert.assertEquals("Fight Club", moviesRepository.getMovieInfo(550).title)
     }
+  }
 
-    @Test
-    fun `Full Movie Info`() {
-        launch {
-            val response = moviesRepository.getFullMovieInfo(
-                550,
-                MovieAppendableResponses.images,
-                MovieAppendableResponses.videos,
-            )
-            Assert.assertNotNull("Images is null", response.images(ArtworkType.POSTER))
-            response.images(ArtworkType.POSTER)?.forEach {
-                println(it.toString())
-            }
-            Assert.assertNotNull("Videos is null", response.videos())
-            response.videos()?.forEach {
-                println(it.toString())
-            }
-        }
+  @Test
+  fun `Full Movie Info`() {
+    launch {
+      val response = moviesRepository.getFullMovieInfo(
+        550,
+        MovieAppendableResponses.images,
+        MovieAppendableResponses.videos,
+      )
+      Assert.assertNotNull("Images is null", response.images(ArtworkType.POSTER))
+      response.images(ArtworkType.POSTER)?.forEach {
+        println(it.toString())
+      }
+      Assert.assertNotNull("Videos is null", response.videos())
+      response.videos()?.forEach {
+        println(it.toString())
+      }
     }
+  }
 
-    @Test
-    fun `search Movies`() {
-        launch {
-            val result = searchRepository.searchMovie("Fight Club")
-            Assert.assertNotNull(result)
-            Assert.assertNotNull(result.results)
-        }
+  @Test
+  fun `search Movies`() {
+    launch {
+      val result = searchRepository.searchMovie("Fight Club")
+      Assert.assertNotNull(result)
+      Assert.assertNotNull(result.results)
     }
+  }
 
-    private fun launch(block: suspend () -> Unit) {
-        runBlocking {
-            launch {
-                block()
-            }
-        }
+  private fun launch(block: suspend () -> Unit) {
+    runBlocking {
+      launch {
+        block()
+      }
     }
+  }
 }

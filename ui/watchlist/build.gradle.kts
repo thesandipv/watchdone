@@ -14,30 +14,30 @@
  */
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.ui.watchlist"
+  namespace = "com.afterroot.watchdone.ui.watchlist"
 }
 
 dependencies {
-    implementation(projects.data)
-    implementation(projects.domain)
-    implementation(projects.ui.media)
+  implementation(projects.data)
+  implementation(projects.domain)
+  implementation(projects.ui.media)
 
-    implementation(libs.firebase.firestore)
+  implementation(libs.firebase.firestore)
 
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.bundles.lifecycle)
+  implementation(libs.androidx.fragment)
+  implementation(libs.androidx.navigation.fragment)
+  implementation(libs.bundles.lifecycle)
 
-    implementation(libs.hilt.compose)
+  implementation(libs.hilt.compose)
 
-    implementation(libs.coil)
+  implementation(libs.coil)
 }

@@ -21,11 +21,11 @@ import com.afterroot.watchdone.data.model.MediaType
 
 @Immutable
 data class DiscoverViewState(
-    val mediaType: MediaType? = MediaType.MOVIE,
-    val isLoading: Boolean = false,
-    override val message: UiMessage? = null,
+  val mediaType: MediaType? = MediaType.MOVIE,
+  val isLoading: Boolean = false,
+  override val message: UiMessage? = null,
 ) : ViewState() {
-    companion object {
-        val Empty = DiscoverViewState()
-    }
+  companion object {
+    val Empty = DiscoverViewState()
+  }
 }

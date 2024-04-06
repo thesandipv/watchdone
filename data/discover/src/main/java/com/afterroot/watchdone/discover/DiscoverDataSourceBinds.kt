@@ -24,15 +24,15 @@ import javax.inject.Named
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DiscoverDataSourceBinds {
-    @Binds
-    @Named("tmdbDiscoverMovieDataSource")
-    abstract fun bindDiscoverMovieDataSource(
-        tmdbDiscoverMovieDataSource: TmdbDiscoverMovieDataSource,
-    ): DiscoverDataSource
+  @Binds
+  @Named("tmdbDiscoverMovieDataSource")
+  abstract fun bindDiscoverMovieDataSource(
+    tmdbDiscoverMovieDataSource: TmdbDiscoverMovieDataSource,
+  ): DiscoverDataSource
 
-    @Binds
-    @Named("tmdbDiscoverShowDataSource")
-    abstract fun bindDiscoverShowDataSource(
-        tmdbDiscoverShowDataSource: TmdbDiscoverShowDataSource,
-    ): DiscoverDataSource
+  @Binds
+  @Named("tmdbDiscoverShowDataSource")
+  abstract fun bindDiscoverShowDataSource(
+    tmdbDiscoverShowDataSource: TmdbDiscoverShowDataSource,
+  ): DiscoverDataSource
 }

@@ -22,10 +22,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class ObserveGenres @Inject constructor(private val genreDao: GenreDao) :
-    SubjectInteractor<ObserveGenres.Params, List<Genre>>() {
-    data class Params(val ids: List<Int>)
+  SubjectInteractor<ObserveGenres.Params, List<Genre>>() {
+  data class Params(val ids: List<Int>)
 
-    override suspend fun createObservable(params: Params): Flow<List<Genre>> {
-        return genreDao.getGenres(params.ids)
-    }
+  override suspend fun createObservable(params: Params): Flow<List<Genre>> {
+    return genreDao.getGenres(params.ids)
+  }
 }

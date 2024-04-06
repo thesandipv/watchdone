@@ -42,90 +42,90 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    val savedState: SavedStateHandle? = null,
-    val settings: Settings,
-    private val searchRepository: SearchRepository,
-    private val logger: Logger,
+  val savedState: SavedStateHandle? = null,
+  val settings: Settings,
+  private val searchRepository: SearchRepository,
+  private val logger: Logger,
 ) : ViewModel() {
-    private val mediaType = MutableStateFlow(MediaType.MOVIE)
-    private val searchQuery = MutableStateFlow(Query())
-    private val _query = MutableSharedFlow<Query>()
-    private val isRefresh = MutableStateFlow(false)
-    private val isLoading = MutableStateFlow(false)
-    private val isEmpty = MutableStateFlow(true)
+  private val mediaType = MutableStateFlow(MediaType.MOVIE)
+  private val searchQuery = MutableStateFlow(Query())
+  private val _query = MutableSharedFlow<Query>()
+  private val isRefresh = MutableStateFlow(false)
+  private val isLoading = MutableStateFlow(false)
+  private val isEmpty = MutableStateFlow(true)
 
-    val state: StateFlow<SearchViewState> =
-        combine(
-            mediaType,
-            searchQuery,
-            isRefresh,
-            isLoading,
-            isEmpty,
-        ) { mediaType, searchQuery, isRefresh, isLoading, isEmpty ->
-            SearchViewState(
-                mediaType = mediaType,
-                query = searchQuery,
-                refresh = isRefresh,
-                isLoading = isLoading,
-                empty = isEmpty,
-            ).apply {
-                logger.d { "load: State: $this" }
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = SearchViewState.Empty,
-        )
+  val state: StateFlow<SearchViewState> =
+    combine(
+      mediaType,
+      searchQuery,
+      isRefresh,
+      isLoading,
+      isEmpty,
+    ) { mediaType, searchQuery, isRefresh, isLoading, isEmpty ->
+      SearchViewState(
+        mediaType = mediaType,
+        query = searchQuery,
+        refresh = isRefresh,
+        isLoading = isLoading,
+        empty = isEmpty,
+      ).apply {
+        logger.d { "load: State: $this" }
+      }
+    }.stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5000),
+      initialValue = SearchViewState.Empty,
+    )
 
-    val searchMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
-        isRefresh.value = false
-        SearchMediaPagingSource(
-            SearchDataSource.Params(
-                MediaType.MOVIE,
-                searchQuery.value.getQuery(),
-            ),
-            searchRepository,
-        )
-    }.flow.cachedIn(viewModelScope)
+  val searchMovies = Pager(PagingConfig(20, initialLoadSize = 40)) {
+    isRefresh.value = false
+    SearchMediaPagingSource(
+      SearchDataSource.Params(
+        MediaType.MOVIE,
+        searchQuery.value.getQuery(),
+      ),
+      searchRepository,
+    )
+  }.flow.cachedIn(viewModelScope)
 
-    val searchTV = Pager(PagingConfig(20, initialLoadSize = 40)) {
-        isRefresh.value = false
-        SearchMediaPagingSource(
-            SearchDataSource.Params(
-                MediaType.SHOW,
-                searchQuery.value.getQuery(),
-            ),
-            searchRepository,
-        )
-    }.flow.cachedIn(viewModelScope)
+  val searchTV = Pager(PagingConfig(20, initialLoadSize = 40)) {
+    isRefresh.value = false
+    SearchMediaPagingSource(
+      SearchDataSource.Params(
+        MediaType.SHOW,
+        searchQuery.value.getQuery(),
+      ),
+      searchRepository,
+    )
+  }.flow.cachedIn(viewModelScope)
 
-    init {
-        logger.d { "init: Start" }
+  init {
+    logger.d { "init: Start" }
 
-        viewModelScope.launch {
-            _query.debounce(300).collectLatest {
-                searchQuery.value = it
-                isRefresh.value = true
-            }
-        }
-    }
-
-    fun search(query: Query) {
-        viewModelScope.launch {
-            _query.emit(query)
-        }
-    }
-
-    fun setMediaType(type: MediaType) {
-        mediaType.value = type
+    viewModelScope.launch {
+      _query.debounce(300).collectLatest {
+        searchQuery.value = it
         isRefresh.value = true
+      }
     }
+  }
 
-    fun setLoading(loading: Boolean) {
-        isLoading.value = loading
+  fun search(query: Query) {
+    viewModelScope.launch {
+      _query.emit(query)
     }
+  }
 
-    fun setEmpty(empty: Boolean) {
-        isEmpty.value = empty
-    }
+  fun setMediaType(type: MediaType) {
+    mediaType.value = type
+    isRefresh.value = true
+  }
+
+  fun setLoading(loading: Boolean) {
+    isLoading.value = loading
+  }
+
+  fun setEmpty(empty: Boolean) {
+    isEmpty.value = empty
+  }
 }

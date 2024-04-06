@@ -19,18 +19,18 @@ import info.movito.themoviedbapi.model.ExternalIds
 import info.movito.themoviedbapi.model.MovieImages
 
 data class Season(
-    val id: Int = 0,
-    val name: String? = null,
-    val airDate: String? = null,
-    val posterPath: String? = null,
-    val seasonNumber: Int = 0,
-    val overview: String? = null,
-    val episodes: Episodes = null,
-    val credits: Credits? = null,
-    val externalIds: ExternalIds? = null,
-    val images: MovieImages? = null,
-    val videos: Videos = null,
-    val keywords: Keywords = null,
-    // Additional Data
-    var isWatched: Boolean = false,
+  val id: Int = 0,
+  val name: String? = null,
+  val airDate: String? = null,
+  val posterPath: String? = null,
+  val seasonNumber: Int = 0,
+  val overview: String? = null,
+  val episodes: Episodes = null,
+  val credits: Credits? = null,
+  val externalIds: ExternalIds? = null,
+  val images: MovieImages? = null,
+  val videos: Videos = null,
+  val keywords: Keywords = null,
+  // Additional Data
+  var isWatched: Boolean = false,
 )

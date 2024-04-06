@@ -29,47 +29,47 @@ import javax.inject.Inject
 import kotlinx.coroutines.withContext
 
 class UpdateDiscover @Inject constructor(
-    private val discoverMovieStore: DiscoverMovieStore,
-    private val discoverShowStore: DiscoverShowsStore,
-    private val discoverDao: DiscoverDao,
-    private val mediaStore: MovieStore,
-    private val dispatchers: CoroutineDispatchers,
-    private val logger: Logger,
+  private val discoverMovieStore: DiscoverMovieStore,
+  private val discoverShowStore: DiscoverShowsStore,
+  private val discoverDao: DiscoverDao,
+  private val mediaStore: MovieStore,
+  private val dispatchers: CoroutineDispatchers,
+  private val logger: Logger,
 ) : Interactor<UpdateDiscover.Params, Unit>() {
-    data class Params(val mediaType: MediaType, val page: Int, val forceRefresh: Boolean = false)
+  data class Params(val mediaType: MediaType, val page: Int, val forceRefresh: Boolean = false)
 
-    object Page {
-        const val NEXT_PAGE = -1
-        const val REFRESH = -2
-    }
+  object Page {
+    const val NEXT_PAGE = -1
+    const val REFRESH = -2
+  }
 
-    override suspend fun doWork(params: Params) {
-        withContext(dispatchers.io) {
-            val page = when {
-                params.page >= 0 -> params.page
-                params.page == Page.NEXT_PAGE -> {
-                    val lastPage = discoverDao.getLastPage()
-                    if (lastPage != null) lastPage + 1 else 0
-                }
-
-                else -> 1
-            }
-            logger.d { "APPEND: Fetching page $page" }
-            when (params.mediaType) {
-                MediaType.MOVIE -> {
-                    discoverMovieStore.fetch(page, params.forceRefresh).parallelForEach {
-                        mediaStore.fetch(it.mediaId)
-                    }
-                }
-
-                MediaType.SHOW -> {
-                    discoverShowStore.fetch(page, params.forceRefresh).parallelForEach {
-                        mediaStore.fetch(it.mediaId)
-                    }
-                }
-
-                else -> {}
-            }
+  override suspend fun doWork(params: Params) {
+    withContext(dispatchers.io) {
+      val page = when {
+        params.page >= 0 -> params.page
+        params.page == Page.NEXT_PAGE -> {
+          val lastPage = discoverDao.getLastPage()
+          if (lastPage != null) lastPage + 1 else 0
         }
+
+        else -> 1
+      }
+      logger.d { "APPEND: Fetching page $page" }
+      when (params.mediaType) {
+        MediaType.MOVIE -> {
+          discoverMovieStore.fetch(page, params.forceRefresh).parallelForEach {
+            mediaStore.fetch(it.mediaId)
+          }
+        }
+
+        MediaType.SHOW -> {
+          discoverShowStore.fetch(page, params.forceRefresh).parallelForEach {
+            mediaStore.fetch(it.mediaId)
+          }
+        }
+
+        else -> {}
+      }
     }
+  }
 }

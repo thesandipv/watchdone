@@ -14,30 +14,30 @@
 */
 
 plugins {
-    id(afterroot.plugins.android.test.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
+  id(afterroot.plugins.android.test.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.test"
-    targetProjectPath = ":app"
+  namespace = "com.afterroot.watchdone.test"
+  targetProjectPath = ":app"
 
-    defaultConfig {
-        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
-    }
+  defaultConfig {
+    testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
+  }
 }
 
 dependencies {
-    implementation(projects.app)
-    implementation(projects.core.testing)
-    implementation(projects.data)
+  implementation(projects.app)
+  implementation(projects.core.testing)
+  implementation(projects.data)
 
-    implementation(libs.androidx.test.core)
-    implementation(libs.androidx.test.runner)
-    implementation(libs.hilt.testing)
-    implementation(libs.kotlinx.coroutines.test)
-    implementation(libs.test.junit)
-    kapt(libs.hilt.compiler)
+  implementation(libs.androidx.test.core)
+  implementation(libs.androidx.test.runner)
+  implementation(libs.hilt.testing)
+  implementation(libs.kotlinx.coroutines.test)
+  implementation(libs.test.junit)
+  kapt(libs.hilt.compiler)
 }

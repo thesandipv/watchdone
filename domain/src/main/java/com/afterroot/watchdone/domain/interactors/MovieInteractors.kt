@@ -25,28 +25,28 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class ObserveMovieCredits @Inject constructor(private val movieRepository: MovieRepository) :
-    SubjectInteractor<ObserveMovieCredits.Params, State<Credits>>() {
-    data class Params(val movieId: Int)
+  SubjectInteractor<ObserveMovieCredits.Params, State<Credits>>() {
+  data class Params(val movieId: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<Credits>> {
-        return movieRepository.credits(params.movieId)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<Credits>> {
+    return movieRepository.credits(params.movieId)
+  }
 }
 
 class ObserveMovieInfo @Inject constructor(private val movieRepository: MovieRepository) :
-    SubjectInteractor<ObserveMovieInfo.Params, State<Movie>>() {
-    data class Params(val movieId: Int)
+  SubjectInteractor<ObserveMovieInfo.Params, State<Movie>>() {
+  data class Params(val movieId: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<Movie>> {
-        return movieRepository.info(params.movieId)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<Movie>> {
+    return movieRepository.info(params.movieId)
+  }
 }
 
 class ObserveMovieWatchProviders @Inject constructor(private val movieRepository: MovieRepository) :
-    SubjectInteractor<ObserveMovieWatchProviders.Params, State<WatchProviderResult>>() {
-    data class Params(val id: Int)
+  SubjectInteractor<ObserveMovieWatchProviders.Params, State<WatchProviderResult>>() {
+  data class Params(val id: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> {
-        return movieRepository.watchProviders(params.id)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> {
+    return movieRepository.watchProviders(params.id)
+  }
 }

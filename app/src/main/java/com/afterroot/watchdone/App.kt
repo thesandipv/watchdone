@@ -24,12 +24,12 @@ import dagger.hilt.android.HiltAndroidApp
 @Keep
 @HiltAndroidApp
 class App : Application(), ImageLoaderFactory {
-    override fun onCreate() {
-        DynamicColors.applyToActivitiesIfAvailable(this)
-        super.onCreate()
-    }
+  override fun onCreate() {
+    DynamicColors.applyToActivitiesIfAvailable(this)
+    super.onCreate()
+  }
 
-    override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this)
-        .crossfade(true)
-        .build()
+  override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this)
+    .crossfade(true)
+    .build()
 }

@@ -22,10 +22,10 @@ import com.afterroot.watchdone.utils.State
 
 @Immutable
 data class ProfileViewState(
-    override val message: UiMessage? = null,
-    val user: State<LocalUser>? = null,
+  override val message: UiMessage? = null,
+  val user: State<LocalUser>? = null,
 ) : ViewState() {
-    companion object {
-        val Empty = ProfileViewState()
-    }
+  companion object {
+    val Empty = ProfileViewState()
+  }
 }

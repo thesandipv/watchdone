@@ -58,214 +58,214 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MediaInfoViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    observeMovieInfo: ObserveMovieInfo,
-    observeTVInfo: ObserveTVInfo,
-    observeMovieCredits: ObserveMovieCredits,
-    observeTVCredits: ObserveTVCredits,
-    observeTVSeason: ObserveTVSeason,
-    observeMovieWatchProviders: ObserveMovieWatchProviders,
-    observeTVWatchProviders: ObserveTVWatchProviders,
-    observePagedRecommended: ObservePagedRecommended,
-    private val logger: Logger,
-    private val observeMediaInfo: ObserveMediaInfo,
-    private val watchlistInteractor: WatchlistInteractor,
-    private val watchStateInteractor: WatchStateInteractor,
-    private val tvEpisodeInteractor: TVEpisodeInteractor,
-    private val mediaInfoInteractor: MediaInfoInteractor,
+  savedStateHandle: SavedStateHandle,
+  observeMovieInfo: ObserveMovieInfo,
+  observeTVInfo: ObserveTVInfo,
+  observeMovieCredits: ObserveMovieCredits,
+  observeTVCredits: ObserveTVCredits,
+  observeTVSeason: ObserveTVSeason,
+  observeMovieWatchProviders: ObserveMovieWatchProviders,
+  observeTVWatchProviders: ObserveTVWatchProviders,
+  observePagedRecommended: ObservePagedRecommended,
+  private val logger: Logger,
+  private val observeMediaInfo: ObserveMediaInfo,
+  private val watchlistInteractor: WatchlistInteractor,
+  private val watchStateInteractor: WatchStateInteractor,
+  private val tvEpisodeInteractor: TVEpisodeInteractor,
+  private val mediaInfoInteractor: MediaInfoInteractor,
 ) : ViewModel() {
 
-    private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
-    private val _mediaType = savedStateHandle.getStateFlow("type", "")
+  private val mediaId = savedStateHandle.getStateFlow("mediaId", 0)
+  private val _mediaType = savedStateHandle.getStateFlow("type", "")
 
-    val mediaType = MediaType.valueOf(_mediaType.value.uppercase())
+  val mediaType = MediaType.valueOf(_mediaType.value.uppercase())
 
-    private val isInWL = MutableStateFlow(false)
-    private val isWatched = MutableStateFlow(false)
-    private val selectedSeason = MutableStateFlow(1)
-    private val dbMedia = MutableStateFlow(DBMedia.Empty)
+  private val isInWL = MutableStateFlow(false)
+  private val isWatched = MutableStateFlow(false)
+  private val selectedSeason = MutableStateFlow(1)
+  private val dbMedia = MutableStateFlow(DBMedia.Empty)
 
-    private val stateMovie: StateFlow<MediaInfoViewState> by lazy {
-        combine(
-            mediaId,
-            isInWL,
-            isWatched,
-            observeMovieInfo.flow,
-            observeMovieCredits.flow,
-            observeMovieWatchProviders.flow,
-            dbMedia,
-        ) { mediaId, isInWL, isWatched, movieInfo, credits, watchProviders, mediaInfo ->
-            MediaInfoViewState(
-                mediaId = mediaId,
-                mediaType = mediaType,
-                movie = if (movieInfo is State.Success) movieInfo.data else Movie.Empty,
-                isInWatchlist = isInWL,
-                isWatched = isWatched,
-                credits = credits,
-                media = mediaInfo,
-                watchProviders = watchProviders,
-            )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = MediaInfoViewState.Empty,
-        )
-    }
-
-    private val stateTV: StateFlow<MediaInfoViewState> by lazy {
-        combine(
-            mediaId,
-            isInWL,
-            isWatched,
-            observeTVInfo.flow,
-            observeTVCredits.flow,
-            observeTVSeason.flow,
-            observeTVWatchProviders.flow,
-            dbMedia,
-        ) { mediaId, isInWL, isWatched, tvInfo, credits, season, watchProviders, mediaInfo ->
-            MediaInfoViewState(
-                mediaId = mediaId,
-                mediaType = mediaType,
-                tv = if (tvInfo is State.Success) tvInfo.data else TV.Empty,
-                isInWatchlist = isInWL,
-                isWatched = isWatched,
-                credits = credits,
-                seasonInfo = season,
-                media = mediaInfo,
-                watchProviders = watchProviders,
-            )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = MediaInfoViewState.Empty,
-        )
-    }
-
-    val state: StateFlow<MediaInfoViewState> = when (mediaType) {
-        MediaType.MOVIE -> stateMovie
-        MediaType.SHOW -> stateTV
-        else -> flow {
-            emit(MediaInfoViewState.Empty)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = MediaInfoViewState.Empty,
-        )
-    }
-
-    init {
-        if (mediaType == MediaType.MOVIE) {
-            observeMovieInfo(ObserveMovieInfo.Params(mediaId.value))
-            observeMovieCredits(ObserveMovieCredits.Params(mediaId.value))
-            observeMovieWatchProviders(ObserveMovieWatchProviders.Params(mediaId.value))
-        } else if (mediaType == MediaType.SHOW) {
-            observeTVInfo(ObserveTVInfo.Params(mediaId.value))
-            observeTVCredits(ObserveTVCredits.Params(mediaId.value))
-            observeTVWatchProviders(ObserveTVWatchProviders.Params(mediaId.value))
-
-            selectedSeason.onEach {
-                observeTVSeason(ObserveTVSeason.Params(mediaId.value, it))
-            }.launchIn(viewModelScope)
-        }
-        viewModelScope.launch {
-            watchlistInteractor.executeSync(
-                WatchlistInteractor.Params(
-                    mediaId.value,
-                    method = WatchlistInteractor.Method.EXIST,
-                ),
-            ).collectLatest {
-                if (it is State.Success) {
-                    isInWL.value = it.data
-                }
-            }
-        }
-
-        getMediaInfo()
-
-        observePagedRecommended(recommendedParams(mediaId.value, mediaType))
-    }
-
-    val pagedRecommendedList: Flow<PagingData<RecommendedEntryWithMedia>> = observePagedRecommended.flow.cachedIn(
-        viewModelScope,
+  private val stateMovie: StateFlow<MediaInfoViewState> by lazy {
+    combine(
+      mediaId,
+      isInWL,
+      isWatched,
+      observeMovieInfo.flow,
+      observeMovieCredits.flow,
+      observeMovieWatchProviders.flow,
+      dbMedia,
+    ) { mediaId, isInWL, isWatched, movieInfo, credits, watchProviders, mediaInfo ->
+      MediaInfoViewState(
+        mediaId = mediaId,
+        mediaType = mediaType,
+        movie = if (movieInfo is State.Success) movieInfo.data else Movie.Empty,
+        isInWatchlist = isInWL,
+        isWatched = isWatched,
+        credits = credits,
+        media = mediaInfo,
+        watchProviders = watchProviders,
+      )
+    }.stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(),
+      initialValue = MediaInfoViewState.Empty,
     )
+  }
 
-    fun watchlistAction(isAdd: Boolean, media: DBMedia) {
-        viewModelScope.launch {
-            watchlistInteractor.executeSync(
-                WatchlistInteractor.Params(
-                    mediaId.value,
-                    media,
-                    if (isAdd) WatchlistInteractor.Method.ADD else WatchlistInteractor.Method.REMOVE,
-                ),
-            ).collect { result ->
-                result.whenSuccess {
-                    isInWL.value = isAdd
-                    if (!isAdd) { // Set watched to false when media removed from watchlist
-                        isWatched.value = false
-                    }
-                }
-            }
+  private val stateTV: StateFlow<MediaInfoViewState> by lazy {
+    combine(
+      mediaId,
+      isInWL,
+      isWatched,
+      observeTVInfo.flow,
+      observeTVCredits.flow,
+      observeTVSeason.flow,
+      observeTVWatchProviders.flow,
+      dbMedia,
+    ) { mediaId, isInWL, isWatched, tvInfo, credits, season, watchProviders, mediaInfo ->
+      MediaInfoViewState(
+        mediaId = mediaId,
+        mediaType = mediaType,
+        tv = if (tvInfo is State.Success) tvInfo.data else TV.Empty,
+        isInWatchlist = isInWL,
+        isWatched = isWatched,
+        credits = credits,
+        seasonInfo = season,
+        media = mediaInfo,
+        watchProviders = watchProviders,
+      )
+    }.stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(),
+      initialValue = MediaInfoViewState.Empty,
+    )
+  }
+
+  val state: StateFlow<MediaInfoViewState> = when (mediaType) {
+    MediaType.MOVIE -> stateMovie
+    MediaType.SHOW -> stateTV
+    else -> flow {
+      emit(MediaInfoViewState.Empty)
+    }.stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(),
+      initialValue = MediaInfoViewState.Empty,
+    )
+  }
+
+  init {
+    if (mediaType == MediaType.MOVIE) {
+      observeMovieInfo(ObserveMovieInfo.Params(mediaId.value))
+      observeMovieCredits(ObserveMovieCredits.Params(mediaId.value))
+      observeMovieWatchProviders(ObserveMovieWatchProviders.Params(mediaId.value))
+    } else if (mediaType == MediaType.SHOW) {
+      observeTVInfo(ObserveTVInfo.Params(mediaId.value))
+      observeTVCredits(ObserveTVCredits.Params(mediaId.value))
+      observeTVWatchProviders(ObserveTVWatchProviders.Params(mediaId.value))
+
+      selectedSeason.onEach {
+        observeTVSeason(ObserveTVSeason.Params(mediaId.value, it))
+      }.launchIn(viewModelScope)
+    }
+    viewModelScope.launch {
+      watchlistInteractor.executeSync(
+        WatchlistInteractor.Params(
+          mediaId.value,
+          method = WatchlistInteractor.Method.EXIST,
+        ),
+      ).collectLatest {
+        if (it is State.Success) {
+          isInWL.value = it.data
         }
+      }
     }
 
-    fun watchStateAction(isMark: Boolean, media: DBMedia) {
-        viewModelScope.launch {
-            watchStateInteractor.executeSync(
-                WatchStateInteractor.Params(
-                    id = mediaId.value,
-                    watchState = isMark,
-                    method = WatchStateInteractor.Method.MEDIA,
-                ),
-            ).collect { result ->
-                result.whenSuccess {
-                    isWatched.value = it
-                }.whenFailed { message, exception ->
-                    logger.e(exception) { "watchStateAction: $message" }
-                }
-            }
+    getMediaInfo()
+
+    observePagedRecommended(recommendedParams(mediaId.value, mediaType))
+  }
+
+  val pagedRecommendedList: Flow<PagingData<RecommendedEntryWithMedia>> = observePagedRecommended.flow.cachedIn(
+    viewModelScope,
+  )
+
+  fun watchlistAction(isAdd: Boolean, media: DBMedia) {
+    viewModelScope.launch {
+      watchlistInteractor.executeSync(
+        WatchlistInteractor.Params(
+          mediaId.value,
+          media,
+          if (isAdd) WatchlistInteractor.Method.ADD else WatchlistInteractor.Method.REMOVE,
+        ),
+      ).collect { result ->
+        result.whenSuccess {
+          isInWL.value = isAdd
+          if (!isAdd) { // Set watched to false when media removed from watchlist
+            isWatched.value = false
+          }
         }
+      }
     }
+  }
 
-    fun episodeWatchStateAction(episodeId: String, isMark: Boolean) {
-        viewModelScope.launch {
-            watchStateInteractor.executeSync(
-                WatchStateInteractor.Params(
-                    id = mediaId.value,
-                    watchState = isMark,
-                    episodeId = episodeId,
-                    method = WatchStateInteractor.Method.EPISODE,
-                ),
-            ).collect { result ->
-                result.whenSuccess {
-                    // TODO this is costly
-                    getMediaInfo()
-                }
-            }
+  fun watchStateAction(isMark: Boolean, media: DBMedia) {
+    viewModelScope.launch {
+      watchStateInteractor.executeSync(
+        WatchStateInteractor.Params(
+          id = mediaId.value,
+          watchState = isMark,
+          method = WatchStateInteractor.Method.MEDIA,
+        ),
+      ).collect { result ->
+        result.whenSuccess {
+          isWatched.value = it
+        }.whenFailed { message, exception ->
+          logger.e(exception) { "watchStateAction: $message" }
         }
+      }
     }
+  }
 
-    private fun getMediaInfo() {
-        viewModelScope.launch {
-            mediaInfoInteractor.executeSync(
-                MediaInfoInteractor.Params(mediaId.value),
-            ).collectLatest { result ->
-                result.whenSuccess {
-                    dbMedia.value = it
-                    isWatched.value = it.isWatched
-                }
-            }
+  fun episodeWatchStateAction(episodeId: String, isMark: Boolean) {
+    viewModelScope.launch {
+      watchStateInteractor.executeSync(
+        WatchStateInteractor.Params(
+          id = mediaId.value,
+          watchState = isMark,
+          episodeId = episodeId,
+          method = WatchStateInteractor.Method.EPISODE,
+        ),
+      ).collect { result ->
+        result.whenSuccess {
+          // TODO this is costly
+          getMediaInfo()
         }
+      }
     }
+  }
 
-    fun selectSeason(season: Int) {
-        selectedSeason.value = season
+  private fun getMediaInfo() {
+    viewModelScope.launch {
+      mediaInfoInteractor.executeSync(
+        MediaInfoInteractor.Params(mediaId.value),
+      ).collectLatest { result ->
+        result.whenSuccess {
+          dbMedia.value = it
+          isWatched.value = it.isWatched
+        }
+      }
     }
+  }
 
-    companion object {
-        fun recommendedParams(mediaId: Int, mediaType: MediaType) = ObservePagedRecommended.Params(
-            mediaId,
-            mediaType,
-            PagingConfig(20, initialLoadSize = 20),
-        )
-    }
+  fun selectSeason(season: Int) {
+    selectedSeason.value = season
+  }
+
+  companion object {
+    fun recommendedParams(mediaId: Int, mediaType: MediaType) = ObservePagedRecommended.Params(
+      mediaId,
+      mediaType,
+      PagingConfig(20, initialLoadSize = 20),
+    )
+  }
 }

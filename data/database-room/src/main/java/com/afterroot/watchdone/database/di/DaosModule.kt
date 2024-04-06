@@ -29,21 +29,21 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object DaosModule {
-    @Provides
-    fun provideMediaDao(database: WatchdoneDatabase): MediaDao = database.mediaDao()
+  @Provides
+  fun provideMediaDao(database: WatchdoneDatabase): MediaDao = database.mediaDao()
 
-    @Provides
-    fun provideGenreDao(database: WatchdoneDatabase): GenreDao = database.genreDao()
+  @Provides
+  fun provideGenreDao(database: WatchdoneDatabase): GenreDao = database.genreDao()
 
-    @Provides
-    fun provideCountriesDao(database: WatchdoneDatabase): CountriesDao = database.countriesDao()
+  @Provides
+  fun provideCountriesDao(database: WatchdoneDatabase): CountriesDao = database.countriesDao()
 
-    @Provides
-    fun provideDiscoverDao(database: WatchdoneDatabase): DiscoverDao = database.discoverDao()
+  @Provides
+  fun provideDiscoverDao(database: WatchdoneDatabase): DiscoverDao = database.discoverDao()
 
-    @Provides
-    fun provideRecommendedDao(
-        database: WatchdoneDatabase,
-    ): RecommendedDao = database
-        .recommendedDao()
+  @Provides
+  fun provideRecommendedDao(
+    database: WatchdoneDatabase,
+  ): RecommendedDao = database
+    .recommendedDao()
 }

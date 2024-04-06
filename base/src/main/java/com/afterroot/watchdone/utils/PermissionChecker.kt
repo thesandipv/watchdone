@@ -20,11 +20,11 @@ import androidx.core.content.PermissionChecker
 
 class PermissionChecker(private val mContext: Context) {
 
-    fun lacksPermissions(permissions: Array<String>): Boolean {
-        return permissions.any { lacksPermission(it) == PackageManager.PERMISSION_DENIED }
-    }
+  fun lacksPermissions(permissions: Array<String>): Boolean {
+    return permissions.any { lacksPermission(it) == PackageManager.PERMISSION_DENIED }
+  }
 
-    private fun lacksPermission(permission: String): Int {
-        return PermissionChecker.checkSelfPermission(mContext, permission)
-    }
+  private fun lacksPermission(permission: String): Int {
+    return PermissionChecker.checkSelfPermission(mContext, permission)
+  }
 }

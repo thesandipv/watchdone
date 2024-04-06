@@ -22,20 +22,20 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import com.afterroot.watchdone.R
 
 class LoginCustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-    LinearLayoutCompat(context, attrs, defStyleAttr) {
+  LinearLayoutCompat(context, attrs, defStyleAttr) {
 
-    private val customBack: AppCompatImageView
-    private val unsplashAttribution: AppCompatTextView
+  private val customBack: AppCompatImageView
+  private val unsplashAttribution: AppCompatTextView
 
-    init {
-        inflate(context, R.layout.login_custom_view, this).apply {
-            customBack = findViewById(R.id.login_custom_background)
-            unsplashAttribution = findViewById(R.id.unsplash_attribution_text)
-            loadBackgroundImage()
-        }
+  init {
+    inflate(context, R.layout.login_custom_view, this).apply {
+      customBack = findViewById(R.id.login_custom_background)
+      unsplashAttribution = findViewById(R.id.unsplash_attribution_text)
+      loadBackgroundImage()
     }
+  }
 
-    private fun loadBackgroundImage() {
+  private fun loadBackgroundImage() {
 /*
         val okHttpClient = ApiModule.provideOkHttpClient(
             UnsplashInterceptor(apiKey = BuildConfig.UNSPLASH_API_KEY),
@@ -77,5 +77,5 @@ class LoginCustomView @JvmOverloads constructor(context: Context, attrs: Attribu
             }
         })
 */
-    }
+  }
 }

@@ -16,5 +16,5 @@
 package com.afterroot.watchdone.base
 
 enum class WatchlistType {
-    GRID, LIST
+  GRID, LIST
 }

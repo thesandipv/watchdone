@@ -30,23 +30,23 @@ import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    val savedState: SavedStateHandle? = null,
-    userDataRepository: UserDataRepository,
-    private val firestoreMigrations: FirestoreMigrations,
+  val savedState: SavedStateHandle? = null,
+  userDataRepository: UserDataRepository,
+  private val firestoreMigrations: FirestoreMigrations,
 ) : ViewModel() {
 
-    val uiState: StateFlow<State<UserData>> = userDataRepository.userData.map {
-        State.success(it)
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = State.loading(),
-        started = SharingStarted.WhileSubscribed(5_000),
-    )
+  val uiState: StateFlow<State<UserData>> = userDataRepository.userData.map {
+    State.success(it)
+  }.stateIn(
+    scope = viewModelScope,
+    initialValue = State.loading(),
+    started = SharingStarted.WhileSubscribed(5_000),
+  )
 
-    init {
-    }
+  init {
+  }
 
-    suspend fun checkForMigrations() {
-        firestoreMigrations.start()
-    }
+  suspend fun checkForMigrations() {
+    firestoreMigrations.start()
+  }
 }

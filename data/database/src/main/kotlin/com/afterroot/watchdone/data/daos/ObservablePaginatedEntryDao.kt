@@ -22,10 +22,10 @@ import com.afterroot.watchdone.data.model.PaginatedEntry
 import kotlinx.coroutines.flow.Flow
 
 interface ObservablePaginatedEntryDao<EC : PaginatedEntry, LI : EntryWithMedia<EC>> : PaginatedEntryDao<EC, LI> {
-    fun entriesForPage(page: Int): Flow<List<EC>>
-    fun entriesObservable(count: Int, offset: Int): Flow<List<LI>>
-    fun entriesPagingSource(mediaType: MediaType): PagingSource<Int, LI>
-    override suspend fun deleteAll(mediaType: MediaType)
-    override suspend fun deletePage(page: Int, mediaType: MediaType)
-    override suspend fun getLastPage(mediaType: MediaType): Int?
+  fun entriesForPage(page: Int): Flow<List<EC>>
+  fun entriesObservable(count: Int, offset: Int): Flow<List<LI>>
+  fun entriesPagingSource(mediaType: MediaType): PagingSource<Int, LI>
+  override suspend fun deleteAll(mediaType: MediaType)
+  override suspend fun deletePage(page: Int, mediaType: MediaType)
+  override suspend fun getLastPage(mediaType: MediaType): Int?
 }

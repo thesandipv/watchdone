@@ -23,21 +23,21 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class GetProfile @Inject constructor(private val profileRepository: ProfileRepository) :
-    ResultInteractor<GetProfile.Params, Flow<State<NetworkUser>>>() {
-    data class Params(val uid: String, val cached: Boolean = false)
+  ResultInteractor<GetProfile.Params, Flow<State<NetworkUser>>>() {
+  data class Params(val uid: String, val cached: Boolean = false)
 
-    override suspend fun doWork(params: Params): Flow<State<NetworkUser>> {
-        return profileRepository.getProfile(params.uid, params.cached)
-    }
+  override suspend fun doWork(params: Params): Flow<State<NetworkUser>> {
+    return profileRepository.getProfile(params.uid, params.cached)
+  }
 }
 
 class SetProfile @Inject constructor(private val profileRepository: ProfileRepository) :
-    ResultInteractor<SetProfile.Params, Flow<State<Boolean>>>() {
-    data class Params(val uid: String, val localUser: LocalUser)
+  ResultInteractor<SetProfile.Params, Flow<State<Boolean>>>() {
+  data class Params(val uid: String, val localUser: LocalUser)
 
-    override suspend fun doWork(params: Params): Flow<State<Boolean>> {
-        return profileRepository.setProfile(params.uid, params.localUser)
-    }
+  override suspend fun doWork(params: Params): Flow<State<Boolean>> {
+    return profileRepository.setProfile(params.uid, params.localUser)
+  }
 }
 
 /*

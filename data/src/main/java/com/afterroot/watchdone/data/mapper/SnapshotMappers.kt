@@ -24,21 +24,21 @@ import com.google.firebase.firestore.QuerySnapshot
 import info.movito.themoviedbapi.model.NetworkMovie
 
 fun QuerySnapshot.toMedia(): List<Media> = toObjects(DBMedia::class.java).map {
-    it.toMedia()
+  it.toMedia()
 }
 
 fun DocumentSnapshot.toMedia(): Media = toObject(DBMedia::class.java)?.toMedia() ?: Media.EMPTY
 
 fun QuerySnapshot.toMovies(): List<Movie> {
-    val list = mutableListOf<Movie>()
-    this.forEach { queryDocumentSnapshot ->
-        list.add(
-            queryDocumentSnapshot.toObject(NetworkMovie::class.java)
-                .toMovie(isWatched = queryDocumentSnapshot.getBoolean(Field.IS_WATCHED) ?: false),
-        )
-    }
-    return list
+  val list = mutableListOf<Movie>()
+  this.forEach { queryDocumentSnapshot ->
+    list.add(
+      queryDocumentSnapshot.toObject(NetworkMovie::class.java)
+        .toMovie(isWatched = queryDocumentSnapshot.getBoolean(Field.IS_WATCHED) ?: false),
+    )
+  }
+  return list
 }
 
 fun QuerySnapshot.toNetworkUser(): NetworkUser =
-    this.documents[0].toObject(NetworkUser::class.java) ?: NetworkUser()
+  this.documents[0].toObject(NetworkUser::class.java) ?: NetworkUser()

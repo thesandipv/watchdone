@@ -39,64 +39,64 @@ import timber.log.Timber
 
 @HiltViewModel
 class WatchlistViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    private var db: FirebaseFirestore,
-    var settings: Settings,
-    var firebaseUtils: FirebaseUtils,
+  private val savedStateHandle: SavedStateHandle,
+  private var db: FirebaseFirestore,
+  var settings: Settings,
+  var firebaseUtils: FirebaseUtils,
 ) : ViewModel() {
-    private val flowIsLoading = MutableStateFlow(false)
-    private val sortAscending = MutableStateFlow(settings.ascSort)
-    private val filters = MutableStateFlow(Filters.EMPTY)
-    private val watchlistType = MutableStateFlow(settings.watchlistType)
+  private val flowIsLoading = MutableStateFlow(false)
+  private val sortAscending = MutableStateFlow(settings.ascSort)
+  private val filters = MutableStateFlow(Filters.EMPTY)
+  private val watchlistType = MutableStateFlow(settings.watchlistType)
 
-    private val uiMessageManager = UiMessageManager()
+  private val uiMessageManager = UiMessageManager()
 
-    val state: StateFlow<WatchlistState> =
-        combine(
-            flowIsLoading,
-            sortAscending,
-            filters,
-            watchlistType,
-            uiMessageManager.message,
-        ) { isLoading, sortAsc, filters, watchlistType, _ ->
-            WatchlistState(
-                loading = isLoading,
-                sortAscending = sortAsc,
-                filters = filters,
-                watchlistType = watchlistType,
-            )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = WatchlistState.Empty,
-        )
+  val state: StateFlow<WatchlistState> =
+    combine(
+      flowIsLoading,
+      sortAscending,
+      filters,
+      watchlistType,
+      uiMessageManager.message,
+    ) { isLoading, sortAsc, filters, watchlistType, _ ->
+      WatchlistState(
+        loading = isLoading,
+        sortAscending = sortAsc,
+        filters = filters,
+        watchlistType = watchlistType,
+      )
+    }.stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5000),
+      initialValue = WatchlistState.Empty,
+    )
 
-    init {
-        Timber.d("init: Initializing")
+  init {
+    Timber.d("init: Initializing")
+  }
+
+  fun setSort(ascending: Boolean) {
+    settings.ascSort = ascending
+    sortAscending.value = ascending
+  }
+
+  fun setWatchlistType(type: WatchlistType) {
+    settings.watchlistType = type
+    watchlistType.value = type
+  }
+
+  fun updateFilters(filterUpdates: Filters) {
+    viewModelScope.launch {
+      filters.emit(filterUpdates)
     }
+  }
 
-    fun setSort(ascending: Boolean) {
-        settings.ascSort = ascending
-        sortAscending.value = ascending
-    }
-
-    fun setWatchlistType(type: WatchlistType) {
-        settings.watchlistType = type
-        watchlistType.value = type
-    }
-
-    fun updateFilters(filterUpdates: Filters) {
-        viewModelScope.launch {
-            filters.emit(filterUpdates)
-        }
-    }
-
-    val watchlist = Pager(PagingConfig(20)) {
-        WatchlistPagingSource(
-            db,
-            settings,
-            firebaseUtils,
-            filters.value,
-        )
-    }.flow.cachedIn(viewModelScope)
+  val watchlist = Pager(PagingConfig(20)) {
+    WatchlistPagingSource(
+      db,
+      settings,
+      firebaseUtils,
+      filters.value,
+    )
+  }.flow.cachedIn(viewModelScope)
 }

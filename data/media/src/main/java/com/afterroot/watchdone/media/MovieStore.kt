@@ -29,31 +29,31 @@ import org.mobilenativefoundation.store.store5.Store
 
 // TODO Show implementation pending
 class MovieStore @Inject constructor(
-    mediaDao: MediaDao,
-    tmdbMovieDataSource: TmdbMovieDataSource,
-    transactionRunner: DatabaseTransactionRunner,
-    logger: Logger,
+  mediaDao: MediaDao,
+  tmdbMovieDataSource: TmdbMovieDataSource,
+  transactionRunner: DatabaseTransactionRunner,
+  logger: Logger,
 ) : Store<Long, Media> by storeBuilder(
-    fetcher = Fetcher.of { id: Long ->
-        val savedMedia = mediaDao.getMediaByIdOrThrow(id)
+  fetcher = Fetcher.of { id: Long ->
+    val savedMedia = mediaDao.getMediaByIdOrThrow(id)
 
-        return@of run { tmdbMovieDataSource.getMovie(savedMedia) }
+    return@of run { tmdbMovieDataSource.getMovie(savedMedia) }
+  },
+  sourceOfTruth = SourceOfTruth.of(
+    reader = { movieId ->
+      mediaDao.getMediaByIdFlow(movieId)
     },
-    sourceOfTruth = SourceOfTruth.of(
-        reader = { movieId ->
-            mediaDao.getMediaByIdFlow(movieId)
-        },
-        writer = { id, response ->
-            logger.d {
-                "Writing in database:media $response"
-            }
-            transactionRunner {
-                mediaDao.upsert(
-                    mergeMedia(local = mediaDao.getMediaByIdOrThrow(id), tmdb = response),
-                )
-            }
-        },
-        delete = mediaDao::delete,
-        deleteAll = mediaDao::deleteAll,
-    ),
+    writer = { id, response ->
+      logger.d {
+        "Writing in database:media $response"
+      }
+      transactionRunner {
+        mediaDao.upsert(
+          mergeMedia(local = mediaDao.getMediaByIdOrThrow(id), tmdb = response),
+        )
+      }
+    },
+    delete = mediaDao::delete,
+    deleteAll = mediaDao::deleteAll,
+  ),
 ).build()

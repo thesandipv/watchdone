@@ -20,20 +20,20 @@ import com.afterroot.watchdone.data.model.TVSeasons
 import info.movito.themoviedbapi.model.tv.TvSeason
 
 fun TvSeason.toSeason(): Season = Season(
-    id = id,
-    name = name,
-    airDate = airDate,
-    posterPath = posterPath,
-    seasonNumber = seasonNumber,
-    overview = overview,
-    episodes = episodes.toEpisodes(),
-    credits = credits,
-    externalIds = externalIds,
-    images = images,
-    videos = getVideos(),
-    keywords = getKeywords(),
+  id = id,
+  name = name,
+  airDate = airDate,
+  posterPath = posterPath,
+  seasonNumber = seasonNumber,
+  overview = overview,
+  episodes = episodes.toEpisodes(),
+  credits = credits,
+  externalIds = externalIds,
+  images = images,
+  videos = getVideos(),
+  keywords = getKeywords(),
 )
 
 fun TVSeasons.toSeasons(): Seasons = this?.map {
-    it.toSeason()
+  it.toSeason()
 }

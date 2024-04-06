@@ -32,39 +32,39 @@ import com.afterroot.ui.common.compose.components.LocalWindowSizeClass
 
 object Layout {
 
-    val bodyMargin: Dp
-        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> 16.dp
-            WindowWidthSizeClass.Medium -> 32.dp
-            else -> 64.dp
-        }
+  val bodyMargin: Dp
+    @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+      WindowWidthSizeClass.Compact -> 16.dp
+      WindowWidthSizeClass.Medium -> 32.dp
+      else -> 64.dp
+    }
 
-    val gutter: Dp
-        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> 8.dp
-            WindowWidthSizeClass.Medium -> 16.dp
-            else -> 24.dp
-        }
+  val gutter: Dp
+    @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+      WindowWidthSizeClass.Compact -> 8.dp
+      WindowWidthSizeClass.Medium -> 16.dp
+      else -> 24.dp
+    }
 
-    val gridColumns: Int
-        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> 2
-            WindowWidthSizeClass.Medium -> 3
-            else -> 4
-        }
+  val gridColumns: Int
+    @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+      WindowWidthSizeClass.Compact -> 2
+      WindowWidthSizeClass.Medium -> 3
+      else -> 4
+    }
 
-    val listColumns: Int
-        @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> 1
-            WindowWidthSizeClass.Medium -> 2
-            else -> 2
-        }
+  val listColumns: Int
+    @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+      WindowWidthSizeClass.Compact -> 1
+      WindowWidthSizeClass.Medium -> 2
+      else -> 2
+    }
 }
 
 fun Modifier.bodyWidth() = fillMaxWidth()
-    .composed {
-        windowInsetsPadding(
-            WindowInsets.systemBars
-                .only(WindowInsetsSides.Horizontal),
-        )
-    }
+  .composed {
+    windowInsetsPadding(
+      WindowInsets.systemBars
+        .only(WindowInsetsSides.Horizontal),
+    )
+  }

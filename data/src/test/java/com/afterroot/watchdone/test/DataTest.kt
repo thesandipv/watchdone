@@ -26,14 +26,14 @@ import org.robolectric.annotation.Config
 @Config(application = HiltTestApplication::class, manifest = Config.NONE)
 @RunWith(AndroidJUnit4::class)
 abstract class DataTest {
-    @get:Rule(order = 0)
-    val hiltRule: HiltAndroidRule by lazy { HiltAndroidRule(this) }
+  @get:Rule(order = 0)
+  val hiltRule: HiltAndroidRule by lazy { HiltAndroidRule(this) }
 
-    @get:Rule(order = 1)
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+  @get:Rule(order = 1)
+  val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Before
-    fun init() {
-        hiltRule.inject()
-    }
+  @Before
+  fun init() {
+    hiltRule.inject()
+  }
 }

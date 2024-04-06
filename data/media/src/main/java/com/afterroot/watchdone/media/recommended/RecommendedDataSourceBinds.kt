@@ -23,8 +23,8 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RecommendedDataSourceBinds {
-    @Binds
-    abstract fun bindRecommendedDataSource(
-        tmdbMediaDataSource: TmdbRecommendedDataSource,
-    ): RecommendedDataSource
+  @Binds
+  abstract fun bindRecommendedDataSource(
+    tmdbMediaDataSource: TmdbRecommendedDataSource,
+  ): RecommendedDataSource
 }

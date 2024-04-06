@@ -63,49 +63,49 @@ import com.afterroot.watchdone.resources.R as CommonR
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun Home(
-    onWatchProviderClick: (link: String) -> Unit = { _ -> },
-    settingsAction: () -> Unit,
-    shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
+  onWatchProviderClick: (link: String) -> Unit = { _ -> },
+  settingsAction: () -> Unit,
+  shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
-    val bottomSheetNavigator = rememberBottomSheetNavigator()
-    val navController = rememberNavController(bottomSheetNavigator)
+  val bottomSheetNavigator = rememberBottomSheetNavigator()
+  val navController = rememberNavController(bottomSheetNavigator)
 
-    Scaffold(bottomBar = {
-        val currentSelectedItem by navController.currentScreenAsState()
-        HomeNavigationBar(
-            selectedRootScreen = currentSelectedItem,
-            onNavigationSelected = { selected ->
-                navController.navigate(selected.route) {
-                    launchSingleTop = true
-                    restoreState = true
+  Scaffold(bottomBar = {
+    val currentSelectedItem by navController.currentScreenAsState()
+    HomeNavigationBar(
+      selectedRootScreen = currentSelectedItem,
+      onNavigationSelected = { selected ->
+        navController.navigate(selected.route) {
+          launchSingleTop = true
+          restoreState = true
 
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-        )
-    }) { paddingValues ->
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
-            ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
-                AppNavigation(
-                    navController = navController,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    onWatchProviderClick = onWatchProviderClick,
-                    settingsAction = settingsAction,
-                    shareToIG = shareToIG,
-                )
-            }
+          popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+          }
         }
+      },
+      modifier = Modifier
+        .fillMaxWidth(),
+    )
+  }) { paddingValues ->
+    Row(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(paddingValues),
+    ) {
+      ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
+        AppNavigation(
+          navController = navController,
+          modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight(),
+          onWatchProviderClick = onWatchProviderClick,
+          settingsAction = settingsAction,
+          shareToIG = shareToIG,
+        )
+      }
     }
+  }
 }
 
 /**
@@ -115,141 +115,141 @@ fun Home(
 @Stable
 @Composable
 private fun NavController.currentScreenAsState(): State<RootScreen> {
-    val selectedItem = remember { mutableStateOf<RootScreen>(RootScreen.Watchlist) }
+  val selectedItem = remember { mutableStateOf<RootScreen>(RootScreen.Watchlist) }
 
-    DisposableEffect(this) {
-        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            when {
-                destination.hierarchy.any { it.route == RootScreen.Watchlist.route } -> {
-                    selectedItem.value = RootScreen.Watchlist
-                }
-
-                destination.hierarchy.any { it.route == RootScreen.Discover.route } -> {
-                    selectedItem.value = RootScreen.Discover
-                }
-
-                destination.hierarchy.any { it.route == RootScreen.Search.route } -> {
-                    selectedItem.value = RootScreen.Search
-                }
-
-                destination.hierarchy.any { it.route == RootScreen.Profile.route } -> {
-                    selectedItem.value = RootScreen.Profile
-                }
-            }
+  DisposableEffect(this) {
+    val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+      when {
+        destination.hierarchy.any { it.route == RootScreen.Watchlist.route } -> {
+          selectedItem.value = RootScreen.Watchlist
         }
-        addOnDestinationChangedListener(listener)
 
-        onDispose {
-            removeOnDestinationChangedListener(listener)
+        destination.hierarchy.any { it.route == RootScreen.Discover.route } -> {
+          selectedItem.value = RootScreen.Discover
         }
+
+        destination.hierarchy.any { it.route == RootScreen.Search.route } -> {
+          selectedItem.value = RootScreen.Search
+        }
+
+        destination.hierarchy.any { it.route == RootScreen.Profile.route } -> {
+          selectedItem.value = RootScreen.Profile
+        }
+      }
     }
+    addOnDestinationChangedListener(listener)
 
-    return selectedItem
+    onDispose {
+      removeOnDestinationChangedListener(listener)
+    }
+  }
+
+  return selectedItem
 }
 
 @Composable
 fun HomeNavigationBar(
-    selectedRootScreen: RootScreen,
-    onNavigationSelected: (RootScreen) -> Unit,
-    modifier: Modifier = Modifier,
+  selectedRootScreen: RootScreen,
+  onNavigationSelected: (RootScreen) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    NavigationBar(modifier = modifier) {
-        for (item in homeNavigationItems) {
-            NavigationBarItem(
-                selected = selectedRootScreen == item.screen,
-                onClick = { onNavigationSelected(item.screen) },
-                label = { Text(text = stringResource(id = item.labelResId)) },
-                icon = {
-                    HomeNavigationItemIcon(
-                        item = item,
-                        selected = selectedRootScreen == item.screen,
-                    )
-                },
-            )
-        }
+  NavigationBar(modifier = modifier) {
+    for (item in homeNavigationItems) {
+      NavigationBarItem(
+        selected = selectedRootScreen == item.screen,
+        onClick = { onNavigationSelected(item.screen) },
+        label = { Text(text = stringResource(id = item.labelResId)) },
+        icon = {
+          HomeNavigationItemIcon(
+            item = item,
+            selected = selectedRootScreen == item.screen,
+          )
+        },
+      )
     }
+  }
 }
 
 private sealed class HomeNavigationItem(
-    val screen: RootScreen,
-    @StringRes val labelResId: Int,
-    @StringRes val contentDescriptionResId: Int,
+  val screen: RootScreen,
+  @StringRes val labelResId: Int,
+  @StringRes val contentDescriptionResId: Int,
 ) {
-    class ResourceIcon(
-        screen: RootScreen,
-        @StringRes labelResId: Int,
-        @StringRes contentDescriptionResId: Int,
-        @DrawableRes val iconResId: Int,
-        @DrawableRes val selectedIconResId: Int? = null,
-    ) : HomeNavigationItem(screen, labelResId, contentDescriptionResId)
+  class ResourceIcon(
+    screen: RootScreen,
+    @StringRes labelResId: Int,
+    @StringRes contentDescriptionResId: Int,
+    @DrawableRes val iconResId: Int,
+    @DrawableRes val selectedIconResId: Int? = null,
+  ) : HomeNavigationItem(screen, labelResId, contentDescriptionResId)
 
-    class ImageVectorIcon(
-        screen: RootScreen,
-        @StringRes labelResId: Int,
-        @StringRes contentDescriptionResId: Int,
-        val iconImageVector: ImageVector,
-        val selectedImageVector: ImageVector? = null,
-    ) : HomeNavigationItem(screen, labelResId, contentDescriptionResId)
+  class ImageVectorIcon(
+    screen: RootScreen,
+    @StringRes labelResId: Int,
+    @StringRes contentDescriptionResId: Int,
+    val iconImageVector: ImageVector,
+    val selectedImageVector: ImageVector? = null,
+  ) : HomeNavigationItem(screen, labelResId, contentDescriptionResId)
 }
 
 private val homeNavigationItems = listOf(
-    HomeNavigationItem.ImageVectorIcon(
-        screen = RootScreen.Watchlist,
-        labelResId = CommonR.string.title_watchlist,
-        contentDescriptionResId = CommonR.string.title_watchlist,
-        iconImageVector = Icons.Outlined.DashboardCustomize,
-        selectedImageVector = Icons.Default.DashboardCustomize,
-    ),
-    HomeNavigationItem.ImageVectorIcon(
-        screen = RootScreen.Discover,
-        labelResId = CommonR.string.text_discover,
-        contentDescriptionResId = CommonR.string.text_discover,
-        iconImageVector = Icons.Outlined.RemoveRedEye,
-        selectedImageVector = Icons.Default.RemoveRedEye,
-    ),
-    HomeNavigationItem.ImageVectorIcon(
-        screen = RootScreen.Search,
-        labelResId = CommonR.string.title_search,
-        contentDescriptionResId = CommonR.string.title_search,
-        iconImageVector = Icons.Outlined.Search,
-        selectedImageVector = Icons.Default.Search,
-    ),
-    HomeNavigationItem.ImageVectorIcon(
-        screen = RootScreen.Profile,
-        labelResId = CommonR.string.title_profile,
-        contentDescriptionResId = CommonR.string.title_profile,
-        iconImageVector = Icons.Outlined.AccountCircle,
-        selectedImageVector = Icons.Default.AccountCircle,
-    ),
+  HomeNavigationItem.ImageVectorIcon(
+    screen = RootScreen.Watchlist,
+    labelResId = CommonR.string.title_watchlist,
+    contentDescriptionResId = CommonR.string.title_watchlist,
+    iconImageVector = Icons.Outlined.DashboardCustomize,
+    selectedImageVector = Icons.Default.DashboardCustomize,
+  ),
+  HomeNavigationItem.ImageVectorIcon(
+    screen = RootScreen.Discover,
+    labelResId = CommonR.string.text_discover,
+    contentDescriptionResId = CommonR.string.text_discover,
+    iconImageVector = Icons.Outlined.RemoveRedEye,
+    selectedImageVector = Icons.Default.RemoveRedEye,
+  ),
+  HomeNavigationItem.ImageVectorIcon(
+    screen = RootScreen.Search,
+    labelResId = CommonR.string.title_search,
+    contentDescriptionResId = CommonR.string.title_search,
+    iconImageVector = Icons.Outlined.Search,
+    selectedImageVector = Icons.Default.Search,
+  ),
+  HomeNavigationItem.ImageVectorIcon(
+    screen = RootScreen.Profile,
+    labelResId = CommonR.string.title_profile,
+    contentDescriptionResId = CommonR.string.title_profile,
+    iconImageVector = Icons.Outlined.AccountCircle,
+    selectedImageVector = Icons.Default.AccountCircle,
+  ),
 
 )
 
 @Composable
 private fun HomeNavigationItemIcon(item: HomeNavigationItem, selected: Boolean) {
-    val painter = when (item) {
-        is HomeNavigationItem.ResourceIcon -> painterResource(item.iconResId)
-        is HomeNavigationItem.ImageVectorIcon -> rememberVectorPainter(item.iconImageVector)
+  val painter = when (item) {
+    is HomeNavigationItem.ResourceIcon -> painterResource(item.iconResId)
+    is HomeNavigationItem.ImageVectorIcon -> rememberVectorPainter(item.iconImageVector)
+  }
+  val selectedPainter = when (item) {
+    is HomeNavigationItem.ResourceIcon -> item.selectedIconResId?.let { painterResource(it) }
+    is HomeNavigationItem.ImageVectorIcon -> item.selectedImageVector?.let {
+      rememberVectorPainter(
+        it,
+      )
     }
-    val selectedPainter = when (item) {
-        is HomeNavigationItem.ResourceIcon -> item.selectedIconResId?.let { painterResource(it) }
-        is HomeNavigationItem.ImageVectorIcon -> item.selectedImageVector?.let {
-            rememberVectorPainter(
-                it,
-            )
-        }
-    }
+  }
 
-    if (selectedPainter != null) {
-        Crossfade(targetState = selected, label = "SelectedIcon") {
-            Icon(
-                painter = if (it) selectedPainter else painter,
-                contentDescription = stringResource(item.contentDescriptionResId),
-            )
-        }
-    } else {
-        Icon(
-            painter = painter,
-            contentDescription = stringResource(item.contentDescriptionResId),
-        )
+  if (selectedPainter != null) {
+    Crossfade(targetState = selected, label = "SelectedIcon") {
+      Icon(
+        painter = if (it) selectedPainter else painter,
+        contentDescription = stringResource(item.contentDescriptionResId),
+      )
     }
+  } else {
+    Icon(
+      painter = painter,
+      contentDescription = stringResource(item.contentDescriptionResId),
+    )
+  }
 }

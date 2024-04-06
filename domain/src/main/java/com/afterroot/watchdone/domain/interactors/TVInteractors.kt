@@ -28,48 +28,48 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class TVEpisodeInteractor @Inject constructor(private val tvRepository: TVRepository) :
-    ResultInteractor<TVEpisodeInteractor.Params, Flow<State<Episode>>>() {
+  ResultInteractor<TVEpisodeInteractor.Params, Flow<State<Episode>>>() {
 
-    data class Params(val tvId: Int, val season: Int, val episode: Int)
+  data class Params(val tvId: Int, val season: Int, val episode: Int)
 
-    override suspend fun doWork(params: Params): Flow<State<Episode>> {
-        return tvRepository.episode(params.tvId, params.season, params.episode)
-    }
+  override suspend fun doWork(params: Params): Flow<State<Episode>> {
+    return tvRepository.episode(params.tvId, params.season, params.episode)
+  }
 }
 
 class ObserveTVInfo @Inject constructor(private val tvRepository: TVRepository) :
-    SubjectInteractor<ObserveTVInfo.Params, State<TV>>() {
-    data class Params(val tvId: Int)
+  SubjectInteractor<ObserveTVInfo.Params, State<TV>>() {
+  data class Params(val tvId: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<TV>> {
-        return tvRepository.info(params.tvId)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<TV>> {
+    return tvRepository.info(params.tvId)
+  }
 }
 
 class ObserveTVCredits @Inject constructor(private val tvRepository: TVRepository) :
-    SubjectInteractor<ObserveTVCredits.Params, State<Credits>>() {
-    data class Params(val tvId: Int)
+  SubjectInteractor<ObserveTVCredits.Params, State<Credits>>() {
+  data class Params(val tvId: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<Credits>> {
-        return tvRepository.credits(params.tvId)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<Credits>> {
+    return tvRepository.credits(params.tvId)
+  }
 }
 
 class ObserveTVSeason @Inject constructor(private val tvRepository: TVRepository) :
-    SubjectInteractor<ObserveTVSeason.Params, State<Season>>() {
+  SubjectInteractor<ObserveTVSeason.Params, State<Season>>() {
 
-    data class Params(val tvId: Int, val season: Int)
+  data class Params(val tvId: Int, val season: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<Season>> {
-        return tvRepository.season(params.tvId, params.season)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<Season>> {
+    return tvRepository.season(params.tvId, params.season)
+  }
 }
 
 class ObserveTVWatchProviders @Inject constructor(private val tvRepository: TVRepository) :
-    SubjectInteractor<ObserveTVWatchProviders.Params, State<WatchProviderResult>>() {
-    data class Params(val tvId: Int)
+  SubjectInteractor<ObserveTVWatchProviders.Params, State<WatchProviderResult>>() {
+  data class Params(val tvId: Int)
 
-    override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> {
-        return tvRepository.watchProviders(params.tvId)
-    }
+  override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> {
+    return tvRepository.watchProviders(params.tvId)
+  }
 }

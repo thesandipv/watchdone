@@ -21,6 +21,6 @@ import com.afterroot.watchdone.data.model.Entry
 import com.afterroot.watchdone.data.model.MediaType
 
 interface EntryDao<EC : Entry, LI : EntryWithMedia<EC>> : EntityDao<EC> {
-    suspend fun deleteAll()
-    suspend fun deleteAll(mediaType: MediaType)
+  suspend fun deleteAll()
+  suspend fun deleteAll(mediaType: MediaType)
 }

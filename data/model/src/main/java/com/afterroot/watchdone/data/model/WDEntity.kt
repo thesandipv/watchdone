@@ -16,13 +16,13 @@
 package com.afterroot.watchdone.data.model
 
 interface WDEntity {
-    val id: Long
+  val id: Long
 }
 
 interface TmdbIdEntity {
-    val tmdbId: Int?
+  val tmdbId: Int?
 }
 
 interface Watchable {
-    val isWatched: Boolean?
+  val isWatched: Boolean?
 }

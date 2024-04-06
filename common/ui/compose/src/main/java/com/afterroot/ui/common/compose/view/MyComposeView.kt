@@ -36,51 +36,51 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
  * in the event that the view is never (re)attached is temporary.)
  */
 class MyComposeView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyleAttr) {
 
-    init {
-        isTransitionGroup = true
+  init {
+    isTransitionGroup = true
+  }
+
+  private val content = mutableStateOf<(@Composable () -> Unit)?>(null)
+
+  @Suppress("RedundantVisibilityModifier")
+  protected override var shouldCreateCompositionOnAttachedToWindow: Boolean = false
+    private set
+
+  @Composable
+  override fun Content() {
+    content.value?.invoke()
+  }
+
+  override fun getAccessibilityClassName(): CharSequence {
+    return javaClass.name
+  }
+
+  // Override addView until fixed https://issuetracker.google.com/issues/236561967
+  override fun addView(child: View?) {
+    // super.addView(child)
+    isTransitionGroup = true
+  }
+
+  override fun addView(child: View?, index: Int) {
+    // super.addView(child, index)
+    isTransitionGroup = true
+  }
+
+  /**
+   * Set the Jetpack Compose UI content for this view.
+   * Initial composition will occur when the view becomes attached to a window or when
+   * [createComposition] is called, whichever comes first.
+   */
+  fun setContent(content: @Composable () -> Unit) {
+    shouldCreateCompositionOnAttachedToWindow = true
+    this.content.value = content
+    if (isAttachedToWindow) {
+      createComposition()
     }
-
-    private val content = mutableStateOf<(@Composable () -> Unit)?>(null)
-
-    @Suppress("RedundantVisibilityModifier")
-    protected override var shouldCreateCompositionOnAttachedToWindow: Boolean = false
-        private set
-
-    @Composable
-    override fun Content() {
-        content.value?.invoke()
-    }
-
-    override fun getAccessibilityClassName(): CharSequence {
-        return javaClass.name
-    }
-
-    // Override addView until fixed https://issuetracker.google.com/issues/236561967
-    override fun addView(child: View?) {
-        // super.addView(child)
-        isTransitionGroup = true
-    }
-
-    override fun addView(child: View?, index: Int) {
-        // super.addView(child, index)
-        isTransitionGroup = true
-    }
-
-    /**
-     * Set the Jetpack Compose UI content for this view.
-     * Initial composition will occur when the view becomes attached to a window or when
-     * [createComposition] is called, whichever comes first.
-     */
-    fun setContent(content: @Composable () -> Unit) {
-        shouldCreateCompositionOnAttachedToWindow = true
-        this.content.value = content
-        if (isAttachedToWindow) {
-            createComposition()
-        }
-    }
+  }
 }

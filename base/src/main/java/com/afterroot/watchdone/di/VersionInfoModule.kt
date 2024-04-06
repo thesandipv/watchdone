@@ -37,16 +37,16 @@ annotation class VersionFormatted
 @Module
 @InstallIn(SingletonComponent::class)
 object VersionInfoModule {
-    @Provides
-    @VersionCode
-    fun provideVersionCode(): Int = BuildConfig.VERSION_CODE
+  @Provides
+  @VersionCode
+  fun provideVersionCode(): Int = BuildConfig.VERSION_CODE
 
-    @Provides
-    @VersionName
-    fun provideVersionName(): String = BuildConfig.VERSION_NAME
+  @Provides
+  @VersionName
+  fun provideVersionName(): String = BuildConfig.VERSION_NAME
 
-    @Provides
-    @VersionFormatted
-    fun provideVersionString() =
-        "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) - ${BuildConfig.COMMIT_ID}"
+  @Provides
+  @VersionFormatted
+  fun provideVersionString() =
+    "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) - ${BuildConfig.COMMIT_ID}"
 }

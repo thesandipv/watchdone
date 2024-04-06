@@ -30,24 +30,24 @@ import info.movito.themoviedbapi.model.Credits
 
 @Immutable
 data class MediaInfoViewState(
-    val credits: State<Credits> = State.loading(),
-    val empty: Boolean = true,
-    val isLoading: Boolean = false,
-    val mediaId: Int = 0,
-    val media: DBMedia = DBMedia.Empty,
-    val mediaType: MediaType? = MediaType.MOVIE,
-    val movie: Movie = Movie.Empty,
-    val refresh: Boolean = false,
-    val seasonInfo: State<Season> = State.loading(),
-    val selectedSeason: Int = 1,
-    val tv: TV = TV.Empty,
-    val isInWatchlist: Boolean = false,
-    val isWatched: Boolean = false,
-    val genres: List<Genre> = emptyList(),
-    val watchProviders: State<WatchProviderResult> = State.loading(),
-    override val message: UiMessage? = null,
+  val credits: State<Credits> = State.loading(),
+  val empty: Boolean = true,
+  val isLoading: Boolean = false,
+  val mediaId: Int = 0,
+  val media: DBMedia = DBMedia.Empty,
+  val mediaType: MediaType? = MediaType.MOVIE,
+  val movie: Movie = Movie.Empty,
+  val refresh: Boolean = false,
+  val seasonInfo: State<Season> = State.loading(),
+  val selectedSeason: Int = 1,
+  val tv: TV = TV.Empty,
+  val isInWatchlist: Boolean = false,
+  val isWatched: Boolean = false,
+  val genres: List<Genre> = emptyList(),
+  val watchProviders: State<WatchProviderResult> = State.loading(),
+  override val message: UiMessage? = null,
 ) : ViewState() {
-    companion object {
-        val Empty = MediaInfoViewState()
-    }
+  companion object {
+    val Empty = MediaInfoViewState()
+  }
 }

@@ -26,27 +26,27 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CountriesDao {
-    @Query("SELECT * from countries ORDER BY englishName ASC")
-    fun getCountries(): LiveData<List<Country>>
+  @Query("SELECT * from countries ORDER BY englishName ASC")
+  fun getCountries(): LiveData<List<Country>>
 
-    @Query("SELECT * from countries ORDER BY englishName ASC")
-    fun getCountriesFlow(): Flow<List<Country>>
+  @Query("SELECT * from countries ORDER BY englishName ASC")
+  fun getCountriesFlow(): Flow<List<Country>>
 
-    @Query("SELECT * from countries WHERE iso LIKE :iso")
-    fun get(iso: String): Flow<Country?>
+  @Query("SELECT * from countries WHERE iso LIKE :iso")
+  fun get(iso: String): Flow<Country?>
 
-    @Query("SELECT * from countries WHERE englishName LIKE :name")
-    fun getByName(name: String): Flow<Country?>
+  @Query("SELECT * from countries WHERE englishName LIKE :name")
+  fun getByName(name: String): Flow<Country?>
 
-    @Delete
-    suspend fun delete(country: Country)
+  @Delete
+  suspend fun delete(country: Country)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun add(vararg countries: Country)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun add(vararg countries: Country)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun add(countries: List<Country>)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun add(countries: List<Country>)
 
-    @Query("SELECT COUNT(iso) from countries")
-    fun count(): Int
+  @Query("SELECT COUNT(iso) from countries")
+  fun count(): Int
 }

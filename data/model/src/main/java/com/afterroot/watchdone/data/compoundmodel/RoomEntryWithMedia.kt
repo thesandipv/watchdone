@@ -22,20 +22,20 @@ import com.afterroot.watchdone.data.model.Media
 import java.util.Objects
 
 open class RoomEntryWithMedia<ET : Entry> : EntryWithMedia<ET> {
-    @Embedded
-    override lateinit var entry: ET
+  @Embedded
+  override lateinit var entry: ET
 
-    @Relation(parentColumn = "media_id", entityColumn = "id")
-    override lateinit var relations: List<Media>
+  @Relation(parentColumn = "media_id", entityColumn = "id")
+  override lateinit var relations: List<Media>
 
-    override fun equals(other: Any?): Boolean = when {
-        other === this -> true
-        other is EntryWithMedia<*> -> {
-            entry == other.entry && relations == other.relations
-        }
-
-        else -> false
+  override fun equals(other: Any?): Boolean = when {
+    other === this -> true
+    other is EntryWithMedia<*> -> {
+      entry == other.entry && relations == other.relations
     }
 
-    override fun hashCode(): Int = Objects.hash(entry, relations)
+    else -> false
+  }
+
+  override fun hashCode(): Int = Objects.hash(entry, relations)
 }

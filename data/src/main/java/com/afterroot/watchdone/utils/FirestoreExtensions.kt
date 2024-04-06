@@ -29,22 +29,22 @@ import com.google.firebase.firestore.FirebaseFirestore
  * otherwise it will based on BuildConfig.DEBUG
  */
 fun FirebaseFirestore.collectionWatchdone(
-    id: String,
-    isUseOnlyProdDB: Boolean,
+  id: String,
+  isUseOnlyProdDB: Boolean,
 ): CollectionReference {
-    return collection(Collection.USERS).document(id)
-        .collection(if (isUseOnlyProdDB) Collection.WATCHDONE_PROD else Collection.WATCHDONE_AUTO)
+  return collection(Collection.USERS).document(id)
+    .collection(if (isUseOnlyProdDB) Collection.WATCHDONE_PROD else Collection.WATCHDONE_AUTO)
 }
 
 fun CollectionReference.documentWatchlist(): DocumentReference = document(Collection.WATCHLIST)
 fun DocumentReference.collectionWatchlistItems(): CollectionReference = collection(Collection.ITEMS)
 fun CollectionReference.collectionWatchlistItems(): CollectionReference =
-    documentWatchlist().collectionWatchlistItems()
+  documentWatchlist().collectionWatchlistItems()
 
 fun FirebaseFirestore.collectionUsers() = collection(Collection.USERS)
 
 fun FirebaseAuth.getLocalUser() = LocalUser(
-    name = currentUser?.displayName,
-    email = currentUser?.email,
-    uid = currentUser?.uid,
+  name = currentUser?.displayName,
+  email = currentUser?.email,
+  uid = currentUser?.uid,
 )

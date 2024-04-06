@@ -48,94 +48,94 @@ import timber.log.Timber
 
 @Composable
 fun Profile(onSignOut: () -> Unit = {}, onEditProfile: () -> Unit) {
-    Profile(viewModel = hiltViewModel(), onSignOut, onEditProfile)
+  Profile(viewModel = hiltViewModel(), onSignOut, onEditProfile)
 }
 
 @Composable
 internal fun Profile(
-    viewModel: ProfileViewModel,
-    onSignOut: () -> Unit = {},
-    onEditProfile: () -> Unit,
+  viewModel: ProfileViewModel,
+  onSignOut: () -> Unit = {},
+  onEditProfile: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    Profile(viewModel = viewModel) { action ->
-        when (action) {
-            ProfileActions.SignOut -> {
-                Timber.d("Profile: SignOut Start")
-                scope.launch {
-                    signOut(context).collect { signOutState ->
-                        Timber.d("Profile: SignOutState: $signOutState")
-                        when (signOutState) {
-                            is State.Failed -> {
-                                val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Failed Signing Out."),
-                                )
-                                viewModel.submitAction(showMessage)
-                            }
+  val scope = rememberCoroutineScope()
+  val context = LocalContext.current
+  Profile(viewModel = viewModel) { action ->
+    when (action) {
+      ProfileActions.SignOut -> {
+        Timber.d("Profile: SignOut Start")
+        scope.launch {
+          signOut(context).collect { signOutState ->
+            Timber.d("Profile: SignOutState: $signOutState")
+            when (signOutState) {
+              is State.Failed -> {
+                val showMessage = ProfileActions.ShowMessage(
+                  UiMessage("Failed Signing Out."),
+                )
+                viewModel.submitAction(showMessage)
+              }
 
-                            is State.Success -> {
-                                val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Signed Out."),
-                                )
-                                viewModel.submitAction(showMessage)
-                                onSignOut()
-                            }
+              is State.Success -> {
+                val showMessage = ProfileActions.ShowMessage(
+                  UiMessage("Signed Out."),
+                )
+                viewModel.submitAction(showMessage)
+                onSignOut()
+              }
 
-                            else -> {
-                            }
-                        }
-                    }
-                }
+              else -> {
+              }
             }
-
-            ProfileActions.EditProfile -> {
-                onEditProfile()
-            }
-
-            else -> viewModel.submitAction(action)
+          }
         }
+      }
+
+      ProfileActions.EditProfile -> {
+        onEditProfile()
+      }
+
+      else -> viewModel.submitAction(action)
     }
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
-    val viewState by viewModel.state.collectAsState()
+  val viewState by viewModel.state.collectAsState()
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets.systemBars,
-        topBar = {
-            CommonAppBar(
-                withTitle = stringResource(id = R.string.title_profile),
-                windowInsets = TopBarWindowInsets,
-                actions = {
-                    IconButton(onClick = { actions(ProfileActions.SignOut) }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Logout,
-                            contentDescription = stringResource(
-                                id = R.string.action_sign_out,
-                            ),
-                        )
-                    }
-                },
+  Scaffold(
+    modifier = Modifier.fillMaxSize(),
+    contentWindowInsets = WindowInsets.systemBars,
+    topBar = {
+      CommonAppBar(
+        withTitle = stringResource(id = R.string.title_profile),
+        windowInsets = TopBarWindowInsets,
+        actions = {
+          IconButton(onClick = { actions(ProfileActions.SignOut) }) {
+            Icon(
+              imageVector = Icons.Rounded.Logout,
+              contentDescription = stringResource(
+                id = R.string.action_sign_out,
+              ),
             )
+          }
         },
-        floatingActionButton = {
-            FABEdit(
-                modifier = Modifier.offset(y = 24.dp), // TODO Find better solution
-                onClick = {
-                    actions(ProfileActions.EditProfile)
-                },
-            )
+      )
+    },
+    floatingActionButton = {
+      FABEdit(
+        modifier = Modifier.offset(y = 24.dp), // TODO Find better solution
+        onClick = {
+          actions(ProfileActions.EditProfile)
         },
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth(),
-        ) {
-        }
+      )
+    },
+  ) { paddingValues ->
+    Box(
+      modifier = Modifier
+        .padding(paddingValues)
+        .fillMaxWidth(),
+    ) {
     }
+  }
 }

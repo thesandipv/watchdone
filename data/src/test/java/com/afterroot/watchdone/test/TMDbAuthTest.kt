@@ -26,24 +26,24 @@ import org.junit.Test
 @HiltAndroidTest
 class TMDbAuthTest : DataTest() {
 
-    @Inject lateinit var authRepository: AuthRepository
+  @Inject lateinit var authRepository: AuthRepository
 
-    @Test
-    fun `Verify request token valid`() {
-        launch {
-            val token =
-                authRepository.createRequestToken(
-                    RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"),
-                ).requestToken
-            Assert.assertNotNull("Token is Null", token)
-        }
+  @Test
+  fun `Verify request token valid`() {
+    launch {
+      val token =
+        authRepository.createRequestToken(
+          RequestBodyToken("https://afterroot.web.app/apps/watchdone/launch"),
+        ).requestToken
+      Assert.assertNotNull("Token is Null", token)
     }
+  }
 
-    private fun launch(block: suspend () -> Unit) {
-        runBlocking {
-            launch {
-                block()
-            }
-        }
+  private fun launch(block: suspend () -> Unit) {
+    runBlocking {
+      launch {
+        block()
+      }
     }
+  }
 }

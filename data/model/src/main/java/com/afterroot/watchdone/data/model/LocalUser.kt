@@ -24,13 +24,13 @@ import java.io.Serializable
  */
 @Immutable
 data class LocalUser(
-    val name: String? = null,
-    val email: String? = null,
-    val uid: String? = null,
-    val fcmId: String? = null,
-    val userName: String? = null,
-    val isUserNameAvailable: Boolean = userName.valueOrBlank().isNotBlank(),
-    val properties: UserProperties = UserProperties(),
+  val name: String? = null,
+  val email: String? = null,
+  val uid: String? = null,
+  val fcmId: String? = null,
+  val userName: String? = null,
+  val isUserNameAvailable: Boolean = userName.valueOrBlank().isNotBlank(),
+  val properties: UserProperties = UserProperties(),
 ) : Serializable {
-    fun trim(): LocalUser = copy(name = name?.trim(), userName = userName?.trim())
+  fun trim(): LocalUser = copy(name = name?.trim(), userName = userName?.trim())
 }

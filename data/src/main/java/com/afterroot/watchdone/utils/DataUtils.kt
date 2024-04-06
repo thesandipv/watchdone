@@ -23,40 +23,40 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 fun getMailBodyForFeedback(
-    firebaseUtils: FirebaseUtils,
-    version: String,
-    versionCode: Int,
+  firebaseUtils: FirebaseUtils,
+  version: String,
+  versionCode: Int,
 ): String {
-    val builder = StringBuilder().apply {
-        appendLine("----Do not remove this info----")
-        appendLine("Version : $version")
-        appendLine("Version Code : $versionCode")
-        appendLine("User ID : ${firebaseUtils.uid}")
-        appendLine("----Do not remove this info----")
-    }
-    return builder.toString()
+  val builder = StringBuilder().apply {
+    appendLine("----Do not remove this info----")
+    appendLine("Version : $version")
+    appendLine("Version Code : $versionCode")
+    appendLine("User ID : ${firebaseUtils.uid}")
+    appendLine("----Do not remove this info----")
+  }
+  return builder.toString()
 }
 
 fun <T> resultFlow(value: T, coroutineContext: CoroutineContext = Dispatchers.IO) =
-    resultFlow(coroutineContext = coroutineContext) {
-        emit(State.success(value))
-    }
+  resultFlow(coroutineContext = coroutineContext) {
+    emit(State.success(value))
+  }
 
 fun <T> resultFlow(
-    result: T,
-    coroutineContext: CoroutineContext = Dispatchers.IO,
-    executeBeforeResult: suspend () -> Unit,
+  result: T,
+  coroutineContext: CoroutineContext = Dispatchers.IO,
+  executeBeforeResult: suspend () -> Unit,
 ) = resultFlow(coroutineContext = coroutineContext) {
-    executeBeforeResult()
-    emit(State.success(result))
+  executeBeforeResult()
+  emit(State.success(result))
 }
 
 fun <T> resultFlow(
-    coroutineContext: CoroutineContext = Dispatchers.IO,
-    block: suspend FlowCollector<State<T>>.() -> Unit,
+  coroutineContext: CoroutineContext = Dispatchers.IO,
+  block: suspend FlowCollector<State<T>>.() -> Unit,
 ) = flow {
-    emit(State.loading())
-    block()
+  emit(State.loading())
+  block()
 }.catch { exception ->
-    emit(State.failed(exception.message.toString(), exception))
+  emit(State.failed(exception.message.toString(), exception))
 }.flowOn(coroutineContext)

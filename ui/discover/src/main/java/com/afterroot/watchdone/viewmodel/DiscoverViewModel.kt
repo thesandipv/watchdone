@@ -39,53 +39,53 @@ import timber.log.Timber
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
-    val savedState: SavedStateHandle? = null,
-    val settings: Settings,
-    observePagedDiscover: ObservePagedDiscover,
+  val savedState: SavedStateHandle? = null,
+  val settings: Settings,
+  observePagedDiscover: ObservePagedDiscover,
 ) : ViewModel() {
-    private val actions = MutableSharedFlow<DiscoverActions>()
-    private val mediaType = MutableSharedFlow<MediaType>()
+  private val actions = MutableSharedFlow<DiscoverActions>()
+  private val mediaType = MutableSharedFlow<MediaType>()
 
-    val state: StateFlow<DiscoverViewState> = combine(mediaType) {
-        DiscoverViewState(it[0])
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = DiscoverViewState.Empty,
-    )
+  val state: StateFlow<DiscoverViewState> = combine(mediaType) {
+    DiscoverViewState(it[0])
+  }.stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(5000),
+    initialValue = DiscoverViewState.Empty,
+  )
 
-    val pagedDiscoverList: Flow<PagingData<DiscoverEntryWithMedia>> = observePagedDiscover.flow.cachedIn(
-        viewModelScope,
-    )
+  val pagedDiscoverList: Flow<PagingData<DiscoverEntryWithMedia>> = observePagedDiscover.flow.cachedIn(
+    viewModelScope,
+  )
 
-    init {
-        Timber.d("init: Start")
+  init {
+    Timber.d("init: Start")
 
-        viewModelScope.launch {
-            actions.collect { action ->
-                when (action) {
-                    is DiscoverActions.SetMediaType -> {
-                        mediaType.emit(action.mediaType)
-                        observePagedDiscover(discoverParams(action.mediaType))
-                    }
-                }
-            }
+    viewModelScope.launch {
+      actions.collect { action ->
+        when (action) {
+          is DiscoverActions.SetMediaType -> {
+            mediaType.emit(action.mediaType)
+            observePagedDiscover(discoverParams(action.mediaType))
+          }
         }
-
-        observePagedDiscover(discoverParams(settings.discoverMediaType))
+      }
     }
 
-    internal fun submitAction(action: DiscoverActions) {
-        Timber.d("submitAction: Action $action")
-        viewModelScope.launch {
-            actions.emit(action)
-        }
-    }
+    observePagedDiscover(discoverParams(settings.discoverMediaType))
+  }
 
-    companion object {
-        fun discoverParams(mediaType: MediaType) = ObservePagedDiscover.Params(
-            mediaType = mediaType,
-            pagingConfig = PagingConfig(20, initialLoadSize = 40),
-        )
+  internal fun submitAction(action: DiscoverActions) {
+    Timber.d("submitAction: Action $action")
+    viewModelScope.launch {
+      actions.emit(action)
     }
+  }
+
+  companion object {
+    fun discoverParams(mediaType: MediaType) = ObservePagedDiscover.Params(
+      mediaType = mediaType,
+      pagingConfig = PagingConfig(20, initialLoadSize = 40),
+    )
+  }
 }

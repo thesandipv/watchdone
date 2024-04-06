@@ -31,42 +31,42 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 
 class ObservePagedRecommended @Inject constructor(
-    private val recommendedDao: RecommendedDao,
-    private val updateRecommended: UpdateRecommended,
-    private val logger: Logger,
+  private val recommendedDao: RecommendedDao,
+  private val updateRecommended: UpdateRecommended,
+  private val logger: Logger,
 ) : PagingInteractor<ObservePagedRecommended.Params, RecommendedEntryWithMedia>() {
 
-    data class Params(
-        val mediaId: Int,
-        val mediaType: MediaType,
-        override val pagingConfig: PagingConfig,
-    ) : Parameters<RecommendedEntryWithMedia>
+  data class Params(
+    val mediaId: Int,
+    val mediaType: MediaType,
+    override val pagingConfig: PagingConfig,
+  ) : Parameters<RecommendedEntryWithMedia>
 
-    @OptIn(ExperimentalPagingApi::class)
-    override suspend fun createObservable(
-        params: Params,
-    ): Flow<PagingData<RecommendedEntryWithMedia>> {
-        return Pager(
-            config = params.pagingConfig,
-            remoteMediator = PaginatedEntryRemoteMediator { page ->
-                try {
-                    logger.d { "APPEND: Requesting Page: $page" }
-                    updateRecommended(
-                        UpdateRecommended.Params(params.mediaId, page, params.mediaType, true),
-                    )
-                } catch (ce: CancellationException) {
-                    throw ce
-                } catch (t: Throwable) {
-                    logger.e(t) { "Error while fetching from RemoteMediator" }
-                    throw t
-                }
-            },
-            pagingSourceFactory = {
-                recommendedDao.entriesPagingSource(
-                    params.mediaId,
-                    params.mediaType,
-                )
-            },
-        ).flow
-    }
+  @OptIn(ExperimentalPagingApi::class)
+  override suspend fun createObservable(
+    params: Params,
+  ): Flow<PagingData<RecommendedEntryWithMedia>> {
+    return Pager(
+      config = params.pagingConfig,
+      remoteMediator = PaginatedEntryRemoteMediator { page ->
+        try {
+          logger.d { "APPEND: Requesting Page: $page" }
+          updateRecommended(
+            UpdateRecommended.Params(params.mediaId, page, params.mediaType, true),
+          )
+        } catch (ce: CancellationException) {
+          throw ce
+        } catch (t: Throwable) {
+          logger.e(t) { "Error while fetching from RemoteMediator" }
+          throw t
+        }
+      },
+      pagingSourceFactory = {
+        recommendedDao.entriesPagingSource(
+          params.mediaId,
+          params.mediaType,
+        )
+      },
+    ).flow
+  }
 }

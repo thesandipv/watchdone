@@ -20,13 +20,13 @@ import com.afterroot.watchdone.data.mapper.TmdbShowDetailToMedia
 import com.afterroot.watchdone.data.model.Media
 
 class TmdbShowDataSource(
-    private val tmdb: Tmdb3,
-    private val showMapper: TmdbShowDetailToMedia,
+  private val tmdb: Tmdb3,
+  private val showMapper: TmdbShowDetailToMedia,
 ) : ShowDataSource {
-    override suspend fun getShow(media: Media): Media {
-        val tmdbId = media.tmdbId
-            ?: throw IllegalArgumentException("TmdbId for show does not exist [$media]")
+  override suspend fun getShow(media: Media): Media {
+    val tmdbId = media.tmdbId
+      ?: throw IllegalArgumentException("TmdbId for show does not exist [$media]")
 
-        return showMapper.map(tmdb.show.getDetails(tmdbId))
-    }
+    return showMapper.map(tmdb.show.getDetails(tmdbId))
+  }
 }
