@@ -24,7 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.NavigateBefore
+import androidx.compose.material.icons.automirrored.outlined.NavigateBefore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -171,7 +171,7 @@ internal fun MediaInfo(
             navigateUp()
           }) {
             Icon(
-              imageVector = Icons.Outlined.NavigateBefore,
+              imageVector = Icons.AutoMirrored.Outlined.NavigateBefore,
               contentDescription = "Up",
             )
           }
@@ -179,20 +179,21 @@ internal fun MediaInfo(
       )
     },
     modifier = Modifier,
-  ) { contentPadding ->
+  ) { paddingValues ->
     Surface(modifier = Modifier.fillMaxWidth()) {
       MediaInfoContent(
         viewState = viewState,
         recommended = recommended,
         listState = listState,
-        contentPadding = contentPadding,
         onWatchlistAction = onWatchlistAction,
         onWatchedAction = onWatchedAction,
         onRecommendedClick = onRecommendedClick,
         onSeasonSelected = onSeasonSelected,
         onEpisodeWatchAction = onEpisodeWatchAction,
         onWatchProviderClick = onWatchProviderClick,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(top = paddingValues.calculateTopPadding()),
       )
     }
   }
@@ -203,7 +204,6 @@ internal fun MediaInfoContent(
   viewState: MediaInfoViewState,
   recommended: LazyPagingItems<RecommendedEntryWithMedia>,
   listState: LazyListState,
-  contentPadding: PaddingValues,
   onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
   onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
   onRecommendedClick: (media: Media) -> Unit = {},
@@ -215,7 +215,7 @@ internal fun MediaInfoContent(
   val gutter = Layout.gutter
   val bodyMargin = Layout.bodyMargin
 
-  LazyColumn(state = listState, contentPadding = contentPadding, modifier = modifier) {
+  LazyColumn(state = listState, modifier = modifier) {
     item {
       Backdrop(
         backdropPath = when (viewState.mediaType) {
