@@ -31,6 +31,7 @@ import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.base.BuildConfig
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.tmdb.TmdbOkHttpClient
 import com.afterroot.watchdone.utils.whenBuildIs
 import dagger.Module
 import dagger.Provides
@@ -57,12 +58,14 @@ object ApiModule {
     }
 
     @Provides
+    @Singleton
     fun provideOkHttpClient(
+        @TmdbOkHttpClient okHttpClient: OkHttpClient,
         tmdbInterceptor: TMDbInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
         settings: Settings,
     ): OkHttpClient {
-        val client = OkHttpClient().newBuilder()
+        val client = okHttpClient.newBuilder()
             .addInterceptor(tmdbInterceptor)
         if (settings.isHttpLogging) {
             client.addInterceptor(httpLoggingInterceptor)

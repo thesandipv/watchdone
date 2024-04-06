@@ -25,9 +25,22 @@ import dagger.hilt.components.SingletonComponent
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.http.HttpStatusCode
-import javax.inject.Named
+import javax.inject.Qualifier
 import javax.inject.Singleton
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.dnsoverhttps.DnsOverHttps
+
+/**
+ * OkHttpClient with Cloudflare DNS
+ */
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class TmdbOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+private annotation class BaseOkHttpClient
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -35,7 +48,7 @@ object TmdbModule {
     @Provides
     @Singleton
     fun provideTmdb3(
-        @Named("tmdb") okHttpClient: OkHttpClient,
+        @TmdbOkHttpClient okHttpClient: OkHttpClient,
         tmdbOAuthInfo: TmdbOAuthInfo,
     ): Tmdb3 = Tmdb3 {
         tmdbApiKey = tmdbOAuthInfo.apiKey
@@ -63,6 +76,19 @@ object TmdbModule {
     fun provideTmdbOAuthInfo() = TmdbOAuthInfo(apiKey = BuildConfig.TMDB_API)
 
     @Provides
-    @Named("tmdb")
+    @Singleton
+    @BaseOkHttpClient
     fun provideOkHttpClient() = OkHttpClient().newBuilder().build()
+
+    @Provides
+    @Singleton
+    @TmdbOkHttpClient
+    fun provideTmdbOkhttpClient(@BaseOkHttpClient baseClient: OkHttpClient): OkHttpClient {
+        val doh = DnsOverHttps.Builder()
+            .client(baseClient)
+            .url("https://1.1.1.1/dns-query".toHttpUrl())
+            .build()
+
+        return baseClient.newBuilder().dns(doh).build()
+    }
 }

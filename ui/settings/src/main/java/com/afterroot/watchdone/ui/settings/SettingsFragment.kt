@@ -34,6 +34,7 @@ import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.model.DarkThemeConfig
 import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.database.dao.CountriesDao
+import com.afterroot.watchdone.di.VersionFormatted
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.State
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
@@ -42,7 +43,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.jakewharton.processphoenix.ProcessPhoenix
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -70,7 +70,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @Inject lateinit var firestore: FirebaseFirestore
 
     @Inject
-    @Named("version_string")
+    @VersionFormatted
     lateinit var versionString: String
 
     private val settingsActivityViewModel: SettingsActivityViewModel by activityViewModels()
