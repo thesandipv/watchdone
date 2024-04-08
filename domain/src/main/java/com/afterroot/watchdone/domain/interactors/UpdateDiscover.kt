@@ -24,6 +24,7 @@ import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.discover.DiscoverMovieStore
 import com.afterroot.watchdone.discover.DiscoverShowsStore
+import com.afterroot.watchdone.media.MediaStoreRequest
 import com.afterroot.watchdone.media.MovieStore
 import javax.inject.Inject
 import kotlinx.coroutines.withContext
@@ -58,13 +59,13 @@ class UpdateDiscover @Inject constructor(
       when (params.mediaType) {
         MediaType.MOVIE -> {
           discoverMovieStore.fetch(page, params.forceRefresh).parallelForEach {
-            mediaStore.fetch(it.mediaId)
+            mediaStore.fetch(MediaStoreRequest(it.mediaId, MediaType.MOVIE))
           }
         }
 
         MediaType.SHOW -> {
           discoverShowStore.fetch(page, params.forceRefresh).parallelForEach {
-            mediaStore.fetch(it.mediaId)
+            mediaStore.fetch(MediaStoreRequest(it.mediaId, MediaType.SHOW))
           }
         }
 

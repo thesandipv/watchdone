@@ -17,12 +17,14 @@ package com.afterroot.watchdone.media
 
 import app.tivi.data.db.DatabaseTransactionRunner
 import app.tivi.data.util.storeBuilder
-import app.tivi.util.Logger
+import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.MediaDao
 import com.afterroot.watchdone.data.daos.getMediaByIdOrThrow
 import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.util.mergeMedia
 import javax.inject.Inject
+import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
@@ -31,29 +33,42 @@ import org.mobilenativefoundation.store.store5.Store
 class MovieStore @Inject constructor(
   mediaDao: MediaDao,
   tmdbMovieDataSource: TmdbMovieDataSource,
+  tmdbShowDataSource: TmdbShowDataSource,
   transactionRunner: DatabaseTransactionRunner,
-  logger: Logger,
-) : Store<Long, Media> by storeBuilder(
-  fetcher = Fetcher.of { id: Long ->
-    val savedMedia = mediaDao.getMediaByIdOrThrow(id)
+  dispatchers: CoroutineDispatchers,
+) : Store<MediaStoreRequest, Media> by storeBuilder(
+  fetcher = Fetcher.of { request: MediaStoreRequest ->
+    val savedMedia = withContext(dispatchers.databaseWrite) {
+      mediaDao.getMediaByIdOrThrow(request.id)
+    }
 
-    return@of run { tmdbMovieDataSource.getMovie(savedMedia) }
+    val tmdbResult = runCatching {
+      when (request.type) {
+        MediaType.MOVIE -> tmdbMovieDataSource.getMovie(savedMedia)
+        MediaType.SHOW -> tmdbShowDataSource.getShow(savedMedia)
+        else -> throw IllegalArgumentException("MediaType should be MOVIE or SHOW")
+      }
+    }
+    if (tmdbResult.isSuccess) {
+      return@of tmdbResult.getOrThrow()
+    }
+
+    throw tmdbResult.exceptionOrNull()!!
   },
   sourceOfTruth = SourceOfTruth.of(
-    reader = { movieId ->
-      mediaDao.getMediaByIdFlow(movieId)
+    reader = { request ->
+      mediaDao.getMediaByIdFlow(request.id)
     },
-    writer = { id, response ->
-      logger.d {
-        "Writing in database:media $response"
-      }
+    writer = { request, response ->
       transactionRunner {
         mediaDao.upsert(
-          mergeMedia(local = mediaDao.getMediaByIdOrThrow(id), tmdb = response),
+          mergeMedia(local = mediaDao.getMediaByIdOrThrow(request.id), tmdb = response),
         )
       }
     },
-    delete = mediaDao::delete,
-    deleteAll = mediaDao::deleteAll,
+    delete = { mediaDao.delete(it.id) },
+    deleteAll = { transactionRunner(mediaDao::deleteAll) },
   ),
 ).build()
+
+data class MediaStoreRequest(val id: Long, val type: MediaType)

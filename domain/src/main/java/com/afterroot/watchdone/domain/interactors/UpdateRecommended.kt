@@ -22,6 +22,7 @@ import app.tivi.util.parallelForEach
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.RecommendedDao
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.media.MediaStoreRequest
 import com.afterroot.watchdone.media.MovieStore
 import com.afterroot.watchdone.media.recommended.RecommendedMediaStore
 import com.afterroot.watchdone.media.recommended.RecommendedMediaStoreKey
@@ -63,7 +64,7 @@ class UpdateRecommended @Inject constructor(
         RecommendedMediaStoreKey(params.mediaId, page, params.mediaType),
         params.forceRefresh,
       ).parallelForEach {
-        mediaStore.fetch(it.mediaId)
+        mediaStore.fetch(MediaStoreRequest(it.mediaId, it.mediaType))
       }
     }
   }
