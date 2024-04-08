@@ -280,8 +280,6 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockito-inline" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
 
-tmdb-api = "app.moviebase:tmdb-api:1.3.3"
-
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
