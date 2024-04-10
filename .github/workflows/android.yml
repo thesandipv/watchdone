@@ -58,7 +58,7 @@ jobs:
 
       - name: set up JDK
         id: setup-jdk
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.2.1
         with:
           distribution: 'zulu'
           java-version: 17
@@ -79,7 +79,7 @@ jobs:
 
       - name: Setup Gradle
         id: setup-gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: wrapper
           cache-read-only: false
@@ -136,7 +136,7 @@ jobs:
 
       - name: Create release for tags
         id: create-release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           draft: true
@@ -161,7 +161,7 @@ jobs:
       - name: Upload build outputs
         id: upload-outputs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: app/build/outputs/apk/release/app-release.apk
@@ -169,7 +169,7 @@ jobs:
       - name: Upload build reports
         id: upload-reports
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-build-reports
           path: app/build/reports
