@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.data.repositories
 
 import com.afterroot.watchdone.data.model.DarkThemeConfig
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.UserData
 import kotlinx.coroutines.flow.Flow
 
@@ -27,4 +28,6 @@ interface UserDataRepository {
   suspend fun setTMDbBaseUrl(baseUrl: String)
   suspend fun setPrefImageSize(imageSize: String)
   suspend fun setTMDbPosterSizes(posterSizes: Set<String>)
+  suspend fun updateMediaTypeViews(viewName: String, mediaType: MediaType)
+  suspend fun clearMediaTypeViews()
 }

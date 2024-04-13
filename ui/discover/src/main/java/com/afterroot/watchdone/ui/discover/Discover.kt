@@ -29,9 +29,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Movie
-import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -42,7 +39,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -52,7 +48,6 @@ import androidx.paging.compose.itemKey
 import app.tivi.common.compose.fullSpanItem
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.CommonAppBar
-import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MediaCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.ui.common.compose.utils.topAppBarScrollBehavior
@@ -60,30 +55,28 @@ import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import com.afterroot.watchdone.ui.media.MediaTypeFilter
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
-import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun DiscoverChips(
   onMovieSelected: () -> Unit,
   onShowSelected: () -> Unit,
+  currentMediaType: MediaType = MediaType.MOVIE,
 ) {
-  val movieText = stringResource(id = CommonR.string.text_search_movies)
-  val showText = stringResource(id = CommonR.string.text_search_show)
-  FilterChipGroup(
+  MediaTypeFilter(
     modifier = Modifier.padding(vertical = 8.dp),
-    chipSpacing = 12.dp,
-    horizontalPadding = 8.dp,
-    icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-    list = listOf(movieText, showText),
-    preSelect = listOf(movieText),
-    onSelectedChanged = { selected, _ ->
-      when (selected) {
-        movieText -> onMovieSelected()
-        showText -> onShowSelected()
+    preSelect = currentMediaType,
+    showOnlySelected = false,
+  ) { selectedMediaType: MediaType ->
+    when (selectedMediaType) {
+      MediaType.MOVIE -> onMovieSelected()
+      MediaType.SHOW -> onShowSelected()
+      else -> {
+        // DO NOTHING
       }
-    },
-  )
+    }
+  }
 }
 
 @Composable
@@ -101,12 +94,8 @@ fun Discover(
     movieItems = discoverItems,
     showItems = discoverItems,
     itemSelectedCallback = itemSelectedCallback,
-    onMovieChipSelected = {
-      discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.MOVIE))
-    },
-    onShowChipSelected = {
-      discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.SHOW))
-    },
+    onMovieChipSelected = { discoverViewModel.setMediaType(MediaType.MOVIE) },
+    onShowChipSelected = { discoverViewModel.setMediaType(MediaType.SHOW) },
     refresh = discoverItems::refresh,
   )
 }
@@ -161,6 +150,7 @@ internal fun Discover(
             DiscoverChips(
               onMovieSelected = { onMovieChipSelected() },
               onShowSelected = { onShowChipSelected() },
+              currentMediaType = state.mediaType ?: MediaType.MOVIE,
             )
           }
           if (state.mediaType == MediaType.MOVIE) {

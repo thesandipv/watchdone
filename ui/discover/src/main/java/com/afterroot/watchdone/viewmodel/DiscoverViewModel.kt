@@ -20,33 +20,36 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import app.tivi.util.Logger
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.data.repositories.UserDataRepository
 import com.afterroot.watchdone.domain.observers.ObservePagedDiscover
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.ui.discover.DiscoverActions
 import com.afterroot.watchdone.ui.discover.DiscoverViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
-  val savedState: SavedStateHandle? = null,
-  val settings: Settings,
-  observePagedDiscover: ObservePagedDiscover,
+  val savedStateHandle: SavedStateHandle,
+  settings: Settings,
+  val observePagedDiscover: ObservePagedDiscover,
+  val userDataRepository: UserDataRepository,
+  logger: Logger,
 ) : ViewModel() {
-  private val actions = MutableSharedFlow<DiscoverActions>()
-  private val mediaType = MutableSharedFlow<MediaType>()
 
-  val state: StateFlow<DiscoverViewState> = combine(mediaType) {
+  val state: StateFlow<DiscoverViewState> = combine(
+    savedStateHandle.getStateFlow(KEY_MEDIA_TYPE, MediaType.MOVIE),
+  ) {
     DiscoverViewState(it[0])
   }.stateIn(
     scope = viewModelScope,
@@ -59,26 +62,26 @@ class DiscoverViewModel @Inject constructor(
   )
 
   init {
-    Timber.d("init: Start")
+    logger.d { "init: $this" }
 
     viewModelScope.launch {
-      actions.collect { action ->
-        when (action) {
-          is DiscoverActions.SetMediaType -> {
-            mediaType.emit(action.mediaType)
-            observePagedDiscover(discoverParams(action.mediaType))
-          }
-        }
-      }
-    }
+      val mediaTypeViews = userDataRepository.userData.mapLatest {
+        it.mediaTypeViews
+      }.first()?.get(KEY_MEDIA_TYPE) ?: MediaType.MOVIE.name
 
-    observePagedDiscover(discoverParams(settings.discoverMediaType))
+      logger.d { "Discover: mediaTypeViews $mediaTypeViews" }
+
+      setMediaType(MediaType.valueOf(mediaTypeViews), false)
+    }
   }
 
-  internal fun submitAction(action: DiscoverActions) {
-    Timber.d("submitAction: Action $action")
-    viewModelScope.launch {
-      actions.emit(action)
+  fun setMediaType(mediaType: MediaType, updateSettings: Boolean = true) {
+    savedStateHandle[KEY_MEDIA_TYPE] = mediaType
+    observePagedDiscover(discoverParams(mediaType))
+    if (updateSettings) {
+      viewModelScope.launch {
+        userDataRepository.updateMediaTypeViews(KEY_MEDIA_TYPE, mediaType)
+      }
     }
   }
 
@@ -87,5 +90,7 @@ class DiscoverViewModel @Inject constructor(
       mediaType = mediaType,
       pagingConfig = PagingConfig(20, initialLoadSize = 40),
     )
+
+    const val KEY_MEDIA_TYPE = "media_type"
   }
 }

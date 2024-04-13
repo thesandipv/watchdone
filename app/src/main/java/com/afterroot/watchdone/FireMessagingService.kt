@@ -24,6 +24,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.utils.getMaterialColor
 import com.afterroot.watchdone.base.Collection
@@ -34,7 +35,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import timber.log.Timber
 import com.afterroot.watchdone.resources.R as CommonR
 
 /**
@@ -50,9 +50,11 @@ class FireMessagingService : FirebaseMessagingService() {
 
   @Inject lateinit var firestore: FirebaseFirestore
 
+  @Inject lateinit var logger: Logger
+
   override fun onNewToken(token: String) {
     super.onNewToken(token)
-    Timber.d("onNewToken: NEW_TOKEN $token")
+    logger.d { "onNewToken: NEW_TOKEN $token" }
     updateToken(token)
   }
 

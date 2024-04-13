@@ -38,14 +38,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ListAlt
 import androidx.compose.material.icons.outlined.GridView
-import androidx.compose.material.icons.outlined.ListAlt
-import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Clear
@@ -59,7 +55,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -67,8 +62,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -95,7 +93,6 @@ import app.tivi.common.compose.fullSpanItem
 import app.tivi.common.compose.ui.plus
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.afterroot.data.utils.valueOrBlank
 import com.afterroot.ui.common.compose.components.AssistChip
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.CommonAppBar
@@ -113,6 +110,7 @@ import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.WatchStateValues
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import com.afterroot.watchdone.ui.media.MediaTypeFilter
 import com.afterroot.watchdone.ui.media.MetaText
 import com.afterroot.watchdone.resources.R as CommonR
 
@@ -185,7 +183,7 @@ private fun Watchlist(
               WatchlistType.GRID -> {
                 IconButton(onClick = { watchlistTypeAction(WatchlistType.LIST) }) {
                   Icon(
-                    imageVector = Icons.Outlined.ListAlt,
+                    imageVector = Icons.AutoMirrored.Outlined.ListAlt,
                     contentDescription = stringResource(
                       id = CommonR.string.watchlist_style,
                     ),
@@ -326,11 +324,7 @@ fun FiltersRow(
         refresh()
       }
 
-      Divider(
-        modifier = Modifier
-          .height(FilterChipDefaults.Height)
-          .width(1.dp),
-      )
+      VerticalDivider(modifier = Modifier.height(FilterChipDefaults.Height))
 
       CenteredRow {
         Icon(
@@ -344,34 +338,13 @@ fun FiltersRow(
 
         MediaTypeFilter(
           modifier = Modifier,
-          preSelect = when (state.filters.mediaType) {
-            MediaType.MOVIE -> stringResource(
-              id = CommonR.string.text_search_movies,
-            )
-
-            MediaType.SHOW -> stringResource(
-              id = CommonR.string.text_search_show,
-            )
-
-            else -> null
-          },
-        ) { index, _, selectedList ->
-          if (selectedList.isEmpty()) {
+          preSelect = state.filters.mediaType,
+          showOnlySelected = true,
+          onSelectionCleared = {
             filter(state.filters.copy(mediaType = null))
-            return@MediaTypeFilter
-          }
-
-          if (index == 0) { // Movie
-            filter(
-              state.filters.copy(mediaType = MediaType.MOVIE),
-            )
-          } else { // TV
-            filter(
-              state.filters.copy(
-                mediaType = MediaType.SHOW,
-              ),
-            )
-          }
+          },
+        ) { selectedMediaType: MediaType ->
+          filter(state.filters.copy(mediaType = selectedMediaType))
         }
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -692,7 +665,6 @@ fun GridWatchlistItem(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilterChips(
   modifier: Modifier = Modifier,
@@ -716,62 +688,7 @@ private fun FilterChips(
     FilterChip(
       selected = selected,
       onClick = { onClick(selected) },
-      label = { Text(text = title.valueOrBlank()) },
-      leadingIcon = {
-        if (icon != null) {
-          Icon(
-            imageVector = icon,
-            contentDescription = "$title Icon",
-            modifier = Modifier.size(FilterChipDefaults.IconSize),
-            tint = MaterialTheme.colorScheme.onSurface,
-          )
-        }
-      },
-      trailingIcon = {
-        if (selected) {
-          IconButton(modifier = Modifier.size(InputChipDefaults.IconSize), onClick = {
-            clear()
-          }) {
-            Icon(
-              imageVector = Icons.Rounded.Clear,
-              contentDescription = stringResource(
-                id = CommonR.string.content_desc_clear_filter,
-              ),
-              modifier = Modifier.size(FilterChipDefaults.IconSize),
-              tint = MaterialTheme.colorScheme.onSurface,
-            )
-          }
-        }
-      },
-    )
-  }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MediaTypeFilter(
-  modifier: Modifier = Modifier,
-  preSelect: String? = null,
-  onSelectionChanged: (index: Int, title: String, selectedList: List<Int>) -> Unit,
-) {
-  DynamicChipGroup(
-    modifier = modifier,
-    horizontalArrangement = Arrangement.spacedBy(8.dp),
-    list = listOf(
-      stringResource(id = CommonR.string.text_search_movies),
-      stringResource(id = CommonR.string.text_search_show),
-    ),
-    icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-    preSelectItem = preSelect,
-    onSelectedChanged = { index, title, _, _, selectedList ->
-      onSelectionChanged(index, title, selectedList)
-    },
-    showOnlySelected = true,
-  ) { _, title, icon, selected, onClick, clear ->
-    FilterChip(
-      selected = selected,
-      onClick = { onClick(selected) },
-      label = { Text(text = title.valueOrBlank()) },
+      label = { Text(text = title) },
       leadingIcon = {
         if (icon != null) {
           Icon(

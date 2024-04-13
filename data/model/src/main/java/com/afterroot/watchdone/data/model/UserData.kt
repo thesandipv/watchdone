@@ -22,4 +22,5 @@ data class UserData(
   val isFirstInstalled: Boolean = true,
   val tmdbBaseUrl: String = "",
   val tmdbPosterSizes: MutableSet<String>? = null,
+  val mediaTypeViews: MutableMap<String, String>? = null,
 )

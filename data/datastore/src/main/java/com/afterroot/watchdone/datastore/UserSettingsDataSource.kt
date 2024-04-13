@@ -18,6 +18,7 @@ package com.afterroot.watchdone.datastore
 import androidx.datastore.core.DataStore
 import app.tivi.util.Logger
 import com.afterroot.watchdone.data.model.DarkThemeConfig
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.UserData
 import java.io.IOException
 import javax.inject.Inject
@@ -44,6 +45,7 @@ class UserSettingsDataSource @Inject constructor(
       },
       tmdbBaseUrl = it.tmdbBaseUrl,
       tmdbPosterSizes = it.tmdbPosterSizesMap.keys,
+      mediaTypeViews = it.mediaTypeViewsMap,
     )
   }
 
@@ -70,6 +72,26 @@ class UserSettingsDataSource @Inject constructor(
           clear()
           putAll(posterSizes.associateWith { true })
         }
+      }
+    }
+  } catch (ioException: IOException) {
+    logger.e(ioException) { "Failed to update settings" }
+  }
+
+  suspend fun updateMediaTypeViews(viewName: String, mediaType: MediaType) = try {
+    userSettings.updateData {
+      it.copy {
+        mediaTypeViews.put(viewName, mediaType.name)
+      }
+    }
+  } catch (ioException: IOException) {
+    logger.e(ioException) { "Failed to update settings" }
+  }
+
+  suspend fun clearMediaTypeViews() = try {
+    userSettings.updateData {
+      it.copy {
+        mediaTypeViews.clear()
       }
     }
   } catch (ioException: IOException) {

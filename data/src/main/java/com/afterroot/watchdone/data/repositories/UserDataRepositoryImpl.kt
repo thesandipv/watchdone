@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.data.repositories
 
 import com.afterroot.watchdone.data.model.DarkThemeConfig
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.datastore.UserSettingsDataSource
 import com.afterroot.watchdone.settings.Settings
@@ -51,5 +52,13 @@ class UserDataRepositoryImpl @Inject constructor(
 
   override suspend fun setTMDbPosterSizes(posterSizes: Set<String>) {
     userSettingsDataSource.setTMDbPosterSizes(posterSizes)
+  }
+
+  override suspend fun updateMediaTypeViews(viewName: String, mediaType: MediaType) {
+    userSettingsDataSource.updateMediaTypeViews(viewName, mediaType)
+  }
+
+  override suspend fun clearMediaTypeViews() {
+    userSettingsDataSource.clearMediaTypeViews()
   }
 }
