@@ -12,12 +12,12 @@ import com.afterroot.watchdone.data.daos.PaginatedEntryDao
 import com.afterroot.watchdone.data.model.PaginatedEntry
 
 interface RoomPaginatedEntryDao<EC : PaginatedEntry, LI : EntryWithMedia<EC>> :
-    RoomEntryDao<EC, LI>,
-    PaginatedEntryDao<EC, LI> {
+  RoomEntryDao<EC, LI>,
+  PaginatedEntryDao<EC, LI> {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    override suspend fun upsert(entity: EC): Long
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  override suspend fun upsert(entity: EC): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    override suspend fun upsertAll(entities: List<EC>)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  override suspend fun upsertAll(entities: List<EC>)
 }

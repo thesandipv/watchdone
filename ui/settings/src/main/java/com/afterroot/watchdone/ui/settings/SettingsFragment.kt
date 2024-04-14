@@ -34,6 +34,7 @@ import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.data.model.DarkThemeConfig
 import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.database.dao.CountriesDao
+import com.afterroot.watchdone.di.VersionFormatted
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.utils.State
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
@@ -42,7 +43,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.jakewharton.processphoenix.ProcessPhoenix
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -59,178 +59,178 @@ import com.afterroot.watchdone.resources.R as CommonR
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
-    private var countriesJob: Job? = null
+  private var countriesJob: Job? = null
 
-    @Inject lateinit var settings: Settings
+  @Inject lateinit var settings: Settings
 
-    @Inject lateinit var configRepository: ConfigRepository
+  @Inject lateinit var configRepository: ConfigRepository
 
-    @Inject lateinit var countriesDao: CountriesDao
+  @Inject lateinit var countriesDao: CountriesDao
 
-    @Inject lateinit var firestore: FirebaseFirestore
+  @Inject lateinit var firestore: FirebaseFirestore
 
-    @Inject
-    @Named("version_string")
-    lateinit var versionString: String
+  @Inject
+  @VersionFormatted
+  lateinit var versionString: String
 
-    private val settingsActivityViewModel: SettingsActivityViewModel by activityViewModels()
+  private val settingsActivityViewModel: SettingsActivityViewModel by activityViewModels()
 
-    private var uiState: State<UserData> by mutableStateOf(State.loading())
+  private var uiState: State<UserData> by mutableStateOf(State.loading())
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        // Update the uiState
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                settingsActivityViewModel.uiState
-                    .onEach { uiState = it }
-                    .collect()
-            }
-        }
+    // Update the uiState
+    lifecycleScope.launch {
+      lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        settingsActivityViewModel.uiState
+          .onEach { uiState = it }
+          .collect()
+      }
+    }
+  }
+
+  override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    setPreferencesFromResource(CommonR.xml.pref_settings, rootKey)
+
+    findPreference<ListPreference>(Constants.PREF_KEY_IMAGE_SIZE)?.apply {
+      with(settings.posterSizes?.toTypedArray()) {
+        entries = this
+        entryValues = this
+      }
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(CommonR.xml.pref_settings, rootKey)
+    findPreference<ListPreference>(
+      Constants.PREF_KEY_THEME,
+    )?.setOnPreferenceChangeListener { _, newValue ->
+      // TODO Remove AppCompat
+      AppCompatDelegate.setDefaultNightMode(
+        when (newValue) {
+          getString(
+            CommonR.string.theme_device_default,
+          ),
+          -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+          getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
+          getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
+          else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        },
+      )
 
-        findPreference<ListPreference>(Constants.PREF_KEY_IMAGE_SIZE)?.apply {
-            with(settings.posterSizes?.toTypedArray()) {
-                entries = this
-                entryValues = this
-            }
+      settingsActivityViewModel.updateSettings {
+        val dtc = when (newValue) {
+          getString(
+            CommonR.string.theme_device_default,
+          ),
+          -> DarkThemeConfig.FOLLOW_SYSTEM
+          getString(CommonR.string.theme_light) -> DarkThemeConfig.LIGHT
+          getString(CommonR.string.theme_dark) -> DarkThemeConfig.DARK
+          else -> DarkThemeConfig.FOLLOW_SYSTEM
         }
+        setDarkThemeConfig(dtc)
+      }
 
-        findPreference<ListPreference>(
-            Constants.PREF_KEY_THEME,
-        )?.setOnPreferenceChangeListener { _, newValue ->
-            // TODO Remove AppCompat
-            AppCompatDelegate.setDefaultNightMode(
-                when (newValue) {
-                    getString(
-                        CommonR.string.theme_device_default,
-                    ),
-                    -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
-                    getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
-                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                },
-            )
-
-            settingsActivityViewModel.updateSettings {
-                val dtc = when (newValue) {
-                    getString(
-                        CommonR.string.theme_device_default,
-                    ),
-                    -> DarkThemeConfig.FOLLOW_SYSTEM
-                    getString(CommonR.string.theme_light) -> DarkThemeConfig.LIGHT
-                    getString(CommonR.string.theme_dark) -> DarkThemeConfig.DARK
-                    else -> DarkThemeConfig.FOLLOW_SYSTEM
-                }
-                setDarkThemeConfig(dtc)
-            }
-
-            return@setOnPreferenceChangeListener true
-        }
-
-        findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
-            OssLicensesMenuActivity.setActivityTitle(
-                getString(com.google.android.gms.oss.licenses.R.string.oss_license_title),
-            )
-            requireContext().startActivity<OssLicensesMenuActivity>()
-            return@setOnPreferenceClickListener true
-        }
-
-        findPreference<Preference>(getString(CommonR.string.key_version))?.summary = versionString
-
-        updateCountryPref()
-        setUpDebugPreferences()
+      return@setOnPreferenceChangeListener true
     }
 
-    private fun updateCountryPref() {
-        val preference = findPreference<Preference>("key_countries")
-        lifecycleScope.launch {
-            settings.country?.let {
-                val dbCountry = countriesDao.get(it).flowOn(Dispatchers.IO)
-
-                dbCountry.collect { country ->
-                    preference?.summary = country?.englishName
-                }
-            }
-        }
-        preference?.setOnPreferenceClickListener {
-            showCountrySelectDialog()
-            return@setOnPreferenceClickListener true
-        }
+    findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
+      OssLicensesMenuActivity.setActivityTitle(
+        getString(com.google.android.gms.oss.licenses.R.string.oss_license_title),
+      )
+      requireContext().startActivity<OssLicensesMenuActivity>()
+      return@setOnPreferenceClickListener true
     }
 
-    private fun showCountrySelectDialog() {
-        countriesJob?.cancel()
-        countriesJob = lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                if (countriesDao.count() == 0) {
-                    withContext(Dispatchers.Main) {
-                        requireContext().toast("Please Wait...")
-                    }
-                    countriesDao.add(configRepository.getCountries())
-                }
-            }
+    findPreference<Preference>(getString(CommonR.string.key_version))?.summary = versionString
 
-            var dialog: MaterialAlertDialogBuilder?
+    updateCountryPref()
+    setUpDebugPreferences()
+  }
 
-            countriesDao.getCountriesFlow().flowOn(Dispatchers.IO).map {
-                it.map(Country::englishName).toTypedArray()
-            }.collectLatest { countryArray ->
-                dialog = MaterialAlertDialogBuilder(requireContext()).setTitle("Select Country")
-                    .setSingleChoiceItems(countryArray, 0) { dialog, which ->
-                        Timber.d("showCountrySelectDialog: ${countryArray[which]}")
-                        lifecycleScope.launch {
-                            countriesDao.getByName(countryArray[which]).flowOn(Dispatchers.IO).collectLatest {
-                                settings.country = it?.iso
-                                findPreference<Preference>("key_countries")?.summary = it?.englishName
-                                dialog.dismiss()
-                            }
-                        }
-                    }
-                dialog?.show()
-            }
+  private fun updateCountryPref() {
+    val preference = findPreference<Preference>("key_countries")
+    lifecycleScope.launch {
+      settings.country?.let {
+        val dbCountry = countriesDao.get(it).flowOn(Dispatchers.IO)
+
+        dbCountry.collect { country ->
+          preference?.summary = country?.englishName
         }
+      }
+    }
+    preference?.setOnPreferenceClickListener {
+      showCountrySelectDialog()
+      return@setOnPreferenceClickListener true
+    }
+  }
+
+  private fun showCountrySelectDialog() {
+    countriesJob?.cancel()
+    countriesJob = lifecycleScope.launch {
+      withContext(Dispatchers.IO) {
+        if (countriesDao.count() == 0) {
+          withContext(Dispatchers.Main) {
+            requireContext().toast("Please Wait...")
+          }
+          countriesDao.add(configRepository.getCountries())
+        }
+      }
+
+      var dialog: MaterialAlertDialogBuilder?
+
+      countriesDao.getCountriesFlow().flowOn(Dispatchers.IO).map {
+        it.map(Country::englishName).toTypedArray()
+      }.collectLatest { countryArray ->
+        dialog = MaterialAlertDialogBuilder(requireContext()).setTitle("Select Country")
+          .setSingleChoiceItems(countryArray, 0) { dialog, which ->
+            Timber.d("showCountrySelectDialog: ${countryArray[which]}")
+            lifecycleScope.launch {
+              countriesDao.getByName(countryArray[which]).flowOn(Dispatchers.IO).collectLatest {
+                settings.country = it?.iso
+                findPreference<Preference>("key_countries")?.summary = it?.englishName
+                dialog.dismiss()
+              }
+            }
+          }
+        dialog?.show()
+      }
+    }
+  }
+
+  private fun setUpDebugPreferences() {
+    if (!BuildConfig.DEBUG) return
+    findPreference<PreferenceCategory>("key_debug")?.isVisible = true
+
+    findPreference<SwitchPreferenceCompat>(
+      "http_logging",
+    )?.setOnPreferenceChangeListener { _, _ ->
+      ProcessPhoenix.triggerRebirth(requireContext())
+      true
     }
 
-    private fun setUpDebugPreferences() {
-        if (!BuildConfig.DEBUG) return
-        findPreference<PreferenceCategory>("key_debug")?.isVisible = true
+    findPreference<SwitchPreferenceCompat>(
+      "key_enable_emulator",
+    )?.setOnPreferenceChangeListener { _, _ ->
+      ProcessPhoenix.triggerRebirth(requireContext())
+      true
+    }
 
-        findPreference<SwitchPreferenceCompat>(
-            "http_logging",
-        )?.setOnPreferenceChangeListener { _, _ ->
+    findPreference<SwitchPreferenceCompat>(
+      "use_prod_db",
+    )?.setOnPreferenceChangeListener { _, _ ->
+      ProcessPhoenix.triggerRebirth(requireContext())
+      true
+    }
+
+    findPreference<Preference>("key_clear_persistence")?.apply {
+      onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        firestore.terminate().also {
+          if (it.isSuccessful) {
+            firestore.clearPersistence()
             ProcessPhoenix.triggerRebirth(requireContext())
-            true
+          }
         }
-
-        findPreference<SwitchPreferenceCompat>(
-            "key_enable_emulator",
-        )?.setOnPreferenceChangeListener { _, _ ->
-            ProcessPhoenix.triggerRebirth(requireContext())
-            true
-        }
-
-        findPreference<SwitchPreferenceCompat>(
-            "use_prod_db",
-        )?.setOnPreferenceChangeListener { _, _ ->
-            ProcessPhoenix.triggerRebirth(requireContext())
-            true
-        }
-
-        findPreference<Preference>("key_clear_persistence")?.apply {
-            onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                firestore.terminate().also {
-                    if (it.isSuccessful) {
-                        firestore.clearPersistence()
-                        ProcessPhoenix.triggerRebirth(requireContext())
-                    }
-                }
-                true
-            }
-        }
+        true
+      }
     }
+  }
 }

@@ -17,92 +17,92 @@ import com.afterroot.gradle.readProperties
 
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
-    alias(libs.plugins.jetbrains.kotlin.kapt)
-    alias(libs.plugins.google.ksp)
+  alias(libs.plugins.jetbrains.kotlin.kapt)
+  alias(libs.plugins.google.ksp)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.data"
+  namespace = "com.afterroot.watchdone.data"
 
-    buildFeatures.buildConfig = true
+  buildFeatures.buildConfig = true
 
-    defaultConfig {
-        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
+  defaultConfig {
+    testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
 
-        val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
-        buildConfigField(
-            "String",
-            "TMDB_BEARER_TOKEN",
-            tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN"),
-        )
-        buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
-    }
+    val tmdbProperties = readProperties(rootProject.file("tmdb.properties"))
+    buildConfigField(
+      "String",
+      "TMDB_BEARER_TOKEN",
+      tmdbProperties["tmdbBearerToken"] as String? ?: System.getenv("TMDB_BEARER_TOKEN"),
+    )
+    buildConfigField("String", "TMDB_API", tmdbProperties["tmdbApi"] as String? ?: System.getenv("TMDB_API"))
+  }
 }
 
 ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-    arg("room.incremental", "true")
+  arg("room.schemaLocation", "$projectDir/schemas")
+  arg("room.incremental", "true")
 }
 
 dependencies {
-    api(projects.ards)
-    api(projects.data.datastore)
-    api(projects.data.model)
-    api(projects.themoviedbapi)
-    implementation(projects.api.tmdb)
-    implementation(projects.core.logging)
+  api(projects.ards)
+  api(projects.data.datastore)
+  api(projects.data.model)
+  api(projects.themoviedbapi)
+  implementation(projects.api.tmdb)
+  implementation(projects.core.logging)
 
-    implementation(libs.androidx.preference)
-    implementation(libs.androidx.paging)
+  implementation(libs.androidx.preference)
+  implementation(libs.androidx.paging)
 
-    api(libs.google.gson)
+  api(libs.google.gson)
 
-    api(libs.store)
+  api(libs.store)
 
-    api(libs.okhttp.okhttp)
-    api(libs.okhttp.logging)
-    api(libs.retrofit.retrofit)
-    api(libs.retrofit.jackson)
+  api(libs.okhttp.okhttp)
+  api(libs.okhttp.logging)
+  api(libs.retrofit.retrofit)
+  api(libs.retrofit.jackson)
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.config)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.messaging)
-    implementation(libs.firebase.crashlytics)
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.auth)
+  implementation(libs.firebase.config)
+  implementation(libs.firebase.firestore)
+  implementation(libs.firebase.messaging)
+  implementation(libs.firebase.crashlytics)
 
-    implementation(libs.bundles.coroutines)
+  implementation(libs.bundles.coroutines)
 
-    api(libs.androidx.room.room)
-    api(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
+  api(libs.androidx.room.room)
+  api(libs.androidx.room.runtime)
+  ksp(libs.androidx.room.compiler)
 
-    testImplementation(libs.androidx.room.test)
-    testImplementation(libs.androidx.test.archCore)
-    testImplementation(libs.androidx.test.core)
-    testImplementation(libs.hilt.testing)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.test.mockk)
-    testImplementation(libs.test.junit)
-    testImplementation(libs.androidx.test.junitExt)
-    testImplementation(libs.test.robolectric)
+  testImplementation(libs.androidx.room.test)
+  testImplementation(libs.androidx.test.archCore)
+  testImplementation(libs.androidx.test.core)
+  testImplementation(libs.hilt.testing)
+  testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.test.mockk)
+  testImplementation(libs.test.junit)
+  testImplementation(libs.androidx.test.junitExt)
+  testImplementation(libs.test.robolectric)
 
-    kaptTest(libs.androidx.room.compiler)
+  kaptTest(libs.androidx.room.compiler)
 
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.junitExt)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.hilt.testing)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.test.junit)
+  androidTestImplementation(libs.androidx.test.core)
+  androidTestImplementation(libs.androidx.test.junitExt)
+  androidTestImplementation(libs.androidx.test.runner)
+  androidTestImplementation(libs.hilt.testing)
+  androidTestImplementation(libs.kotlinx.coroutines.test)
+  androidTestImplementation(libs.test.junit)
 
-    implementation(libs.coil)
+  implementation(libs.coil)
 
-    implementation(libs.kotlinx.datetime)
+  implementation(libs.kotlinx.datetime)
 }

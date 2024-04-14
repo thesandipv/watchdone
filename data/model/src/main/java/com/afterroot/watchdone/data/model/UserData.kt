@@ -16,10 +16,11 @@
 package com.afterroot.watchdone.data.model
 
 data class UserData(
-    val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-    val useDynamicColor: Boolean = true,
-    val isUserSignedIn: Boolean = false,
-    val isFirstInstalled: Boolean = true,
-    val tmdbBaseUrl: String = "",
-    val tmdbPosterSizes: MutableSet<String>? = null,
+  val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
+  val useDynamicColor: Boolean = true,
+  val isUserSignedIn: Boolean = false,
+  val isFirstInstalled: Boolean = true,
+  val tmdbBaseUrl: String = "",
+  val tmdbPosterSizes: MutableSet<String>? = null,
+  val mediaTypeViews: MutableMap<String, String>? = null,
 )

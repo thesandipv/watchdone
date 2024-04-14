@@ -1,40 +1,40 @@
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
-    alias(libs.plugins.google.ksp)
+  alias(libs.plugins.google.ksp)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.database.room"
+  namespace = "com.afterroot.watchdone.database.room"
 
-    defaultConfig {
-        testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
-    }
+  defaultConfig {
+    testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
+  }
 }
 
 ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-    arg("room.incremental", "true")
+  arg("room.schemaLocation", "$projectDir/schemas")
+  arg("room.incremental", "true")
 }
 
 dependencies {
-    implementation(projects.data)
-    api(projects.data.model)
-    api(projects.data.database)
+  implementation(projects.data)
+  api(projects.data.model)
+  api(projects.data.database)
 
-    implementation(libs.androidx.room.room)
-    implementation(libs.androidx.room.paging)
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
+  implementation(libs.androidx.room.room)
+  implementation(libs.androidx.room.paging)
+  implementation(libs.androidx.room.runtime)
+  ksp(libs.androidx.room.compiler)
 
-    implementation(libs.bundles.coroutines)
+  implementation(libs.bundles.coroutines)
 
-    implementation(libs.kotlinx.datetime)
+  implementation(libs.kotlinx.datetime)
 
-    implementation(libs.androidx.paging.common)
+  implementation(libs.androidx.paging.common)
 
-    androidTestImplementation(projects.core.testing)
+  androidTestImplementation(projects.core.testing)
 }

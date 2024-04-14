@@ -21,23 +21,23 @@ import com.afterroot.watchdone.data.model.Media
 import java.io.IOException
 
 class SearchMediaPagingSource(
-    private val searchParams: SearchDataSource.Params,
-    private val searchRepository: SearchRepository,
+  private val searchParams: SearchDataSource.Params,
+  private val searchRepository: SearchRepository,
 ) : PagingSource<Int, Media>() {
-    override fun getRefreshKey(state: PagingState<Int, Media>): Int? = null
+  override fun getRefreshKey(state: PagingState<Int, Media>): Int? = null
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Media> {
-        return try {
-            val pageNumber = params.key ?: 1
-            val response = searchRepository.search(searchParams.copy(page = pageNumber))
+  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Media> {
+    return try {
+      val pageNumber = params.key ?: 1
+      val response = searchRepository.search(searchParams.copy(page = pageNumber))
 
-            val nextKey = if (response.isNotEmpty()) pageNumber + 1 else null
+      val nextKey = if (response.isNotEmpty()) pageNumber + 1 else null
 
-            LoadResult.Page(data = response, prevKey = null, nextKey = nextKey)
-        } catch (e: IOException) {
-            LoadResult.Error(e)
-        } catch (e: Exception) {
-            LoadResult.Error(e)
-        }
+      LoadResult.Page(data = response, prevKey = null, nextKey = nextKey)
+    } catch (e: IOException) {
+      LoadResult.Error(e)
+    } catch (e: Exception) {
+      LoadResult.Error(e)
     }
+  }
 }

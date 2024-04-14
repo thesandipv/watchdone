@@ -25,20 +25,20 @@ import org.junit.Test
 
 @HiltAndroidTest
 class SettingsTest : AppTest() {
-    @Inject lateinit var settings: Settings
+  @Inject lateinit var settings: Settings
 
-    @Test
-    fun settingsWorking() {
-        launch {
-            Assert.assertNotNull(settings)
-        }
+  @Test
+  fun settingsWorking() {
+    launch {
+      Assert.assertNotNull(settings)
     }
+  }
 
-    private fun launch(block: suspend () -> Unit) {
-        runBlocking {
-            launch {
-                block()
-            }
-        }
+  private fun launch(block: suspend () -> Unit) {
+    runBlocking {
+      launch {
+        block()
+      }
     }
+  }
 }

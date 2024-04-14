@@ -75,262 +75,262 @@ import timber.log.Timber
 
 @Composable
 fun EditProfile(
-    onSignOut: () -> Unit = {},
-    onUpAction: () -> Unit = {},
+  onSignOut: () -> Unit = {},
+  onUpAction: () -> Unit = {},
 ) {
-    EditProfile(viewModel = hiltViewModel(), onSignOut, onUpAction)
+  EditProfile(viewModel = hiltViewModel(), onSignOut, onUpAction)
 }
 
 @Composable
 internal fun EditProfile(
-    viewModel: ProfileViewModel,
-    onSignOut: () -> Unit = {},
-    onUpAction: () -> Unit = {},
+  viewModel: ProfileViewModel,
+  onSignOut: () -> Unit = {},
+  onUpAction: () -> Unit = {},
 ) {
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    EditProfile(viewModel = viewModel) { action ->
-        when (action) {
-            ProfileActions.SignOut -> {
-                Timber.d("EditProfile: SignOut Start")
-                scope.launch {
-                    signOut(context).collect { signOutState ->
-                        Timber.d("EditProfile: SignOutState: $signOutState")
-                        when (signOutState) {
-                            is State.Failed -> {
-                                val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Failed Signing Out."),
-                                )
-                                viewModel.submitAction(showMessage)
-                            }
+  val scope = rememberCoroutineScope()
+  val context = LocalContext.current
+  EditProfile(viewModel = viewModel) { action ->
+    when (action) {
+      ProfileActions.SignOut -> {
+        Timber.d("EditProfile: SignOut Start")
+        scope.launch {
+          signOut(context).collect { signOutState ->
+            Timber.d("EditProfile: SignOutState: $signOutState")
+            when (signOutState) {
+              is State.Failed -> {
+                val showMessage = ProfileActions.ShowMessage(
+                  UiMessage("Failed Signing Out."),
+                )
+                viewModel.submitAction(showMessage)
+              }
 
-                            is State.Success -> {
-                                val showMessage = ProfileActions.ShowMessage(
-                                    UiMessage("Signed Out."),
-                                )
-                                viewModel.submitAction(showMessage)
-                                onSignOut()
-                            }
+              is State.Success -> {
+                val showMessage = ProfileActions.ShowMessage(
+                  UiMessage("Signed Out."),
+                )
+                viewModel.submitAction(showMessage)
+                onSignOut()
+              }
 
-                            else -> {
-                            }
-                        }
-                    }
-                }
+              else -> {
+              }
             }
-
-            ProfileActions.Up -> {
-                onUpAction()
-            }
-
-            else -> viewModel.submitAction(action)
+          }
         }
+      }
+
+      ProfileActions.Up -> {
+        onUpAction()
+      }
+
+      else -> viewModel.submitAction(action)
     }
+  }
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun EditProfile(
-    viewModel: ProfileViewModel,
-    actions: (ProfileActions) -> Unit,
+  viewModel: ProfileViewModel,
+  actions: (ProfileActions) -> Unit,
 ) {
-    val viewState by viewModel.state.collectAsState()
-    val logger = LocalLogger.current
-    logger.d { "EditProfile: $viewState" }
+  val viewState by viewModel.state.collectAsState()
+  val logger = LocalLogger.current
+  logger.d { "EditProfile: $viewState" }
 
-    val enteredState = remember { mutableStateOf(LocalUser()) }
-    val keyboardController = LocalSoftwareKeyboardController.current
+  val enteredState = remember { mutableStateOf(LocalUser()) }
+  val keyboardController = LocalSoftwareKeyboardController.current
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets.systemBars,
-        topBar = {
-            CommonAppBar(
-                withTitle = stringResource(id = R.string.title_edit_profile),
-                windowInsets = TopBarWindowInsets,
-                actions = {
-                    IconButton(onClick = { actions(ProfileActions.SignOut) }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Logout,
-                            contentDescription = stringResource(
-                                id = R.string.action_sign_out,
-                            ),
-                        )
-                    }
-                },
+  Scaffold(
+    modifier = Modifier.fillMaxSize(),
+    contentWindowInsets = WindowInsets.systemBars,
+    topBar = {
+      CommonAppBar(
+        withTitle = stringResource(id = R.string.title_edit_profile),
+        windowInsets = TopBarWindowInsets,
+        actions = {
+          IconButton(onClick = { actions(ProfileActions.SignOut) }) {
+            Icon(
+              imageVector = Icons.Rounded.Logout,
+              contentDescription = stringResource(
+                id = R.string.action_sign_out,
+              ),
             )
+          }
         },
-        floatingActionButton = {
-            FABSave(
-                modifier = Modifier.offset(y = 24.dp),
-                onClick = {
-                    enteredState.value = enteredState.value.trim()
-                    actions(ProfileActions.SaveProfile(enteredState.value))
-                },
-            )
+      )
+    },
+    floatingActionButton = {
+      FABSave(
+        modifier = Modifier.offset(y = 24.dp),
+        onClick = {
+          enteredState.value = enteredState.value.trim()
+          actions(ProfileActions.SaveProfile(enteredState.value))
         },
-    ) { paddingValues ->
-        AnimatedVisibility(visible = viewState.user is State.Loading) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
-        AnimatedVisibility(visible = viewState.user is State.Success) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .padding(paddingValues),
-            ) {
-                val localUser = (viewState.user as State.Success<LocalUser>).data
-                OutlinedTextInput(
-                    modifier = textFieldModifier,
-                    enabled = localUser.isUserNameAvailable.not(),
-                    prefillValue = localUser.userName.valueOrBlank(),
-                    maxLines = 1,
-                    label = {
-                        Text("Username") // TODO Replace all hardcoded strings with string resources
-                    },
-                    placeholder = {
-                        Text("Enter desired username")
-                    },
-                    onChange = {
-                        enteredState.value = enteredState.value.copy(userName = it.trim())
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        autoCorrect = false,
-                        imeAction = ImeAction.Done,
-                    ),
-                    validate = {
-                        when {
-                            it.length > Constants.USERNAME_LENGTH -> {
-                                State.failed("Username is too long.")
-                            }
-
-                            it.contains(" ") -> {
-                                State.failed("Username cannot contain space.")
-                            }
-
-                            else -> State.success(true)
-                        }
-                    },
-                    trailingIcon = {},
-                )
-
-                OutlinedTextInput(
-                    modifier = textFieldModifier,
-                    prefillValue = localUser.name.valueOrBlank(),
-                    maxLines = 1,
-                    label = {
-                        Text("Name")
-                    },
-                    placeholder = {
-                        Text("Enter full name")
-                    },
-                    onChange = {
-                        enteredState.value = enteredState.value.copy(name = it)
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    validate = {
-                        if (it.length > Constants.NAME_LENGTH) {
-                            State.failed("Name is too long.")
-                        } else {
-                            State.success(true)
-                        }
-                    },
-                    onError = {
-                    },
-                    trailingIcon = {},
-                )
-                OutlinedTextInput(
-                    modifier = textFieldModifier,
-                    prefillValue = localUser.email.valueOrBlank(),
-                    maxLines = 1,
-                    label = {
-                        Text("Email")
-                    },
-                    enabled = false,
-                    onChange = {
-                        enteredState.value = enteredState.value.copy(name = it)
-                    },
-                    trailingIcon = {},
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Email,
-                    ),
-                )
-            }
-        }
+      )
+    },
+  ) { paddingValues ->
+    AnimatedVisibility(visible = viewState.user is State.Loading) {
+      LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
+    AnimatedVisibility(visible = viewState.user is State.Success) {
+      Column(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 8.dp)
+          .padding(paddingValues),
+      ) {
+        val localUser = (viewState.user as State.Success<LocalUser>).data
+        OutlinedTextInput(
+          modifier = textFieldModifier,
+          enabled = localUser.isUserNameAvailable.not(),
+          prefillValue = localUser.userName.valueOrBlank(),
+          maxLines = 1,
+          label = {
+            Text("Username") // TODO Replace all hardcoded strings with string resources
+          },
+          placeholder = {
+            Text("Enter desired username")
+          },
+          onChange = {
+            enteredState.value = enteredState.value.copy(userName = it.trim())
+          },
+          keyboardOptions = KeyboardOptions(
+            autoCorrect = false,
+            imeAction = ImeAction.Done,
+          ),
+          validate = {
+            when {
+              it.length > Constants.USERNAME_LENGTH -> {
+                State.failed("Username is too long.")
+              }
+
+              it.contains(" ") -> {
+                State.failed("Username cannot contain space.")
+              }
+
+              else -> State.success(true)
+            }
+          },
+          trailingIcon = {},
+        )
+
+        OutlinedTextInput(
+          modifier = textFieldModifier,
+          prefillValue = localUser.name.valueOrBlank(),
+          maxLines = 1,
+          label = {
+            Text("Name")
+          },
+          placeholder = {
+            Text("Enter full name")
+          },
+          onChange = {
+            enteredState.value = enteredState.value.copy(name = it)
+          },
+          keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+          validate = {
+            if (it.length > Constants.NAME_LENGTH) {
+              State.failed("Name is too long.")
+            } else {
+              State.success(true)
+            }
+          },
+          onError = {
+          },
+          trailingIcon = {},
+        )
+        OutlinedTextInput(
+          modifier = textFieldModifier,
+          prefillValue = localUser.email.valueOrBlank(),
+          maxLines = 1,
+          label = {
+            Text("Email")
+          },
+          enabled = false,
+          onChange = {
+            enteredState.value = enteredState.value.copy(name = it)
+          },
+          trailingIcon = {},
+          keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Email,
+          ),
+        )
+      }
+    }
+  }
 }
 
 val textFieldModifier = Modifier
-    .fillMaxWidth()
-    .padding(horizontal = 16.dp)
-    .padding(top = 8.dp)
+  .fillMaxWidth()
+  .padding(horizontal = 16.dp)
+  .padding(top = 8.dp)
 
 @Composable
 fun UpdateProfilePrompt() {
-    Column(
-        modifier = Modifier
-            .padding(top = 16.dp)
-            .padding(horizontal = 16.dp),
-    ) {
-        Text(
-            text = "Update LocalUser Name",
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-        )
+  Column(
+    modifier = Modifier
+      .padding(top = 16.dp)
+      .padding(horizontal = 16.dp),
+  ) {
+    Text(
+      text = "Update LocalUser Name",
+      textAlign = TextAlign.Center,
+      modifier = Modifier.fillMaxWidth(),
+    )
 
-        TextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text(text = "LocalUser Name")
-            },
-        )
-    }
+    TextField(
+      value = "",
+      onValueChange = {},
+      modifier = Modifier.fillMaxWidth(),
+      label = {
+        Text(text = "LocalUser Name")
+      },
+    )
+  }
 }
 
 @Composable
 fun DoWhenUserNameNotAvailable(
-    whenNotAvailable: () -> Unit,
+  whenNotAvailable: () -> Unit,
 ) {
-    UserProfile { profile ->
-        if (profile.userName == null || !profile.isUserNameAvailable) {
-            whenNotAvailable()
-        }
+  UserProfile { profile ->
+    if (profile.userName == null || !profile.isUserNameAvailable) {
+      whenNotAvailable()
     }
+  }
 }
 
 @Composable
 fun UserProfile(
-    profileViewModel: ProfileViewModel = hiltViewModel(),
-    loadingContent: @Composable () -> Unit = {},
-    content: @Composable (LocalUser) -> Unit = {},
+  profileViewModel: ProfileViewModel = hiltViewModel(),
+  loadingContent: @Composable () -> Unit = {},
+  content: @Composable (LocalUser) -> Unit = {},
 ) {
-    val profileState = profileViewModel.profile.collectAsState(State.loading())
-    when (profileState.value) {
-        is State.Loading -> {
-            loadingContent()
-        }
-
-        is State.Success -> {
-            val localUser = (profileState.value as State.Success<NetworkUser>).data.toLocalUser()
-            content(localUser)
-        }
-
-        is State.Failed -> {
-            profileViewModel.submitAction(
-                ProfileActions.SaveProfile(profileViewModel.firebaseUtils.auth.getLocalUser()),
-            )
-        }
+  val profileState = profileViewModel.profile.collectAsState(State.loading())
+  when (profileState.value) {
+    is State.Loading -> {
+      loadingContent()
     }
+
+    is State.Success -> {
+      val localUser = (profileState.value as State.Success<NetworkUser>).data.toLocalUser()
+      content(localUser)
+    }
+
+    is State.Failed -> {
+      profileViewModel.submitAction(
+        ProfileActions.SaveProfile(profileViewModel.firebaseUtils.auth.getLocalUser()),
+      )
+    }
+  }
 }
 
 fun signOut(context: Context) = flow {
-    emit(State.loading())
-    AuthUI.getInstance().signOut(context).await()
-    emit(State.success(true))
+  emit(State.loading())
+  AuthUI.getInstance().signOut(context).await()
+  emit(State.success(true))
 }.catch {
-    emit(State.failed(it.message.toString()))
+  emit(State.failed(it.message.toString()))
 }.flowOn(Dispatchers.IO)

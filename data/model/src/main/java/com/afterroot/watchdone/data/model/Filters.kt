@@ -15,16 +15,16 @@
 package com.afterroot.watchdone.data.model
 
 enum class WatchStateValues {
-    WATCHED,
-    PENDING,
-    STARTED,
+  WATCHED,
+  PENDING,
+  STARTED,
 }
 
 data class Filters(
-    val watchState: WatchStateValues? = null,
-    val mediaType: MediaType? = null,
+  val watchState: WatchStateValues? = null,
+  val mediaType: MediaType? = null,
 ) {
-    companion object {
-        val EMPTY = Filters()
-    }
+  companion object {
+    val EMPTY = Filters()
+  }
 }

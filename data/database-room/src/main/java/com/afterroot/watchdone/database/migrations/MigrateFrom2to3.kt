@@ -19,15 +19,15 @@ import androidx.room.RenameColumn
 import androidx.room.migration.AutoMigrationSpec
 
 @RenameColumn.Entries(
-    RenameColumn(
-        tableName = "media",
-        fromColumnName = "isWatched",
-        toColumnName = "is_watched",
-    ),
-    RenameColumn(
-        tableName = "media",
-        fromColumnName = "tmdbId",
-        toColumnName = "tmdb_id",
-    ),
+  RenameColumn(
+    tableName = "media",
+    fromColumnName = "isWatched",
+    toColumnName = "is_watched",
+  ),
+  RenameColumn(
+    tableName = "media",
+    fromColumnName = "tmdbId",
+    toColumnName = "tmdb_id",
+  ),
 )
 class MigrateFrom2to3 : AutoMigrationSpec

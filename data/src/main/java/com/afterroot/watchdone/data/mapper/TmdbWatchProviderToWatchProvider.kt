@@ -25,29 +25,29 @@ import com.afterroot.watchdone.data.model.WatchProviders
 import javax.inject.Inject
 
 class TmdbProviderToWatchProvider @Inject constructor() : Mapper<TmdbProvider, WatchProvider> {
-    override fun map(from: TmdbProvider): WatchProvider = WatchProvider(
-        displayPriority = from.displayPriority,
-        logoPath = from.logoPath,
-        providerId = from.providerId,
-        providerName = from.providerName,
-    )
+  override fun map(from: TmdbProvider): WatchProvider = WatchProvider(
+    displayPriority = from.displayPriority,
+    logoPath = from.logoPath,
+    providerId = from.providerId,
+    providerName = from.providerName,
+  )
 }
 
 class TmdbProvidersToWatchProviders @Inject constructor(
-    private val tmdbProviderToWatchProvider: TmdbProviderToWatchProvider,
+  private val tmdbProviderToWatchProvider: TmdbProviderToWatchProvider,
 ) : Mapper<TmdbProviders, WatchProviders> {
-    override fun map(from: TmdbProviders): WatchProviders = WatchProviders(
-        link = from.link,
-        flatrate = from.flatrate.map(tmdbProviderToWatchProvider::map),
-        buy = from.buy.map(tmdbProviderToWatchProvider::map),
-    )
+  override fun map(from: TmdbProviders): WatchProviders = WatchProviders(
+    link = from.link,
+    flatrate = from.flatrate.map(tmdbProviderToWatchProvider::map),
+    buy = from.buy.map(tmdbProviderToWatchProvider::map),
+  )
 }
 
 class TmdbWatchProviderResultToWatchProviderResult @Inject constructor(
-    private val tmdbProvidersToWatchProviders: TmdbProvidersToWatchProviders,
+  private val tmdbProvidersToWatchProviders: TmdbProvidersToWatchProviders,
 ) : Mapper<TmdbWatchProviderResult, WatchProviderResult> {
-    override fun map(from: TmdbWatchProviderResult): WatchProviderResult = WatchProviderResult(
-        id = from.id,
-        results = from.results.mapValues { tmdbProvidersToWatchProviders.map(it.value) },
-    )
+  override fun map(from: TmdbWatchProviderResult): WatchProviderResult = WatchProviderResult(
+    id = from.id,
+    results = from.results.mapValues { tmdbProvidersToWatchProviders.map(it.value) },
+  )
 }

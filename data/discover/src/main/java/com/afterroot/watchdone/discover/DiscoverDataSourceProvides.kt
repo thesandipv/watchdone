@@ -24,11 +24,11 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object DiscoverDataSourceProvides {
-    @Provides
-    fun provideTmdbDiscoverMovie() = TmdbDiscover.Movie(
-        includeAdult = true,
-    )
+  @Provides
+  fun provideTmdbDiscoverMovie() = TmdbDiscover.Movie(
+    includeAdult = true,
+  )
 
-    @Provides
-    fun provideTmdbDiscoverShow() = TmdbDiscover.Show()
+  @Provides
+  fun provideTmdbDiscoverShow() = TmdbDiscover.Show()
 }

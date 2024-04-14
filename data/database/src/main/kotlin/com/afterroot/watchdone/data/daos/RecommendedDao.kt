@@ -22,9 +22,9 @@ import com.afterroot.watchdone.data.model.RecommendedEntry
 import kotlinx.coroutines.flow.Flow
 
 interface RecommendedDao : PaginatedEntryDao<RecommendedEntry, RecommendedEntryWithMedia> {
-    fun entriesForPage(page: Int, recOf: Int): Flow<List<RecommendedEntry>>
-    fun entriesPagingSource(
-        recOf: Int,
-        mediaType: MediaType,
-    ): PagingSource<Int, RecommendedEntryWithMedia>
+  fun entriesForPage(page: Int, recOf: Int): Flow<List<RecommendedEntry>>
+  fun entriesPagingSource(
+    recOf: Int,
+    mediaType: MediaType,
+  ): PagingSource<Int, RecommendedEntryWithMedia>
 }

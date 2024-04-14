@@ -33,19 +33,19 @@ import com.afterroot.watchdone.database.migrations.MigrateFrom2to3
 import com.afterroot.watchdone.database.util.InstantConverter
 
 @Database(
-    entities = [Genre::class, Country::class, Media::class, DiscoverEntry::class, RecommendedEntry::class],
-    version = 4,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3, spec = MigrateFrom2to3::class),
-        AutoMigration(from = 3, to = 4),
-    ],
+  entities = [Genre::class, Country::class, Media::class, DiscoverEntry::class, RecommendedEntry::class],
+  version = 4,
+  autoMigrations = [
+    AutoMigration(from = 1, to = 2),
+    AutoMigration(from = 2, to = 3, spec = MigrateFrom2to3::class),
+    AutoMigration(from = 3, to = 4),
+  ],
 )
 @TypeConverters(InstantConverter::class)
 abstract class WatchdoneDatabase : RoomDatabase() {
-    abstract fun genreDao(): GenreDao
-    abstract fun countriesDao(): CountriesDao
-    abstract fun mediaDao(): RoomMediaDao
-    abstract fun discoverDao(): RoomDiscoverDao
-    abstract fun recommendedDao(): RoomRecommendedDao
+  abstract fun genreDao(): GenreDao
+  abstract fun countriesDao(): CountriesDao
+  abstract fun mediaDao(): RoomMediaDao
+  abstract fun discoverDao(): RoomDiscoverDao
+  abstract fun recommendedDao(): RoomRecommendedDao
 }

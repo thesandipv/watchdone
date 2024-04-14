@@ -29,50 +29,50 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class RoomRecommendedDao : RecommendedDao, RoomPaginatedEntryDao<RecommendedEntry, RecommendedEntryWithMedia> {
 
-    @Transaction
-    @Query(
-        """
+  @Transaction
+  @Query(
+    """
         SELECT * FROM recommended_entries 
         WHERE page = :page AND rec_of = :recOf 
         ORDER BY id ASC
         """,
-    )
-    abstract override fun entriesForPage(page: Int, recOf: Int): Flow<List<RecommendedEntry>>
+  )
+  abstract override fun entriesForPage(page: Int, recOf: Int): Flow<List<RecommendedEntry>>
 
-    @Transaction
-    @Query(
-        """
+  @Transaction
+  @Query(
+    """
         SELECT * FROM recommended_entries 
         WHERE media_type = :mediaType AND rec_of = :recOf 
         ORDER BY page ASC, id ASC
         """,
-    )
-    abstract override fun entriesPagingSource(
-        recOf: Int,
-        mediaType: MediaType,
-    ): PagingSource<Int, RecommendedEntryWithMedia>
+  )
+  abstract override fun entriesPagingSource(
+    recOf: Int,
+    mediaType: MediaType,
+  ): PagingSource<Int, RecommendedEntryWithMedia>
 
-    @Query(
-        """
+  @Query(
+    """
         DELETE FROM recommended_entries 
         WHERE page = :page AND media_type = :mediaType AND rec_of = :ofMedia
         """,
-    )
-    abstract override suspend fun deletePage(page: Int, mediaType: MediaType, ofMedia: Int)
+  )
+  abstract override suspend fun deletePage(page: Int, mediaType: MediaType, ofMedia: Int)
 
-    @Query("DELETE FROM recommended_entries")
-    abstract override suspend fun deleteAll()
+  @Query("DELETE FROM recommended_entries")
+  abstract override suspend fun deleteAll()
 
-    @Query("DELETE FROM recommended_entries WHERE media_type = :mediaType")
-    abstract override suspend fun deleteAll(mediaType: MediaType)
+  @Query("DELETE FROM recommended_entries WHERE media_type = :mediaType")
+  abstract override suspend fun deleteAll(mediaType: MediaType)
 
-    @Query(
-        """
+  @Query(
+    """
         SELECT MAX(page) FROM recommended_entries 
         WHERE media_type = :mediaType AND rec_of = :ofMedia
         """,
-    )
-    abstract override suspend fun getLastPage(mediaType: MediaType, ofMedia: Int): Int?
-    override suspend fun deletePage(page: Int) {}
-    override suspend fun getLastPage(): Int? = null
+  )
+  abstract override suspend fun getLastPage(mediaType: MediaType, ofMedia: Int): Int?
+  override suspend fun deletePage(page: Int) {}
+  override suspend fun getLastPage(): Int? = null
 }

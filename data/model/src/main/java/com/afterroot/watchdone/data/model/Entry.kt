@@ -16,9 +16,9 @@
 package com.afterroot.watchdone.data.model
 
 interface Entry : WDEntity {
-    val mediaId: Long
+  val mediaId: Long
 }
 
 interface PaginatedEntry : Entry {
-    val page: Int
+  val page: Int
 }

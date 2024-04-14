@@ -14,27 +14,27 @@
  */
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.ui.search"
+  namespace = "com.afterroot.watchdone.ui.search"
 }
 
 dependencies {
-    implementation(projects.data)
-    implementation(projects.data.search)
-    implementation(projects.domain)
-    implementation(projects.ui.media)
+  implementation(projects.data)
+  implementation(projects.data.search)
+  implementation(projects.domain)
+  implementation(projects.ui.media)
 
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.navigation.fragment)
+  implementation(libs.androidx.fragment)
+  implementation(libs.androidx.lifecycle.viewmodel)
+  implementation(libs.androidx.navigation.fragment)
 
-    implementation(libs.hilt.compose)
+  implementation(libs.hilt.compose)
 }

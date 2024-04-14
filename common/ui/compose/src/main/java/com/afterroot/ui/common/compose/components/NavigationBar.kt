@@ -38,87 +38,87 @@ import kotlin.math.abs
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScrollAwareNavigationBar(
-    modifier: Modifier = Modifier,
-    containerColor: Color = NavigationBarDefaults.containerColor,
-    contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
-    tonalElevation: Dp = NavigationBarDefaults.Elevation,
-    windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
-    scrollBehavior: TopAppBarScrollBehavior?,
-    content: @Composable RowScope.() -> Unit,
+  modifier: Modifier = Modifier,
+  containerColor: Color = NavigationBarDefaults.containerColor,
+  contentColor: Color = MaterialTheme.colorScheme.contentColorFor(containerColor),
+  tonalElevation: Dp = NavigationBarDefaults.Elevation,
+  windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
+  scrollBehavior: TopAppBarScrollBehavior?,
+  content: @Composable RowScope.() -> Unit,
 ) {
-    val navigationHeight = 80.dp
-    val heightOffsetLimit = with(LocalDensity.current) { -navigationHeight.toPx() }
-    SideEffect {
-        if (scrollBehavior?.state?.heightOffsetLimit != heightOffsetLimit) {
-            scrollBehavior?.state?.heightOffsetLimit = heightOffsetLimit
-        }
+  val navigationHeight = 80.dp
+  val heightOffsetLimit = with(LocalDensity.current) { -navigationHeight.toPx() }
+  SideEffect {
+    if (scrollBehavior?.state?.heightOffsetLimit != heightOffsetLimit) {
+      scrollBehavior?.state?.heightOffsetLimit = heightOffsetLimit
     }
+  }
 
-    val appBarDragModifier = if (scrollBehavior != null && !scrollBehavior.isPinned) {
-        Modifier.draggable(
-            orientation = Orientation.Vertical,
-            state = rememberDraggableState { delta ->
-                scrollBehavior.state.heightOffset = scrollBehavior.state.heightOffset + delta
-            },
-            onDragStopped = { velocity ->
-                settleAppBar(
-                    scrollBehavior.state,
-                    velocity,
-                    scrollBehavior.flingAnimationSpec,
-                    scrollBehavior.snapAnimationSpec,
-                )
-            },
+  val appBarDragModifier = if (scrollBehavior != null && !scrollBehavior.isPinned) {
+    Modifier.draggable(
+      orientation = Orientation.Vertical,
+      state = rememberDraggableState { delta ->
+        scrollBehavior.state.heightOffset = scrollBehavior.state.heightOffset + delta
+      },
+      onDragStopped = { velocity ->
+        settleAppBar(
+          scrollBehavior.state,
+          velocity,
+          scrollBehavior.flingAnimationSpec,
+          scrollBehavior.snapAnimationSpec,
         )
-    } else {
-        Modifier
-    }
-
-    val offset = LocalDensity.current.run {
-        (scrollBehavior?.state?.heightOffset ?: 0f).toDp()
-    }
-
-    NavigationBar(
-        modifier = modifier
-            .then(appBarDragModifier)
-            .offset(y = -offset),
-        containerColor = containerColor,
-        contentColor = contentColor,
-        tonalElevation = tonalElevation,
-        windowInsets = windowInsets,
-        content = content,
+      },
     )
+  } else {
+    Modifier
+  }
+
+  val offset = LocalDensity.current.run {
+    (scrollBehavior?.state?.heightOffset ?: 0f).toDp()
+  }
+
+  NavigationBar(
+    modifier = modifier
+      .then(appBarDragModifier)
+      .offset(y = -offset),
+    containerColor = containerColor,
+    contentColor = contentColor,
+    tonalElevation = tonalElevation,
+    windowInsets = windowInsets,
+    content = content,
+  )
 }
 
 @ExperimentalMaterial3Api
 @Composable
 fun navigationBarEnterAlwaysScrollBehavior(
-    state: TopAppBarState = rememberTopAppBarState(),
-    canScroll: () -> Boolean = { true },
-    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
-    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
+  state: TopAppBarState = rememberTopAppBarState(),
+  canScroll: () -> Boolean = { true },
+  snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
+  flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
 ): TopAppBarScrollBehavior =
-    EnterAlwaysScrollBehavior(
-        state = state,
-        snapAnimationSpec = snapAnimationSpec,
-        flingAnimationSpec = flingAnimationSpec,
-        canScroll = canScroll,
-    )
+  EnterAlwaysScrollBehavior(
+    state = state,
+    snapAnimationSpec = snapAnimationSpec,
+    flingAnimationSpec = flingAnimationSpec,
+    canScroll = canScroll,
+  )
 
 @OptIn(ExperimentalMaterial3Api::class)
 private class EnterAlwaysScrollBehavior(
-    override val state: TopAppBarState,
-    override val snapAnimationSpec: AnimationSpec<Float>?,
-    override val flingAnimationSpec: DecayAnimationSpec<Float>?,
-    val canScroll: () -> Boolean = { true },
+  override val state: TopAppBarState,
+  override val snapAnimationSpec: AnimationSpec<Float>?,
+  override val flingAnimationSpec: DecayAnimationSpec<Float>?,
+  val canScroll: () -> Boolean = { true },
 ) : TopAppBarScrollBehavior {
-    override val isPinned: Boolean = false
-    override var nestedScrollConnection =
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                if (!canScroll()) return Offset.Zero
-                val prevHeightOffset = state.heightOffset
-                state.heightOffset += available.y
-                return Offset.Zero
+  override val isPinned: Boolean = false
+  override var nestedScrollConnection =
+    object : NestedScrollConnection {
+      override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+        if (!canScroll()) return Offset.Zero
+        val prevHeightOffset = state.heightOffset
+        state.heightOffset += available.y
+        return Offset.Zero
                 /*return if (prevHeightOffset != state.heightOffset) {
                     // We're in the middle of top app bar collapse or expand.
                     // Consume only the scroll on the Y axis.
@@ -126,87 +126,87 @@ private class EnterAlwaysScrollBehavior(
                 } else {
                     Offset.Zero
                 }*/
-            }
+      }
 
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource,
-            ): Offset {
-                if (!canScroll()) return Offset.Zero
-                state.contentOffset += consumed.y
-                if (state.heightOffset == 0f || state.heightOffset == state.heightOffsetLimit) {
-                    if (consumed.y == 0f && available.y > 0f) {
-                        // Reset the total content offset to zero when scrolling all the way down.
-                        // This will eliminate some float precision inaccuracies.
-                        state.contentOffset = 0f
-                    }
-                }
-                state.heightOffset += consumed.y
-                return Offset.Zero
-            }
-
-            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                val superConsumed = super.onPostFling(consumed, available)
-                return superConsumed + settleAppBar(
-                    state,
-                    available.y,
-                    flingAnimationSpec,
-                    snapAnimationSpec,
-                )
-            }
+      override fun onPostScroll(
+        consumed: Offset,
+        available: Offset,
+        source: NestedScrollSource,
+      ): Offset {
+        if (!canScroll()) return Offset.Zero
+        state.contentOffset += consumed.y
+        if (state.heightOffset == 0f || state.heightOffset == state.heightOffsetLimit) {
+          if (consumed.y == 0f && available.y > 0f) {
+            // Reset the total content offset to zero when scrolling all the way down.
+            // This will eliminate some float precision inaccuracies.
+            state.contentOffset = 0f
+          }
         }
+        state.heightOffset += consumed.y
+        return Offset.Zero
+      }
+
+      override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+        val superConsumed = super.onPostFling(consumed, available)
+        return superConsumed + settleAppBar(
+          state,
+          available.y,
+          flingAnimationSpec,
+          snapAnimationSpec,
+        )
+      }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 suspend fun settleAppBar(
-    state: TopAppBarState,
-    velocity: Float,
-    flingAnimationSpec: DecayAnimationSpec<Float>?,
-    snapAnimationSpec: AnimationSpec<Float>?,
+  state: TopAppBarState,
+  velocity: Float,
+  flingAnimationSpec: DecayAnimationSpec<Float>?,
+  snapAnimationSpec: AnimationSpec<Float>?,
 ): Velocity {
-    // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
-    // and just return Zero Velocity.
-    // Note that we don't check for 0f due to float precision with the collapsedFraction
-    // calculation.
-    if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
-        return Velocity.Zero
+  // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
+  // and just return Zero Velocity.
+  // Note that we don't check for 0f due to float precision with the collapsedFraction
+  // calculation.
+  if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
+    return Velocity.Zero
+  }
+  var remainingVelocity = velocity
+  // In case there is an initial velocity that was left after a previous user fling, animate to
+  // continue the motion to expand or collapse the app bar.
+  if (flingAnimationSpec != null && abs(velocity) > 1f) {
+    var lastValue = 0f
+    AnimationState(
+      initialValue = 0f,
+      initialVelocity = velocity,
+    )
+      .animateDecay(flingAnimationSpec) {
+        val delta = value - lastValue
+        val initialHeightOffset = state.heightOffset
+        state.heightOffset = initialHeightOffset + delta
+        val consumed = abs(initialHeightOffset - state.heightOffset)
+        lastValue = value
+        remainingVelocity = this.velocity
+        // avoid rounding errors and stop if anything is unconsumed
+        if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
+      }
+  }
+  // Snap if animation specs were provided.
+  if (snapAnimationSpec != null) {
+    if (state.heightOffset < 0 &&
+      state.heightOffset > state.heightOffsetLimit
+    ) {
+      AnimationState(initialValue = state.heightOffset).animateTo(
+        if (state.collapsedFraction < 0.5f) {
+          0f
+        } else {
+          state.heightOffsetLimit
+        },
+        animationSpec = snapAnimationSpec,
+      ) { state.heightOffset = value }
     }
-    var remainingVelocity = velocity
-    // In case there is an initial velocity that was left after a previous user fling, animate to
-    // continue the motion to expand or collapse the app bar.
-    if (flingAnimationSpec != null && abs(velocity) > 1f) {
-        var lastValue = 0f
-        AnimationState(
-            initialValue = 0f,
-            initialVelocity = velocity,
-        )
-            .animateDecay(flingAnimationSpec) {
-                val delta = value - lastValue
-                val initialHeightOffset = state.heightOffset
-                state.heightOffset = initialHeightOffset + delta
-                val consumed = abs(initialHeightOffset - state.heightOffset)
-                lastValue = value
-                remainingVelocity = this.velocity
-                // avoid rounding errors and stop if anything is unconsumed
-                if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
-            }
-    }
-    // Snap if animation specs were provided.
-    if (snapAnimationSpec != null) {
-        if (state.heightOffset < 0 &&
-            state.heightOffset > state.heightOffsetLimit
-        ) {
-            AnimationState(initialValue = state.heightOffset).animateTo(
-                if (state.collapsedFraction < 0.5f) {
-                    0f
-                } else {
-                    state.heightOffsetLimit
-                },
-                animationSpec = snapAnimationSpec,
-            ) { state.heightOffset = value }
-        }
-    }
+  }
 
-    return Velocity(0f, remainingVelocity)
+  return Velocity(0f, remainingVelocity)
 }

@@ -22,22 +22,21 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ApplicationInfoModule {
-    @Provides
-    fun provideApplicationInfo(
-        @Named("version_Code")
-        versionCode: Int,
-        @Named("version_name")
-        versionName: String,
-        application: Application,
-    ): ApplicationInfo = ApplicationInfo(
-        packageName = application.packageName,
-        debugBuild = BuildConfig.DEBUG,
-        versionCode = versionCode,
-        versionName = versionName,
-    )
+  @Provides
+  fun provideApplicationInfo(
+    @VersionCode
+    versionCode: Int,
+    @VersionName
+    versionName: String,
+    application: Application,
+  ): ApplicationInfo = ApplicationInfo(
+    packageName = application.packageName,
+    debugBuild = BuildConfig.DEBUG,
+    versionCode = versionCode,
+    versionName = versionName,
+  )
 }

@@ -30,34 +30,34 @@ import kotlinx.coroutines.Dispatchers
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModules {
-    @Singleton
-    @Provides
-    fun provideDispatchers() = CoroutineDispatchers(
-        default = Dispatchers.Default,
-        io = Dispatchers.IO,
-        main = Dispatchers.Main,
-        databaseWrite = Dispatchers.IO.limitedParallelism(1),
-        databaseRead = Dispatchers.IO.limitedParallelism(4),
+  @Singleton
+  @Provides
+  fun provideDispatchers() = CoroutineDispatchers(
+    default = Dispatchers.Default,
+    io = Dispatchers.IO,
+    main = Dispatchers.Main,
+    databaseWrite = Dispatchers.IO.limitedParallelism(1),
+    databaseRead = Dispatchers.IO.limitedParallelism(4),
+  )
+
+  @Provides
+  @Named("feedback_email")
+  fun provideFeedbackEmail(): String = "afterhasroot@gmail.com"
+
+  @Provides
+  @Named("feedback_body")
+  fun provideFeedbackBody(
+    firebaseUtils: FirebaseUtils,
+    @VersionName version: String,
+    @VersionCode versionCode: Int,
+  ): String =
+    getMailBodyForFeedback(
+      firebaseUtils,
+      version = version,
+      versionCode = versionCode,
     )
 
-    @Provides
-    @Named("feedback_email")
-    fun provideFeedbackEmail(): String = "afterhasroot@gmail.com"
-
-    @Provides
-    @Named("feedback_body")
-    fun provideFeedbackBody(
-        firebaseUtils: FirebaseUtils,
-        @Named("version_name") version: String,
-        @Named("version_Code") versionCode: Int,
-    ): String =
-        getMailBodyForFeedback(
-            firebaseUtils,
-            version = version,
-            versionCode = versionCode,
-        )
-
-    @Provides
-    @Singleton
-    fun provideGson(): Gson = GsonBuilder().create()
+  @Provides
+  @Singleton
+  fun provideGson(): Gson = GsonBuilder().create()
 }

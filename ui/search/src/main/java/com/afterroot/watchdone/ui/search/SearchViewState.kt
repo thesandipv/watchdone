@@ -23,14 +23,14 @@ import com.afterroot.watchdone.data.model.MediaType
 
 @Immutable
 data class SearchViewState(
-    val mediaType: MediaType? = MediaType.MOVIE,
-    val query: Query = Query(),
-    val isLoading: Boolean = false,
-    val refresh: Boolean = false,
-    val empty: Boolean = false,
-    override val message: UiMessage? = null,
+  val mediaType: MediaType? = MediaType.MOVIE,
+  val query: Query = Query(),
+  val isLoading: Boolean = false,
+  val refresh: Boolean = false,
+  val empty: Boolean = false,
+  override val message: UiMessage? = null,
 ) : ViewState() {
-    companion object {
-        val Empty = SearchViewState()
-    }
+  companion object {
+    val Empty = SearchViewState()
+  }
 }

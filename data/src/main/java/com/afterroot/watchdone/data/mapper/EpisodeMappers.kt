@@ -20,24 +20,24 @@ import com.afterroot.watchdone.data.model.TVEpisodes
 import info.movito.themoviedbapi.model.tv.TvEpisode
 
 fun TvEpisode.toEpisode(): Episode = Episode(
-    id = id,
-    name = name,
-    airDate = airDate,
-    episodeNumber = episodeNumber,
-    overview = overview,
-    seasonNumber = seasonNumber,
-    seriesId = seriesId,
-    stillPath = stillPath,
-    userRating = userRating,
-    voteAverage = voteAverage,
-    voteCount = voteCount,
-    credits = credits,
-    externalIds = externalIds,
-    images = images,
-    videos = getVideos(),
-    keywords = getKeywords(),
+  id = id,
+  name = name,
+  airDate = airDate,
+  episodeNumber = episodeNumber,
+  overview = overview,
+  seasonNumber = seasonNumber,
+  seriesId = seriesId,
+  stillPath = stillPath,
+  userRating = userRating,
+  voteAverage = voteAverage,
+  voteCount = voteCount,
+  credits = credits,
+  externalIds = externalIds,
+  images = images,
+  videos = getVideos(),
+  keywords = getKeywords(),
 )
 
 fun TVEpisodes.toEpisodes(): Episodes = this?.map {
-    it.toEpisode()
+  it.toEpisode()
 }

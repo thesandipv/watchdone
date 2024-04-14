@@ -25,24 +25,24 @@ import com.afterroot.watchdone.utils.resultFlow
 import javax.inject.Inject
 
 class TVRepository @Inject constructor(
-    private val tvApi: TVApi,
-    private val tmdb: Tmdb3,
-    private val watchProviderMapper: TmdbWatchProviderResultToWatchProviderResult,
+  private val tvApi: TVApi,
+  private val tmdb: Tmdb3,
+  private val watchProviderMapper: TmdbWatchProviderResultToWatchProviderResult,
 ) {
 
-    suspend fun season(id: Int, season: Int) = resultFlow(tvApi.getSeason(id, season).toSeason())
+  suspend fun season(id: Int, season: Int) = resultFlow(tvApi.getSeason(id, season).toSeason())
 
-    suspend fun episode(id: Int, season: Int, episode: Int) = resultFlow(
-        tvApi.getEpisode(id, season, episode).toEpisode(),
-    )
+  suspend fun episode(id: Int, season: Int, episode: Int) = resultFlow(
+    tvApi.getEpisode(id, season, episode).toEpisode(),
+  )
 
-    suspend fun credits(id: Int) = resultFlow(tvApi.getCredits(id))
+  suspend fun credits(id: Int) = resultFlow(tvApi.getCredits(id))
 
-    suspend fun info(id: Int) = resultFlow(tvApi.getTVInfo(id).toTV())
+  suspend fun info(id: Int) = resultFlow(tvApi.getTVInfo(id).toTV())
 
-    suspend fun recommended(id: Int, page: Int) = resultFlow(tvApi.getRecommended(id, page))
+  suspend fun recommended(id: Int, page: Int) = resultFlow(tvApi.getRecommended(id, page))
 
-    suspend fun watchProviders(id: Int) = resultFlow(
-        watchProviderMapper.map(tmdb.show.getWatchProviders(id)),
-    )
+  suspend fun watchProviders(id: Int) = resultFlow(
+    watchProviderMapper.map(tmdb.show.getWatchProviders(id)),
+  )
 }

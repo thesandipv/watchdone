@@ -14,6 +14,8 @@ message UserSettings {
   string pref_image_size = 5;
 
   bool sort_asc = 6;
+
+  map<string, string> media_type_views = 7;
 }
 
 enum DarkThemeConfigProto {

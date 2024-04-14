@@ -37,68 +37,68 @@ import kotlinx.coroutines.tasks.await
  * @since v0.0.4
  */
 fun migrateFirestore(
-    firestore: FirebaseFirestore,
-    watchlistSnapshot: QuerySnapshot,
-    uid: String,
-    isUseProdDb: Boolean,
-    successBlock: (() -> Unit)? = null,
+  firestore: FirebaseFirestore,
+  watchlistSnapshot: QuerySnapshot,
+  uid: String,
+  isUseProdDb: Boolean,
+  successBlock: (() -> Unit)? = null,
 ) {
-    firestore.runBatch { batch ->
-        watchlistSnapshot.documents.forEach {
-            when (it.getString(Field.MEDIA_TYPE)?.let { type -> MediaType.valueOf(type) }) {
-                MediaType.MOVIE -> {
-                    // Decide whether to run migration by checking value of 'voteAverage' field
-                    val isRunMigration = it.getDouble("voteAverage") != null
-                    if (isRunMigration) {
-                        val movie = it.toObject(Movie::class.java) // Old Structure Object
-                        val docId = it.id // Remember Document Id
-                        val media = movie?.toDBMedia() // New Structure Object
-                        val docRef =
-                            firestore.collectionWatchdone(
-                                uid,
-                                isUseProdDb,
-                            ).collectionWatchlistItems().document(docId)
-                        batch.delete(docRef) // First delete the document
-                        media?.let { dbMedia ->
-                            batch.set(docRef, dbMedia) // Then set data under same document id
-                        }
-                    }
-                }
-
-                MediaType.SHOW -> {
-                    // Decide whether to run migration by checking value of 'voteAverage' field
-                    val isRunMigration = it.getDouble("voteAverage") != null
-                    if (isRunMigration) {
-                        val tv = it.toObject(TV::class.java) // Old Structure Object
-                        val docId = it.id // Remember Document Id
-                        val media = tv?.toDBMedia() // New Structure Object
-                        val docRef =
-                            firestore.collectionWatchdone(
-                                uid,
-                                isUseProdDb,
-                            ).collectionWatchlistItems().document(docId)
-                        batch.delete(docRef) // First delete the document
-                        media?.let { dbMedia ->
-                            batch.set(docRef, dbMedia) // Then set data under same document id
-                        }
-                    }
-                }
-
-                else -> {
-                    // NOT SUPPORTED
-                }
+  firestore.runBatch { batch ->
+    watchlistSnapshot.documents.forEach {
+      when (it.getString(Field.MEDIA_TYPE)?.let { type -> MediaType.valueOf(type) }) {
+        MediaType.MOVIE -> {
+          // Decide whether to run migration by checking value of 'voteAverage' field
+          val isRunMigration = it.getDouble("voteAverage") != null
+          if (isRunMigration) {
+            val movie = it.toObject(Movie::class.java) // Old Structure Object
+            val docId = it.id // Remember Document Id
+            val media = movie?.toDBMedia() // New Structure Object
+            val docRef =
+              firestore.collectionWatchdone(
+                uid,
+                isUseProdDb,
+              ).collectionWatchlistItems().document(docId)
+            batch.delete(docRef) // First delete the document
+            media?.let { dbMedia ->
+              batch.set(docRef, dbMedia) // Then set data under same document id
             }
+          }
         }
-    }.addOnSuccessListener {
-        successBlock?.invoke()
+
+        MediaType.SHOW -> {
+          // Decide whether to run migration by checking value of 'voteAverage' field
+          val isRunMigration = it.getDouble("voteAverage") != null
+          if (isRunMigration) {
+            val tv = it.toObject(TV::class.java) // Old Structure Object
+            val docId = it.id // Remember Document Id
+            val media = tv?.toDBMedia() // New Structure Object
+            val docRef =
+              firestore.collectionWatchdone(
+                uid,
+                isUseProdDb,
+              ).collectionWatchlistItems().document(docId)
+            batch.delete(docRef) // First delete the document
+            media?.let { dbMedia ->
+              batch.set(docRef, dbMedia) // Then set data under same document id
+            }
+          }
+        }
+
+        else -> {
+          // NOT SUPPORTED
+        }
+      }
     }
+  }.addOnSuccessListener {
+    successBlock?.invoke()
+  }
 }
 
 // TODO
 suspend fun FirebaseFirestore.filterWatchlist(
-    uid: String,
-    isUseProdDb: Boolean,
-    filter: Query.() -> Query,
+  uid: String,
+  isUseProdDb: Boolean,
+  filter: Query.() -> Query,
 ): QuerySnapshot {
-    return collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().filter().get().await()
+  return collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().filter().get().await()
 }

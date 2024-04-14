@@ -27,47 +27,47 @@ import org.junit.Test
 @HiltAndroidTest
 class TVTest : DataTest() {
 
-    @Inject lateinit var tvRepository: TVRepository
+  @Inject lateinit var tvRepository: TVRepository
 
-    @Inject lateinit var tvRepository2: com.afterroot.watchdone.data.repositories.TVRepository
+  @Inject lateinit var tvRepository2: com.afterroot.watchdone.data.repositories.TVRepository
 
-    @Inject lateinit var searchRepository: SearchRepository
+  @Inject lateinit var searchRepository: SearchRepository
 
-    @Test
-    fun `TV Working`() {
-        launch {
-            Assert.assertEquals("Game of Thrones", tvRepository.getTVInfo(1399).name)
-        }
+  @Test
+  fun `TV Working`() {
+    launch {
+      Assert.assertEquals("Game of Thrones", tvRepository.getTVInfo(1399).name)
     }
+  }
 
-    @Test
-    fun `search TV`() {
-        launch {
-            val result = searchRepository.searchTv("Game of Thrones")
-            Assert.assertNotNull(result)
-            Assert.assertNotNull(result.results)
-        }
+  @Test
+  fun `search TV`() {
+    launch {
+      val result = searchRepository.searchTv("Game of Thrones")
+      Assert.assertNotNull(result)
+      Assert.assertNotNull(result.results)
     }
+  }
 
-    @Test
-    fun `Get Season Info`() {
-        launch {
-            val season1 = tvRepository.getSeason(1399, 1)
-            Assert.assertEquals("Season 1", season1.name)
-        }
+  @Test
+  fun `Get Season Info`() {
+    launch {
+      val season1 = tvRepository.getSeason(1399, 1)
+      Assert.assertEquals("Season 1", season1.name)
     }
+  }
 
-    @Test
-    fun `Get WatchProviders`() {
-        launch {
-            val wp = tvRepository2.watchProviders(66788)
-            wp.collectLatest {
-                it.whenSuccess {
-                    println("Get WatchProviders: $wp")
-                }
-            }
+  @Test
+  fun `Get WatchProviders`() {
+    launch {
+      val wp = tvRepository2.watchProviders(66788)
+      wp.collectLatest {
+        it.whenSuccess {
+          println("Get WatchProviders: $wp")
         }
+      }
     }
+  }
 
     /*@Test
     fun `Full Movie Info`() {
@@ -84,11 +84,11 @@ class TVTest : DataTest() {
         }
     }*/
 
-    private fun launch(block: suspend () -> Unit) {
-        runBlocking {
-            launch {
-                block()
-            }
-        }
+  private fun launch(block: suspend () -> Unit) {
+    runBlocking {
+      launch {
+        block()
+      }
     }
+  }
 }

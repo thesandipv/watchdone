@@ -28,11 +28,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class SettingsModule {
-    @Provides
-    @Singleton
-    fun provideSettings(
-        @ApplicationContext context: Context,
-        gson: Gson,
-        logger: Logger,
-    ) = Settings(context, gson, logger)
+  @Provides
+  @Singleton
+  fun provideSettings(
+    @ApplicationContext context: Context,
+    gson: Gson,
+    logger: Logger,
+  ) = Settings(context, gson, logger)
 }

@@ -20,16 +20,16 @@ import com.afterroot.watchdone.data.model.Media
 import java.util.Objects
 
 interface EntryWithMedia<ET : Entry> {
-    var entry: ET
-    var relations: List<Media>
+  var entry: ET
+  var relations: List<Media>
 
-    val media: Media
-        get() {
-            check(relations.size == 1)
-            return relations[0]
-        }
-
-    fun generateStableId(): Long {
-        return Objects.hash(entry::class.java.name, entry.mediaId).toLong()
+  val media: Media
+    get() {
+      check(relations.size == 1)
+      return relations[0]
     }
+
+  fun generateStableId(): Long {
+    return Objects.hash(entry::class.java.name, entry.mediaId).toLong()
+  }
 }

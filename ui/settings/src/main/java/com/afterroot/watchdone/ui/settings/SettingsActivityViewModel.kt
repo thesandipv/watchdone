@@ -31,21 +31,21 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SettingsActivityViewModel @Inject constructor(
-    val savedState: SavedStateHandle? = null,
-    private val userDataRepository: UserDataRepository,
+  val savedState: SavedStateHandle? = null,
+  private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 
-    val uiState: StateFlow<State<UserData>> = userDataRepository.userData.map {
-        State.success(it)
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = State.loading(),
-        started = SharingStarted.WhileSubscribed(5_000),
-    )
+  val uiState: StateFlow<State<UserData>> = userDataRepository.userData.map {
+    State.success(it)
+  }.stateIn(
+    scope = viewModelScope,
+    initialValue = State.loading(),
+    started = SharingStarted.WhileSubscribed(5_000),
+  )
 
-    fun updateSettings(block: suspend UserDataRepository.() -> Unit) {
-        viewModelScope.launch {
-            userDataRepository.block()
-        }
+  fun updateSettings(block: suspend UserDataRepository.() -> Unit) {
+    viewModelScope.launch {
+      userDataRepository.block()
     }
+  }
 }

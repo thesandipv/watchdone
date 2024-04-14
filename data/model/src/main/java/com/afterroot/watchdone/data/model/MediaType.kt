@@ -16,8 +16,8 @@
 package com.afterroot.watchdone.data.model
 
 enum class MediaType(val value: String) {
-    MOVIE("movie"),
-    SHOW("tv"),
-    SEASON("season"),
-    EPISODE("episode"),
+  MOVIE("movie"),
+  SHOW("tv"),
+  SEASON("season"),
+  EPISODE("episode"),
 }

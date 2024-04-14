@@ -37,71 +37,71 @@ import com.afterroot.watchdone.data.model.Media
 
 @Composable
 fun Carousel(
-    items: List<Media>,
-    title: String,
-    refreshing: Boolean,
-    modifier: Modifier = Modifier,
-    onItemClick: (Media, Int) -> Unit,
-    onMoreClick: () -> Unit,
+  items: List<Media>,
+  title: String,
+  refreshing: Boolean,
+  modifier: Modifier = Modifier,
+  onItemClick: (Media, Int) -> Unit,
+  onMoreClick: () -> Unit,
 ) {
-    Column(modifier) {
-        if (refreshing || items.isNotEmpty()) {
-            Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
-                TextButton(
-                    onClick = onMoreClick,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary,
-                    ),
-                    modifier = Modifier.alignBy(FirstBaseline),
-                ) {
-                    Text(text = "More")
-                }
-            }
-
-            if (items.isNotEmpty()) {
-                CarouselInt(
-                    items = items,
-                    onItemClick = onItemClick,
-                    modifier = Modifier
-                        .height(192.dp)
-                        .fillMaxWidth(),
-                )
-            }
+  Column(modifier) {
+    if (refreshing || items.isNotEmpty()) {
+      Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
+        TextButton(
+          onClick = onMoreClick,
+          colors = ButtonDefaults.textButtonColors(
+            contentColor = MaterialTheme.colorScheme.secondary,
+          ),
+          modifier = Modifier.alignBy(FirstBaseline),
+        ) {
+          Text(text = "More")
         }
+      }
+
+      if (items.isNotEmpty()) {
+        CarouselInt(
+          items = items,
+          onItemClick = onItemClick,
+          modifier = Modifier
+            .height(192.dp)
+            .fillMaxWidth(),
+        )
+      }
     }
+  }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun CarouselInt(
-    items: List<Media>,
-    onItemClick: (Media, Int) -> Unit,
-    modifier: Modifier = Modifier,
+  items: List<Media>,
+  onItemClick: (Media, Int) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    val lazyListState = rememberLazyListState()
-    val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+  val lazyListState = rememberLazyListState()
+  val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
 
-    LazyRow(
-        state = lazyListState,
-        modifier = modifier,
-        contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        itemsIndexed(items = items) { index, item ->
-            PosterCard(
-                media = item,
-                onClick = { onItemClick(item, index) },
-                modifier = Modifier
-                    .animateItemPlacement()
-                    .fillParentMaxHeight()
-                    .aspectRatio(2 / 3f),
-            )
-        }
+  LazyRow(
+    state = lazyListState,
+    modifier = modifier,
+    contentPadding = contentPadding,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    itemsIndexed(items = items) { index, item ->
+      PosterCard(
+        media = item,
+        onClick = { onItemClick(item, index) },
+        modifier = Modifier
+          .animateItemPlacement()
+          .fillParentMaxHeight()
+          .aspectRatio(2 / 3f),
+      )
     }
+  }
 }
 
 @Preview
 @Composable
 fun PreviewHeader() {
-    Header(title = "Header Title", modifier = Modifier.fillMaxWidth(), loading = true)
+  Header(title = "Header Title", modifier = Modifier.fillMaxWidth(), loading = true)
 }

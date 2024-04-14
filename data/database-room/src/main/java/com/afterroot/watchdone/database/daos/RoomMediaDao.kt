@@ -25,27 +25,27 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class RoomMediaDao : MediaDao, RoomEntityDao<Media> {
 
-    @Query("SELECT * FROM media WHERE id IN (:ids)")
-    abstract override fun getMediaByIds(ids: List<Long>): Flow<List<Media>>
+  @Query("SELECT * FROM media WHERE id IN (:ids)")
+  abstract override fun getMediaByIds(ids: List<Long>): Flow<List<Media>>
 
-    @Query("SELECT * FROM media WHERE tmdb_id = :id")
-    abstract override suspend fun getMediaByTmdbId(id: Int): Media?
+  @Query("SELECT * FROM media WHERE tmdb_id = :id")
+  abstract override suspend fun getMediaByTmdbId(id: Int): Media?
 
-    @Query("SELECT * FROM media WHERE id = :id")
-    abstract override fun getMediaByIdFlow(id: Long): Flow<Media>
+  @Query("SELECT * FROM media WHERE id = :id")
+  abstract override fun getMediaByIdFlow(id: Long): Flow<Media>
 
-    @Query("SELECT * FROM media WHERE id = :id")
-    abstract override suspend fun getMediaWithId(id: Long): Media?
+  @Query("SELECT * FROM media WHERE id = :id")
+  abstract override suspend fun getMediaWithId(id: Long): Media?
 
-    @Query("SELECT tmdb_id FROM media WHERE id = :id")
-    abstract override suspend fun getTmdbIdForMediaId(id: Long): Int?
+  @Query("SELECT tmdb_id FROM media WHERE id = :id")
+  abstract override suspend fun getTmdbIdForMediaId(id: Long): Int?
 
-    @Query("SELECT id FROM media WHERE tmdb_id = :tmdbId")
-    abstract override suspend fun getIdForTmdbId(tmdbId: Int): Long?
+  @Query("SELECT id FROM media WHERE tmdb_id = :tmdbId")
+  abstract override suspend fun getIdForTmdbId(tmdbId: Int): Long?
 
-    @Query("DELETE FROM media WHERE id = :id")
-    abstract override suspend fun delete(id: Long)
+  @Query("DELETE FROM media WHERE id = :id")
+  abstract override suspend fun delete(id: Long)
 
-    @Query("DELETE FROM media")
-    abstract override suspend fun deleteAll()
+  @Query("DELETE FROM media")
+  abstract override suspend fun deleteAll()
 }

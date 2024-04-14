@@ -18,5 +18,5 @@ package com.afterroot.watchdone.media
 import com.afterroot.watchdone.data.model.Media
 
 interface MediaDataSource {
-    suspend fun getMedia(media: Media): Media
+  suspend fun getMedia(media: Media): Media
 }

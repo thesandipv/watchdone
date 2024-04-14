@@ -34,41 +34,41 @@ import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
 
 class DiscoverMovieStore @Inject constructor(
-    @Named("tmdbDiscoverMovieDataSource") dataSource: DiscoverDataSource,
-    discoverDao: DiscoverDao,
-    mediaDao: MediaDao,
-    discover: TmdbDiscover.Movie,
-    transactionRunner: DatabaseTransactionRunner,
-    dispatchers: CoroutineDispatchers,
-    logger: Logger,
+  @Named("tmdbDiscoverMovieDataSource") dataSource: DiscoverDataSource,
+  discoverDao: DiscoverDao,
+  mediaDao: MediaDao,
+  discover: TmdbDiscover.Movie,
+  transactionRunner: DatabaseTransactionRunner,
+  dispatchers: CoroutineDispatchers,
+  logger: Logger,
 ) : Store<Int, List<DiscoverEntry>> by storeBuilder(
-    fetcher = Fetcher.of { page: Int ->
-        dataSource(page, discover.buildParameters()).let { response ->
-            withContext(dispatchers.databaseWrite) {
-                transactionRunner {
-                    response.map { media ->
-                        DiscoverEntry(
-                            mediaId = mediaDao.getIdOrSaveMedia(media),
-                            page = page,
-                            mediaType = media.mediaType ?: MediaType.MOVIE,
-                        )
-                    }
-                }
-            }
+  fetcher = Fetcher.of { page: Int ->
+    dataSource(page, discover.buildParameters()).let { response ->
+      withContext(dispatchers.databaseWrite) {
+        transactionRunner {
+          response.map { media ->
+            DiscoverEntry(
+              mediaId = mediaDao.getIdOrSaveMedia(media),
+              page = page,
+              mediaType = media.mediaType ?: MediaType.MOVIE,
+            )
+          }
         }
+      }
+    }
+  },
+  sourceOfTruth = SourceOfTruth.of(
+    reader = { page ->
+      logger.d { "Reading from database:discover page:$page" }
+      discoverDao.entriesForPage(page, MediaType.MOVIE)
     },
-    sourceOfTruth = SourceOfTruth.of(
-        reader = { page ->
-            logger.d { "Reading from database:discover page:$page" }
-            discoverDao.entriesForPage(page, MediaType.MOVIE)
-        },
-        writer = { page, response ->
-            transactionRunner {
-                logger.d { "Writing in database:discover page:$page" }
-                discoverDao.updatePage(page, response, MediaType.MOVIE)
-            }
-        },
-        delete = { discoverDao.deletePage(it, MediaType.MOVIE) },
-        deleteAll = discoverDao::deleteAll,
-    ),
+    writer = { page, response ->
+      transactionRunner {
+        logger.d { "Writing in database:discover page:$page" }
+        discoverDao.updatePage(page, response, MediaType.MOVIE)
+      }
+    },
+    delete = { discoverDao.deletePage(it, MediaType.MOVIE) },
+    deleteAll = discoverDao::deleteAll,
+  ),
 ).build()

@@ -20,19 +20,19 @@ import com.afterroot.watchdone.data.model.MediaType
 import okhttp3.HttpUrl
 
 object Deeplink {
-    fun media(mediaId: Int, mediaType: MediaType) = HttpUrl.Builder()
-        .scheme(Constants.SCHEME_HTTPS)
-        .host(Constants.WATCHDONE_HOST)
-        .addPathSegment("media")
-        .addPathSegment(mediaType.name)
-        .addPathSegment(mediaId.toString())
-        .build().toString().toUri()
+  fun media(mediaId: Int, mediaType: MediaType) = HttpUrl.Builder()
+    .scheme(Constants.SCHEME_HTTPS)
+    .host(Constants.WATCHDONE_HOST)
+    .addPathSegment("media")
+    .addPathSegment(mediaType.name)
+    .addPathSegment(mediaId.toString())
+    .build().toString().toUri()
 
-    val launch = HttpUrl.Builder()
-        .scheme(Constants.SCHEME_HTTPS)
-        .host(Constants.AFTERROOT_HOST)
-        .addPathSegment("apps")
-        .addPathSegment("watchdone")
-        .addPathSegment("launch")
-        .build().toString()
+  val launch = HttpUrl.Builder()
+    .scheme(Constants.SCHEME_HTTPS)
+    .host(Constants.AFTERROOT_HOST)
+    .addPathSegment("apps")
+    .addPathSegment("watchdone")
+    .addPathSegment("launch")
+    .build().toString()
 }

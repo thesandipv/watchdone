@@ -24,6 +24,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.utils.getMaterialColor
 import com.afterroot.watchdone.base.Collection
@@ -34,7 +35,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import timber.log.Timber
 import com.afterroot.watchdone.resources.R as CommonR
 
 /**
@@ -44,94 +44,96 @@ import com.afterroot.watchdone.resources.R as CommonR
 @AndroidEntryPoint
 class FireMessagingService : FirebaseMessagingService() {
 
-    private val _tag = "FireMessagingService"
+  private val _tag = "FireMessagingService"
 
-    @Inject lateinit var firebaseUtils: FirebaseUtils
+  @Inject lateinit var firebaseUtils: FirebaseUtils
 
-    @Inject lateinit var firestore: FirebaseFirestore
+  @Inject lateinit var firestore: FirebaseFirestore
 
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        Timber.d("onNewToken: NEW_TOKEN $token")
-        updateToken(token)
+  @Inject lateinit var logger: Logger
+
+  override fun onNewToken(token: String) {
+    super.onNewToken(token)
+    logger.d { "onNewToken: NEW_TOKEN $token" }
+    updateToken(token)
+  }
+
+  private fun updateToken(token: String) {
+    try {
+      if (firebaseUtils.isUserSignedIn) {
+        firebaseUtils.uid?.let {
+          firestore.collection(Collection.USERS)
+            .document(it)
+            .update(Field.FCM_ID, token)
+        }
+      }
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
+  }
+
+  override fun onMessageReceived(remoteMessage: RemoteMessage) {
+    if (remoteMessage.notification != null && remoteMessage.data.isNotEmpty()) {
+      sendNotification(
+        message = remoteMessage.notification!!.body!!,
+        url = remoteMessage.data["link"],
+        channelId = remoteMessage.notification!!.channelId,
+        channelName = remoteMessage.data["cname"],
+        title = remoteMessage.notification?.title,
+      )
+    }
+  }
+
+  @SuppressLint("UnspecifiedImmutableFlag")
+  private fun sendNotification(
+    message: String,
+    url: String? = "",
+    channelId: String? = getString(CommonR.string.fcm_channel_id),
+    channelName: String? = getString(CommonR.string.fcm_channel_default),
+    title: String? = getString(R.string.app_name),
+  ) {
+    val intent: Intent
+    if (url!!.isEmpty()) {
+      intent = Intent(this, MainActivity::class.java)
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    } else {
+      intent = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse(url)
+      }
+    }
+    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      PendingIntent.getActivity(
+        this,
+        0,
+        intent,
+        PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE,
+      )
+    } else {
+      PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+    }
+    val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    val notificationBuilder =
+      NotificationCompat.Builder(this, channelId ?: getString(CommonR.string.fcm_channel_id))
+        .setSmallIcon(CommonR.drawable.ic_stat_main)
+        .setContentTitle(title ?: getString(R.string.app_name))
+        .setContentText(message)
+        .setAutoCancel(true)
+        .setColor(this.getMaterialColor(com.google.android.material.R.attr.colorSecondary))
+        .setSound(defaultSoundUri)
+        .setContentIntent(pendingIntent)
+
+    val notificationManager =
+      getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      val channel = NotificationChannel(
+        channelId ?: getString(CommonR.string.fcm_channel_id),
+        channelName ?: getString(CommonR.string.fcm_channel_default),
+        NotificationManager.IMPORTANCE_DEFAULT,
+      )
+      notificationManager.createNotificationChannel(channel)
     }
 
-    private fun updateToken(token: String) {
-        try {
-            if (firebaseUtils.isUserSignedIn) {
-                firebaseUtils.uid?.let {
-                    firestore.collection(Collection.USERS)
-                        .document(it)
-                        .update(Field.FCM_ID, token)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        if (remoteMessage.notification != null && remoteMessage.data.isNotEmpty()) {
-            sendNotification(
-                message = remoteMessage.notification!!.body!!,
-                url = remoteMessage.data["link"],
-                channelId = remoteMessage.notification!!.channelId,
-                channelName = remoteMessage.data["cname"],
-                title = remoteMessage.notification?.title,
-            )
-        }
-    }
-
-    @SuppressLint("UnspecifiedImmutableFlag")
-    private fun sendNotification(
-        message: String,
-        url: String? = "",
-        channelId: String? = getString(CommonR.string.fcm_channel_id),
-        channelName: String? = getString(CommonR.string.fcm_channel_default),
-        title: String? = getString(R.string.app_name),
-    ) {
-        val intent: Intent
-        if (url!!.isEmpty()) {
-            intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        } else {
-            intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(url)
-            }
-        }
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(
-                this,
-                0,
-                intent,
-                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE,
-            )
-        } else {
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        }
-        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder =
-            NotificationCompat.Builder(this, channelId ?: getString(CommonR.string.fcm_channel_id))
-                .setSmallIcon(CommonR.drawable.ic_stat_main)
-                .setContentTitle(title ?: getString(R.string.app_name))
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setColor(this.getMaterialColor(com.google.android.material.R.attr.colorSecondary))
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent)
-
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId ?: getString(CommonR.string.fcm_channel_id),
-                channelName ?: getString(CommonR.string.fcm_channel_default),
-                NotificationManager.IMPORTANCE_DEFAULT,
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        notificationManager.notify(0, notificationBuilder.build())
-    }
+    notificationManager.notify(0, notificationBuilder.build())
+  }
 }

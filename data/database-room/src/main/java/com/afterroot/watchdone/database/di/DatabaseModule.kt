@@ -29,17 +29,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-    @Provides
-    @Singleton
-    fun provideWatchdoneDatabase(@ApplicationContext context: Context): WatchdoneDatabase =
-        Room.databaseBuilder(
-            context,
-            WatchdoneDatabase::class.java,
-            "watchdone-db",
-        ).build()
+  @Provides
+  @Singleton
+  fun provideWatchdoneDatabase(@ApplicationContext context: Context): WatchdoneDatabase =
+    Room.databaseBuilder(
+      context,
+      WatchdoneDatabase::class.java,
+      "watchdone-db",
+    ).build()
 
-    @Provides
-    fun provideDatabaseTransactionRunner(
-        runner: RoomTransactionRunner,
-    ): DatabaseTransactionRunner = runner
+  @Provides
+  @Singleton
+  fun provideDatabaseTransactionRunner(
+    runner: RoomTransactionRunner,
+  ): DatabaseTransactionRunner = runner
 }

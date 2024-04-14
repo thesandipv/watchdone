@@ -14,40 +14,40 @@
  */
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.ui.media"
+  namespace = "com.afterroot.watchdone.ui.media"
 }
 
 dependencies {
-    implementation(projects.core.logging)
-    implementation(projects.data)
-    implementation(projects.domain)
-    implementation(projects.ui.recommended)
+  implementation(projects.core.logging)
+  implementation(projects.data)
+  implementation(projects.domain)
+  implementation(projects.ui.recommended)
 
-    implementation(libs.androidx.appCompat)
-    implementation(libs.androidx.constraintLayout)
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.paging)
-    implementation(libs.androidx.palette)
-    implementation(libs.androidx.recyclerView)
-    implementation(libs.androidx.supportV13)
-    implementation(libs.bundles.lifecycle)
+  implementation(libs.androidx.appCompat)
+  implementation(libs.androidx.constraintLayout)
+  implementation(libs.androidx.fragment)
+  implementation(libs.androidx.paging)
+  implementation(libs.androidx.palette)
+  implementation(libs.androidx.recyclerView)
+  implementation(libs.androidx.supportV13)
+  implementation(libs.bundles.lifecycle)
 
-    implementation(libs.google.material)
-    implementation(libs.google.ads)
+  implementation(libs.google.material)
+  implementation(libs.google.ads)
 
-    implementation(libs.firebase.firestore)
+  implementation(libs.firebase.firestore)
 
-    implementation(libs.hilt.compose)
+  implementation(libs.hilt.compose)
 
-    implementation(libs.materialProgress)
-    implementation(libs.coil)
+  implementation(libs.materialProgress)
+  implementation(libs.coil)
 }

@@ -20,21 +20,33 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
+import javax.inject.Qualifier
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class VersionName
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class VersionCode
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class VersionFormatted
 
 @Module
 @InstallIn(SingletonComponent::class)
 object VersionInfoModule {
-    @Provides
-    @Named("version_Code")
-    fun provideVersionCode(): Int = BuildConfig.VERSION_CODE
+  @Provides
+  @VersionCode
+  fun provideVersionCode(): Int = BuildConfig.VERSION_CODE
 
-    @Provides
-    @Named("version_name")
-    fun provideVersionName(): String = BuildConfig.VERSION_NAME
+  @Provides
+  @VersionName
+  fun provideVersionName(): String = BuildConfig.VERSION_NAME
 
-    @Provides
-    @Named("version_string")
-    fun provideVersionString() =
-        "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) - ${BuildConfig.COMMIT_ID}"
+  @Provides
+  @VersionFormatted
+  fun provideVersionString() =
+    "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) - ${BuildConfig.COMMIT_ID}"
 }

@@ -18,19 +18,19 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 
 data class DBMedia(
-    val id: Int = 0,
-    val releaseDate: String? = null,
-    val title: String? = null,
-    @field:JvmField
-    val isWatched: Boolean = false,
-    val posterPath: String? = null,
-    @ServerTimestamp
-    val timestamp: Timestamp = Timestamp.now(),
-    val mediaType: MediaType? = null,
-    val rating: Float? = null,
-    val watched: List<String> = emptyList(),
+  val id: Int = 0,
+  val releaseDate: String? = null,
+  val title: String? = null,
+  @field:JvmField
+  val isWatched: Boolean = false,
+  val posterPath: String? = null,
+  @ServerTimestamp
+  val timestamp: Timestamp = Timestamp.now(),
+  val mediaType: MediaType? = null,
+  val rating: Float? = null,
+  val watched: List<String> = emptyList(),
 ) {
-    companion object {
-        val Empty = DBMedia()
-    }
+  companion object {
+    val Empty = DBMedia()
+  }
 }

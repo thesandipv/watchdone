@@ -29,11 +29,11 @@ val LocalBackdropSize = compositionLocalOf { "w780" }
 val LocalLogoSize = compositionLocalOf { "w92" }
 val LocalRegion = compositionLocalOf { "IN" }
 val LocalSettings = staticCompositionLocalOf<Settings> {
-    error("LocalSettings is not initialized")
+  error("LocalSettings is not initialized")
 }
 val LocalLogger = staticCompositionLocalOf<Logger> {
-    error("LocalLogger is not initialized")
+  error("LocalLogger is not initialized")
 }
 val LocalWindowSizeClass = staticCompositionLocalOf<WindowSizeClass> {
-    error("WindowSizeClass is not initialized")
+  error("WindowSizeClass is not initialized")
 }

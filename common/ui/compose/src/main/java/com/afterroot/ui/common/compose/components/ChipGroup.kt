@@ -55,40 +55,40 @@ import com.afterroot.data.utils.valueOrBlank
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonFilterChip(
-    modifier: Modifier = Modifier,
-    text: String? = null,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    selected: Boolean = false,
-    onSelectionChanged: (label: String, selected: Boolean) -> Unit = { _, _ -> },
+  modifier: Modifier = Modifier,
+  text: String? = null,
+  leadingIcon: (@Composable () -> Unit)? = null,
+  selected: Boolean = false,
+  onSelectionChanged: (label: String, selected: Boolean) -> Unit = { _, _ -> },
 ) {
-    FilterChip(
-        modifier = modifier,
-        selected = selected,
-        onClick = {
-            onSelectionChanged(text.valueOrBlank(), !selected)
-        },
-        label = {
-            Text(text = text.valueOrBlank())
-        },
-        leadingIcon = leadingIcon,
-    )
+  FilterChip(
+    modifier = modifier,
+    selected = selected,
+    onClick = {
+      onSelectionChanged(text.valueOrBlank(), !selected)
+    },
+    label = {
+      Text(text = text.valueOrBlank())
+    },
+    leadingIcon = leadingIcon,
+  )
 }
 
 @Composable
 fun AssistChip(
-    modifier: Modifier = Modifier,
-    text: String? = null,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  text: String? = null,
+  leadingIcon: (@Composable () -> Unit)? = null,
+  onClick: () -> Unit,
 ) {
-    AssistChip(
-        modifier = modifier,
-        onClick = onClick,
-        label = {
-            Text(text = text.valueOrBlank())
-        },
-        leadingIcon = leadingIcon,
-    )
+  AssistChip(
+    modifier = modifier,
+    onClick = onClick,
+    label = {
+      Text(text = text.valueOrBlank())
+    },
+    leadingIcon = leadingIcon,
+  )
 }
 
 /**
@@ -105,222 +105,222 @@ fun AssistChip(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterChipGroup(
-    modifier: Modifier = Modifier,
-    chipModifier: Modifier = Modifier,
-    chipSpacing: Dp = 0.dp,
-    horizontalPadding: Dp = 0.dp,
-    icons: List<ImageVector?> = emptyList(),
-    list: List<String>? = null,
-    preSelect: List<String> = emptyList(),
-    preSelectItem: String? = null,
-    selectionType: SelectionType = SelectionType.Single,
-    onSelectedChanged: ((selected: String, selectedChips: List<String>) -> Unit)? = null,
-    onSelectedChangedIndexed: (
-        (
-            index: Int,
-            selected: String,
-            selectedChips: List<String>,
-        ) -> Unit
-    )? = null,
+  modifier: Modifier = Modifier,
+  chipModifier: Modifier = Modifier,
+  chipSpacing: Dp = 0.dp,
+  horizontalPadding: Dp = 0.dp,
+  icons: List<ImageVector?> = emptyList(),
+  list: List<String>? = null,
+  preSelect: List<String> = emptyList(),
+  preSelectItem: String? = null,
+  selectionType: SelectionType = SelectionType.Single,
+  onSelectedChanged: ((selected: String, selectedChips: List<String>) -> Unit)? = null,
+  onSelectedChangedIndexed: (
+    (
+      index: Int,
+      selected: String,
+      selectedChips: List<String>,
+    ) -> Unit
+  )? = null,
 ) {
-    val selectedChips = remember { mutableStateListOf<String>() }
+  val selectedChips = remember { mutableStateListOf<String>() }
 
-    if (selectedChips.isEmpty()) {
-        if (preSelect.isNotEmpty()) {
-            selectedChips.addAll(preSelect)
-        }
-        preSelectItem?.let { selectedChips.add(it) }
+  if (selectedChips.isEmpty()) {
+    if (preSelect.isNotEmpty()) {
+      selectedChips.addAll(preSelect)
     }
+    preSelectItem?.let { selectedChips.add(it) }
+  }
 
-    Column(horizontalAlignment = Alignment.Start, modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = horizontalPadding),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ) {
-            list?.forEachIndexed { index, it ->
-                if (index != 0) {
-                    Spacer(modifier = Modifier.width(chipSpacing))
-                }
-                CommonFilterChip(
-                    modifier = chipModifier,
-                    text = it,
-                    selected = selectedChips.contains(it),
-                    leadingIcon = {
-                        if (icons.isNotEmpty()) {
-                            icons[index]?.let { icon ->
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = "$it Icon",
-                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
-                                )
-                            }
-                        }
-                    },
-                    onSelectionChanged = { label, _ ->
-
-                        when (selectionType) {
-                            SelectionType.Single -> {
-                                selectedChips.apply {
-                                    clear()
-                                    add(label)
-                                }
-                            }
-
-                            SelectionType.Multiple -> {
-                                if (selectedChips.contains(label)) {
-                                    selectedChips.remove(label)
-                                } else {
-                                    selectedChips.add(label)
-                                }
-                            }
-                        }
-
-                        onSelectedChanged?.invoke(label, selectedChips)
-                        onSelectedChangedIndexed?.invoke(index, label, selectedChips)
-                    },
+  Column(horizontalAlignment = Alignment.Start, modifier = modifier) {
+    Row(
+      modifier = Modifier
+        .horizontalScroll(rememberScrollState())
+        .padding(horizontal = horizontalPadding),
+      horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+      list?.forEachIndexed { index, it ->
+        if (index != 0) {
+          Spacer(modifier = Modifier.width(chipSpacing))
+        }
+        CommonFilterChip(
+          modifier = chipModifier,
+          text = it,
+          selected = selectedChips.contains(it),
+          leadingIcon = {
+            if (icons.isNotEmpty()) {
+              icons[index]?.let { icon ->
+                Icon(
+                  imageVector = icon,
+                  contentDescription = "$it Icon",
+                  modifier = Modifier.size(FilterChipDefaults.IconSize),
                 )
+              }
             }
-        }
+          },
+          onSelectionChanged = { label, _ ->
+
+            when (selectionType) {
+              SelectionType.Single -> {
+                selectedChips.apply {
+                  clear()
+                  add(label)
+                }
+              }
+
+              SelectionType.Multiple -> {
+                if (selectedChips.contains(label)) {
+                  selectedChips.remove(label)
+                } else {
+                  selectedChips.add(label)
+                }
+              }
+            }
+
+            onSelectedChanged?.invoke(label, selectedChips)
+            onSelectedChangedIndexed?.invoke(index, label, selectedChips)
+          },
+        )
+      }
     }
+  }
 }
 
 enum class SelectionType {
-    Single, Multiple
+  Single, Multiple
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuggestionChipGroup(
-    modifier: Modifier = Modifier,
-    chipModifier: Modifier = Modifier,
-    chipSpacing: Dp = 0.dp,
-    horizontalPadding: Dp = 0.dp,
-    icons: List<ImageVector?> = emptyList(),
-    list: List<String>? = null,
-    onClick: ((index: Int, label: String) -> Unit)? = null,
+  modifier: Modifier = Modifier,
+  chipModifier: Modifier = Modifier,
+  chipSpacing: Dp = 0.dp,
+  horizontalPadding: Dp = 0.dp,
+  icons: List<ImageVector?> = emptyList(),
+  list: List<String>? = null,
+  onClick: ((index: Int, label: String) -> Unit)? = null,
 ) {
-    val scrollState = rememberScrollState()
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = modifier.horizontalScroll(scrollState),
-    ) {
-        Spacer(modifier = Modifier.width(horizontalPadding))
-        list?.forEachIndexed { index, it ->
-            if (index != 0) {
-                Spacer(modifier = Modifier.width(chipSpacing))
+  val scrollState = rememberScrollState()
+  Row(
+    horizontalArrangement = Arrangement.SpaceEvenly,
+    modifier = modifier.horizontalScroll(scrollState),
+  ) {
+    Spacer(modifier = Modifier.width(horizontalPadding))
+    list?.forEachIndexed { index, it ->
+      if (index != 0) {
+        Spacer(modifier = Modifier.width(chipSpacing))
+      }
+      SuggestionChip(
+        modifier = chipModifier,
+        onClick = {
+          onClick?.invoke(index, it)
+        },
+        label = {
+          Text(text = it.valueOrBlank())
+        },
+        icon = {
+          if (icons.isNotEmpty()) {
+            icons[index]?.let { icon ->
+              Icon(
+                imageVector = icon,
+                contentDescription = "$it Icon",
+                modifier = Modifier.size(FilterChipDefaults.IconSize),
+              )
             }
-            SuggestionChip(
-                modifier = chipModifier,
-                onClick = {
-                    onClick?.invoke(index, it)
-                },
-                label = {
-                    Text(text = it.valueOrBlank())
-                },
-                icon = {
-                    if (icons.isNotEmpty()) {
-                        icons[index]?.let { icon ->
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = "$it Icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize),
-                            )
-                        }
-                    }
-                },
-            )
-        }
-        Spacer(modifier = Modifier.width(horizontalPadding))
+          }
+        },
+      )
     }
+    Spacer(modifier = Modifier.width(horizontalPadding))
+  }
 }
 
 @Composable
 fun DynamicChipGroup(
-    modifier: Modifier = Modifier,
-    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-    icons: List<ImageVector?> = emptyList(),
-    list: List<String>? = null,
-    preSelect: List<String> = emptyList(),
-    preSelectItem: String? = null,
-    selectionType: SelectionType = SelectionType.Single,
-    showOnlySelected: Boolean = false,
-    onSelectedChanged: (
-        (
-            index: Int,
-            title: String,
-            selected: Boolean,
-            list: List<String>,
-            selectedList: List<Int>,
-        ) -> Unit
-    )? = null,
-    chipContent: @Composable (
-        index: Int,
-        title: String,
-        icon: ImageVector?,
-        selected: Boolean,
-        onClick: (selected: Boolean) -> Unit,
-        clearSelection: () -> Unit,
-    ) -> Unit,
+  modifier: Modifier = Modifier,
+  horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+  icons: List<ImageVector?> = emptyList(),
+  list: List<String>? = null,
+  preSelect: List<String> = emptyList(),
+  preSelectItem: String? = null,
+  selectionType: SelectionType = SelectionType.Single,
+  showOnlySelected: Boolean = false,
+  onSelectedChanged: (
+    (
+      index: Int,
+      title: String,
+      selected: Boolean,
+      list: List<String>,
+      selectedList: List<Int>,
+    ) -> Unit
+  )? = null,
+  chipContent: @Composable (
+    index: Int,
+    title: String,
+    icon: ImageVector?,
+    selected: Boolean,
+    onClick: (selected: Boolean) -> Unit,
+    clearSelection: () -> Unit,
+  ) -> Unit,
 ) {
-    val selectedList = remember { mutableStateListOf<Int>() }
+  val selectedList = remember { mutableStateListOf<Int>() }
 
-    if (selectedList.isEmpty()) {
-        if (list != null) {
-            if (preSelect.isNotEmpty()) {
-                selectedList.addAll(
-                    preSelect.map {
-                        list.indexOf(it)
-                    },
-                )
-            }
-            preSelectItem?.let { selectedList.add(list.indexOf(preSelectItem)) }
-        }
+  if (selectedList.isEmpty()) {
+    if (list != null) {
+      if (preSelect.isNotEmpty()) {
+        selectedList.addAll(
+          preSelect.map {
+            list.indexOf(it)
+          },
+        )
+      }
+      preSelectItem?.let { selectedList.add(list.indexOf(preSelectItem)) }
     }
+  }
 
-    Row(modifier = modifier, horizontalArrangement = horizontalArrangement) {
-        list?.forEachIndexed { index, label ->
-            AnimatedVisibility(
-                visible = if (showOnlySelected && selectedList.isNotEmpty() && selectedList[0] != -1) {
-                    selectedList.contains(index)
+  Row(modifier = modifier, horizontalArrangement = horizontalArrangement) {
+    list?.forEachIndexed { index, label ->
+      AnimatedVisibility(
+        visible = if (showOnlySelected && selectedList.isNotEmpty() && selectedList[0] != -1) {
+          selectedList.contains(index)
+        } else {
+          true
+        },
+        enter = fadeIn() + expandHorizontally(expandFrom = Alignment.CenterHorizontally),
+        exit = fadeOut() + shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally),
+      ) {
+        chipContent(
+          index,
+          label,
+          if (icons.isNotEmpty()) icons[index] else null,
+          selectedList.contains(index),
+          { selected ->
+            when (selectionType) {
+              SelectionType.Single -> {
+                selectedList.apply {
+                  clear()
+                  add(index)
+                }
+              }
+
+              SelectionType.Multiple -> {
+                if (selectedList.contains(index)) {
+                  selectedList.remove(index)
                 } else {
-                    true
-                },
-                enter = fadeIn() + expandHorizontally(expandFrom = Alignment.CenterHorizontally),
-                exit = fadeOut() + shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally),
-            ) {
-                chipContent(
-                    index,
-                    label,
-                    if (icons.isNotEmpty()) icons[index] else null,
-                    selectedList.contains(index),
-                    { selected ->
-                        when (selectionType) {
-                            SelectionType.Single -> {
-                                selectedList.apply {
-                                    clear()
-                                    add(index)
-                                }
-                            }
-
-                            SelectionType.Multiple -> {
-                                if (selectedList.contains(index)) {
-                                    selectedList.remove(index)
-                                } else {
-                                    selectedList.add(index)
-                                }
-                            }
-                        }
-
-                        onSelectedChanged?.invoke(index, label, selected, list, selectedList)
-                    },
-                    {
-                        selectedList.clear()
-                        onSelectedChanged?.invoke(index, label, false, list, selectedList)
-                    },
-                )
+                  selectedList.add(index)
+                }
+              }
             }
-        }
+
+            onSelectedChanged?.invoke(index, label, selected, list, selectedList)
+          },
+          {
+            selectedList.clear()
+            onSelectedChanged?.invoke(index, label, false, list, selectedList)
+          },
+        )
+      }
     }
+  }
 }

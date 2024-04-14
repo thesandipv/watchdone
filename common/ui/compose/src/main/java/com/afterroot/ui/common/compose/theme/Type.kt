@@ -28,49 +28,49 @@ import com.afterroot.watchdone.resources.R
 val typography = Typography()
 
 val fontProvider by lazy {
-    GoogleFont.Provider(
-        providerAuthority = "com.google.android.gms.fonts",
-        providerPackage = "com.google.android.gms",
-        certificates = R.array.com_google_android_gms_fonts_certs,
-    )
+  GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs,
+  )
 }
 
 val ubuntuFamily = googleFontFamily(
-    "Ubuntu",
-    listOf(
-        FontWeight.Normal,
-        FontWeight.Bold,
-        FontWeight.Medium,
-        // FontWeight.ExtraLight,
-        // FontWeight.SemiBold
-    ),
+  "Ubuntu",
+  listOf(
+    FontWeight.Normal,
+    FontWeight.Bold,
+    FontWeight.Medium,
+    // FontWeight.ExtraLight,
+    // FontWeight.SemiBold
+  ),
 )
 
 val ubuntuTypography = Typography(
-    displayLarge = typography.displayLarge.copy(fontFamily = ubuntuFamily),
-    displayMedium = typography.displayMedium.copy(fontFamily = ubuntuFamily),
-    displaySmall = typography.displaySmall.copy(fontFamily = ubuntuFamily),
-    headlineLarge = typography.headlineLarge.copy(fontFamily = ubuntuFamily),
-    headlineMedium = typography.headlineMedium.copy(fontFamily = ubuntuFamily),
-    headlineSmall = typography.headlineSmall.copy(fontFamily = ubuntuFamily),
-    titleLarge = typography.titleLarge.copy(fontFamily = ubuntuFamily),
-    titleMedium = typography.titleMedium.copy(fontFamily = ubuntuFamily),
-    titleSmall = typography.titleSmall.copy(fontFamily = ubuntuFamily),
-    bodyLarge = typography.bodyLarge.copy(fontFamily = ubuntuFamily),
-    bodyMedium = typography.bodyMedium.copy(fontFamily = ubuntuFamily),
-    bodySmall = typography.bodySmall.copy(fontFamily = ubuntuFamily),
-    labelLarge = typography.labelLarge.copy(fontFamily = ubuntuFamily),
-    labelMedium = typography.labelMedium.copy(fontFamily = ubuntuFamily),
-    labelSmall = typography.labelSmall.copy(fontFamily = ubuntuFamily),
+  displayLarge = typography.displayLarge.copy(fontFamily = ubuntuFamily),
+  displayMedium = typography.displayMedium.copy(fontFamily = ubuntuFamily),
+  displaySmall = typography.displaySmall.copy(fontFamily = ubuntuFamily),
+  headlineLarge = typography.headlineLarge.copy(fontFamily = ubuntuFamily),
+  headlineMedium = typography.headlineMedium.copy(fontFamily = ubuntuFamily),
+  headlineSmall = typography.headlineSmall.copy(fontFamily = ubuntuFamily),
+  titleLarge = typography.titleLarge.copy(fontFamily = ubuntuFamily),
+  titleMedium = typography.titleMedium.copy(fontFamily = ubuntuFamily),
+  titleSmall = typography.titleSmall.copy(fontFamily = ubuntuFamily),
+  bodyLarge = typography.bodyLarge.copy(fontFamily = ubuntuFamily),
+  bodyMedium = typography.bodyMedium.copy(fontFamily = ubuntuFamily),
+  bodySmall = typography.bodySmall.copy(fontFamily = ubuntuFamily),
+  labelLarge = typography.labelLarge.copy(fontFamily = ubuntuFamily),
+  labelMedium = typography.labelMedium.copy(fontFamily = ubuntuFamily),
+  labelSmall = typography.labelSmall.copy(fontFamily = ubuntuFamily),
 )
 
 fun googleFontFamily(
-    name: String,
-    weights: List<FontWeight>,
+  name: String,
+  weights: List<FontWeight>,
 ): FontFamily {
-    return FontFamily(
-        weights.map {
-            Font(GoogleFont(name), fontProvider, it)
-        },
-    )
+  return FontFamily(
+    weights.map {
+      Font(GoogleFont(name), fontProvider, it)
+    },
+  )
 }

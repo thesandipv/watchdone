@@ -19,5 +19,5 @@ import com.afterroot.watchdone.base.compose.Actions
 import com.afterroot.watchdone.data.model.MediaType
 
 sealed class DiscoverActions : Actions() {
-    data class SetMediaType(val mediaType: MediaType) : DiscoverActions()
+  data class SetMediaType(val mediaType: MediaType) : DiscoverActions()
 }

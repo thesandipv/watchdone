@@ -14,34 +14,34 @@
  */
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.hilt.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
-    id("androidx.navigation.safeargs")
-    alias(libs.plugins.jetbrains.kotlin.kapt)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.hilt.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  id("androidx.navigation.safeargs")
+  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.ui.discover"
+  namespace = "com.afterroot.watchdone.ui.discover"
 }
 
 dependencies {
-    implementation(projects.data)
-    implementation(projects.domain)
-    implementation(projects.ui.media)
+  implementation(projects.data)
+  implementation(projects.domain)
+  implementation(projects.ui.media)
 
-    implementation(libs.androidx.constraintLayout)
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.recyclerView)
-    implementation(libs.androidx.transition)
-    implementation(libs.bundles.lifecycle)
+  implementation(libs.androidx.constraintLayout)
+  implementation(libs.androidx.core)
+  implementation(libs.androidx.fragment)
+  implementation(libs.androidx.lifecycle.viewmodel)
+  implementation(libs.androidx.navigation.fragment)
+  implementation(libs.androidx.recyclerView)
+  implementation(libs.androidx.transition)
+  implementation(libs.bundles.lifecycle)
 
-    implementation(libs.hilt.compose)
+  implementation(libs.hilt.compose)
 
-    implementation(libs.materialProgress)
+  implementation(libs.materialProgress)
 }

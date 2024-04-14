@@ -31,6 +31,7 @@ import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.tmdbapi.repository.TVRepository
 import com.afterroot.watchdone.base.BuildConfig
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.tmdb.TmdbOkHttpClient
 import com.afterroot.watchdone.utils.whenBuildIs
 import dagger.Module
 import dagger.Provides
@@ -46,105 +47,107 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
-    @Provides
-    @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(Constants.TMDB_BASE_URL)
-            .addConverterFactory(JacksonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
+  @Provides
+  @Singleton
+  fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    return Retrofit.Builder()
+      .baseUrl(Constants.TMDB_BASE_URL)
+      .addConverterFactory(JacksonConverterFactory.create())
+      .client(okHttpClient)
+      .build()
+  }
+
+  @Provides
+  @Singleton
+  fun provideOkHttpClient(
+    @TmdbOkHttpClient okHttpClient: OkHttpClient,
+    tmdbInterceptor: TMDbInterceptor,
+    httpLoggingInterceptor: HttpLoggingInterceptor,
+    settings: Settings,
+  ): OkHttpClient {
+    val client = okHttpClient.newBuilder()
+      .addInterceptor(tmdbInterceptor)
+    if (settings.isHttpLogging) {
+      client.addInterceptor(httpLoggingInterceptor)
     }
+    return client.build()
+  }
 
-    @Provides
-    fun provideOkHttpClient(
-        tmdbInterceptor: TMDbInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-        settings: Settings,
-    ): OkHttpClient {
-        val client = OkHttpClient().newBuilder()
-            .addInterceptor(tmdbInterceptor)
-        if (settings.isHttpLogging) {
-            client.addInterceptor(httpLoggingInterceptor)
-        }
-        return client.build()
-    }
+  @Provides
+  @Singleton
+  fun provideTMDbInterceptor(): TMDbInterceptor =
+    TMDbInterceptor(key = BuildConfig.TMDB_API, v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN)
 
-    @Provides
-    @Singleton
-    fun provideTMDbInterceptor(settings: Settings): TMDbInterceptor =
-        TMDbInterceptor(key = BuildConfig.TMDB_API, v4ApiKey = BuildConfig.TMDB_BEARER_TOKEN)
+  @Provides
+  @Singleton
+  fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+    level = whenBuildIs(
+      debug = HttpLoggingInterceptor.Level.BODY,
+      release = HttpLoggingInterceptor.Level.NONE,
+    )
+  }
 
-    @Provides
-    @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-        level = whenBuildIs(
-            debug = HttpLoggingInterceptor.Level.BODY,
-            release = HttpLoggingInterceptor.Level.NONE,
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun provideTmdbApi(
-        okHttpClient: OkHttpClient,
-    ): TmdbApi = TmdbApi(BuildConfig.TMDB_API, okHttpClient)
+  @Provides
+  @Singleton
+  fun provideTmdbApi(
+    okHttpClient: OkHttpClient,
+  ): TmdbApi = TmdbApi(BuildConfig.TMDB_API, okHttpClient)
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoriesModule {
-    @Provides
-    @Singleton
-    fun provideMoviesRepository(moviesApi: MoviesApi) = MoviesRepository(moviesApi)
+  @Provides
+  @Singleton
+  fun provideMoviesRepository(moviesApi: MoviesApi) = MoviesRepository(moviesApi)
 
-    @Provides
-    @Singleton
-    fun provideAuthRepository(authApi: AuthApi) = AuthRepository(authApi)
+  @Provides
+  @Singleton
+  fun provideAuthRepository(authApi: AuthApi) = AuthRepository(authApi)
 
-    @Provides
-    @Singleton
-    fun provideGenresRepository(genresApi: GenresApi) = GenresRepository(genresApi)
+  @Provides
+  @Singleton
+  fun provideGenresRepository(genresApi: GenresApi) = GenresRepository(genresApi)
 
-    @Provides
-    @Singleton
-    fun provideConfigRepository(configApi: ConfigApi) = ConfigRepository(configApi)
+  @Provides
+  @Singleton
+  fun provideConfigRepository(configApi: ConfigApi) = ConfigRepository(configApi)
 
-    @Provides
-    @Singleton
-    fun provideTVRepository(tvApi: TVApi) = TVRepository(tvApi)
+  @Provides
+  @Singleton
+  fun provideTVRepository(tvApi: TVApi) = TVRepository(tvApi)
 
-    @Provides
-    @Singleton
-    fun provideSearchRepository(searchApi: SearchApi) = SearchRepository(searchApi)
+  @Provides
+  @Singleton
+  fun provideSearchRepository(searchApi: SearchApi) = SearchRepository(searchApi)
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitApisModule {
-    @Provides
-    @Singleton
-    fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi::class.java)
+  @Provides
+  @Singleton
+  fun provideMoviesApi(retrofit: Retrofit): MoviesApi = retrofit.create(MoviesApi::class.java)
 
-    @Provides
-    @Singleton
-    fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+  @Provides
+  @Singleton
+  fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
 
-    @Provides
-    @Singleton
-    fun provideDiscoverApi(
-        retrofit: Retrofit,
-    ): DiscoverApi = retrofit.create(DiscoverApi::class.java)
+  @Provides
+  @Singleton
+  fun provideDiscoverApi(
+    retrofit: Retrofit,
+  ): DiscoverApi = retrofit.create(DiscoverApi::class.java)
 
-    @Provides
-    @Singleton
-    fun provideGenresApi(retrofit: Retrofit): GenresApi = retrofit.create(GenresApi::class.java)
+  @Provides
+  @Singleton
+  fun provideGenresApi(retrofit: Retrofit): GenresApi = retrofit.create(GenresApi::class.java)
 
-    @Provides
-    @Singleton
-    fun provideConfigApi(retrofit: Retrofit): ConfigApi = retrofit.create(ConfigApi::class.java)
+  @Provides
+  @Singleton
+  fun provideConfigApi(retrofit: Retrofit): ConfigApi = retrofit.create(ConfigApi::class.java)
 
-    @Provides
-    @Singleton
-    fun provideTVApi(retrofit: Retrofit): TVApi = retrofit.create(TVApi::class.java)
+  @Provides
+  @Singleton
+  fun provideTVApi(retrofit: Retrofit): TVApi = retrofit.create(TVApi::class.java)
 }

@@ -29,9 +29,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Movie
-import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -42,7 +39,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -52,7 +48,6 @@ import androidx.paging.compose.itemKey
 import app.tivi.common.compose.fullSpanItem
 import app.tivi.common.compose.ui.plus
 import com.afterroot.ui.common.compose.components.CommonAppBar
-import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.components.MediaCard
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.ui.common.compose.utils.topAppBarScrollBehavior
@@ -60,162 +55,157 @@ import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
+import com.afterroot.watchdone.ui.media.MediaTypeFilter
 import com.afterroot.watchdone.viewmodel.DiscoverViewModel
-import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
 fun DiscoverChips(
-    onMovieSelected: () -> Unit,
-    onShowSelected: () -> Unit,
+  onMovieSelected: () -> Unit,
+  onShowSelected: () -> Unit,
+  currentMediaType: MediaType = MediaType.MOVIE,
 ) {
-    val movieText = stringResource(id = CommonR.string.text_search_movies)
-    val showText = stringResource(id = CommonR.string.text_search_show)
-    FilterChipGroup(
-        modifier = Modifier.padding(vertical = 8.dp),
-        chipSpacing = 12.dp,
-        horizontalPadding = 8.dp,
-        icons = listOf(Icons.Outlined.Movie, Icons.Outlined.Tv),
-        list = listOf(movieText, showText),
-        preSelect = listOf(movieText),
-        onSelectedChanged = { selected, _ ->
-            when (selected) {
-                movieText -> onMovieSelected()
-                showText -> onShowSelected()
-            }
-        },
-    )
+  MediaTypeFilter(
+    modifier = Modifier.padding(vertical = 8.dp),
+    preSelect = currentMediaType,
+    showOnlySelected = false,
+  ) { selectedMediaType: MediaType ->
+    when (selectedMediaType) {
+      MediaType.MOVIE -> onMovieSelected()
+      MediaType.SHOW -> onShowSelected()
+      else -> {
+        // DO NOTHING
+      }
+    }
+  }
 }
 
 @Composable
 fun Discover(
-    discoverViewModel: DiscoverViewModel = hiltViewModel(),
-    itemSelectedCallback: ItemSelectedCallback<Media>,
+  discoverViewModel: DiscoverViewModel = hiltViewModel(),
+  itemSelectedCallback: ItemSelectedCallback<Media>,
 ) {
-    val viewState by discoverViewModel.state.collectAsState()
-    val discoverItems = discoverViewModel.pagedDiscoverList.collectAsLazyPagingItems()
+  val viewState by discoverViewModel.state.collectAsState()
+  val discoverItems = discoverViewModel.pagedDiscoverList.collectAsLazyPagingItems()
 
-    Discover(
-        state = viewState.copy(
-            isLoading = discoverItems.loadState.refresh is LoadState.Loading,
-        ),
-        movieItems = discoverItems,
-        showItems = discoverItems,
-        itemSelectedCallback = itemSelectedCallback,
-        onMovieChipSelected = {
-            discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.MOVIE))
-        },
-        onShowChipSelected = {
-            discoverViewModel.submitAction(DiscoverActions.SetMediaType(MediaType.SHOW))
-        },
-        refresh = discoverItems::refresh,
-    )
+  Discover(
+    state = viewState.copy(
+      isLoading = discoverItems.loadState.refresh is LoadState.Loading,
+    ),
+    movieItems = discoverItems,
+    showItems = discoverItems,
+    itemSelectedCallback = itemSelectedCallback,
+    onMovieChipSelected = { discoverViewModel.setMediaType(MediaType.MOVIE) },
+    onShowChipSelected = { discoverViewModel.setMediaType(MediaType.SHOW) },
+    refresh = discoverItems::refresh,
+  )
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class,
+  ExperimentalMaterial3Api::class,
+  ExperimentalFoundationApi::class,
+  ExperimentalMaterialApi::class,
 )
 @Composable
 internal fun Discover(
-    state: DiscoverViewState,
-    movieItems: LazyPagingItems<DiscoverEntryWithMedia>,
-    showItems: LazyPagingItems<DiscoverEntryWithMedia>,
-    itemSelectedCallback: ItemSelectedCallback<Media>,
-    onMovieChipSelected: () -> Unit,
-    onShowChipSelected: () -> Unit,
-    refresh: () -> Unit,
+  state: DiscoverViewState,
+  movieItems: LazyPagingItems<DiscoverEntryWithMedia>,
+  showItems: LazyPagingItems<DiscoverEntryWithMedia>,
+  itemSelectedCallback: ItemSelectedCallback<Media>,
+  onMovieChipSelected: () -> Unit,
+  onShowChipSelected: () -> Unit,
+  refresh: () -> Unit,
 ) {
-    val listState = rememberLazyGridState()
+  val listState = rememberLazyGridState()
 
-    Scaffold(
-        topBar = {
-            CommonAppBar(
-                withTitle = "Discover",
-                scrollBehavior = topAppBarScrollBehavior(),
-                windowInsets = TopBarWindowInsets,
-            )
-        },
-        modifier = Modifier.fillMaxSize(),
-    ) { paddingValues ->
-        val refreshState = rememberPullRefreshState(
-            refreshing = state.isLoading,
-            onRefresh = refresh,
-        )
+  Scaffold(
+    topBar = {
+      CommonAppBar(
+        withTitle = "Discover",
+        scrollBehavior = topAppBarScrollBehavior(),
+        windowInsets = TopBarWindowInsets,
+      )
+    },
+    modifier = Modifier.fillMaxSize(),
+  ) { paddingValues ->
+    val refreshState = rememberPullRefreshState(
+      refreshing = state.isLoading,
+      onRefresh = refresh,
+    )
 
-        Box(
-            modifier = Modifier
-                .pullRefresh(state = refreshState)
-                .fillMaxWidth(),
+    Box(
+      modifier = Modifier
+        .pullRefresh(state = refreshState)
+        .fillMaxWidth(),
+    ) {
+      if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && showItems.itemCount != 0) || !state.isLoading) {
+        LazyVerticalGrid(
+          state = listState,
+          columns = GridCells.Fixed(3),
+          contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
+          horizontalArrangement = Arrangement.spacedBy(8.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp),
+          modifier = Modifier.fillMaxHeight(),
         ) {
-            if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && showItems.itemCount != 0) || !state.isLoading) {
-                LazyVerticalGrid(
-                    state = listState,
-                    columns = GridCells.Fixed(3),
-                    contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxHeight(),
-                ) {
-                    fullSpanItem {
-                        DiscoverChips(
-                            onMovieSelected = { onMovieChipSelected() },
-                            onShowSelected = { onShowChipSelected() },
-                        )
-                    }
-                    if (state.mediaType == MediaType.MOVIE) {
-                        items(
-                            count = movieItems.itemCount,
-                            key = movieItems.itemKey { it.media.id },
-                        ) { index ->
-                            val movie = movieItems[index]
-                            if (movie != null) {
-                                MediaCard(
-                                    media = movie.media,
-                                    onClick = {
-                                        itemSelectedCallback.onClick(0, null, movie.media)
-                                    },
-                                    modifier = Modifier
-                                        .animateItemPlacement()
-                                        .fillMaxWidth()
-                                        .aspectRatio(2 / 3f),
-                                )
-                            }
-                        }
-                    } else if (state.mediaType == MediaType.SHOW) {
-                        items(
-                            count = showItems.itemCount,
-                            key = showItems.itemKey { it.media.id },
-                        ) { index ->
-                            val show = showItems[index]
-                            if (show != null) {
-                                MediaCard(
-                                    media = show.media,
-                                    onClick = {
-                                        itemSelectedCallback.onClick(0, null, show.media)
-                                    },
-                                    modifier = Modifier
-                                        .animateItemPlacement()
-                                        .fillMaxWidth()
-                                        .aspectRatio(2 / 3f),
-                                )
-                            }
-                        }
-                    }
-                    fullSpanItem {
-                        Spacer(modifier = Modifier.height(80.dp))
-                    }
-                }
-            }
-
-            PullRefreshIndicator(
-                refreshing = state.isLoading,
-                state = refreshState,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(paddingValues),
-                scale = true,
+          fullSpanItem {
+            DiscoverChips(
+              onMovieSelected = { onMovieChipSelected() },
+              onShowSelected = { onShowChipSelected() },
+              currentMediaType = state.mediaType ?: MediaType.MOVIE,
             )
+          }
+          if (state.mediaType == MediaType.MOVIE) {
+            items(
+              count = movieItems.itemCount,
+              key = movieItems.itemKey { it.media.id },
+            ) { index ->
+              val movie = movieItems[index]
+              if (movie != null) {
+                MediaCard(
+                  media = movie.media,
+                  onClick = {
+                    itemSelectedCallback.onClick(0, null, movie.media)
+                  },
+                  modifier = Modifier
+                    .animateItemPlacement()
+                    .fillMaxWidth()
+                    .aspectRatio(2 / 3f),
+                )
+              }
+            }
+          } else if (state.mediaType == MediaType.SHOW) {
+            items(
+              count = showItems.itemCount,
+              key = showItems.itemKey { it.media.id },
+            ) { index ->
+              val show = showItems[index]
+              if (show != null) {
+                MediaCard(
+                  media = show.media,
+                  onClick = {
+                    itemSelectedCallback.onClick(0, null, show.media)
+                  },
+                  modifier = Modifier
+                    .animateItemPlacement()
+                    .fillMaxWidth()
+                    .aspectRatio(2 / 3f),
+                )
+              }
+            }
+          }
+          fullSpanItem {
+            Spacer(modifier = Modifier.height(80.dp))
+          }
         }
+      }
+
+      PullRefreshIndicator(
+        refreshing = state.isLoading,
+        state = refreshState,
+        modifier = Modifier
+          .align(Alignment.TopCenter)
+          .padding(paddingValues),
+        scale = true,
+      )
     }
+  }
 }

@@ -20,52 +20,52 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
-    ListAdapter<T, RecyclerView.ViewHolder>(diffCallback) {
+  ListAdapter<T, RecyclerView.ViewHolder>(diffCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        var viewHolder: RecyclerView.ViewHolder? = null
-        when (viewType) {
-            HEADER -> {
-                viewHolder = createHeaderViewHolder(parent)
-            }
-            ITEM -> {
-                viewHolder = createItemViewHolder(parent)
-            }
-            FOOTER -> {
-                viewHolder = createFooterViewHolder(parent)
-            }
-        }
-        return viewHolder!!
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    var viewHolder: RecyclerView.ViewHolder? = null
+    when (viewType) {
+      HEADER -> {
+        viewHolder = createHeaderViewHolder(parent)
+      }
+      ITEM -> {
+        viewHolder = createItemViewHolder(parent)
+      }
+      FOOTER -> {
+        viewHolder = createFooterViewHolder(parent)
+      }
     }
+    return viewHolder!!
+  }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (getItemViewType(position)) {
-            HEADER -> {
-                bindHeaderViewHolder(holder)
-            }
-            ITEM -> {
-                bindItemViewHolder(holder, position)
-            }
-            FOOTER -> {
-                bindFooterViewHolder(holder)
-            }
-        }
+  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    when (getItemViewType(position)) {
+      HEADER -> {
+        bindHeaderViewHolder(holder)
+      }
+      ITEM -> {
+        bindItemViewHolder(holder, position)
+      }
+      FOOTER -> {
+        bindFooterViewHolder(holder)
+      }
     }
+  }
 
-    abstract fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder?
-    abstract fun createItemViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
-    abstract fun createFooterViewHolder(parent: ViewGroup): RecyclerView.ViewHolder?
+  abstract fun createHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder?
+  abstract fun createItemViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
+  abstract fun createFooterViewHolder(parent: ViewGroup): RecyclerView.ViewHolder?
 
-    abstract fun bindHeaderViewHolder(viewHolder: RecyclerView.ViewHolder)
-    abstract fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int)
-    abstract fun bindFooterViewHolder(viewHolder: RecyclerView.ViewHolder)
+  abstract fun bindHeaderViewHolder(viewHolder: RecyclerView.ViewHolder)
+  abstract fun bindItemViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int)
+  abstract fun bindFooterViewHolder(viewHolder: RecyclerView.ViewHolder)
 
-    abstract fun addHeader()
-    abstract fun addFooter()
+  abstract fun addHeader()
+  abstract fun addFooter()
 
-    companion object {
-        const val HEADER = 0
-        const val ITEM = 1
-        const val FOOTER = 2
-    }
+  companion object {
+    const val HEADER = 0
+    const val ITEM = 1
+    const val FOOTER = 2
+  }
 }

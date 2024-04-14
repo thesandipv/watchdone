@@ -50,120 +50,120 @@ import timber.log.Timber
 
 @Composable
 fun <T : Person> PersonRow(
-    items: List<T>,
-    modifier: Modifier = Modifier,
-    title: String,
-    refreshing: Boolean = false,
-    onMoreClick: (() -> Unit)? = null,
+  items: List<T>,
+  modifier: Modifier = Modifier,
+  title: String,
+  refreshing: Boolean = false,
+  onMoreClick: (() -> Unit)? = null,
 ) {
-    Column(modifier) {
-        Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
-            if (onMoreClick != null) {
-                TextButton(
-                    onClick = onMoreClick,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary,
-                    ),
-                    modifier = Modifier.alignBy(FirstBaseline),
-                ) {
-                    Text(text = "More")
-                }
-            }
+  Column(modifier) {
+    Header(title = title, loading = refreshing, modifier = Modifier.fillMaxWidth()) {
+      if (onMoreClick != null) {
+        TextButton(
+          onClick = onMoreClick,
+          colors = ButtonDefaults.textButtonColors(
+            contentColor = MaterialTheme.colorScheme.secondary,
+          ),
+          modifier = Modifier.alignBy(FirstBaseline),
+        ) {
+          Text(text = "More")
         }
-        if (items.isNotEmpty()) {
-            PersonRow(items = items, onItemClick = { index, item ->
-                Timber.d("PersonRow: Clicked: Index $index Item: $item")
-            }, modifier = Modifier)
-        }
+      }
     }
+    if (items.isNotEmpty()) {
+      PersonRow(items = items, onItemClick = { index, item ->
+        Timber.d("PersonRow: Clicked: Index $index Item: $item")
+      }, modifier = Modifier)
+    }
+  }
 }
 
 @Composable
 private fun <T : Person> PersonRow(
-    items: List<T>,
-    onItemClick: (index: Int, item: T) -> Unit,
-    modifier: Modifier = Modifier,
+  items: List<T>,
+  onItemClick: (index: Int, item: T) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    val listState = rememberLazyListState()
-    val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+  val listState = rememberLazyListState()
+  val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
 
-    LazyRow(
-        state = listState,
-        modifier = modifier,
-        contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        itemsIndexed(
-            items = items,
-            key = { index, _ ->
-                index
-            },
-            itemContent = { index, item ->
-                PersonItem(item = item, onClick = {
-                    onItemClick(index, item)
-                })
-            },
-        )
-    }
+  LazyRow(
+    state = listState,
+    modifier = modifier,
+    contentPadding = contentPadding,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    itemsIndexed(
+      items = items,
+      key = { index, _ ->
+        index
+      },
+      itemContent = { index, item ->
+        PersonItem(item = item, onClick = {
+          onItemClick(index, item)
+        })
+      },
+    )
+  }
 }
 
 @Composable
 fun <T : Person> PersonItem(
-    item: T,
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
+  item: T,
+  modifier: Modifier = Modifier,
+  onClick: (() -> Unit)? = null,
 ) {
-    Column(modifier = modifier.width(128.dp)) {
-        BasePosterCard(
-            title = item.name,
-            posterPath = item.profilePath,
-            modifier = Modifier
-                .aspectRatio(2 / 3f)
-                .fillMaxWidth()
-                .clickable {
-                    onClick?.invoke()
-                },
-        )
+  Column(modifier = modifier.width(128.dp)) {
+    BasePosterCard(
+      title = item.name,
+      posterPath = item.profilePath,
+      modifier = Modifier
+        .aspectRatio(2 / 3f)
+        .fillMaxWidth()
+        .clickable {
+          onClick?.invoke()
+        },
+    )
 
-        Spacer(modifier = Modifier.size(4.dp))
+    Spacer(modifier = Modifier.size(4.dp))
 
-        ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-            when (item) {
-                is PersonCast -> {
-                    item.character?.let { Text(text = it) }
-                }
-                is PersonCrew -> {
-                    item.department?.let { Text(text = it) }
-                }
-            }
+    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+      when (item) {
+        is PersonCast -> {
+          item.character?.let { Text(text = it) }
         }
-
-        Spacer(modifier = Modifier.size(2.dp))
-
-        ProvideTextStyle(
-            value = ubuntuTypography.bodySmall.copy(
-                color = LocalContentColor.current.copy(alpha = 0.8f),
-                fontStyle = FontStyle.Italic,
-            ),
-        ) {
-            item.name?.let { Text(text = it) }
+        is PersonCrew -> {
+          item.department?.let { Text(text = it) }
         }
+      }
     }
+
+    Spacer(modifier = Modifier.size(2.dp))
+
+    ProvideTextStyle(
+      value = ubuntuTypography.bodySmall.copy(
+        color = LocalContentColor.current.copy(alpha = 0.8f),
+        fontStyle = FontStyle.Italic,
+      ),
+    ) {
+      item.name?.let { Text(text = it) }
+    }
+  }
 }
 
 @Preview
 @Composable
 fun PreviewPersonItem() {
-    Column() {
-        BasePosterCard(
-            title = "Lorem",
-            posterPath = "na",
-            modifier = Modifier
-                .height(192.dp)
-                .aspectRatio(2 / 3f),
-        )
-        ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-            Text(text = "First Last")
-        }
+  Column() {
+    BasePosterCard(
+      title = "Lorem",
+      posterPath = "na",
+      modifier = Modifier
+        .height(192.dp)
+        .aspectRatio(2 / 3f),
+    )
+    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+      Text(text = "First Last")
     }
+  }
 }

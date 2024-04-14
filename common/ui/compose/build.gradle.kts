@@ -14,22 +14,22 @@
  */
 
 plugins {
-    id(afterroot.plugins.android.library.get().pluginId)
-    id(afterroot.plugins.kotlin.android.get().pluginId)
-    id(afterroot.plugins.android.compose.get().pluginId)
-    id(afterroot.plugins.watchdone.android.common.get().pluginId)
+  id(afterroot.plugins.android.library.get().pluginId)
+  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.android.compose.get().pluginId)
+  id(afterroot.plugins.watchdone.android.common.get().pluginId)
 }
 
 android {
-    namespace = "com.afterroot.watchdone.compose"
+  namespace = "com.afterroot.watchdone.compose"
 }
 
 dependencies {
-    implementation(projects.data)
-    api(projects.core.logging)
+  implementation(projects.data)
+  api(projects.core.logging)
 
-    implementation(libs.google.material)
-    implementation(libs.coil)
+  implementation(libs.google.material)
+  implementation(libs.coil)
 
-    implementation(libs.androidx.lifecycle.runtime)
+  implementation(libs.androidx.lifecycle.runtime)
 }

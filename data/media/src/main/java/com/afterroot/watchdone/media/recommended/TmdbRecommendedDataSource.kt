@@ -24,21 +24,21 @@ import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
 
 class TmdbRecommendedDataSource @Inject constructor(
-    private val tmdb: Tmdb3,
-    private val movieMapper: TmdbMovieToMedia,
-    private val showMapper: TmdbShowToMedia,
+  private val tmdb: Tmdb3,
+  private val movieMapper: TmdbMovieToMedia,
+  private val showMapper: TmdbShowToMedia,
 ) : RecommendedDataSource {
-    override suspend fun invoke(mediaId: Int, mediaType: MediaType, page: Int): List<Media> {
-        return when (mediaType) {
-            MediaType.MOVIE -> {
-                tmdb.movies.getRecommendations(mediaId, page).results.let { movieMapper.map(it) }
-            }
+  override suspend fun invoke(mediaId: Int, mediaType: MediaType, page: Int): List<Media> {
+    return when (mediaType) {
+      MediaType.MOVIE -> {
+        tmdb.movies.getRecommendations(mediaId, page).results.let { movieMapper.map(it) }
+      }
 
-            MediaType.SHOW -> {
-                tmdb.show.getRecommendations(mediaId, page).results.let { showMapper.map(it) }
-            }
+      MediaType.SHOW -> {
+        tmdb.show.getRecommendations(mediaId, page).results.let { showMapper.map(it) }
+      }
 
-            else -> emptyList()
-        }
+      else -> emptyList()
     }
+  }
 }

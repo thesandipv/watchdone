@@ -32,56 +32,56 @@ import info.movito.themoviedbapi.model.core.MovieKeywords
 import info.movito.themoviedbapi.model.core.ResultsPage
 
 data class Movie(
-    // Movie Info
-    override val id: Long = 0,
-    override val tmdbId: Int? = null,
-    val adult: Boolean? = null,
-    val backdropPath: String? = null,
-    val belongsToCollection: Collection? = null,
-    val budget: Int? = null,
-    val genreIds: List<Int>? = null,
-    val genres: List<Genre>? = null,
-    val homepage: String? = null,
-    val imdbId: String? = null,
-    val originalLanguage: String? = null,
-    val originalTitle: String? = null,
-    val overview: String? = null,
-    val popularity: Double? = null,
-    val posterPath: String? = null,
-    val productionCompanies: List<ProductionCompany>? = null,
-    val productionCountries: List<ProductionCountry>? = null,
-    val releaseDate: String? = null,
-    val revenue: Long? = null,
-    val runtime: Int? = null,
-    val spokenLanguages: List<Language>? = null,
-    val status: String? = null,
-    val tagline: String? = null,
-    val title: String? = null,
-    val video: Boolean? = null,
-    val voteAverage: Float? = null,
-    val voteCount: Int? = null,
-    var userRating: Float = 0f,
-    // Appendable responses
-    private val recommendedMovies: ResultsPage<NetworkMovie>? = null,
-    private var alternativeTitles: List<AlternativeTitle>? = null,
-    private var images: MovieImages? = null,
-    private var keywords: MovieKeywords? = null,
-    private var lists: ResultsPage<MovieList>? = null,
-    private var releases: TmdbMovies.ReleaseInfoResults? = null,
-    private var reviews: ResultsPage<Reviews>? = null,
-    private var similarMovies: ResultsPage<NetworkMovie>? = null,
-    private var translations: MovieTranslations? = null,
-    private var videos: Video.Results? = null,
-    var credits: Credits? = null,
-    // Additional Data
-    override val isWatched: Boolean = false,
+  // Movie Info
+  override val id: Long = 0,
+  override val tmdbId: Int? = null,
+  val adult: Boolean? = null,
+  val backdropPath: String? = null,
+  val belongsToCollection: Collection? = null,
+  val budget: Int? = null,
+  val genreIds: List<Int>? = null,
+  val genres: List<Genre>? = null,
+  val homepage: String? = null,
+  val imdbId: String? = null,
+  val originalLanguage: String? = null,
+  val originalTitle: String? = null,
+  val overview: String? = null,
+  val popularity: Double? = null,
+  val posterPath: String? = null,
+  val productionCompanies: List<ProductionCompany>? = null,
+  val productionCountries: List<ProductionCountry>? = null,
+  val releaseDate: String? = null,
+  val revenue: Long? = null,
+  val runtime: Int? = null,
+  val spokenLanguages: List<Language>? = null,
+  val status: String? = null,
+  val tagline: String? = null,
+  val title: String? = null,
+  val video: Boolean? = null,
+  val voteAverage: Float? = null,
+  val voteCount: Int? = null,
+  var userRating: Float = 0f,
+  // Appendable responses
+  private val recommendedMovies: ResultsPage<NetworkMovie>? = null,
+  private var alternativeTitles: List<AlternativeTitle>? = null,
+  private var images: MovieImages? = null,
+  private var keywords: MovieKeywords? = null,
+  private var lists: ResultsPage<MovieList>? = null,
+  private var releases: TmdbMovies.ReleaseInfoResults? = null,
+  private var reviews: ResultsPage<Reviews>? = null,
+  private var similarMovies: ResultsPage<NetworkMovie>? = null,
+  private var translations: MovieTranslations? = null,
+  private var videos: Video.Results? = null,
+  var credits: Credits? = null,
+  // Additional Data
+  override val isWatched: Boolean = false,
 ) : WDEntity, TmdbIdEntity, Watchable {
-    val mediaType: MediaType
-        get() = MediaType.MOVIE
+  val mediaType: MediaType
+    get() = MediaType.MOVIE
 
-    fun rating(): String = String.format("%.1f", voteAverage)
+  fun rating(): String = String.format("%.1f", voteAverage)
 
-    companion object {
-        val Empty = Movie()
-    }
+  companion object {
+    val Empty = Movie()
+  }
 }

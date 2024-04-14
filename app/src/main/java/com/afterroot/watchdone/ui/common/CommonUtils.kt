@@ -23,23 +23,23 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
  * @return [AlertDialog] based on [NetworkState]
  */
 fun Context.showNetworkDialog(
-    state: NetworkState,
-    positive: () -> Unit,
-    negative: () -> Unit,
-    isShowHide: Boolean = false,
+  state: NetworkState,
+  positive: () -> Unit,
+  negative: () -> Unit,
+  isShowHide: Boolean = false,
 ): AlertDialog {
-    val dialog = MaterialAlertDialogBuilder(this).apply {
-        setTitle(
-            if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected",
-        )
-        setCancelable(false)
-        setMessage(com.afterroot.watchdone.resources.R.string.dialog_msg_no_network)
-        setNegativeButton("Exit") { _, _ -> negative() }
-        if (isShowHide) {
-            setPositiveButton("Hide") { dialog, _ -> dialog.dismiss() }
-        } else {
-            setPositiveButton("Retry") { _, _ -> positive() }
-        }
+  val dialog = MaterialAlertDialogBuilder(this).apply {
+    setTitle(
+      if (state == NetworkState.CONNECTION_LOST) "Connection Lost" else "Network Disconnected",
+    )
+    setCancelable(false)
+    setMessage(com.afterroot.watchdone.resources.R.string.dialog_msg_no_network)
+    setNegativeButton("Exit") { _, _ -> negative() }
+    if (isShowHide) {
+      setPositiveButton("Hide") { dialog, _ -> dialog.dismiss() }
+    } else {
+      setPositiveButton("Retry") { _, _ -> positive() }
     }
-    return dialog.show()
+  }
+  return dialog.show()
 }

@@ -24,28 +24,28 @@ import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
 
 class TmdbSearchMediaDataSource @Inject constructor(
-    private val tmdb: Tmdb3,
-    private val tmdbMoviePageResultToMedias: TmdbMoviePageResultToMedias,
-    private val tmdbShowPageResultToMedias: TmdbShowPageResultToMedias,
-    private val logger: Logger,
+  private val tmdb: Tmdb3,
+  private val tmdbMoviePageResultToMedias: TmdbMoviePageResultToMedias,
+  private val tmdbShowPageResultToMedias: TmdbShowPageResultToMedias,
+  private val logger: Logger,
 ) : SearchDataSource {
-    override suspend fun search(params: SearchDataSource.Params): List<Media> {
-        return when (params.mediaType) {
-            MediaType.MOVIE -> {
-                logger.d { "Searching for: $params" }
-                tmdbMoviePageResultToMedias.map(
-                    tmdb.search.findMovies(query = params.query, page = params.page),
-                )
-            }
+  override suspend fun search(params: SearchDataSource.Params): List<Media> {
+    return when (params.mediaType) {
+      MediaType.MOVIE -> {
+        logger.d { "Searching for: $params" }
+        tmdbMoviePageResultToMedias.map(
+          tmdb.search.findMovies(query = params.query, page = params.page),
+        )
+      }
 
-            MediaType.SHOW -> {
-                logger.d { "Searching for: $params" }
-                tmdbShowPageResultToMedias.map(
-                    tmdb.search.findShows(query = params.query, page = params.page),
-                )
-            }
+      MediaType.SHOW -> {
+        logger.d { "Searching for: $params" }
+        tmdbShowPageResultToMedias.map(
+          tmdb.search.findShows(query = params.query, page = params.page),
+        )
+      }
 
-            else -> throw IllegalArgumentException("${params.mediaType} not supported")
-        }
+      else -> throw IllegalArgumentException("${params.mediaType} not supported")
     }
+  }
 }

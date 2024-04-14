@@ -47,161 +47,161 @@ import com.afterroot.watchdone.data.model.TV
 
 @Composable
 fun PosterCard(
-    media: Media,
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
+  media: Media,
+  modifier: Modifier = Modifier,
+  onClick: (() -> Unit)? = null,
 ) {
-    BasePosterCard(
-        title = media.title,
-        posterPath = media.posterPath,
-        modifier = modifier,
-        onClick = onClick,
-    )
+  BasePosterCard(
+    title = media.title,
+    posterPath = media.posterPath,
+    modifier = modifier,
+    onClick = onClick,
+  )
 }
 
 @Composable
 fun MovieCard(movie: Movie, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    BasePosterCard(
-        title = movie.title,
-        posterPath = movie.posterPath,
-        modifier = modifier,
-        onClick = onClick,
-    )
+  BasePosterCard(
+    title = movie.title,
+    posterPath = movie.posterPath,
+    modifier = modifier,
+    onClick = onClick,
+  )
 }
 
 @Composable
 fun MediaCard(media: Media, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    BasePosterCard(
-        title = media.title,
-        posterPath = media.posterPath,
-        modifier = modifier,
-        onClick = onClick,
-    )
+  BasePosterCard(
+    title = media.title,
+    posterPath = media.posterPath,
+    modifier = modifier,
+    onClick = onClick,
+  )
 }
 
 @Composable
 fun TVCard(tv: TV, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    BasePosterCard(
-        title = tv.name,
-        posterPath = tv.posterPath,
-        modifier = modifier,
-        onClick = onClick,
-    )
+  BasePosterCard(
+    title = tv.name,
+    posterPath = tv.posterPath,
+    modifier = modifier,
+    onClick = onClick,
+  )
 }
 
 @Composable
 fun BasePosterCard(
-    modifier: Modifier = Modifier,
-    title: String? = null,
-    posterPath: String? = null,
-    onClick: (() -> Unit)? = null,
+  modifier: Modifier = Modifier,
+  title: String? = null,
+  posterPath: String? = null,
+  onClick: (() -> Unit)? = null,
 ) {
-    Card(modifier = modifier) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
-        ) {
-            Text(
-                text = title ?: "",
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .align(Alignment.Center),
-            )
+  Card(modifier = modifier) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+    ) {
+      Text(
+        text = title ?: "",
+        style = MaterialTheme.typography.labelSmall,
+        modifier = Modifier
+          .padding(4.dp)
+          .align(Alignment.Center),
+      )
 
-            if (posterPath != null) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(
-                            LocalTMDbBaseUrl.current + LocalPosterSize.current + posterPath,
-                        ).crossfade(true).build(),
-                    contentDescription = title,
-                    modifier = Modifier.matchParentSize(),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-        }
+      if (posterPath != null) {
+        AsyncImage(
+          model = ImageRequest.Builder(LocalContext.current)
+            .data(
+              LocalTMDbBaseUrl.current + LocalPosterSize.current + posterPath,
+            ).crossfade(true).build(),
+          contentDescription = title,
+          modifier = Modifier.matchParentSize(),
+          contentScale = ContentScale.Crop,
+        )
+      }
     }
+  }
 }
 
 @Composable
 fun Backdrop(
-    backdropPath: String?,
-    modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.medium,
-    title: String? = null,
-    onClick: (() -> Unit)? = null,
+  backdropPath: String?,
+  modifier: Modifier = Modifier,
+  shape: Shape = MaterialTheme.shapes.medium,
+  title: String? = null,
+  onClick: (() -> Unit)? = null,
 ) {
-    Surface(
-        color = MaterialTheme.colorScheme.onSurface
-            .copy(alpha = 0.2f)
-            .compositeOver(MaterialTheme.colorScheme.surface),
-        shape = shape,
-        modifier = modifier,
+  Surface(
+    color = MaterialTheme.colorScheme.onSurface
+      .copy(alpha = 0.2f)
+      .compositeOver(MaterialTheme.colorScheme.surface),
+    shape = shape,
+    modifier = modifier,
+  ) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
-        ) {
-            if (backdropPath != null) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(
-                            LocalTMDbBaseUrl.current + LocalBackdropSize.current + backdropPath,
-                        ).crossfade(true).build(),
-                    contentDescription = title,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                )
-            }
+      if (backdropPath != null) {
+        AsyncImage(
+          model = ImageRequest.Builder(LocalContext.current)
+            .data(
+              LocalTMDbBaseUrl.current + LocalBackdropSize.current + backdropPath,
+            ).crossfade(true).build(),
+          contentDescription = title,
+          modifier = Modifier.fillMaxSize(),
+          contentScale = ContentScale.Crop,
+        )
+      }
 
-            if (title != null) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier
-                        .padding(Layout.gutter * 2)
-                        .align(Alignment.BottomStart),
-                )
-            }
-        }
+      if (title != null) {
+        Text(
+          text = title,
+          style = MaterialTheme.typography.labelSmall,
+          modifier = Modifier
+            .padding(Layout.gutter * 2)
+            .align(Alignment.BottomStart),
+        )
+      }
     }
+  }
 }
 
 @Composable
 fun Header(
-    title: String,
-    modifier: Modifier = Modifier,
-    loading: Boolean = false,
-    content: @Composable RowScope.() -> Unit = {},
+  title: String,
+  modifier: Modifier = Modifier,
+  loading: Boolean = false,
+  content: @Composable RowScope.() -> Unit = {},
 ) {
-    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        Spacer(Modifier.width(16.dp))
+  Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+    Spacer(Modifier.width(16.dp))
 
-        Text(
-            text = title,
-            color = contentColorFor(MaterialTheme.colorScheme.surface),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(vertical = 8.dp),
-        )
+    Text(
+      text = title,
+      color = contentColorFor(MaterialTheme.colorScheme.surface),
+      style = MaterialTheme.typography.titleMedium,
+      modifier = Modifier
+        .align(Alignment.CenterVertically)
+        .padding(vertical = 8.dp),
+    )
 
-        Spacer(Modifier.weight(1f))
+    Spacer(Modifier.weight(1f))
 
-        AnimatedVisibility(visible = loading) {
-            AutoSizedCircularProgressIndicator(
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(16.dp),
-            )
-        }
-
-        content()
-
-        Spacer(Modifier.width(16.dp))
+    AnimatedVisibility(visible = loading) {
+      AutoSizedCircularProgressIndicator(
+        color = MaterialTheme.colorScheme.secondary,
+        modifier = Modifier
+          .padding(8.dp)
+          .size(16.dp),
+      )
     }
+
+    content()
+
+    Spacer(Modifier.width(16.dp))
+  }
 }

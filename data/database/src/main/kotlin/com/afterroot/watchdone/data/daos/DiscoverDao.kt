@@ -21,5 +21,5 @@ import com.afterroot.watchdone.data.model.MediaType
 import kotlinx.coroutines.flow.Flow
 
 interface DiscoverDao : ObservablePaginatedEntryDao<DiscoverEntry, DiscoverEntryWithMedia> {
-    fun entriesForPage(page: Int, mediaType: MediaType): Flow<List<DiscoverEntry>>
+  fun entriesForPage(page: Int, mediaType: MediaType): Flow<List<DiscoverEntry>>
 }

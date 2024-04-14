@@ -84,346 +84,346 @@ import com.afterroot.watchdone.utils.State
 
 @Composable
 fun OverviewContent(
-    modifier: Modifier = Modifier,
-    movie: Movie? = null,
-    tv: TV? = null,
-    isInWatchlist: Boolean = false,
-    isWatched: Boolean = false,
-    watchProviders: State<WatchProviderResult> = State.loading(),
-    onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
-    onWatchProvidersClick: (link: String) -> Unit = { _ -> },
+  modifier: Modifier = Modifier,
+  movie: Movie? = null,
+  tv: TV? = null,
+  isInWatchlist: Boolean = false,
+  isWatched: Boolean = false,
+  watchProviders: State<WatchProviderResult> = State.loading(),
+  onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
+  onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
+  onWatchProvidersClick: (link: String) -> Unit = { _ -> },
 ) {
-    val gutter = Layout.gutter
-    val bodyMargin = Layout.bodyMargin
+  val gutter = Layout.gutter
+  val bodyMargin = Layout.bodyMargin
 
-    Column(modifier = modifier) {
-        Row(modifier = Modifier.padding(vertical = gutter)) {
-            BasePosterCard(
-                title = movie?.title ?: tv?.name,
-                posterPath = movie?.posterPath ?: tv?.posterPath,
-                modifier = Modifier
-                    .padding(start = bodyMargin)
-                    .height(192.dp)
-                    .aspectRatio(2 / 3f),
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                SuggestionChipGroup(
-                    chipSpacing = 8.dp,
-                    horizontalPadding = bodyMargin,
-                    modifier = Modifier,
-                    list = movie?.genres?.map {
-                        it.name
-                    } ?: tv?.genres?.map {
-                        it.name
-                    } ?: emptyList(),
-                )
-
-                (movie?.voteAverage ?: tv?.voteAverage)?.let {
-                    MetaText(
-                        text = stringResource(
-                            id = R.string.media_info_rating_text,
-                            it,
-                            movie?.voteCount ?: tv?.voteCount ?: 0,
-                        ),
-                        icon = Icons.Rounded.Star,
-                        modifier = Modifier.padding(horizontal = bodyMargin),
-                    )
-                }
-
-                (movie?.releaseDate ?: tv?.releaseDate)?.let {
-                    MetaText(
-                        text = "Release Date: $it",
-                        modifier = Modifier.padding(horizontal = bodyMargin),
-                        icon = Icons.Rounded.Event,
-                    )
-                }
-
-                (movie?.status ?: tv?.status)?.let {
-                    MetaText(
-                        text = "Status: $it",
-                        modifier = Modifier.padding(horizontal = bodyMargin),
-                        icon = Icons.Rounded.HourglassEmpty,
-                    )
-                }
-
-                tv?.networks?.let {
-                    MetaText(
-                        text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
-                        modifier = Modifier.padding(horizontal = bodyMargin),
-                        icon = Icons.Rounded.LiveTv,
-                    )
-                }
-
-                watchProviders.composeWhen(success = { providers ->
-                    val providersForCountry = providers.getProvidersForCountry(
-                        LocalSettings.current.country ?: "IN",
-                    )
-
-                    WatchProviders(
-                        modifier = Modifier.padding(horizontal = bodyMargin),
-                        text = "Available On",
-                        link = providersForCountry?.link,
-                        providers = providersForCountry?.flatrate,
-                        onClick = {
-                            if (it != null) {
-                                onWatchProvidersClick(it)
-                            }
-                        },
-                    )
-
-                    // FIXME rent providers will load after this pull request is
-                    // merged https://github.com/MoviebaseApp/tmdb-kotlin/pull/115
-                    WatchProviders(
-                        modifier = Modifier.padding(horizontal = bodyMargin),
-                        text = "Available for Rent on",
-                        link = providersForCountry?.link,
-                        providers = providersForCountry?.rent,
-                        onClick = {
-                            if (it != null) {
-                                onWatchProvidersClick(it)
-                            }
-                        },
-                    )
-                })
-            }
-        }
-
-        ProvideTextStyle(value = ubuntuTypography.labelMedium) {
-            val media = when {
-                movie != Movie.Empty -> {
-                    movie?.toDBMedia()
-                }
-
-                tv != TV.Empty -> {
-                    tv?.toDBMedia()
-                }
-
-                else -> DBMedia.Empty
-            }
-
-            AnimatedVisibility(visible = media != DBMedia.Empty) {
-                Column {
-                    WatchlistActions(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = bodyMargin, vertical = gutter),
-                        isInWatchlist = isInWatchlist,
-                        isWatched = isWatched,
-                        onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
-                        onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) },
-                    )
-                }
-            }
-        }
-        OverviewText(
-            text = (movie?.overview ?: tv?.overview) ?: "",
-            modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
+  Column(modifier = modifier) {
+    Row(modifier = Modifier.padding(vertical = gutter)) {
+      BasePosterCard(
+        title = movie?.title ?: tv?.name,
+        posterPath = movie?.posterPath ?: tv?.posterPath,
+        modifier = Modifier
+          .padding(start = bodyMargin)
+          .height(192.dp)
+          .aspectRatio(2 / 3f),
+      )
+      Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        SuggestionChipGroup(
+          chipSpacing = 8.dp,
+          horizontalPadding = bodyMargin,
+          modifier = Modifier,
+          list = movie?.genres?.map {
+            it.name
+          } ?: tv?.genres?.map {
+            it.name
+          } ?: emptyList(),
         )
+
+        (movie?.voteAverage ?: tv?.voteAverage)?.let {
+          MetaText(
+            text = stringResource(
+              id = R.string.media_info_rating_text,
+              it,
+              movie?.voteCount ?: tv?.voteCount ?: 0,
+            ),
+            icon = Icons.Rounded.Star,
+            modifier = Modifier.padding(horizontal = bodyMargin),
+          )
+        }
+
+        (movie?.releaseDate ?: tv?.releaseDate)?.let {
+          MetaText(
+            text = "Release Date: $it",
+            modifier = Modifier.padding(horizontal = bodyMargin),
+            icon = Icons.Rounded.Event,
+          )
+        }
+
+        (movie?.status ?: tv?.status)?.let {
+          MetaText(
+            text = "Status: $it",
+            modifier = Modifier.padding(horizontal = bodyMargin),
+            icon = Icons.Rounded.HourglassEmpty,
+          )
+        }
+
+        tv?.networks?.let {
+          MetaText(
+            text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
+            modifier = Modifier.padding(horizontal = bodyMargin),
+            icon = Icons.Rounded.LiveTv,
+          )
+        }
+
+        watchProviders.composeWhen(success = { providers ->
+          val providersForCountry = providers.getProvidersForCountry(
+            LocalSettings.current.country ?: "IN",
+          )
+
+          WatchProviders(
+            modifier = Modifier.padding(horizontal = bodyMargin),
+            text = "Available On",
+            link = providersForCountry?.link,
+            providers = providersForCountry?.flatrate,
+            onClick = {
+              if (it != null) {
+                onWatchProvidersClick(it)
+              }
+            },
+          )
+
+          // FIXME rent providers will load after this pull request is
+          // merged https://github.com/MoviebaseApp/tmdb-kotlin/pull/115
+          WatchProviders(
+            modifier = Modifier.padding(horizontal = bodyMargin),
+            text = "Available for Rent on",
+            link = providersForCountry?.link,
+            providers = providersForCountry?.rent,
+            onClick = {
+              if (it != null) {
+                onWatchProvidersClick(it)
+              }
+            },
+          )
+        })
+      }
     }
+
+    ProvideTextStyle(value = ubuntuTypography.labelMedium) {
+      val media = when {
+        movie != Movie.Empty -> {
+          movie?.toDBMedia()
+        }
+
+        tv != TV.Empty -> {
+          tv?.toDBMedia()
+        }
+
+        else -> DBMedia.Empty
+      }
+
+      AnimatedVisibility(visible = media != DBMedia.Empty) {
+        Column {
+          WatchlistActions(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = bodyMargin, vertical = gutter),
+            isInWatchlist = isInWatchlist,
+            isWatched = isWatched,
+            onWatchlistAction = { onWatchlistAction(it, media ?: DBMedia.Empty) },
+            onWatchedAction = { onWatchedAction(it, media ?: DBMedia.Empty) },
+          )
+        }
+      }
+    }
+    OverviewText(
+      text = (movie?.overview ?: tv?.overview) ?: "",
+      modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
+    )
+  }
 }
 
 @Composable
 fun WatchProviders(
-    modifier: Modifier = Modifier,
-    text: String? = null,
-    link: String? = null,
-    providers: List<WatchProvider>? = emptyList(),
-    onClick: (link: String?) -> Unit = { _ -> },
+  modifier: Modifier = Modifier,
+  text: String? = null,
+  link: String? = null,
+  providers: List<WatchProvider>? = emptyList(),
+  onClick: (link: String?) -> Unit = { _ -> },
 ) {
-    if (providers?.isNotEmpty() == true) {
-        Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            text?.let {
-                MetaText(text = "$text:", icon = Icons.Rounded.SmartDisplay)
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                providers.forEach {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(
-                                LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath,
-                            ).crossfade(true).build(),
-                        contentDescription = it.providerName,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable {
-                                onClick(link)
-                            },
-                    )
-                }
-            }
+  if (providers?.isNotEmpty() == true) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+      text?.let {
+        MetaText(text = "$text:", icon = Icons.Rounded.SmartDisplay)
+      }
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+      ) {
+        providers.forEach {
+          AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+              .data(
+                LocalTMDbBaseUrl.current + LocalLogoSize.current + it.logoPath,
+              ).crossfade(true).build(),
+            contentDescription = it.providerName,
+            modifier = Modifier
+              .size(32.dp)
+              .clip(RoundedCornerShape(8.dp))
+              .clickable {
+                onClick(link)
+              },
+          )
         }
+      }
     }
+  }
 }
 
 @Composable
 fun MetaText(text: String, modifier: Modifier = Modifier, icon: ImageVector? = null) {
-    MetaText(text = text, modifier = modifier, icon = icon) {
-        ProvideTextStyle(value = ubuntuTypography.bodySmall) {
-            Text(text = it)
-        }
+  MetaText(text = text, modifier = modifier, icon = icon) {
+    ProvideTextStyle(value = ubuntuTypography.bodySmall) {
+      Text(text = it)
     }
+  }
 }
 
 @Composable
 fun MetaText(
-    text: String,
-    modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
-    content: @Composable (text: String) -> Unit,
+  text: String,
+  modifier: Modifier = Modifier,
+  icon: ImageVector? = null,
+  content: @Composable (text: String) -> Unit,
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = text,
-                modifier = Modifier.size(16.dp),
-            )
+  Row(
+    modifier = modifier,
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    if (icon != null) {
+      Icon(
+        imageVector = icon,
+        contentDescription = text,
+        modifier = Modifier.size(16.dp),
+      )
 
-            Spacer(modifier = Modifier.padding(2.dp))
-        }
-
-        content(text)
+      Spacer(modifier = Modifier.padding(2.dp))
     }
+
+    content(text)
+  }
 }
 
 @Composable
 fun OverviewText(text: String, modifier: Modifier = Modifier) {
-    var maxLines by remember { mutableIntStateOf(4) }
-    ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
-        Text(
-            text = text,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = maxLines,
-            modifier = Modifier
-                .animateContentSize(animationSpec = tween(100))
-                .clickable { maxLines = if (maxLines == 4) Int.MAX_VALUE else 4 }
-                .then(modifier),
-        )
-    }
+  var maxLines by remember { mutableIntStateOf(4) }
+  ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
+    Text(
+      text = text,
+      overflow = TextOverflow.Ellipsis,
+      maxLines = maxLines,
+      modifier = Modifier
+        .animateContentSize(animationSpec = tween(100))
+        .clickable { maxLines = if (maxLines == 4) Int.MAX_VALUE else 4 }
+        .then(modifier),
+    )
+  }
 }
 
 @Composable
 fun WatchlistActions(
-    modifier: Modifier = Modifier,
-    isInWatchlist: Boolean = false,
-    isWatched: Boolean = false,
-    onWatchlistAction: (checked: Boolean) -> Unit,
-    onWatchedAction: (checked: Boolean) -> Unit,
+  modifier: Modifier = Modifier,
+  isInWatchlist: Boolean = false,
+  isWatched: Boolean = false,
+  onWatchlistAction: (checked: Boolean) -> Unit,
+  onWatchedAction: (checked: Boolean) -> Unit,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        TwoStateButton(
-            modifier = Modifier.weight(1f),
-            checked = isInWatchlist,
-            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-                .copy(copyTop = false, copyBottom = false)
-                .plus(PaddingValues(vertical = 4.dp)),
-            checkedText = "Remove from Watchlist",
-            uncheckedText = "Add to Watchlist",
-            checkedIcon = Icons.Filled.Bookmark,
-            uncheckedIcon = Icons.Outlined.Bookmark,
-            onClick = onWatchlistAction,
-        )
+  Row(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    TwoStateButton(
+      modifier = Modifier.weight(1f),
+      checked = isInWatchlist,
+      contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+        .copy(copyTop = false, copyBottom = false)
+        .plus(PaddingValues(vertical = 4.dp)),
+      checkedText = "Remove from Watchlist",
+      uncheckedText = "Add to Watchlist",
+      checkedIcon = Icons.Filled.Bookmark,
+      uncheckedIcon = Icons.Outlined.Bookmark,
+      onClick = onWatchlistAction,
+    )
 
-        TwoStateOutlinedButton(
-            modifier = Modifier.weight(1f),
-            checked = isWatched,
-            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-                .copy(copyTop = false, copyBottom = false)
-                .plus(PaddingValues(vertical = 4.dp)),
-            checkedText = "Mark as Unwatched",
-            uncheckedText = "Mark as Watched",
-            checkedIcon = Icons.Filled.Clear,
-            uncheckedIcon = Icons.Filled.Done,
-            onClick = onWatchedAction,
-        )
-    }
+    TwoStateOutlinedButton(
+      modifier = Modifier.weight(1f),
+      checked = isWatched,
+      contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+        .copy(copyTop = false, copyBottom = false)
+        .plus(PaddingValues(vertical = 4.dp)),
+      checkedText = "Mark as Unwatched",
+      uncheckedText = "Mark as Watched",
+      checkedIcon = Icons.Filled.Clear,
+      uncheckedIcon = Icons.Filled.Done,
+      onClick = onWatchedAction,
+    )
+  }
 }
 
 @Composable
 fun TwoStateButton(
-    modifier: Modifier = Modifier,
-    checked: Boolean = true,
-    contentPadding: PaddingValues = ButtonDefaults.ButtonWithIconContentPadding,
-    checkedText: String,
-    uncheckedText: String,
-    checkedIcon: ImageVector,
-    uncheckedIcon: ImageVector,
-    onClick: (checked: Boolean) -> Unit,
+  modifier: Modifier = Modifier,
+  checked: Boolean = true,
+  contentPadding: PaddingValues = ButtonDefaults.ButtonWithIconContentPadding,
+  checkedText: String,
+  uncheckedText: String,
+  checkedIcon: ImageVector,
+  uncheckedIcon: ImageVector,
+  onClick: (checked: Boolean) -> Unit,
 ) {
-    Button(
-        modifier = modifier,
-        onClick = {
-            onClick(!checked)
-        },
-        contentPadding = contentPadding,
-    ) {
-        Icon(
-            if (checked) checkedIcon else uncheckedIcon,
-            contentDescription = checkedText,
-            modifier = Modifier.size(ButtonDefaults.IconSize),
-        )
-        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-        Text(
-            text = if (checked) checkedText else uncheckedText,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.animateContentSize(),
-        )
-    }
+  Button(
+    modifier = modifier,
+    onClick = {
+      onClick(!checked)
+    },
+    contentPadding = contentPadding,
+  ) {
+    Icon(
+      if (checked) checkedIcon else uncheckedIcon,
+      contentDescription = checkedText,
+      modifier = Modifier.size(ButtonDefaults.IconSize),
+    )
+    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+    Text(
+      text = if (checked) checkedText else uncheckedText,
+      textAlign = TextAlign.Center,
+      modifier = Modifier.animateContentSize(),
+    )
+  }
 }
 
 @Composable
 fun TwoStateOutlinedButton(
-    modifier: Modifier = Modifier,
-    checked: Boolean = true,
-    contentPadding: PaddingValues = ButtonDefaults.ButtonWithIconContentPadding,
-    checkedText: String,
-    uncheckedText: String,
-    checkedIcon: ImageVector,
-    uncheckedIcon: ImageVector,
-    onClick: (checked: Boolean) -> Unit,
+  modifier: Modifier = Modifier,
+  checked: Boolean = true,
+  contentPadding: PaddingValues = ButtonDefaults.ButtonWithIconContentPadding,
+  checkedText: String,
+  uncheckedText: String,
+  checkedIcon: ImageVector,
+  uncheckedIcon: ImageVector,
+  onClick: (checked: Boolean) -> Unit,
 ) {
-    OutlinedButton(
-        modifier = modifier,
-        onClick = {
-            onClick(!checked)
-        },
-        contentPadding = contentPadding,
-    ) {
-        Icon(
-            if (checked) checkedIcon else uncheckedIcon,
-            contentDescription = checkedText,
-            modifier = Modifier.size(ButtonDefaults.IconSize),
-        )
-        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-        Text(
-            text = if (checked) checkedText else uncheckedText,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.animateContentSize(),
-        )
-    }
+  OutlinedButton(
+    modifier = modifier,
+    onClick = {
+      onClick(!checked)
+    },
+    contentPadding = contentPadding,
+  ) {
+    Icon(
+      if (checked) checkedIcon else uncheckedIcon,
+      contentDescription = checkedText,
+      modifier = Modifier.size(ButtonDefaults.IconSize),
+    )
+    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+    Text(
+      text = if (checked) checkedText else uncheckedText,
+      textAlign = TextAlign.Center,
+      modifier = Modifier.animateContentSize(),
+    )
+  }
 }
 
 @Preview
 @Composable
 fun PreviewOverviewContent() {
-    PreviewTheme {
-        val movie = Movie(
-            voteAverage = 7.2f,
-            overview = "After his retirement is interrupted by Gorr the God Butcher, a galactic killer who seeks the extinction of the gods, Thor Odinson enlists the help of King Valkyrie, Korg, and ex-girlfriend Jane Foster, who now wields Mjolnir as the Mighty Thor. Together they embark upon a harrowing cosmic adventure to uncover the mystery of the God Butcher’s vengeance and stop him before it’s too late.",
-            releaseDate = "21/08/22",
-        )
-        OverviewContent(movie = movie)
-    }
+  PreviewTheme {
+    val movie = Movie(
+      voteAverage = 7.2f,
+      overview = "After his retirement is interrupted by Gorr the God Butcher, a galactic killer who seeks the extinction of the gods, Thor Odinson enlists the help of King Valkyrie, Korg, and ex-girlfriend Jane Foster, who now wields Mjolnir as the Mighty Thor. Together they embark upon a harrowing cosmic adventure to uncover the mystery of the God Butcher’s vengeance and stop him before it’s too late.",
+      releaseDate = "21/08/22",
+    )
+    OverviewContent(movie = movie)
+  }
 }

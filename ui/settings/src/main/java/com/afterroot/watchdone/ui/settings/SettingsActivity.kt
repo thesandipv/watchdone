@@ -42,41 +42,41 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SettingsActivity : FragmentActivity() {
 
-    @Inject lateinit var settings: Settings
+  @Inject lateinit var settings: Settings
 
-    private val settingsActivityViewModel: SettingsActivityViewModel by viewModels()
+  private val settingsActivityViewModel: SettingsActivityViewModel by viewModels()
 
-    @SuppressLint("CommitTransaction")
-    @OptIn(ExperimentalMaterial3Api::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  @SuppressLint("CommitTransaction")
+  @OptIn(ExperimentalMaterial3Api::class)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        var uiState: State<UserData> by mutableStateOf(State.loading())
+    var uiState: State<UserData> by mutableStateOf(State.loading())
 
-        // Update the uiState
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                settingsActivityViewModel.uiState
-                    .onEach { uiState = it }
-                    .collect()
-            }
-        }
-
-        enableEdgeToEdge()
-        setContentView(R.layout.fragment_settings)
-
-        findViewById<ComposeView>(R.id.fragment_settings_app_bar_compose).apply {
-            setContent {
-                Theme(settings = settings, darkTheme = shouldUseDarkTheme(uiState)) {
-                    CommonAppBar(withTitle = "Settings")
-                }
-            }
-        }
-
-        val fragment = SettingsFragment()
-        supportFragmentManager.beginTransaction().replace(
-            R.id.fragment_settings_container,
-            fragment,
-        ).commit()
+    // Update the uiState
+    lifecycleScope.launch {
+      lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        settingsActivityViewModel.uiState
+          .onEach { uiState = it }
+          .collect()
+      }
     }
+
+    enableEdgeToEdge()
+    setContentView(R.layout.fragment_settings)
+
+    findViewById<ComposeView>(R.id.fragment_settings_app_bar_compose).apply {
+      setContent {
+        Theme(settings = settings, darkTheme = shouldUseDarkTheme(uiState)) {
+          CommonAppBar(withTitle = "Settings")
+        }
+      }
+    }
+
+    val fragment = SettingsFragment()
+    supportFragmentManager.beginTransaction().replace(
+      R.id.fragment_settings_container,
+      fragment,
+    ).commit()
+  }
 }

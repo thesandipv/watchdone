@@ -43,138 +43,138 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    private val getProfile: GetProfile,
-    private val setProfile: SetProfile,
-    val firebaseUtils: FirebaseUtils,
-    private val settings: Settings,
-    private val logger: Logger,
+  private val savedStateHandle: SavedStateHandle,
+  private val getProfile: GetProfile,
+  private val setProfile: SetProfile,
+  val firebaseUtils: FirebaseUtils,
+  private val settings: Settings,
+  private val logger: Logger,
 ) : ViewModel() {
 
-    private val uiMessageManager = UiMessageManager()
+  private val uiMessageManager = UiMessageManager()
 
-    val profile = MutableStateFlow<State<LocalUser>>(State.loading())
+  val profile = MutableStateFlow<State<LocalUser>>(State.loading())
 
-    val state: StateFlow<ProfileViewState> = combine(
-        uiMessageManager.message,
-        profile,
-    ) { msg, profile ->
-        ProfileViewState(msg, profile)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = ProfileViewState.Empty,
-    )
+  val state: StateFlow<ProfileViewState> = combine(
+    uiMessageManager.message,
+    profile,
+  ) { msg, profile ->
+    ProfileViewState(msg, profile)
+  }.stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(5000),
+    initialValue = ProfileViewState.Empty,
+  )
 
-    private val actions = MutableSharedFlow<ProfileActions>()
+  private val actions = MutableSharedFlow<ProfileActions>()
 
-    internal fun submitAction(action: ProfileActions) {
-        logger.d { "submitAction: $action" }
-        viewModelScope.launch {
-            actions.emit(action)
-        }
+  internal fun submitAction(action: ProfileActions) {
+    logger.d { "submitAction: $action" }
+    viewModelScope.launch {
+      actions.emit(action)
     }
+  }
 
-    init {
-        logger.d { "init: Start" }
-        refresh()
+  init {
+    logger.d { "init: Start" }
+    refresh()
 
-        viewModelScope.launch {
-            actions.collect { action ->
-                when (action) {
-                    is ProfileActions.SaveProfile -> saveProfileAction(action) { localUser ->
-                        settings.apply {
-                            if (userProfile != localUser) {
-                                userProfile = localUser
-                                submitAction(ProfileActions.Refresh)
-                            }
-                            isUsernameSet = localUser.isUserNameAvailable
-                        }
-                    }
-
-                    is ProfileActions.ShowMessage -> showMessageAction(action)
-                    ProfileActions.Refresh -> refresh(true)
-                    else -> logger.d { "collectAction: This action not handled by ProfileViewModel. Action: $action" }
-                }
+    viewModelScope.launch {
+      actions.collect { action ->
+        when (action) {
+          is ProfileActions.SaveProfile -> saveProfileAction(action) { localUser ->
+            settings.apply {
+              if (userProfile != localUser) {
+                userProfile = localUser
+                submitAction(ProfileActions.Refresh)
+              }
+              isUsernameSet = localUser.isUserNameAvailable
             }
+          }
+
+          is ProfileActions.ShowMessage -> showMessageAction(action)
+          ProfileActions.Refresh -> refresh(true)
+          else -> logger.d { "collectAction: This action not handled by ProfileViewModel. Action: $action" }
         }
+      }
     }
+  }
 
-    private fun getUserProfile(cached: Boolean = false) {
-        viewModelScope.launch {
-            if (firebaseUtils.isUserSignedIn) {
-                logger.d { "getUserProfile: Getting Profile Info. Cached:$cached" }
-                getProfile(firebaseUtils.uid!!, cached).distinctUntilChanged().map { networkState ->
-                    when (networkState) {
-                        is State.Failed -> State.failed(
-                            message = networkState.message,
-                            exception = networkState.exception,
-                        )
+  private fun getUserProfile(cached: Boolean = false) {
+    viewModelScope.launch {
+      if (firebaseUtils.isUserSignedIn) {
+        logger.d { "getUserProfile: Getting Profile Info. Cached:$cached" }
+        getProfile(firebaseUtils.uid!!, cached).distinctUntilChanged().map { networkState ->
+          when (networkState) {
+            is State.Failed -> State.failed(
+              message = networkState.message,
+              exception = networkState.exception,
+            )
 
-                        is State.Loading -> State.loading()
-                        is State.Success -> State.success(networkState.data.toLocalUser())
-                    }
-                }.collect { state ->
-                    profile.emit(state)
-                    logger.d { "getUserProfile: State: $state" }
-                }
-            } else {
-                profile.emit(State.failed("Not Signed In."))
+            is State.Loading -> State.loading()
+            is State.Success -> State.success(networkState.data.toLocalUser())
+          }
+        }.collect { state ->
+          profile.emit(state)
+          logger.d { "getUserProfile: State: $state" }
+        }
+      } else {
+        profile.emit(State.failed("Not Signed In."))
+      }
+    }
+  }
+
+  private fun saveProfileAction(action: ProfileActions.SaveProfile, onSave: (LocalUser) -> Unit) {
+    viewModelScope.launch {
+      if (firebaseUtils.isUserSignedIn) {
+        setProfile(firebaseUtils.uid!!, action.localUser).collect { state ->
+          logger.d { "saveProfileAction: $state" }
+          when (state) {
+            is State.Success -> {
+              submitAction(ProfileActions.ShowMessage(UiMessage("Profile Saved.")))
+              onSave(action.localUser)
             }
-        }
-    }
 
-    private fun saveProfileAction(action: ProfileActions.SaveProfile, onSave: (LocalUser) -> Unit) {
-        viewModelScope.launch {
-            if (firebaseUtils.isUserSignedIn) {
-                setProfile(firebaseUtils.uid!!, action.localUser).collect { state ->
-                    logger.d { "saveProfileAction: $state" }
-                    when (state) {
-                        is State.Success -> {
-                            submitAction(ProfileActions.ShowMessage(UiMessage("Profile Saved.")))
-                            onSave(action.localUser)
-                        }
-
-                        is State.Failed -> {
-                            submitAction(
-                                ProfileActions.ShowMessage(UiMessage("Failed to save Profile")),
-                            )
-                        }
-
-                        else -> {
-                        }
-                    }
-                }
-            } else {
-                submitAction(
-                    ProfileActions.ShowMessage(
-                        UiMessage("Failed to save Profile. Please sign in again."),
-                    ),
-                )
+            is State.Failed -> {
+              submitAction(
+                ProfileActions.ShowMessage(UiMessage("Failed to save Profile")),
+              )
             }
+
+            else -> {
+            }
+          }
         }
+      } else {
+        submitAction(
+          ProfileActions.ShowMessage(
+            UiMessage("Failed to save Profile. Please sign in again."),
+          ),
+        )
+      }
     }
+  }
 
-    private suspend fun getProfile(uid: String, cached: Boolean = false) =
-        getProfile.executeSync(GetProfile.Params(uid, cached))
+  private suspend fun getProfile(uid: String, cached: Boolean = false) =
+    getProfile.executeSync(GetProfile.Params(uid, cached))
 
-    private suspend fun setProfile(uid: String, localUser: LocalUser) =
-        setProfile.executeSync(SetProfile.Params(uid, localUser))
+  private suspend fun setProfile(uid: String, localUser: LocalUser) =
+    setProfile.executeSync(SetProfile.Params(uid, localUser))
 
-    private fun refresh(fromUser: Boolean = false) {
-        logger.d { "refresh: Start Refresh. From User: $fromUser" }
-        getUserProfile()
+  private fun refresh(fromUser: Boolean = false) {
+    logger.d { "refresh: Start Refresh. From User: $fromUser" }
+    getUserProfile()
+  }
+
+  private fun showMessageAction(action: ProfileActions.ShowMessage) {
+    viewModelScope.launch {
+      uiMessageManager.emitMessage(action.message)
     }
+  }
 
-    private fun showMessageAction(action: ProfileActions.ShowMessage) {
-        viewModelScope.launch {
-            uiMessageManager.emitMessage(action.message)
-        }
+  fun clearMessage() {
+    viewModelScope.launch {
+      uiMessageManager.clearMessage(0)
     }
-
-    fun clearMessage() {
-        viewModelScope.launch {
-            uiMessageManager.clearMessage(0)
-        }
-    }
+  }
 }

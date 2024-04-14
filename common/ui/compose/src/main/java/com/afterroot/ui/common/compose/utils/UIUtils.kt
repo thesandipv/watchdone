@@ -29,33 +29,33 @@ import com.afterroot.watchdone.utils.State
 
 @Composable
 fun CenteredRow(modifier: Modifier = Modifier, content: @Composable (RowScope) -> Unit) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        content(this)
-    }
+  Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+    content(this)
+  }
 }
 
 val TopBarWindowInsets = WindowInsets(top = 0)
 
 @Composable
 fun shouldUseDarkTheme(
-    uiState: State<UserData>,
+  uiState: State<UserData>,
 ): Boolean = when (uiState) {
-    is State.Loading -> isSystemInDarkTheme()
-    is State.Success -> when (uiState.data.darkThemeConfig) {
-        DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
-        DarkThemeConfig.LIGHT -> false
-        DarkThemeConfig.DARK -> true
-    }
+  is State.Loading -> isSystemInDarkTheme()
+  is State.Success -> when (uiState.data.darkThemeConfig) {
+    DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+    DarkThemeConfig.LIGHT -> false
+    DarkThemeConfig.DARK -> true
+  }
 
-    else -> false
+  else -> false
 }
 
 @Composable
 fun shouldDisableDynamicTheming(
-    uiState: State<UserData>,
+  uiState: State<UserData>,
 ): Boolean = when (uiState) {
-    is State.Success -> !uiState.data.useDynamicColor
-    else -> false
+  is State.Success -> !uiState.data.useDynamicColor
+  else -> false
 }
 
 /**
