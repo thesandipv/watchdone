@@ -24,8 +24,8 @@ import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.discover.DiscoverMovieStore
 import com.afterroot.watchdone.discover.DiscoverShowsStore
+import com.afterroot.watchdone.media.MediaStore
 import com.afterroot.watchdone.media.MediaStoreRequest
-import com.afterroot.watchdone.media.MovieStore
 import javax.inject.Inject
 import kotlinx.coroutines.withContext
 
@@ -33,7 +33,7 @@ class UpdateDiscover @Inject constructor(
   private val discoverMovieStore: DiscoverMovieStore,
   private val discoverShowStore: DiscoverShowsStore,
   private val discoverDao: DiscoverDao,
-  private val mediaStore: MovieStore,
+  private val mediaStore: MediaStore,
   private val dispatchers: CoroutineDispatchers,
   private val logger: Logger,
 ) : Interactor<UpdateDiscover.Params, Unit>() {

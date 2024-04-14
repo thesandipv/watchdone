@@ -22,8 +22,8 @@ import app.tivi.util.parallelForEach
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.RecommendedDao
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.media.MediaStore
 import com.afterroot.watchdone.media.MediaStoreRequest
-import com.afterroot.watchdone.media.MovieStore
 import com.afterroot.watchdone.media.recommended.RecommendedMediaStore
 import com.afterroot.watchdone.media.recommended.RecommendedMediaStoreKey
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 class UpdateRecommended @Inject constructor(
   private val recommendedMediaStore: RecommendedMediaStore,
   private val recommendedDao: RecommendedDao,
-  private val mediaStore: MovieStore,
+  private val mediaStore: MediaStore,
   private val dispatchers: CoroutineDispatchers,
   private val logger: Logger,
 ) : Interactor<UpdateRecommended.Params, Unit>() {

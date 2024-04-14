@@ -29,8 +29,7 @@ import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
 
-// TODO Show implementation pending
-class MovieStore @Inject constructor(
+class MediaStore @Inject constructor(
   mediaDao: MediaDao,
   tmdbMovieDataSource: TmdbMovieDataSource,
   tmdbShowDataSource: TmdbShowDataSource,
