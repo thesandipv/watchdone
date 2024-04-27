@@ -110,7 +110,7 @@ android-tools-common = { group = "com.android.tools", name = "common", version.r
 spotless-pluginGradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 google-pluginOssLic = { module = "com.google.android.gms:oss-licenses-plugin", version.ref = "ossLicPlugin" }
 
-commonsCodec = "commons-codec:commons-codec:1.16.1"
+commonsCodec = "commons-codec:commons-codec:1.17.0"
 commonsIo = "org.apache.commons:commons-io:1.3.2"
 commonsLang = "org.apache.commons:commons-lang3:3.14.0"
 materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
