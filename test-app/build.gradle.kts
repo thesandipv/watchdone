@@ -16,8 +16,9 @@
 plugins {
   id(afterroot.plugins.android.test.get().pluginId)
   id(afterroot.plugins.kotlin.android.get().pluginId)
+  alias(libs.plugins.google.ksp)
+  // id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
-  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
@@ -39,5 +40,4 @@ dependencies {
   implementation(libs.hilt.testing)
   implementation(libs.kotlinx.coroutines.test)
   implementation(libs.test.junit)
-  kapt(libs.hilt.compiler)
 }
