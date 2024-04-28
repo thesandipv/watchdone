@@ -17,7 +17,6 @@ package com.afterroot.watchdone.ui
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -307,31 +306,6 @@ class MainActivity : ComponentActivity() {
       ActivityCompat.requestPermissions(this, manifestPermissions, RC_PERMISSION)
     } else { // no missing permissions
       // setUpNavigation()
-    }
-  }
-
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    grantResults: IntArray,
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    when (requestCode) {
-      RC_PERMISSION -> {
-        val isPermissionNotGranted =
-          grantResults.isNotEmpty() && grantResults.any { it == PackageManager.PERMISSION_DENIED }
-        if (isPermissionNotGranted) {
-          // TODO
-                    /*binding.container.indefiniteSnackbar(
-                        getString(CommonR.string.msg_grant_app_permissions),
-                        getString(CommonR.string.text_action_grant)
-                    ) {
-                        checkPermissions()
-                    }.anchorView = binding.toolbar*/
-        } else {
-          // setUpNavigation()
-        }
-      }
     }
   }
 }

@@ -19,7 +19,6 @@ plugins {
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
-  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {

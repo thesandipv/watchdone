@@ -23,7 +23,6 @@ plugins {
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
 
-  alias(libs.plugins.jetbrains.kotlin.kapt)
   alias(libs.plugins.google.ksp)
 }
 
@@ -93,7 +92,7 @@ dependencies {
   testImplementation(libs.androidx.test.junitExt)
   testImplementation(libs.test.robolectric)
 
-  kaptTest(libs.androidx.room.compiler)
+  kspTest(libs.androidx.room.compiler)
 
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.androidx.test.junitExt)

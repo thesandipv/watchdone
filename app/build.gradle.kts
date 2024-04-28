@@ -75,7 +75,11 @@ android {
     }
   }
 
-  lint.abortOnError = false
+  lint {
+    checkReleaseBuilds = false
+    abortOnError = true
+    ignoreTestSources = true
+  }
 
   packaging.resources.excludes +=
     setOf(

@@ -20,7 +20,6 @@ plugins {
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
   id("androidx.navigation.safeargs")
-  alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {

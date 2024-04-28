@@ -39,12 +39,12 @@ plugins {
   alias(libs.plugins.firebase.crashlytics) apply false
   alias(libs.plugins.google.gms) apply false
   alias(libs.plugins.google.hilt) apply false
-  alias(libs.plugins.jetbrains.kotlin.android) apply false
-  alias(libs.plugins.jetbrains.kotlin.multiplatform) apply false
-  alias(libs.plugins.jetbrains.kotlin.kapt) apply false
   alias(libs.plugins.google.ksp) apply false
-  alias(libs.plugins.spotless)
+  alias(libs.plugins.gradle.android.cacheFix) apply false
+  alias(libs.plugins.jetbrains.kotlin.android) apply false
   alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+  alias(libs.plugins.jetbrains.kotlin.multiplatform) apply false
+  alias(libs.plugins.spotless)
 }
 
 val versionProperties = readProperties(from = rootProject.file("version.properties"))
@@ -60,12 +60,6 @@ println("- INFO: Build version code: $versionCode")
 subprojects {
   plugins.withId(rootProject.libs.plugins.google.hilt.get().pluginId) {
     extensions.getByType<HiltExtension>().enableAggregatingTask = true
-  }
-  plugins.withId(rootProject.libs.plugins.jetbrains.kotlin.kapt.get().pluginId) {
-    extensions.getByType<org.jetbrains.kotlin.gradle.plugin.KaptExtension>().apply {
-      correctErrorTypes = true
-      useBuildCache = true
-    }
   }
 }
 
