@@ -16,13 +16,12 @@ composeBom = "2024.05.00"
 constraintLayout = "2.1.4"
 coreKtx = "1.13.1"
 coreSplash = "1.0.1"
-crshlyticsPlugin = "2.9.9"
+crshlyticsPlugin = "3.0.1"
 dagger = "2.51.1"
 depUpdates = "0.46.0"
 emoji = "1.1.0"
-epoxy = "4.6.4"
 firebaseAds = "23.1.0"
-firebaseBom = "32.8.1"
+firebaseBom = "33.0.0"
 firebaseCore = "21.1.1"
 firebaseUi = "8.0.2"
 fragmentKtx = "1.7.1"
@@ -33,7 +32,7 @@ gson = "2.10.1"
 hilt = "2.51.1"
 junit = "4.13.2"
 junit-jupiter = "5.10.2"
-kotlin = "2.0.0-RC2"
+kotlin = "2.0.0-RC3"
 kotlinxCoroutines = "1.8.0"
 kotlinxDatetime = "0.5.0"
 ktlint = "0.50.0"
@@ -47,7 +46,7 @@ multidex = "2.0.1"
 navigation = "2.7.7"
 okhttp = "5.0.0-alpha.14"
 ossLicPlugin = "0.10.6"
-paging = "3.2.1"
+paging = "3.3.0"
 palette = "1.0.0"
 preference = "1.2.1"
 protobuf = "3.25.3"
@@ -62,7 +61,7 @@ vectorDrawable = "1.2.0"
 work = "2.9.0"
 
 compileSdk = "34"
-minSdk = "21"
+minSdk = "23"
 targetSdk = "34"
 major = "0"
 minor = "1"
@@ -80,7 +79,7 @@ google-gms = "com.google.gms.google-services:4.4.1"
 google-ossLic = { id = "com.google.android.gms.oss-licenses-plugin", version.ref = "ossLicPlugin" }
 google-protobuf = { id = "com.google.protobuf", version = "0.9.4" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-ksp = "com.google.devtools.ksp:2.0.0-RC2-1.0.20"
+google-ksp = "com.google.devtools.ksp:2.0.0-RC3-1.0.20"
 
 gradle-android-cacheFix = { id = "org.gradle.android.cache-fix", version = "3.0.1" }
 
@@ -250,7 +249,6 @@ accompanist-navigation = { module = "com.google.accompanist:accompanist-navigati
 accompanist-suc = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
 
-junit = { module = "junit:junit", version.ref = "junit" }
 test-junit = { module = "junit:junit", version.ref = "junit" }
 test-mockk = "io.mockk:mockk:1.13.10"
 test-robolectric = "org.robolectric:robolectric:4.12.1"
