@@ -52,34 +52,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.rememberNavController
 import com.afterroot.ui.common.compose.navigation.RootScreen
 import com.afterroot.watchdone.ui.navigation.AppNavigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.afterroot.watchdone.resources.R as CommonR
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun Home(
+  appState: AppState,
   onWatchProviderClick: (link: String) -> Unit = { _ -> },
   settingsAction: () -> Unit,
   shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
-  val bottomSheetNavigator = rememberBottomSheetNavigator()
-  val navController = rememberNavController(bottomSheetNavigator)
-
   Scaffold(bottomBar = {
-    val currentSelectedItem by navController.currentScreenAsState()
+    val currentSelectedItem by appState.navController.currentScreenAsState()
     HomeNavigationBar(
       selectedRootScreen = currentSelectedItem,
       onNavigationSelected = { selected ->
-        navController.navigate(selected.route) {
+        appState.navController.navigate(selected.route) {
           launchSingleTop = true
           restoreState = true
 
-          popUpTo(navController.graph.findStartDestination().id) {
+          popUpTo(appState.navController.graph.findStartDestination().id) {
             saveState = true
           }
         }
@@ -93,12 +89,13 @@ fun Home(
         .fillMaxSize()
         .padding(paddingValues),
     ) {
-      ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
+      ModalBottomSheetLayout(bottomSheetNavigator = appState.bottomSheetNavigator) {
         AppNavigation(
-          navController = navController,
+          navController = appState.navController,
           modifier = Modifier
             .weight(1f)
             .fillMaxHeight(),
+          appState = appState,
           onWatchProviderClick = onWatchProviderClick,
           settingsAction = settingsAction,
           shareToIG = shareToIG,

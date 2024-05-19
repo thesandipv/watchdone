@@ -36,6 +36,7 @@ import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.discover.Discover
+import com.afterroot.watchdone.ui.home.AppState
 import com.afterroot.watchdone.ui.media.MediaInfo
 import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile
@@ -57,26 +58,26 @@ fun itemSelectedCallback(navController: NavHostController) = object : ItemSelect
 
 @Composable
 fun AppNavigation(
-  navController: NavHostController,
+  appState: AppState,
   modifier: Modifier = Modifier,
   onWatchProviderClick: (link: String) -> Unit = { _ -> },
   settingsAction: () -> Unit,
   shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
   NavHost(
-    navController = navController,
+    navController = appState.navController,
     startDestination = RootScreen.Watchlist.route,
     modifier = modifier,
   ) {
-    addWatchlistRoot(navController, onWatchProviderClick, settingsAction, shareToIG)
-    addDiscoverRoot(navController)
-    addSearchRoot(navController)
-    addProfileRoot(navController)
+    addWatchlistRoot(appState, onWatchProviderClick, settingsAction, shareToIG)
+    addDiscoverRoot(appState)
+    addSearchRoot(appState)
+    addProfileRoot(appState)
   }
 }
 
 private fun NavGraphBuilder.addWatchlistRoot(
-  navController: NavHostController,
+  appState: AppState,
   onWatchProviderClick: (link: String) -> Unit = { _ -> },
   settingsAction: () -> Unit,
   shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
@@ -85,9 +86,9 @@ private fun NavGraphBuilder.addWatchlistRoot(
     route = RootScreen.Watchlist.route,
     startDestination = Screen.Watchlist.createRoute(RootScreen.Watchlist),
   ) {
-    addWatchlist(navController, RootScreen.Watchlist, settingsAction)
+    addWatchlist(appState, RootScreen.Watchlist, settingsAction)
     addMediaInfo(
-      navController,
+      appState,
       RootScreen.Watchlist,
       onWatchProviderClick = onWatchProviderClick,
       shareToIG = shareToIG,
@@ -96,7 +97,7 @@ private fun NavGraphBuilder.addWatchlistRoot(
 }
 
 private fun NavGraphBuilder.addWatchlist(
-  navController: NavHostController,
+  appState: AppState,
   rootScreen: RootScreen,
   settingsAction: () -> Unit,
 ) {
@@ -104,13 +105,13 @@ private fun NavGraphBuilder.addWatchlist(
     Watchlist(
       viewModel = hiltViewModel(),
       settingsAction = settingsAction,
-      itemSelectedCallback = itemSelectedCallback(navController),
+      itemSelectedCallback = itemSelectedCallback(appState.navController),
     )
   }
 }
 
 private fun NavGraphBuilder.addMediaInfo(
-  navController: NavHostController,
+  appState: AppState,
   rootScreen: RootScreen,
   onWatchProviderClick: (link: String) -> Unit = { _ -> },
   shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
@@ -133,12 +134,12 @@ private fun NavGraphBuilder.addMediaInfo(
   ) {
     MediaInfo(
       navigateUp = {
-        navController.navigateUp()
+        appState.navController.navigateUp()
       },
       onRecommendedClick = {
         if (it.tmdbId != null) {
           it.mediaType?.let { mediaType ->
-            navController.navigate(
+            appState.navController.navigate(
               Screen.MediaInfo.createRoute(rootScreen, mediaType, it.tmdbId!!),
             )
           }
@@ -150,34 +151,34 @@ private fun NavGraphBuilder.addMediaInfo(
   }
 }
 
-private fun NavGraphBuilder.addDiscoverRoot(navController: NavHostController) {
+private fun NavGraphBuilder.addDiscoverRoot(appState: AppState) {
   navigation(
     route = RootScreen.Discover.route,
     startDestination = Screen.Discover.createRoute(RootScreen.Discover),
   ) {
-    addDiscover(navController, RootScreen.Discover)
+    addDiscover(appState, RootScreen.Discover)
   }
 }
 
-private fun NavGraphBuilder.addDiscover(navController: NavHostController, rootScreen: RootScreen) {
+private fun NavGraphBuilder.addDiscover(appState: AppState, rootScreen: RootScreen) {
   composable(route = Screen.Discover.createRoute(rootScreen)) {
     Discover(
       discoverViewModel = hiltViewModel(),
-      itemSelectedCallback = itemSelectedCallback(navController),
+      itemSelectedCallback = itemSelectedCallback(appState.navController),
     )
   }
 }
 
-private fun NavGraphBuilder.addSearchRoot(navController: NavHostController) {
+private fun NavGraphBuilder.addSearchRoot(appState: AppState) {
   navigation(
     route = RootScreen.Search.route,
     startDestination = Screen.Search.createRoute(RootScreen.Search),
   ) {
-    addSearch(navController, RootScreen.Search)
+    addSearch(appState, RootScreen.Search)
   }
 }
 
-private fun NavGraphBuilder.addSearch(navController: NavHostController, rootScreen: RootScreen) {
+private fun NavGraphBuilder.addSearch(appState: AppState, rootScreen: RootScreen) {
   composable(
     route = Screen.Search.createRoute(rootScreen),
     deepLinks = listOf(
@@ -188,30 +189,30 @@ private fun NavGraphBuilder.addSearch(navController: NavHostController, rootScre
   ) {
     Search(
       viewModel = hiltViewModel(),
-      itemSelectedCallback = itemSelectedCallback(navController),
+      itemSelectedCallback = itemSelectedCallback(appState.navController),
     )
   }
 }
 
-private fun NavGraphBuilder.addProfileRoot(navController: NavHostController) {
+private fun NavGraphBuilder.addProfileRoot(appState: AppState) {
   navigation(
     route = RootScreen.Profile.route,
     startDestination = Screen.Profile.createRoute(RootScreen.Profile),
   ) {
-    addProfile(navController, RootScreen.Profile)
-    addEditProfile(navController, RootScreen.Profile)
+    addProfile(appState, RootScreen.Profile)
+    addEditProfile(appState, RootScreen.Profile)
   }
 }
 
-private fun NavGraphBuilder.addProfile(navController: NavHostController, rootScreen: RootScreen) {
+private fun NavGraphBuilder.addProfile(appState: AppState, rootScreen: RootScreen) {
   composable(route = Screen.Profile.createRoute(rootScreen)) {
     Profile {
-      navController.navigate(Screen.EditProfile.createRoute(rootScreen))
+      appState.navController.navigate(Screen.EditProfile.createRoute(rootScreen))
     }
   }
 }
 
-private fun NavGraphBuilder.addEditProfile(navController: NavHostController, rootScreen: RootScreen) {
+private fun NavGraphBuilder.addEditProfile(appState: AppState, rootScreen: RootScreen) {
   composable(route = Screen.EditProfile.createRoute(rootScreen)) {
     EditProfile()
   }

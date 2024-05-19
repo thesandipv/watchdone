@@ -43,9 +43,6 @@ class MainActivityViewModel @Inject constructor(
     started = SharingStarted.WhileSubscribed(5_000),
   )
 
-  init {
-  }
-
   suspend fun checkForMigrations() {
     firestoreMigrations.start()
   }
