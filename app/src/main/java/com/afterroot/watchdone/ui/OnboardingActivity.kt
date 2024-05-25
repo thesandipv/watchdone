@@ -14,13 +14,10 @@
  */
 package com.afterroot.watchdone.ui
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import app.tivi.util.Logger
@@ -28,8 +25,6 @@ import com.afterroot.utils.extensions.getPrefs
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.R
 import com.afterroot.watchdone.base.Constants
-import com.afterroot.watchdone.ui.common.showNetworkDialog
-import com.afterroot.watchdone.viewmodel.NetworkViewModel
 import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -44,8 +39,6 @@ import com.google.android.material.R as MaterialR
 
 @AndroidEntryPoint
 class OnboardingActivity : ComponentActivity() {
-
-  private val networkViewModel: NetworkViewModel by viewModels()
 
   @Inject lateinit var firebaseAuth: FirebaseAuth
 
@@ -67,6 +60,7 @@ class OnboardingActivity : ComponentActivity() {
           CommonR.string.theme_device_default,
         ),
         -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+
         getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
         getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
         else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -77,7 +71,6 @@ class OnboardingActivity : ComponentActivity() {
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
-    setUpNetworkObserver()
     when {
       firebaseAuth.currentUser == null -> {
         tryLogin()
@@ -145,7 +138,7 @@ class OnboardingActivity : ComponentActivity() {
   }
 
   private val resultLauncher = registerForActivityResult(FirebaseAuthUIActivityResultContract()) {
-    if (it.resultCode == Activity.RESULT_OK) {
+    if (it.resultCode == RESULT_OK) {
       launchMain()
     } else {
       Toast.makeText(
@@ -160,20 +153,5 @@ class OnboardingActivity : ComponentActivity() {
   private fun launchMain() {
     startActivity(Intent(this, MainActivity::class.java))
     finish()
-  }
-
-  private var dialog: AlertDialog? = null
-  private fun setUpNetworkObserver() {
-    networkViewModel.monitor(
-      this,
-      onConnect = {
-        if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
-      },
-      onDisconnect = {
-        dialog = showNetworkDialog(state = it, positive = {
-          setUpNetworkObserver()
-        }, negative = { finish() })
-      },
-    )
   }
 }
