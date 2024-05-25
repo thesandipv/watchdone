@@ -49,8 +49,8 @@ import com.afterroot.ui.common.compose.utils.shouldUseDarkTheme
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.ui.home.Home
-import com.afterroot.watchdone.ui.home.rememberAppState
+import com.afterroot.watchdone.ui.app.App
+import com.afterroot.watchdone.ui.app.rememberAppState
 import com.afterroot.watchdone.ui.settings.SettingsActivity
 import com.afterroot.watchdone.utils.NetworkMonitor
 import com.afterroot.watchdone.utils.PermissionChecker
@@ -164,7 +164,7 @@ class MainActivity : ComponentActivity() {
         LocalWindowSizeClass provides calculateWindowSizeClass(this),
       ) {
         Theme(settings = settings, darkTheme = darkTheme) {
-          Home(
+          App(
             appState = appState,
             onWatchProviderClick = { link ->
               browse(link, true)

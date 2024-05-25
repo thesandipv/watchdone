@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2023 Sandip Vaghela
+ * Copyright (C) 2020-2024 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.navigation
+package com.afterroot.watchdone.ui.app
 
 import android.view.View
 import androidx.compose.runtime.Composable
@@ -36,7 +36,6 @@ import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.helpers.Deeplink
 import com.afterroot.watchdone.ui.common.ItemSelectedCallback
 import com.afterroot.watchdone.ui.discover.Discover
-import com.afterroot.watchdone.ui.home.AppState
 import com.afterroot.watchdone.ui.media.MediaInfo
 import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile

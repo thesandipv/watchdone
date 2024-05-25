@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.home
+package com.afterroot.watchdone.ui.app
 
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
