@@ -218,7 +218,7 @@ firebase-ui-firestore = { module = "com.firebaseui:firebase-ui-firestore", versi
 firebase-ui-storage = { module = "com.firebaseui:firebase-ui-storage", version.ref = "firebaseUi" }
 
 google-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "googleAds" }
-google-ossLic = "com.google.android.gms:play-services-oss-licenses:17.0.1"
+google-ossLic = "com.google.android.gms:play-services-oss-licenses:17.1.0"
 google-material = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
