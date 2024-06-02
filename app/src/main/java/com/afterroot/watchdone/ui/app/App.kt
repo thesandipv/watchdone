@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.ui.home
+package com.afterroot.watchdone.ui.app
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -36,9 +36,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration.Indefinite
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -49,53 +53,91 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.rememberNavController
 import com.afterroot.ui.common.compose.navigation.RootScreen
-import com.afterroot.watchdone.ui.navigation.AppNavigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.afterroot.watchdone.resources.R as CommonR
+
+@Composable
+fun App(
+  appState: AppState,
+  modifier: Modifier = Modifier,
+  onWatchProviderClick: (link: String) -> Unit = { _ -> },
+  settingsAction: () -> Unit = {},
+  shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
+) {
+  val snackbarHostState = remember { SnackbarHostState() }
+
+  val isOffline by appState.isOffline.collectAsStateWithLifecycle(
+    // TODO https://issuetracker.google.com/issues/336842920#comment8
+    lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current,
+  )
+
+  // If user is not connected to the internet show a snack bar to inform them.
+  val notConnectedMessage = "Not Connected to internet"
+  LaunchedEffect(isOffline) {
+    if (isOffline) {
+      snackbarHostState.showSnackbar(
+        message = notConnectedMessage,
+        duration = Indefinite,
+      )
+    }
+  }
+
+  App(
+    appState = appState,
+    snackbarHostState = snackbarHostState,
+    modifier = modifier,
+    onWatchProviderClick = onWatchProviderClick,
+    settingsAction = settingsAction,
+    shareToIG = shareToIG,
+  )
+}
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
-fun Home(
+fun App(
+  appState: AppState,
+  snackbarHostState: SnackbarHostState,
+  modifier: Modifier = Modifier,
+  settingsAction: () -> Unit = {},
   onWatchProviderClick: (link: String) -> Unit = { _ -> },
-  settingsAction: () -> Unit,
   shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
-  val bottomSheetNavigator = rememberBottomSheetNavigator()
-  val navController = rememberNavController(bottomSheetNavigator)
+  Scaffold(
+    modifier = modifier,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
+    bottomBar = {
+      val currentSelectedItem by appState.navController.currentScreenAsState()
+      HomeNavigationBar(
+        selectedRootScreen = currentSelectedItem,
+        onNavigationSelected = { selected ->
+          appState.navController.navigate(selected.route) {
+            launchSingleTop = true
+            restoreState = true
 
-  Scaffold(bottomBar = {
-    val currentSelectedItem by navController.currentScreenAsState()
-    HomeNavigationBar(
-      selectedRootScreen = currentSelectedItem,
-      onNavigationSelected = { selected ->
-        navController.navigate(selected.route) {
-          launchSingleTop = true
-          restoreState = true
-
-          popUpTo(navController.graph.findStartDestination().id) {
-            saveState = true
+            popUpTo(appState.navController.graph.findStartDestination().id) {
+              saveState = true
+            }
           }
-        }
-      },
-      modifier = Modifier
-        .fillMaxWidth(),
-    )
-  }) { paddingValues ->
+        },
+        modifier = Modifier
+          .fillMaxWidth(),
+      )
+    },
+  ) { paddingValues ->
     Row(
       modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues),
     ) {
-      ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
+      ModalBottomSheetLayout(bottomSheetNavigator = appState.bottomSheetNavigator) {
         AppNavigation(
-          navController = navController,
+          appState = appState,
           modifier = Modifier
             .weight(1f)
             .fillMaxHeight(),

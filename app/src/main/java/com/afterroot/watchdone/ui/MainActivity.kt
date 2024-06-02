@@ -15,7 +15,6 @@
 package com.afterroot.watchdone.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -24,7 +23,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
@@ -38,6 +36,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.compose.rememberNavController
 import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.tmdbapi.repository.ConfigRepository
@@ -47,24 +46,21 @@ import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.ui.common.compose.utils.darkScrim
 import com.afterroot.ui.common.compose.utils.lightScrim
 import com.afterroot.ui.common.compose.utils.shouldUseDarkTheme
-import com.afterroot.utils.onVersionGreaterThanEqualTo
-import com.afterroot.watchdone.base.Collection
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
-import com.afterroot.watchdone.base.Field
-import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.settings.Settings
-import com.afterroot.watchdone.ui.common.showNetworkDialog
-import com.afterroot.watchdone.ui.home.Home
+import com.afterroot.watchdone.ui.app.App
+import com.afterroot.watchdone.ui.app.rememberAppState
 import com.afterroot.watchdone.ui.settings.SettingsActivity
+import com.afterroot.watchdone.utils.NetworkMonitor
 import com.afterroot.watchdone.utils.PermissionChecker
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.logFirstStart
 import com.afterroot.watchdone.utils.shareToInstagram
 import com.afterroot.watchdone.viewmodel.MainActivityViewModel
-import com.afterroot.watchdone.viewmodel.NetworkViewModel
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,9 +69,9 @@ import javax.inject.Named
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -100,13 +96,15 @@ class MainActivity : ComponentActivity() {
 
   @Inject lateinit var logger: Logger
 
+  @Inject lateinit var networkMonitor: NetworkMonitor
+
   @Inject
   @Named("feedback_body")
   lateinit var feedbackBody: String
-  private val networkViewModel: NetworkViewModel by viewModels()
+
   private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
-  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterialNavigationApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     val splashScreen = installSplashScreen()
     super.onCreate(savedInstanceState)
@@ -151,12 +149,23 @@ class MainActivity : ComponentActivity() {
         onDispose {}
       }
 
+      val bottomSheetNavigator = rememberBottomSheetNavigator()
+      val navController = rememberNavController(bottomSheetNavigator)
+
+      val appState = rememberAppState(
+        navController = navController,
+        bottomSheetNavigator = bottomSheetNavigator,
+        windowSizeClass = calculateWindowSizeClass(this),
+        networkMonitor = networkMonitor,
+      )
+
       CompositionLocalProvider(
         LocalLogger provides logger,
         LocalWindowSizeClass provides calculateWindowSizeClass(this),
       ) {
         Theme(settings = settings, darkTheme = darkTheme) {
-          Home(
+          App(
+            appState = appState,
             onWatchProviderClick = { link ->
               browse(link, true)
             },
@@ -190,7 +199,6 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-  @SuppressLint("MissingPermission")
   private fun initialize() {
     lifecycleScope.launch {
       mainActivityViewModel.checkForMigrations()
@@ -229,74 +237,19 @@ class MainActivity : ComponentActivity() {
     // Initialize AdMob SDK
     MobileAds.initialize(this)
 
-    onVersionGreaterThanEqualTo(Build.VERSION_CODES.M, ::checkPermissions)
+    checkPermissions()
 
     // Add user in db if not available
     addUserInfoInDB()
-    setUpNetworkObserver()
-  }
-
-  private var dialog: AlertDialog? = null
-  private fun setUpNetworkObserver() {
-    networkViewModel.monitor(
-      this,
-      onConnect = {
-        if (dialog != null && dialog?.isShowing!!) dialog?.dismiss()
-      },
-      onDisconnect = {
-        dialog = showNetworkDialog(
-          state = it,
-          positive = { dialog?.dismiss() },
-          negative = { finish() },
-          isShowHide = true,
-        )
-      },
-    )
   }
 
   /**
    * Add user info in FireStore Database
-   * TODO Move to viewmodel
    */
   private fun addUserInfoInDB() {
-    try {
-      val curUser = firebaseUtils.firebaseUser
-      val userRef = firestore.collection(Collection.USERS).document(curUser!!.uid)
-      firebaseMessaging.token
-        .addOnCompleteListener(
-          OnCompleteListener { tokenTask ->
-            if (!tokenTask.isSuccessful) {
-              return@OnCompleteListener
-            }
-            userRef.get().addOnCompleteListener { getUserTask ->
-              if (getUserTask.isSuccessful) {
-                if (!getUserTask.result.exists()) {
-                  // binding.container.snackbar("User not available. Creating User..").anchorView = binding.toolbar
-                  val user = LocalUser(
-                    name = curUser.displayName,
-                    email = curUser.email,
-                    uid = curUser.uid,
-                    fcmId = tokenTask.result,
-                  )
-                  userRef.set(user).addOnCompleteListener { setUserTask ->
-                    if (!setUserTask.isSuccessful) {
-                      Timber.e(
-                        setUserTask.exception,
-                        "Can't create firebaseUser",
-                      )
-                    }
-                  }
-                } else if (getUserTask.result[Field.FCM_ID] != tokenTask.result) {
-                  userRef.update(Field.FCM_ID, tokenTask.result)
-                }
-              } else {
-                Timber.e(getUserTask.exception, "Unknown Error")
-              }
-            }
-          },
-        )
-    } catch (e: Exception) {
-      Timber.e("addUserInfoInDB: $e")
+    lifecycleScope.launch {
+      val fcmId = firebaseMessaging.token.await()
+      firebaseUtils.addUserInfo(firestore, fcmId)
     }
   }
 
