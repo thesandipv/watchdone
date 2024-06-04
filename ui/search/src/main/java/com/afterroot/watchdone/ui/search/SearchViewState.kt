@@ -17,9 +17,9 @@ package com.afterroot.watchdone.ui.search
 
 import androidx.compose.runtime.Immutable
 import app.tivi.api.UiMessage
-import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.base.compose.ViewState
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.data.model.Query
 
 @Immutable
 data class SearchViewState(

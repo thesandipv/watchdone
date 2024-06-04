@@ -15,20 +15,20 @@
 
 package com.afterroot.watchdone.domain.interactors
 
+import app.moviebase.tmdb.model.TmdbCredits
 import app.tivi.domain.SubjectInteractor
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.WatchProviderResult
 import com.afterroot.watchdone.data.repositories.MovieRepository
 import com.afterroot.watchdone.utils.State
-import info.movito.themoviedbapi.model.Credits
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class ObserveMovieCredits @Inject constructor(private val movieRepository: MovieRepository) :
-  SubjectInteractor<ObserveMovieCredits.Params, State<Credits>>() {
+  SubjectInteractor<ObserveMovieCredits.Params, State<TmdbCredits>>() {
   data class Params(val movieId: Int)
 
-  override suspend fun createObservable(params: Params): Flow<State<Credits>> {
+  override suspend fun createObservable(params: Params): Flow<State<TmdbCredits>> {
     return movieRepository.credits(params.movieId)
   }
 }

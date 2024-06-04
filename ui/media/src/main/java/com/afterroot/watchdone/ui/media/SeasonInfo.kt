@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import app.tivi.common.compose.Layout
 import com.afterroot.ui.common.compose.components.FilterChipGroup
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
+import com.afterroot.watchdone.data.mapper.toEpisode
 import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
@@ -117,14 +118,15 @@ fun SeasonsDetail(
             text = "${episodes.count()} Episodes",
             modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
           )
-          episodes.forEach { episode ->
-            val watched = watchedEpisodes.contains(episode.id.toString())
-            EpisodeItem(
-              episode = episode,
-              isWatched = watched,
-              onWatchClicked = onWatchClicked,
-            )
-          }
+          episodes
+            .forEach { episode ->
+              val watched = watchedEpisodes.contains(episode.id.toString())
+              EpisodeItem(
+                episode = episode.toEpisode(),
+                isWatched = watched,
+                onWatchClicked = onWatchClicked,
+              )
+            }
         }
       }
       is State.Failed -> {
@@ -156,7 +158,7 @@ fun EpisodeItem(
     Column {
       ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
         episode.name?.let { Text(text = it) }
-        episode.airDate?.let { Text(text = it) }
+        episode.airDate?.let { Text(text = it.toString()) }
       }
     }
 

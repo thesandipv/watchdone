@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2023 Sandip Vaghela
+ * Copyright (C) 2020-2024 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,19 +13,12 @@
  * limitations under the License.
  */
 
-package com.afterroot.watchdone.domain.observers
+package com.afterroot.watchdone.data.mapper
 
-import app.tivi.domain.SubjectInteractor
+import app.moviebase.tmdb.model.TmdbGenre
 import com.afterroot.watchdone.data.model.Genre
-import com.afterroot.watchdone.database.dao.GenreDao
-import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 
-class ObserveGenres @Inject constructor(private val genreDao: GenreDao) :
-  SubjectInteractor<ObserveGenres.Params, List<Genre>>() {
-  data class Params(val ids: List<Int>)
-
-  override suspend fun createObservable(params: Params): Flow<List<Genre>> {
-    return genreDao.getGenres(params.ids)
-  }
-}
+fun TmdbGenre.toGenre() = Genre(
+  id = id,
+  name = name,
+)

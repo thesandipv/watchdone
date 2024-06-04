@@ -56,7 +56,7 @@ jobs:
           echo ::set-output name=sha::$sha
           echo ::set-output name=sha_short::$short_sha
 
-      - name: set up JDK
+      - name: Set up JDK
         id: setup-jdk
         uses: actions/setup-java@v4.2.1
         with:

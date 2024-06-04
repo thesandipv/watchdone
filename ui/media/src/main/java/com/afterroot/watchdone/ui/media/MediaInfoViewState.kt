@@ -16,21 +16,21 @@
 package com.afterroot.watchdone.ui.media
 
 import androidx.compose.runtime.Immutable
+import app.moviebase.tmdb.model.TmdbCredits
 import app.tivi.api.UiMessage
-import com.afterroot.tmdbapi.model.Genre
 import com.afterroot.watchdone.base.compose.ViewState
 import com.afterroot.watchdone.data.model.DBMedia
+import com.afterroot.watchdone.data.model.Genre
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.TV
 import com.afterroot.watchdone.data.model.WatchProviderResult
 import com.afterroot.watchdone.utils.State
-import info.movito.themoviedbapi.model.Credits
 
 @Immutable
 data class MediaInfoViewState(
-  val credits: State<Credits> = State.loading(),
+  val credits: State<TmdbCredits> = State.loading(),
   val empty: Boolean = true,
   val isLoading: Boolean = false,
   val mediaId: Int = 0,

@@ -14,74 +14,72 @@
  */
 package com.afterroot.watchdone.data.model
 
-import com.afterroot.tmdbapi.model.Genre
-import info.movito.themoviedbapi.TmdbMovies
-import info.movito.themoviedbapi.model.AlternativeTitle
-import info.movito.themoviedbapi.model.Collection
-import info.movito.themoviedbapi.model.Credits
-import info.movito.themoviedbapi.model.Language
-import info.movito.themoviedbapi.model.MovieImages
-import info.movito.themoviedbapi.model.MovieList
-import info.movito.themoviedbapi.model.MovieTranslations
-import info.movito.themoviedbapi.model.NetworkMovie
-import info.movito.themoviedbapi.model.ProductionCompany
-import info.movito.themoviedbapi.model.ProductionCountry
-import info.movito.themoviedbapi.model.Reviews
-import info.movito.themoviedbapi.model.Video
-import info.movito.themoviedbapi.model.core.MovieKeywords
-import info.movito.themoviedbapi.model.core.ResultsPage
+import app.moviebase.tmdb.model.TmdbCompany
+import app.moviebase.tmdb.model.TmdbCountry
+import app.moviebase.tmdb.model.TmdbCredits
+import app.moviebase.tmdb.model.TmdbExternalIds
+import app.moviebase.tmdb.model.TmdbGenre
+import app.moviebase.tmdb.model.TmdbImages
+import app.moviebase.tmdb.model.TmdbMovieDetail
+import app.moviebase.tmdb.model.TmdbMovieStatus
+import app.moviebase.tmdb.model.TmdbReleaseDates
+import app.moviebase.tmdb.model.TmdbResult
+import app.moviebase.tmdb.model.TmdbVideo
+import app.moviebase.tmdb.model.TmdbWatchProviderResult
+import java.util.Locale
+import kotlinx.datetime.LocalDate
 
 data class Movie(
-  // Movie Info
   override val id: Long = 0,
   override val tmdbId: Int? = null,
-  val adult: Boolean? = null,
+
+  val adult: Boolean = false,
   val backdropPath: String? = null,
-  val belongsToCollection: Collection? = null,
-  val budget: Int? = null,
-  val genreIds: List<Int>? = null,
-  val genres: List<Genre>? = null,
+  val budget: Long = 0L,
+  val genres: List<TmdbGenre> = emptyList(),
   val homepage: String? = null,
   val imdbId: String? = null,
   val originalLanguage: String? = null,
   val originalTitle: String? = null,
   val overview: String? = null,
-  val popularity: Double? = null,
+  val popularity: Float = 0f,
   val posterPath: String? = null,
-  val productionCompanies: List<ProductionCompany>? = null,
-  val productionCountries: List<ProductionCountry>? = null,
-  val releaseDate: String? = null,
-  val revenue: Long? = null,
+  val productionCompanies: List<TmdbCompany>? = null,
+  val productionCountries: List<TmdbCountry>? = null,
+  val releaseDate: LocalDate? = null,
+  val revenue: Long = 0L,
   val runtime: Int? = null,
-  val spokenLanguages: List<Language>? = null,
-  val status: String? = null,
+  val status: TmdbMovieStatus = TmdbMovieStatus.PLANNED,
   val tagline: String? = null,
   val title: String? = null,
-  val video: Boolean? = null,
-  val voteAverage: Float? = null,
-  val voteCount: Int? = null,
-  var userRating: Float = 0f,
+  val video: Boolean = false,
+  val voteAverage: Float = 0f,
+  val voteCount: Int = 0,
+
   // Appendable responses
-  private val recommendedMovies: ResultsPage<NetworkMovie>? = null,
-  private var alternativeTitles: List<AlternativeTitle>? = null,
-  private var images: MovieImages? = null,
-  private var keywords: MovieKeywords? = null,
-  private var lists: ResultsPage<MovieList>? = null,
-  private var releases: TmdbMovies.ReleaseInfoResults? = null,
-  private var reviews: ResultsPage<Reviews>? = null,
-  private var similarMovies: ResultsPage<NetworkMovie>? = null,
-  private var translations: MovieTranslations? = null,
-  private var videos: Video.Results? = null,
-  var credits: Credits? = null,
+  val credits: TmdbCredits? = null,
+  val externalIds: TmdbExternalIds? = null,
+  val images: TmdbImages? = null,
+  val releaseDates: TmdbResult<TmdbReleaseDates>? = null,
+  val videos: TmdbResult<TmdbVideo>? = null,
+  val watchProviders: TmdbWatchProviderResult? = null,
+
   // Additional Data
   override val isWatched: Boolean = false,
 ) : WDEntity, TmdbIdEntity, Watchable {
   val mediaType: MediaType
     get() = MediaType.MOVIE
 
-  fun rating(): String = String.format("%.1f", voteAverage)
+  fun rating(): String = String.format(Locale.getDefault(), "%.1f", voteAverage)
 
   companion object {
     val Empty = Movie()
   }
 }
+
+data class MovieNew(
+  val tmdb: TmdbMovieDetail,
+  override val id: Long,
+  override val tmdbId: Int?,
+  override val isWatched: Boolean?,
+) : WDEntity, TmdbIdEntity, Watchable

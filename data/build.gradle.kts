@@ -53,7 +53,6 @@ dependencies {
   api(projects.ards)
   api(projects.data.datastore)
   api(projects.data.model)
-  api(projects.themoviedbapi)
   implementation(projects.api.tmdb)
   implementation(projects.core.logging)
 
