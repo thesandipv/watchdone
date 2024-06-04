@@ -14,50 +14,60 @@
  */
 package com.afterroot.watchdone.data.mapper
 
+import app.moviebase.tmdb.model.TmdbShowDetail
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.TV
-import info.movito.themoviedbapi.model.core.TvResultsPage
-import info.movito.themoviedbapi.model.tv.TvSeries
+import kotlinx.datetime.LocalDate
 
-fun TvSeries.toTV(isWatched: Boolean = false): TV = TV(
-  id = id.toLong(),
-  name = name,
+fun TmdbShowDetail.toTV(isWatched: Boolean = false): TV = TV(
+  adult = false, // TODO Add to TmdbShowDetail
+  backdropPath = backdropPath,
   createdBy = createdBy,
   episodeRuntime = episodeRuntime,
   firstAirDate = firstAirDate,
-  lastAirDate = lastAirDate,
   genres = genres,
   homepage = homepage,
-  originalName = originalName,
-  originCountry = originCountry,
+  inProduction = inProduction,
+  languages = languages,
+  lastAirDate = lastAirDate,
+  lastEpisodeToAir = lastEpisodeToAir,
+  name = name,
   networks = networks,
-  overview = overview,
-  popularity = popularity,
-  backdropPath = backdropPath,
-  posterPath = posterPath,
+  nextEpisodeToAir = nextEpisodeToAir,
   numberOfEpisodes = numberOfEpisodes,
   numberOfSeasons = numberOfSeasons,
-  seasons = seasons.toSeasons(),
-  recommendations = recommendations,
-  userRating = userRating,
-  voteAverage = voteAverage?.toFloat(),
-  voteCount = voteCount,
+  originalLanguage = originalLanguage,
+  originalName = originalName,
+  originCountry = originCountry,
+  overview = overview,
+  popularity = popularity,
+  posterPath = posterPath,
+  productionCompanies = productionCompanies,
+  seasons = seasons,
   status = status,
-  // Appendable Responses
-  contentRatings = getContentRatings(),
+  tagline = tagline,
+  tmdbId = id,
+  type = type,
+  voteAverage = voteAverage,
+  voteCount = voteCount,
+
+  // Appendable responses
+  aggregateCredits = aggregateCredits,
+  contentRatings = contentRatings,
   credits = credits,
   externalIds = externalIds,
   images = images,
-  videos = getVideos(),
-  keywords = getKeywords(),
-  // Additional
+  videos = videos,
+  watchProviders = watchProviders,
+
+  // Additional Data
   isWatched = isWatched,
 )
 
 fun TV.toDBMedia() = DBMedia(
   id = id.toInt(),
-  releaseDate = releaseDate,
+  releaseDate = releaseDate.toString(),
   title = name,
   isWatched = isWatched,
   posterPath = posterPath,
@@ -67,11 +77,11 @@ fun TV.toDBMedia() = DBMedia(
 
 fun DBMedia.toTV(): TV = TV(
   id = id.toLong(),
-  firstAirDate = releaseDate,
+  firstAirDate = releaseDate?.let { LocalDate.parse(it) },
   name = title,
   isWatched = isWatched,
   posterPath = posterPath,
-  voteAverage = rating,
+  voteAverage = rating ?: 0f,
 )
 
-fun TvResultsPage.toTV(): List<TV> = results.mapNotNull { it?.toTV() }
+fun List<TmdbShowDetail>.toTV(): List<TV> = mapNotNull { it.toTV() }

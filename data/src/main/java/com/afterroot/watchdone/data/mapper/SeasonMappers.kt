@@ -14,26 +14,31 @@
  */
 package com.afterroot.watchdone.data.mapper
 
+import app.moviebase.tmdb.model.TmdbSeasonDetail
 import com.afterroot.watchdone.data.model.Season
 import com.afterroot.watchdone.data.model.Seasons
-import com.afterroot.watchdone.data.model.TVSeasons
-import info.movito.themoviedbapi.model.tv.TvSeason
+import com.afterroot.watchdone.data.model.TmdbSeasons
 
-fun TvSeason.toSeason(): Season = Season(
+fun TmdbSeasonDetail.toSeason(): Season = Season(
+  airDate = airDate,
+  episodeCount = episodeCount,
+  episodes = episodes,
   id = id,
   name = name,
-  airDate = airDate,
+  overview = overview,
   posterPath = posterPath,
   seasonNumber = seasonNumber,
-  overview = overview,
-  episodes = episodes.toEpisodes(),
-  credits = credits,
-  externalIds = externalIds,
+  voteAverage = voteAverage,
+
+  // Appendable responses
+  videos = videos,
   images = images,
-  videos = getVideos(),
-  keywords = getKeywords(),
+  externalIds = externalIds,
+
+  // Additional Data
+  isWatched = false,
 )
 
-fun TVSeasons.toSeasons(): Seasons = this?.map {
+fun TmdbSeasons.toSeasons(): Seasons = this?.map {
   it.toSeason()
 }

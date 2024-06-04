@@ -10,7 +10,6 @@ android {
 
 dependencies {
   api(projects.tmdbApi)
-  api(projects.themoviedbapi)
   implementation(projects.ards)
 
   implementation(libs.androidx.room.common)

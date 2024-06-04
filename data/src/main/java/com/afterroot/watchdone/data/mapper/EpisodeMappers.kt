@@ -14,30 +14,45 @@
  */
 package com.afterroot.watchdone.data.mapper
 
+import app.moviebase.tmdb.model.TmdbEpisode
+import app.moviebase.tmdb.model.TmdbEpisodeDetail
 import com.afterroot.watchdone.data.model.Episode
 import com.afterroot.watchdone.data.model.Episodes
-import com.afterroot.watchdone.data.model.TVEpisodes
-import info.movito.themoviedbapi.model.tv.TvEpisode
+import com.afterroot.watchdone.data.model.TmdbEpisodeDetails
+import com.afterroot.watchdone.data.model.TmdbEpisodes
 
-fun TvEpisode.toEpisode(): Episode = Episode(
+fun TmdbEpisode.toEpisode(): Episode = Episode(
   id = id,
-  name = name,
-  airDate = airDate,
-  episodeNumber = episodeNumber,
-  overview = overview,
   seasonNumber = seasonNumber,
-  seriesId = seriesId,
+  episodeNumber = episodeNumber,
+  airDate = airDate,
+  crew = crew,
+  guestStars = guestStars,
+  name = name,
+  overview = overview,
   stillPath = stillPath,
-  userRating = userRating,
   voteAverage = voteAverage,
   voteCount = voteCount,
-  credits = credits,
-  externalIds = externalIds,
-  images = images,
-  videos = getVideos(),
-  keywords = getKeywords(),
 )
 
-fun TVEpisodes.toEpisodes(): Episodes = this?.map {
+fun TmdbEpisodeDetail.toEpisode(): Episode = Episode(
+  id = id,
+  seasonNumber = seasonNumber,
+  episodeNumber = episodeNumber,
+  airDate = airDate,
+  crew = crew,
+  guestStars = guestStars,
+  name = name,
+  overview = overview,
+  stillPath = stillPath,
+  voteAverage = voteAverage,
+  voteCount = voteCount,
+)
+
+fun TmdbEpisodes.toEpisodes(): Episodes = this?.map {
+  it.toEpisode()
+}
+
+fun TmdbEpisodeDetails.toEpisodes(): Episodes = this?.map {
   it.toEpisode()
 }
