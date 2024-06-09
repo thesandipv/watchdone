@@ -11,7 +11,7 @@ browser = "1.8.0"
 cardView = "1.0.0"
 collection = "1.4.0"
 compose = "1.3.0"
-compose-multiplatform = "1.6.10"
+compose-multiplatform = "1.6.11"
 composeBom = "2024.05.00"
 constraintLayout = "2.1.4"
 coreKtx = "1.13.1"
@@ -79,7 +79,7 @@ google-gms = "com.google.gms.google-services:4.4.2"
 google-ossLic = { id = "com.google.android.gms.oss-licenses-plugin", version.ref = "ossLicPlugin" }
 google-protobuf = { id = "com.google.protobuf", version = "0.9.4" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-ksp = "com.google.devtools.ksp:2.0.0-1.0.21"
+google-ksp = "com.google.devtools.ksp:2.0.0-1.0.22"
 
 gradle-android-cacheFix = { id = "org.gradle.android.cache-fix", version = "3.0.1" }
 
@@ -125,7 +125,7 @@ kotlinx-coroutines-play = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-p
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.24.0"
-kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
+kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0"
 
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
