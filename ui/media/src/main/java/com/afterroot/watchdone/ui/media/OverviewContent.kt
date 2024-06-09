@@ -148,9 +148,10 @@ fun OverviewContent(
           )
         }
 
-        tv?.networks?.let {
+        val networks = tv?.networks
+        if (networks?.isNotEmpty() == true) {
           MetaText(
-            text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
+            text = "Network: ${networks.mapNotNull { network -> network.name }.joinToString(",")}",
             modifier = Modifier.padding(horizontal = bodyMargin),
             icon = Icons.Rounded.LiveTv,
           )
@@ -173,8 +174,6 @@ fun OverviewContent(
             },
           )
 
-          // FIXME rent providers will load after this pull request is
-          // merged https://github.com/MoviebaseApp/tmdb-kotlin/pull/115
           WatchProviders(
             modifier = Modifier.padding(horizontal = bodyMargin),
             text = "Available for Rent on",

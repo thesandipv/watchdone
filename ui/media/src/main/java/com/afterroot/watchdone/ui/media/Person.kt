@@ -46,7 +46,6 @@ import app.moviebase.tmdb.model.TmdbCrew
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.Header
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
-import timber.log.Timber
 
 @Composable
 fun <T : TmdbAnyPerson> PersonRow(
@@ -71,8 +70,8 @@ fun <T : TmdbAnyPerson> PersonRow(
       }
     }
     if (items.isNotEmpty()) {
-      PersonRow(items = items, onItemClick = { index, item ->
-        Timber.d("PersonRow: Clicked: Index $index Item: $item")
+      PersonRow(items = items, onItemClick = { _, _ ->
+        // TODO Show person info
       }, modifier = Modifier)
     }
   }
@@ -134,7 +133,7 @@ fun <T : TmdbAnyPerson> PersonItem(
         }
 
         is TmdbCrew -> {
-          item.department?.let { Text(text = it.name) }
+          item.department?.let { Text(text = it.value) }
         }
       }
     }
