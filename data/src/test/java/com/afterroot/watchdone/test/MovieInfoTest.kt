@@ -15,11 +15,13 @@
 package com.afterroot.watchdone.test
 
 import com.afterroot.tmdbapi.model.MovieAppendableResponses
-import com.afterroot.tmdbapi.repository.MoviesRepository
 import com.afterroot.tmdbapi.repository.SearchRepository
+import com.afterroot.watchdone.data.repositories.MovieRepository
+import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.testing.HiltAndroidTest
 import info.movito.themoviedbapi.model.ArtworkType
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -28,21 +30,24 @@ import org.junit.Test
 @HiltAndroidTest
 class MovieInfoTest : DataTest() {
 
-  @Inject lateinit var moviesRepository: MoviesRepository
+  @Inject lateinit var moviesRepository: MovieRepository
 
   @Inject lateinit var searchRepository: SearchRepository
 
   @Test
   fun `MovieDb Working`() {
     launch {
-      Assert.assertEquals("Fight Club", moviesRepository.getMovieInfo(550).title)
+      val title = moviesRepository.info(550).first {
+        it is State.Success
+      }.successResult()?.title
+      Assert.assertEquals("Fight Club", title)
     }
   }
 
   @Test
   fun `Full Movie Info`() {
     launch {
-      val response = moviesRepository.getFullMovieInfo(
+      val response = moviesRepository.info(
         550,
         MovieAppendableResponses.images,
         MovieAppendableResponses.videos,

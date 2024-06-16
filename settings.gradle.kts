@@ -86,7 +86,6 @@ include(
   ":data:model",
   ":data:search",
   ":domain",
-  ":themoviedbapi",
   ":test-app",
   ":ui:discover",
   ":ui:media",

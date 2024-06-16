@@ -39,7 +39,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.tmdbapi.repository.ConfigRepository
 import com.afterroot.ui.common.compose.components.LocalLogger
 import com.afterroot.ui.common.compose.components.LocalWindowSizeClass
 import com.afterroot.ui.common.compose.theme.Theme
@@ -48,6 +47,7 @@ import com.afterroot.ui.common.compose.utils.lightScrim
 import com.afterroot.ui.common.compose.utils.shouldUseDarkTheme
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.data.model.UserData
+import com.afterroot.watchdone.data.repositories.ConfigRepository
 import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.app.App
 import com.afterroot.watchdone.ui.app.rememberAppState
@@ -210,7 +210,7 @@ class MainActivity : ComponentActivity() {
 
     if (settings.baseUrl == null) {
       lifecycleScope.launch {
-        settings.baseUrl = configRepository.getConfig().imagesConfig?.secureBaseUrl
+        settings.baseUrl = configRepository.getConfig().images.secureBaseUrl
       }
     }
     if (settings.posterSizes == null) {
@@ -218,7 +218,7 @@ class MainActivity : ComponentActivity() {
       lifecycleScope.launch {
         val set = mutableSetOf<String>()
         try {
-          configRepository.getConfig().imagesConfig?.posterSizes?.map {
+          configRepository.getConfig().images.posterSizes.map {
             set.add(it)
           }
         } catch (_: Exception) {

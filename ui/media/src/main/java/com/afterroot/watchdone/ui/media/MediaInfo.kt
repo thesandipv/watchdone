@@ -257,9 +257,7 @@ internal fun MediaInfoContent(
     item(key = "cast") {
       viewState.credits
         .composeWhen(success = { credits ->
-          credits.cast?.let { castList ->
-            PersonRow(items = castList, title = "Cast", modifier = Modifier)
-          }
+          PersonRow(items = credits.cast, title = "Cast", modifier = Modifier)
         })
         .composeWhen(loading = {
           PersonRow(items = emptyList(), title = "Cast", refreshing = true)
@@ -269,9 +267,7 @@ internal fun MediaInfoContent(
     item(key = "crew") {
       viewState.credits
         .composeWhen(success = { credits ->
-          credits.crew?.let { crewList ->
-            PersonRow(items = crewList, title = "Crew", modifier = Modifier)
-          }
+          PersonRow(items = credits.crew, title = "Crew", modifier = Modifier)
         })
         .composeWhen(loading = {
           PersonRow(items = emptyList(), title = "Crew", refreshing = true)

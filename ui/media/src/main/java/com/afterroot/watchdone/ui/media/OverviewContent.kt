@@ -81,6 +81,7 @@ import com.afterroot.watchdone.data.model.WatchProviderResult
 import com.afterroot.watchdone.data.model.getProvidersForCountry
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun OverviewContent(
@@ -147,9 +148,10 @@ fun OverviewContent(
           )
         }
 
-        tv?.networks?.let {
+        val networks = tv?.networks
+        if (networks?.isNotEmpty() == true) {
           MetaText(
-            text = "Network: ${it.map { network -> network.name }.joinToString(",")}",
+            text = "Network: ${networks.mapNotNull { network -> network.name }.joinToString(",")}",
             modifier = Modifier.padding(horizontal = bodyMargin),
             icon = Icons.Rounded.LiveTv,
           )
@@ -172,8 +174,6 @@ fun OverviewContent(
             },
           )
 
-          // FIXME rent providers will load after this pull request is
-          // merged https://github.com/MoviebaseApp/tmdb-kotlin/pull/115
           WatchProviders(
             modifier = Modifier.padding(horizontal = bodyMargin),
             text = "Available for Rent on",
@@ -422,7 +422,7 @@ fun PreviewOverviewContent() {
     val movie = Movie(
       voteAverage = 7.2f,
       overview = "After his retirement is interrupted by Gorr the God Butcher, a galactic killer who seeks the extinction of the gods, Thor Odinson enlists the help of King Valkyrie, Korg, and ex-girlfriend Jane Foster, who now wields Mjolnir as the Mighty Thor. Together they embark upon a harrowing cosmic adventure to uncover the mystery of the God Butcher’s vengeance and stop him before it’s too late.",
-      releaseDate = "21/08/22",
+      releaseDate = LocalDate.parse("21/08/22"),
     )
     OverviewContent(movie = movie)
   }

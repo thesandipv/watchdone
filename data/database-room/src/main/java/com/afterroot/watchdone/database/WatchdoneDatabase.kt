@@ -19,9 +19,9 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.afterroot.tmdbapi.model.Genre
-import com.afterroot.tmdbapi.model.config.Country
+import com.afterroot.watchdone.data.model.Country
 import com.afterroot.watchdone.data.model.DiscoverEntry
+import com.afterroot.watchdone.data.model.Genre
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.RecommendedEntry
 import com.afterroot.watchdone.database.dao.CountriesDao

@@ -14,14 +14,20 @@
  */
 package com.afterroot.watchdone.data.model
 
-import info.movito.themoviedbapi.model.Video
-import info.movito.themoviedbapi.model.keywords.Keyword
-import info.movito.themoviedbapi.model.tv.TvEpisode
-import info.movito.themoviedbapi.model.tv.TvSeason
+import app.moviebase.tmdb.model.TmdbEpisode
+import app.moviebase.tmdb.model.TmdbEpisodeDetail
+import app.moviebase.tmdb.model.TmdbKeywordDetail
+import app.moviebase.tmdb.model.TmdbSeasonDetail
+import app.moviebase.tmdb.model.TmdbVideo
 
-typealias TVEpisodes = List<TvEpisode>?
+typealias TmdbEpisodes = List<TmdbEpisode>?
+typealias TmdbEpisodeDetails = List<TmdbEpisodeDetail>?
+
 typealias Episodes = List<Episode>?
-typealias TVSeasons = List<TvSeason>?
+
+typealias TmdbSeasons = List<TmdbSeasonDetail>?
 typealias Seasons = List<Season>?
-typealias Keywords = List<Keyword>?
-typealias Videos = List<Video>?
+
+typealias Keywords = List<TmdbKeywordDetail>?
+
+typealias Videos = List<TmdbVideo>?

@@ -4,9 +4,6 @@
 [submodule "utils"]
     path = "utils"
 	url = https://github.com/afterroot/utils.git
-[submodule "themoviedbapi"]
-	path = themoviedbapi
-	url = https://github.com/afterroot/themoviedbapi
 [submodule "gradle/build-logic"]
 	path = gradle/build-logic
 	url = https://github.com/afterroot/build-logic.git

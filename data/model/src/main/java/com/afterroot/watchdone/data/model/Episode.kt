@@ -14,29 +14,28 @@
  */
 package com.afterroot.watchdone.data.model
 
-import info.movito.themoviedbapi.model.Credits
-import info.movito.themoviedbapi.model.ExternalIds
-import info.movito.themoviedbapi.model.MovieImages
-import info.movito.themoviedbapi.model.Video
-import info.movito.themoviedbapi.model.keywords.Keyword
+import app.moviebase.tmdb.model.TmdbCast
+import app.moviebase.tmdb.model.TmdbCrew
+import app.moviebase.tmdb.model.TmdbEpisode
+import kotlinx.datetime.LocalDate
 
 data class Episode(
-  val id: Int = 0,
+  val id: Int,
+  val seasonNumber: Int,
+  val episodeNumber: Int,
+  val airDate: LocalDate? = null,
+  val crew: List<TmdbCrew>? = null,
+  val guestStars: List<TmdbCast>? = null,
   val name: String? = null,
-  val airDate: String? = null,
-  val episodeNumber: Int = 0,
   val overview: String? = null,
-  val seasonNumber: Int? = null,
-  val seriesId: Int = 0,
   val stillPath: String? = null,
-  val userRating: Float = 0f,
-  val voteAverage: Float = 0f,
-  val voteCount: Int = 0,
-  val credits: Credits? = null,
-  val externalIds: ExternalIds? = null,
-  val images: MovieImages? = null,
-  val videos: List<Video>? = null,
-  val keywords: List<Keyword>? = null,
+  val voteAverage: Float? = null,
+  val voteCount: Int? = null,
   // Additional Data
-  var isWatched: Boolean = false,
+  val isWatched: Boolean = false,
+)
+
+data class EpisodeNew(
+  val tmdb: TmdbEpisode,
+  val isWatched: Boolean = false,
 )

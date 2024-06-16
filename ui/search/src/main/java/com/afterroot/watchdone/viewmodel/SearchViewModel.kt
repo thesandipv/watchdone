@@ -21,8 +21,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import app.tivi.util.Logger
-import com.afterroot.tmdbapi.model.Query
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.data.model.Query
 import com.afterroot.watchdone.data.search.SearchDataSource
 import com.afterroot.watchdone.data.search.SearchMediaPagingSource
 import com.afterroot.watchdone.data.search.SearchRepository
@@ -30,6 +30,7 @@ import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.search.SearchViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
   val savedState: SavedStateHandle? = null,
@@ -103,7 +105,7 @@ class SearchViewModel @Inject constructor(
     logger.d { "init: Start" }
 
     viewModelScope.launch {
-      _query.debounce(300).collectLatest {
+      _query.debounce(500).collectLatest {
         searchQuery.value = it
         isRefresh.value = true
       }

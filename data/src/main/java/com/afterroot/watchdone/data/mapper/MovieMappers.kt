@@ -14,23 +14,20 @@
  */
 package com.afterroot.watchdone.data.mapper
 
+import app.moviebase.tmdb.model.TmdbMovieDetail
 import com.afterroot.watchdone.data.model.DBMedia
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.Movie
-import info.movito.themoviedbapi.model.NetworkMovie
-import info.movito.themoviedbapi.model.core.MovieResultsPage
+import kotlinx.datetime.LocalDate
 
 /**
- * Maps [NetworkMovie] to [Movie]
+ * Maps [TmdbMovieDetail] to [Movie]
  */
-fun NetworkMovie.toMovie(isWatched: Boolean = false): Movie = Movie(
-  tmdbId = id,
+fun TmdbMovieDetail.toMovie(isWatched: Boolean = false): Movie = Movie(
   adult = adult,
   backdropPath = backdropPath,
-  belongsToCollection = belongsToCollection,
   budget = budget,
-  genreIds = genreIds,
   genres = genres,
   homepage = homepage,
   imdbId = imdbId,
@@ -44,35 +41,33 @@ fun NetworkMovie.toMovie(isWatched: Boolean = false): Movie = Movie(
   releaseDate = releaseDate,
   revenue = revenue,
   runtime = runtime,
-  spokenLanguages = spokenLanguages,
   status = status,
   tagline = tagline,
   title = title,
+  tmdbId = id,
   video = video,
-  voteAverage = voteAverage?.toFloat(),
+  voteAverage = voteAverage,
   voteCount = voteCount,
-  userRating = userRating,
-  recommendedMovies = recommendedMovies,
-  alternativeTitles = alternativeTitles(),
-  images = images,
-  keywords = keywords,
-  lists = lists,
-  releases = releases,
-  reviews = reviews,
-  similarMovies = similarMovies,
-  translations = translations,
-  videos = videos,
+
+  // Appendable responses
   credits = credits,
+  externalIds = externalIds,
+  images = images,
+  releaseDates = releaseDates,
+  videos = videos,
+  watchProviders = watchProviders,
+
+  // Additional Data
   isWatched = isWatched,
 )
 
 fun DBMedia.toMovie(): Movie = Movie(
   tmdbId = id,
-  releaseDate = releaseDate,
+  releaseDate = releaseDate?.let { LocalDate.parse(it) },
   title = title,
   isWatched = isWatched,
   posterPath = posterPath,
-  voteAverage = rating,
+  voteAverage = rating ?: 0f,
 )
 
 fun DBMedia.toMedia(): Media = Media(
@@ -86,8 +81,8 @@ fun DBMedia.toMedia(): Media = Media(
 )
 
 fun Movie.toDBMedia() = DBMedia(
-  id = tmdbId ?: throw Exception("tmdbId is null"),
-  releaseDate = releaseDate,
+  id = tmdbId ?: throw NullPointerException("tmdbId is null"),
+  releaseDate = releaseDate.toString(),
   title = title,
   isWatched = isWatched,
   posterPath = posterPath,
@@ -95,4 +90,4 @@ fun Movie.toDBMedia() = DBMedia(
   rating = voteAverage,
 )
 
-fun MovieResultsPage.toMovies(): List<Movie> = results.mapNotNull { it?.toMovie() }
+fun List<TmdbMovieDetail>.toMovies(): List<Movie> = mapNotNull { it.toMovie() }

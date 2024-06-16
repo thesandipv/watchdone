@@ -40,16 +40,15 @@ import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.moviebase.tmdb.model.TmdbAnyPerson
+import app.moviebase.tmdb.model.TmdbCast
+import app.moviebase.tmdb.model.TmdbCrew
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.Header
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
-import info.movito.themoviedbapi.model.people.Person
-import info.movito.themoviedbapi.model.people.PersonCast
-import info.movito.themoviedbapi.model.people.PersonCrew
-import timber.log.Timber
 
 @Composable
-fun <T : Person> PersonRow(
+fun <T : TmdbAnyPerson> PersonRow(
   items: List<T>,
   modifier: Modifier = Modifier,
   title: String,
@@ -71,15 +70,15 @@ fun <T : Person> PersonRow(
       }
     }
     if (items.isNotEmpty()) {
-      PersonRow(items = items, onItemClick = { index, item ->
-        Timber.d("PersonRow: Clicked: Index $index Item: $item")
+      PersonRow(items = items, onItemClick = { _, _ ->
+        // TODO Show person info
       }, modifier = Modifier)
     }
   }
 }
 
 @Composable
-private fun <T : Person> PersonRow(
+private fun <T : TmdbAnyPerson> PersonRow(
   items: List<T>,
   onItemClick: (index: Int, item: T) -> Unit,
   modifier: Modifier = Modifier,
@@ -108,7 +107,7 @@ private fun <T : Person> PersonRow(
 }
 
 @Composable
-fun <T : Person> PersonItem(
+fun <T : TmdbAnyPerson> PersonItem(
   item: T,
   modifier: Modifier = Modifier,
   onClick: (() -> Unit)? = null,
@@ -129,11 +128,12 @@ fun <T : Person> PersonItem(
 
     ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
       when (item) {
-        is PersonCast -> {
-          item.character?.let { Text(text = it) }
+        is TmdbCast -> {
+          Text(text = item.character)
         }
-        is PersonCrew -> {
-          item.department?.let { Text(text = it) }
+
+        is TmdbCrew -> {
+          item.department?.let { Text(text = it.value) }
         }
       }
     }
@@ -146,7 +146,7 @@ fun <T : Person> PersonItem(
         fontStyle = FontStyle.Italic,
       ),
     ) {
-      item.name?.let { Text(text = it) }
+      Text(text = item.name)
     }
   }
 }
@@ -154,7 +154,7 @@ fun <T : Person> PersonItem(
 @Preview
 @Composable
 fun PreviewPersonItem() {
-  Column() {
+  Column {
     BasePosterCard(
       title = "Lorem",
       posterPath = "na",

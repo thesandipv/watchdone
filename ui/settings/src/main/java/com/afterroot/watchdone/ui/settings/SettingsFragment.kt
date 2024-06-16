@@ -28,11 +28,13 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
-import com.afterroot.tmdbapi.model.config.Country
-import com.afterroot.tmdbapi.repository.ConfigRepository
+import app.moviebase.tmdb.model.TmdbConfigurationCountry
 import com.afterroot.watchdone.base.Constants
+import com.afterroot.watchdone.data.mapper.toCountry
+import com.afterroot.watchdone.data.model.Country
 import com.afterroot.watchdone.data.model.DarkThemeConfig
 import com.afterroot.watchdone.data.model.UserData
+import com.afterroot.watchdone.data.repositories.ConfigRepository
 import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.di.VersionFormatted
 import com.afterroot.watchdone.settings.Settings
@@ -110,6 +112,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             CommonR.string.theme_device_default,
           ),
           -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+
           getString(CommonR.string.theme_light) -> AppCompatDelegate.MODE_NIGHT_NO
           getString(CommonR.string.theme_dark) -> AppCompatDelegate.MODE_NIGHT_YES
           else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -122,6 +125,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             CommonR.string.theme_device_default,
           ),
           -> DarkThemeConfig.FOLLOW_SYSTEM
+
           getString(CommonR.string.theme_light) -> DarkThemeConfig.LIGHT
           getString(CommonR.string.theme_dark) -> DarkThemeConfig.DARK
           else -> DarkThemeConfig.FOLLOW_SYSTEM
@@ -171,7 +175,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
           withContext(Dispatchers.Main) {
             requireContext().toast("Please Wait...")
           }
-          countriesDao.add(configRepository.getCountries())
+          countriesDao.add(
+            configRepository.getCountries().map(TmdbConfigurationCountry::toCountry),
+          )
         }
       }
 

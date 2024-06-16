@@ -21,7 +21,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.afterroot.tmdbapi.model.Genre
+import com.afterroot.watchdone.data.model.Genre
 import kotlinx.coroutines.flow.Flow
 
 @Dao
