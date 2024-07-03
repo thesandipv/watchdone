@@ -20,6 +20,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import app.moviebase.tmdb.discover.DiscoverCategory.NowPlaying
+import app.moviebase.tmdb.discover.DiscoverCategory.Popular
+import app.moviebase.tmdb.model.TmdbMediaType
 import app.tivi.util.Logger
 import com.afterroot.watchdone.data.compoundmodel.DiscoverEntryWithMedia
 import com.afterroot.watchdone.data.model.MediaType
@@ -29,6 +32,8 @@ import com.afterroot.watchdone.settings.Settings
 import com.afterroot.watchdone.ui.discover.DiscoverViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import javax.inject.Provider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -38,12 +43,13 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
-  val savedStateHandle: SavedStateHandle,
+  private val savedStateHandle: SavedStateHandle,
+  private val userDataRepository: UserDataRepository,
+  observePagedDiscover: Provider<ObservePagedDiscover>,
   settings: Settings,
-  val observePagedDiscover: ObservePagedDiscover,
-  val userDataRepository: UserDataRepository,
   logger: Logger,
 ) : ViewModel() {
 
@@ -57,7 +63,13 @@ class DiscoverViewModel @Inject constructor(
     initialValue = DiscoverViewState.Empty,
   )
 
-  val pagedDiscoverList: Flow<PagingData<DiscoverEntryWithMedia>> = observePagedDiscover.flow.cachedIn(
+  val discoverPopular: ObservePagedDiscover = observePagedDiscover.get()
+  val discoverNowPlaying: ObservePagedDiscover = observePagedDiscover.get()
+
+  val pagedDiscoverList: Flow<PagingData<DiscoverEntryWithMedia>> = discoverPopular.flow.cachedIn(
+    viewModelScope,
+  )
+  val pagedNowPlayingList: Flow<PagingData<DiscoverEntryWithMedia>> = discoverNowPlaying.flow.cachedIn(
     viewModelScope,
   )
 
@@ -69,15 +81,14 @@ class DiscoverViewModel @Inject constructor(
         it.mediaTypeViews
       }.first()?.get(KEY_MEDIA_TYPE) ?: MediaType.MOVIE.name
 
-      logger.d { "Discover: mediaTypeViews $mediaTypeViews" }
-
       setMediaType(MediaType.valueOf(mediaTypeViews), false)
     }
   }
 
   fun setMediaType(mediaType: MediaType, updateSettings: Boolean = true) {
     savedStateHandle[KEY_MEDIA_TYPE] = mediaType
-    observePagedDiscover(discoverParams(mediaType))
+    discoverPopular(discoverParams(mediaType))
+    discoverNowPlaying(nowPlayingParams)
     if (updateSettings) {
       viewModelScope.launch {
         userDataRepository.updateMediaTypeViews(KEY_MEDIA_TYPE, mediaType)
@@ -86,9 +97,18 @@ class DiscoverViewModel @Inject constructor(
   }
 
   companion object {
+    private val defaultPagingConfig = PagingConfig(20, initialLoadSize = 40)
+
     fun discoverParams(mediaType: MediaType) = ObservePagedDiscover.Params(
       mediaType = mediaType,
-      pagingConfig = PagingConfig(20, initialLoadSize = 40),
+      pagingConfig = defaultPagingConfig,
+      category = Popular(TmdbMediaType.valueOf(mediaType.name)),
+    )
+
+    val nowPlayingParams = ObservePagedDiscover.Params(
+      mediaType = MediaType.MOVIE,
+      pagingConfig = defaultPagingConfig,
+      category = NowPlaying,
     )
 
     const val KEY_MEDIA_TYPE = "media_type"

@@ -22,3 +22,7 @@ interface Entry : WDEntity {
 interface PaginatedEntry : Entry {
   val page: Int
 }
+
+interface MediaPaginatedEntry : PaginatedEntry {
+  val mediaType: MediaType
+}

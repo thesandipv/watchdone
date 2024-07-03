@@ -20,10 +20,18 @@ import com.afterroot.watchdone.data.mapper.TmdbMovieToMedia
 import com.afterroot.watchdone.data.model.Media
 import javax.inject.Inject
 
+@Deprecated(
+  "Use TmdbDiscoverDataSource instead",
+  ReplaceWith(
+    "TmdbDiscoverDataSource",
+    "com.afterroot.watchdone.discover.TmdbDiscoverDataSource",
+  ),
+)
 class TmdbDiscoverMovieDataSource @Inject constructor(
   private val tmdb: Tmdb3,
   private val tmdbMovieToMedia: TmdbMovieToMedia,
 ) : DiscoverDataSource {
+  @Deprecated("Use another overload for feting discover by category", ReplaceWith(""))
   override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
     return tmdb.discover.discoverMovie(
       page,

@@ -24,6 +24,7 @@ import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.daos.MediaDao
 import com.afterroot.watchdone.data.daos.getIdOrSaveMedia
 import com.afterroot.watchdone.data.daos.updatePage
+import com.afterroot.watchdone.data.model.DiscoverCategory
 import com.afterroot.watchdone.data.model.DiscoverEntry
 import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
@@ -33,6 +34,13 @@ import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
 
+@Deprecated(
+  "Use DiscoverStore instead",
+  ReplaceWith(
+    "DiscoverStore",
+    "com.afterroot.watchdone.discover.DiscoverStore",
+  ),
+)
 class DiscoverMovieStore @Inject constructor(
   @Named("tmdbDiscoverMovieDataSource") dataSource: DiscoverDataSource,
   discoverDao: DiscoverDao,
@@ -51,6 +59,7 @@ class DiscoverMovieStore @Inject constructor(
               mediaId = mediaDao.getIdOrSaveMedia(media),
               page = page,
               mediaType = media.mediaType ?: MediaType.MOVIE,
+              category = DiscoverCategory.POPULAR,
             )
           }
         }
@@ -60,7 +69,7 @@ class DiscoverMovieStore @Inject constructor(
   sourceOfTruth = SourceOfTruth.of(
     reader = { page ->
       logger.d { "Reading from database:discover page:$page" }
-      discoverDao.entriesForPage(page, MediaType.MOVIE)
+      discoverDao.entriesForPage(page, MediaType.MOVIE, DiscoverCategory.POPULAR)
     },
     writer = { page, response ->
       transactionRunner {

@@ -35,4 +35,10 @@ abstract class DiscoverDataSourceBinds {
   abstract fun bindDiscoverShowDataSource(
     tmdbDiscoverShowDataSource: TmdbDiscoverShowDataSource,
   ): DiscoverDataSource
+
+  @Binds
+  @Named("tmdbDiscoverDataSource")
+  abstract fun bindDiscoverDataSource(
+    tmdbDiscoverDataSource: TmdbDiscoverDataSource,
+  ): DiscoverDataSource
 }
