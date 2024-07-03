@@ -32,12 +32,6 @@ class TmdbDiscoverDataSource @Inject constructor(
   private val tmdbMovieToMedia: TmdbMovieToMedia,
   private val tmdbShowToMedia: TmdbShowToMedia,
 ) : DiscoverDataSource {
-
-  @Deprecated("Use another overload for feting discover by category", replaceWith = ReplaceWith(""))
-  override suspend fun invoke(page: Int, parameters: Map<String, Any?>): List<Media> {
-    return emptyList()
-  }
-
   override suspend fun invoke(
     page: Int,
     mediaType: MediaType,

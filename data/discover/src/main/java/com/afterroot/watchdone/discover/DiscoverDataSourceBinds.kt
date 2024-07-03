@@ -19,25 +19,18 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
+import javax.inject.Qualifier
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Tmdb
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DiscoverDataSourceBinds {
   @Binds
-  @Named("tmdbDiscoverMovieDataSource")
-  abstract fun bindDiscoverMovieDataSource(
-    tmdbDiscoverMovieDataSource: TmdbDiscoverMovieDataSource,
-  ): DiscoverDataSource
-
-  @Binds
-  @Named("tmdbDiscoverShowDataSource")
-  abstract fun bindDiscoverShowDataSource(
-    tmdbDiscoverShowDataSource: TmdbDiscoverShowDataSource,
-  ): DiscoverDataSource
-
-  @Binds
-  @Named("tmdbDiscoverDataSource")
+  // @Named("tmdbDiscoverDataSource")
+  @Tmdb
   abstract fun bindDiscoverDataSource(
     tmdbDiscoverDataSource: TmdbDiscoverDataSource,
   ): DiscoverDataSource

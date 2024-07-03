@@ -26,14 +26,13 @@ import com.afterroot.watchdone.data.mapper.TmdbDiscoverCategoryToDiscoverCategor
 import com.afterroot.watchdone.data.model.DiscoverEntry
 import com.afterroot.watchdone.data.model.MediaType
 import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.StoreBuilder
 
 class DiscoverStore @Inject constructor(
-  @Named("tmdbDiscoverDataSource") dataSource: DiscoverDataSource,
+  @Tmdb dataSource: DiscoverDataSource,
   discoverDao: DiscoverDao,
   mediaDao: MediaDao,
   dispatchers: CoroutineDispatchers,
