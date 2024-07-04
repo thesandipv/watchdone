@@ -80,8 +80,8 @@ class MediaInfoViewModel @Inject constructor(
 
   val mediaType = MediaType.valueOf(_mediaType.value.uppercase())
 
-  private val isInWL = MutableStateFlow(false)
-  private val isWatched = MutableStateFlow(false)
+  private val isInWL: MutableStateFlow<State<Boolean>> = MutableStateFlow(State.loading())
+  private val isWatched: MutableStateFlow<State<Boolean>> = MutableStateFlow(State.loading())
   private val selectedSeason = MutableStateFlow(1)
   private val dbMedia = MutableStateFlow(DBMedia.Empty)
 
@@ -174,9 +174,7 @@ class MediaInfoViewModel @Inject constructor(
           method = WatchlistInteractor.Method.EXIST,
         ),
       ).collectLatest {
-        if (it is State.Success) {
-          isInWL.value = it.data
-        }
+        isInWL.value = it
       }
     }
 
@@ -199,9 +197,9 @@ class MediaInfoViewModel @Inject constructor(
         ),
       ).collect { result ->
         result.whenSuccess {
-          isInWL.value = isAdd
+          isInWL.value = State.success(isAdd)
           if (!isAdd) { // Set watched to false when media removed from watchlist
-            isWatched.value = false
+            isWatched.value = State.success(false)
           }
         }
       }
@@ -218,7 +216,7 @@ class MediaInfoViewModel @Inject constructor(
         ),
       ).collect { result ->
         result.whenSuccess {
-          isWatched.value = it
+          isWatched.value = result
         }.whenFailed { message, exception ->
           logger.e(exception) { "watchStateAction: $message" }
         }
@@ -251,7 +249,7 @@ class MediaInfoViewModel @Inject constructor(
       ).collectLatest { result ->
         result.whenSuccess {
           dbMedia.value = it
-          isWatched.value = it.isWatched
+          isWatched.value = State.success(it.isWatched)
         }
       }
     }
