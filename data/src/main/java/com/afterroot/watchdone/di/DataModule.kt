@@ -21,6 +21,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,3 +31,7 @@ abstract class DataModule {
     userDataRepository: UserDataRepositoryImpl,
   ): UserDataRepository
 }
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Tmdb

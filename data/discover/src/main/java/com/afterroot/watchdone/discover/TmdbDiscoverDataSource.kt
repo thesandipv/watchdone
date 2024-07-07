@@ -16,7 +16,7 @@
 package com.afterroot.watchdone.discover
 
 import app.moviebase.tmdb.Tmdb3
-import app.moviebase.tmdb.discover.DiscoverCategory
+import app.moviebase.tmdb.model.TmdbDiscover
 import app.moviebase.tmdb.model.TmdbMoviePageResult
 import app.moviebase.tmdb.model.TmdbShowPageResult
 import com.afterroot.watchdone.data.mapper.TmdbMovieToMedia
@@ -35,24 +35,24 @@ class TmdbDiscoverDataSource @Inject constructor(
   override suspend fun invoke(
     page: Int,
     mediaType: MediaType,
-    category: DiscoverCategory,
+    tmdbDiscover: TmdbDiscover,
   ): List<Media> {
     return when (mediaType) {
       MediaType.MOVIE -> {
-        val discover = tmdb.discover.discoverByCategory(
+        val discover = tmdb.discover.discover(
           page,
           region = settings.country,
-          category = category,
+          tmdbDiscover = tmdbDiscover,
         ) as TmdbMoviePageResult
 
         discover.results.map(tmdbMovieToMedia::map)
       }
 
       MediaType.SHOW -> {
-        val discover = tmdb.discover.discoverByCategory(
+        val discover = tmdb.discover.discover(
           page,
           region = settings.country,
-          category = category,
+          tmdbDiscover = tmdbDiscover,
         ) as TmdbShowPageResult
 
         discover.results.map(tmdbShowToMedia::map)

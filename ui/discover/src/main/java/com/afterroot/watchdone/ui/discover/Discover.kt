@@ -168,7 +168,7 @@ internal fun Discover(
             fullSpanItem {
               PagingCarousel(
                 items = movieItems,
-                title = "Discover",
+                title = "Popular",
                 refreshing = movieItems.loadState.refresh == LoadState.Loading,
                 modifier = Modifier.fillMaxWidth(),
                 onItemClick = { media, _ ->
@@ -180,7 +180,7 @@ internal fun Discover(
             fullSpanItem {
               PagingCarousel(
                 items = showItems,
-                title = "Discover",
+                title = "Popular",
                 refreshing = showItems.loadState.refresh == LoadState.Loading,
                 modifier = Modifier.fillMaxWidth(),
                 onItemClick = { media, _ ->

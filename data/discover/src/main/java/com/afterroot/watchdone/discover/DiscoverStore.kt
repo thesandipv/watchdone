@@ -16,6 +16,7 @@
 package com.afterroot.watchdone.discover
 
 import app.moviebase.tmdb.discover.DiscoverCategory
+import app.moviebase.tmdb.discover.DiscoverFactory
 import app.tivi.data.db.DatabaseTransactionRunner
 import app.tivi.util.Logger
 import com.afterroot.watchdone.base.CoroutineDispatchers
@@ -25,6 +26,7 @@ import com.afterroot.watchdone.data.daos.getIdOrSaveMedia
 import com.afterroot.watchdone.data.mapper.TmdbDiscoverCategoryToDiscoverCategory
 import com.afterroot.watchdone.data.model.DiscoverEntry
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.di.Tmdb
 import javax.inject.Inject
 import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.Fetcher
@@ -41,7 +43,11 @@ class DiscoverStore @Inject constructor(
   logger: Logger,
 ) {
   private val fetcher = Fetcher.of { key: DiscoverStoreKey ->
-    dataSource(key.page, key.mediaType, key.category).let { response ->
+    dataSource(
+      key.page,
+      key.mediaType,
+      DiscoverFactory.createByCategory(key.category),
+    ).let { response ->
       logger.d { "DiscoverStore: Fetched for $key" }
       withContext(dispatchers.databaseWrite) {
         transactionRunner {

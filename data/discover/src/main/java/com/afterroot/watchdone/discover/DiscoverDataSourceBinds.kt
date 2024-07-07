@@ -15,21 +15,16 @@
 
 package com.afterroot.watchdone.discover
 
+import com.afterroot.watchdone.di.Tmdb
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Qualifier
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Tmdb
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DiscoverDataSourceBinds {
   @Binds
-  // @Named("tmdbDiscoverDataSource")
   @Tmdb
   abstract fun bindDiscoverDataSource(
     tmdbDiscoverDataSource: TmdbDiscoverDataSource,
