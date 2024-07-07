@@ -22,9 +22,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -41,7 +40,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import app.tivi.common.compose.fullSpanItem
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.PagingCarousel
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
@@ -83,18 +81,32 @@ fun Discover(
   val viewState by discoverViewModel.state.collectAsState()
   val discoverItems = discoverViewModel.pagedDiscoverList.collectAsLazyPagingItems()
   val nowPlayingItems = discoverViewModel.pagedNowPlayingList.collectAsLazyPagingItems()
+  val nowPlayingShowItems = discoverViewModel.pagedDiscoverOnTv.collectAsLazyPagingItems()
 
   Discover(
-    state = viewState.copy(
-      isLoading = discoverItems.loadState.refresh is LoadState.Loading,
-    ),
+    state = viewState,
     movieItems = discoverItems,
     showItems = discoverItems,
     nowPlayingItems = nowPlayingItems,
+    nowPlayingShowItems = nowPlayingShowItems,
     itemSelectedCallback = itemSelectedCallback,
     onMovieChipSelected = { discoverViewModel.setMediaType(MediaType.MOVIE) },
     onShowChipSelected = { discoverViewModel.setMediaType(MediaType.SHOW) },
-    refresh = discoverItems::refresh,
+    refresh = {
+      discoverItems.refresh()
+
+      when (viewState.mediaType) {
+        MediaType.MOVIE -> {
+          nowPlayingItems.refresh()
+        }
+
+        MediaType.SHOW -> {
+          nowPlayingShowItems.refresh()
+        }
+
+        else -> {}
+      }
+    },
   )
 }
 
@@ -108,12 +120,13 @@ internal fun Discover(
   movieItems: LazyPagingItems<DiscoverEntryWithMedia>,
   showItems: LazyPagingItems<DiscoverEntryWithMedia>,
   nowPlayingItems: LazyPagingItems<DiscoverEntryWithMedia>,
+  nowPlayingShowItems: LazyPagingItems<DiscoverEntryWithMedia>,
   itemSelectedCallback: ItemSelectedCallback<Media>,
   onMovieChipSelected: () -> Unit,
   onShowChipSelected: () -> Unit,
   refresh: () -> Unit,
 ) {
-  val listState = rememberLazyGridState()
+  val listState = rememberLazyListState()
 
   Scaffold(
     topBar = {
@@ -135,16 +148,14 @@ internal fun Discover(
         .pullRefresh(state = refreshState)
         .fillMaxWidth(),
     ) {
-      if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && showItems.itemCount != 0) || !state.isLoading) {
-        LazyVerticalGrid(
+      if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && showItems.itemCount != 0)) {
+        LazyColumn(
           state = listState,
-          columns = GridCells.Fixed(3),
           contentPadding = paddingValues, // Padding to be handled by child
-          horizontalArrangement = Arrangement.spacedBy(8.dp),
           verticalArrangement = Arrangement.spacedBy(8.dp),
           modifier = Modifier.fillMaxHeight(),
         ) {
-          fullSpanItem {
+          item {
             DiscoverChips(
               onMovieSelected = { onMovieChipSelected() },
               onShowSelected = { onShowChipSelected() },
@@ -153,7 +164,7 @@ internal fun Discover(
             )
           }
           if (state.mediaType == MediaType.MOVIE) {
-            fullSpanItem {
+            item {
               PagingCarousel(
                 items = nowPlayingItems,
                 title = "Now Playing",
@@ -165,7 +176,7 @@ internal fun Discover(
               )
             }
 
-            fullSpanItem {
+            item {
               PagingCarousel(
                 items = movieItems,
                 title = "Popular",
@@ -176,8 +187,19 @@ internal fun Discover(
                 },
               )
             }
-          } else if (state.mediaType == MediaType.SHOW) {
-            fullSpanItem {
+          } else { // MediaType.SHOW
+            item {
+              PagingCarousel(
+                items = nowPlayingShowItems,
+                title = "Now On TV",
+                refreshing = nowPlayingShowItems.loadState.refresh == LoadState.Loading,
+                modifier = Modifier.fillMaxWidth(),
+                onItemClick = { media, _ ->
+                  itemSelectedCallback.onClick(0, null, media)
+                },
+              )
+            }
+            item {
               PagingCarousel(
                 items = showItems,
                 title = "Popular",
@@ -189,7 +211,7 @@ internal fun Discover(
               )
             }
           }
-          fullSpanItem {
+          item {
             Spacer(modifier = Modifier.height(80.dp))
           }
         }

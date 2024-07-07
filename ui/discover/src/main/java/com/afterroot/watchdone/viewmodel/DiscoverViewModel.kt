@@ -20,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import app.moviebase.tmdb.discover.DiscoverCategory
 import app.moviebase.tmdb.discover.DiscoverCategory.NowPlaying
 import app.moviebase.tmdb.discover.DiscoverCategory.Popular
 import app.moviebase.tmdb.model.TmdbMediaType
@@ -63,15 +64,25 @@ class DiscoverViewModel @Inject constructor(
     initialValue = DiscoverViewState.Empty,
   )
 
-  val discoverPopular: ObservePagedDiscover = observePagedDiscover.get()
-  val discoverNowPlaying: ObservePagedDiscover = observePagedDiscover.get()
+  val discoverPopular: ObservePagedDiscover by lazy { observePagedDiscover.get() }
+  val discoverNowPlaying: ObservePagedDiscover by lazy { observePagedDiscover.get() }
+  val discoverOnTv: ObservePagedDiscover by lazy { observePagedDiscover.get() }
 
-  val pagedDiscoverList: Flow<PagingData<DiscoverEntryWithMedia>> = discoverPopular.flow.cachedIn(
-    viewModelScope,
-  )
-  val pagedNowPlayingList: Flow<PagingData<DiscoverEntryWithMedia>> = discoverNowPlaying.flow.cachedIn(
-    viewModelScope,
-  )
+  val pagedDiscoverList: Flow<PagingData<DiscoverEntryWithMedia>> by lazy {
+    discoverPopular.flow.cachedIn(
+      viewModelScope,
+    )
+  }
+  val pagedNowPlayingList: Flow<PagingData<DiscoverEntryWithMedia>> by lazy {
+    discoverNowPlaying.flow.cachedIn(
+      viewModelScope,
+    )
+  }
+  val pagedDiscoverOnTv: Flow<PagingData<DiscoverEntryWithMedia>> by lazy {
+    discoverOnTv.flow.cachedIn(
+      viewModelScope,
+    )
+  }
 
   init {
     logger.d { "init: $this" }
@@ -87,8 +98,21 @@ class DiscoverViewModel @Inject constructor(
 
   fun setMediaType(mediaType: MediaType, updateSettings: Boolean = true) {
     savedStateHandle[KEY_MEDIA_TYPE] = mediaType
+
     discoverPopular(discoverParams(mediaType))
-    discoverNowPlaying(nowPlayingParams)
+
+    when (mediaType) {
+      MediaType.MOVIE -> {
+        discoverNowPlaying(nowPlayingParams)
+      }
+
+      MediaType.SHOW -> {
+        discoverOnTv(onTvParams)
+      }
+
+      else -> {}
+    }
+
     if (updateSettings) {
       viewModelScope.launch {
         userDataRepository.updateMediaTypeViews(KEY_MEDIA_TYPE, mediaType)
@@ -105,11 +129,21 @@ class DiscoverViewModel @Inject constructor(
       category = Popular(TmdbMediaType.valueOf(mediaType.name)),
     )
 
-    val nowPlayingParams = ObservePagedDiscover.Params(
-      mediaType = MediaType.MOVIE,
-      pagingConfig = defaultPagingConfig,
-      category = NowPlaying,
-    )
+    val nowPlayingParams by lazy {
+      ObservePagedDiscover.Params(
+        mediaType = MediaType.MOVIE,
+        pagingConfig = defaultPagingConfig,
+        category = NowPlaying,
+      )
+    }
+
+    val onTvParams by lazy {
+      ObservePagedDiscover.Params(
+        mediaType = MediaType.SHOW,
+        pagingConfig = defaultPagingConfig,
+        category = DiscoverCategory.OnTv,
+      )
+    }
 
     const val KEY_MEDIA_TYPE = "media_type"
   }
