@@ -18,15 +18,17 @@ on:
       - '**/README.md'
       - 'CHANGES.md'
 
+env:
+  GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GHUSERNAME: ${{ secrets.GHUSERNAME }}
+  TMDB_API: ${{ secrets.TMDB_API }}
+  TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+
 jobs:
   kotlin-code-style-check:
     name: Kotlin Code Style Check
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
-    env:
-      GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GHUSERNAME: ${{ secrets.GHUSERNAME }}
 
     steps:
       - name: Check Out
@@ -61,12 +63,8 @@ jobs:
     timeout-minutes: 60
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GHUSERNAME: ${{ secrets.GHUSERNAME }}
       SIGN_KEY_PW: ${{ secrets.SIGN_KEY_PW }}
       SIGN_STORE_PW: ${{ secrets.SIGN_STORE_PW }}
-      TMDB_API: ${{ secrets.TMDB_API }}
-      TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
       FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
     steps:
