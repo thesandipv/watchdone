@@ -24,6 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
+    env:
+      GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHUSERNAME: ${{ secrets.GHUSERNAME }}
+
     steps:
       - name: Check Out
         uses: actions/checkout@v4
@@ -50,15 +54,6 @@ jobs:
       - name: Run spotlessKotlinCheck task
         id: run-spotless
         run: ./gradlew spotlessKotlinCheck --stacktrace
-        env:
-          CI: true
-          GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHUSERNAME: ${{ secrets.GHUSERNAME }}
-          SIGN_KEY_PW: ${{ secrets.SIGN_KEY_PW }}
-          SIGN_STORE_PW: ${{ secrets.SIGN_STORE_PW }}
-          TMDB_API: ${{ secrets.TMDB_API }}
-          TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
-          FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
   android:
     name: Android Build
@@ -66,6 +61,13 @@ jobs:
     timeout-minutes: 60
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHUSERNAME: ${{ secrets.GHUSERNAME }}
+      SIGN_KEY_PW: ${{ secrets.SIGN_KEY_PW }}
+      SIGN_STORE_PW: ${{ secrets.SIGN_STORE_PW }}
+      TMDB_API: ${{ secrets.TMDB_API }}
+      TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+      FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
     steps:
       - uses: act10ns/slack@v2
@@ -123,6 +125,8 @@ jobs:
       - name: Setup Gradle
         id: setup-gradle
         uses: gradle/actions/setup-gradle@v3
+        env:
+          COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
         with:
           gradle-version: wrapper
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
@@ -131,25 +135,14 @@ jobs:
         id: assemble-release-build
         run: ./gradlew :app:assembleRelease :app:bundleRelease --stacktrace
         env:
-          CI: true
-          GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHUSERNAME: ${{ secrets.GHUSERNAME }}
-          SIGN_KEY_PW: ${{ secrets.SIGN_KEY_PW }}
-          SIGN_STORE_PW: ${{ secrets.SIGN_STORE_PW }}
-          TMDB_API: ${{ secrets.TMDB_API }}
-          TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
           COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
-          FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
       - name: Run Tests in app module
         id: run-tests
         continue-on-error: true #TODO Remove
         run: ./gradlew testReleaseUnitTest
         env:
-          TMDB_API: ${{ secrets.TMDB_API }}
-          TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
           COMMIT_ID: ${{ steps.commithash.outputs.sha_short }}
-          FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
       - name: Publish to Play Store
         id: publish-to-play-store
