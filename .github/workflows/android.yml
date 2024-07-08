@@ -23,6 +23,8 @@ env:
   GHUSERNAME: ${{ secrets.GHUSERNAME }}
   TMDB_API: ${{ secrets.TMDB_API }}
   TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+  FB_APP_ID: ${{ secrets.FB_APP_ID }}
+
 
 jobs:
   kotlin-code-style-check:
@@ -65,7 +67,6 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       SIGN_KEY_PW: ${{ secrets.SIGN_KEY_PW }}
       SIGN_STORE_PW: ${{ secrets.SIGN_STORE_PW }}
-      FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
     steps:
       - uses: act10ns/slack@v2
