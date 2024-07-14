@@ -82,18 +82,20 @@ fun Discover(
   val discoverItems = discoverViewModel.pagedDiscoverList.collectAsLazyPagingItems()
   val nowPlayingItems = discoverViewModel.pagedNowPlayingList.collectAsLazyPagingItems()
   val nowPlayingShowItems = discoverViewModel.pagedDiscoverOnTv.collectAsLazyPagingItems()
+  val topRatedItems = discoverViewModel.pagedTopRated.collectAsLazyPagingItems()
 
   Discover(
     state = viewState,
-    movieItems = discoverItems,
-    showItems = discoverItems,
+    popularItems = discoverItems,
     nowPlayingItems = nowPlayingItems,
     nowPlayingShowItems = nowPlayingShowItems,
+    topRatedItems = topRatedItems,
     itemSelectedCallback = itemSelectedCallback,
     onMovieChipSelected = { discoverViewModel.setMediaType(MediaType.MOVIE) },
     onShowChipSelected = { discoverViewModel.setMediaType(MediaType.SHOW) },
     refresh = {
       discoverItems.refresh()
+      topRatedItems.refresh()
 
       when (viewState.mediaType) {
         MediaType.MOVIE -> {
@@ -117,10 +119,10 @@ fun Discover(
 @Composable
 internal fun Discover(
   state: DiscoverViewState,
-  movieItems: LazyPagingItems<DiscoverEntryWithMedia>,
-  showItems: LazyPagingItems<DiscoverEntryWithMedia>,
+  popularItems: LazyPagingItems<DiscoverEntryWithMedia>,
   nowPlayingItems: LazyPagingItems<DiscoverEntryWithMedia>,
   nowPlayingShowItems: LazyPagingItems<DiscoverEntryWithMedia>,
+  topRatedItems: LazyPagingItems<DiscoverEntryWithMedia>,
   itemSelectedCallback: ItemSelectedCallback<Media>,
   onMovieChipSelected: () -> Unit,
   onShowChipSelected: () -> Unit,
@@ -148,7 +150,7 @@ internal fun Discover(
         .pullRefresh(state = refreshState)
         .fillMaxWidth(),
     ) {
-      if ((state.mediaType == MediaType.MOVIE && movieItems.itemCount != 0 || state.mediaType == MediaType.SHOW && showItems.itemCount != 0)) {
+      if ((state.mediaType == MediaType.MOVIE && popularItems.itemCount != 0 || state.mediaType == MediaType.SHOW && popularItems.itemCount != 0)) {
         LazyColumn(
           state = listState,
           contentPadding = paddingValues, // Padding to be handled by child
@@ -175,18 +177,6 @@ internal fun Discover(
                 },
               )
             }
-
-            item {
-              PagingCarousel(
-                items = movieItems,
-                title = "Popular",
-                refreshing = movieItems.loadState.refresh == LoadState.Loading,
-                modifier = Modifier.fillMaxWidth(),
-                onItemClick = { media, _ ->
-                  itemSelectedCallback.onClick(0, null, media)
-                },
-              )
-            }
           } else { // MediaType.SHOW
             item {
               PagingCarousel(
@@ -199,18 +189,32 @@ internal fun Discover(
                 },
               )
             }
-            item {
-              PagingCarousel(
-                items = showItems,
-                title = "Popular",
-                refreshing = showItems.loadState.refresh == LoadState.Loading,
-                modifier = Modifier.fillMaxWidth(),
-                onItemClick = { media, _ ->
-                  itemSelectedCallback.onClick(0, null, media)
-                },
-              )
-            }
           }
+
+          item {
+            PagingCarousel(
+              items = popularItems,
+              title = "Popular",
+              refreshing = popularItems.loadState.refresh == LoadState.Loading,
+              modifier = Modifier.fillMaxWidth(),
+              onItemClick = { media, _ ->
+                itemSelectedCallback.onClick(0, null, media)
+              },
+            )
+          }
+
+          item {
+            PagingCarousel(
+              items = topRatedItems,
+              title = "Top Rated",
+              refreshing = topRatedItems.loadState.refresh == LoadState.Loading,
+              modifier = Modifier.fillMaxWidth(),
+              onItemClick = { media, _ ->
+                itemSelectedCallback.onClick(0, null, media)
+              },
+            )
+          }
+
           item {
             Spacer(modifier = Modifier.height(80.dp))
           }

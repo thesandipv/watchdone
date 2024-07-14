@@ -61,6 +61,7 @@ class DiscoverViewModel @Inject constructor(
   val pagedDiscoverList = discoverLists.pagedPopularList(viewModelScope)
   val pagedNowPlayingList = discoverLists.pagedNowPlayingList(viewModelScope)
   val pagedDiscoverOnTv = discoverLists.pagedOnTVList(viewModelScope)
+  val pagedTopRated = discoverLists.pagedTopRatedList(viewModelScope)
 
   init {
     logger.d { "init: $this" }
@@ -78,6 +79,7 @@ class DiscoverViewModel @Inject constructor(
     savedStateHandle[KEY_MEDIA_TYPE] = mediaType
 
     discoverLists.popular(discoverParams(mediaType))
+    discoverLists.topRated(topRatedParams(mediaType))
 
     when (mediaType) {
       MediaType.MOVIE -> {
@@ -105,6 +107,12 @@ class DiscoverViewModel @Inject constructor(
       mediaType = mediaType,
       pagingConfig = defaultPagingConfig,
       category = Popular(TmdbMediaType.valueOf(mediaType.name)),
+    )
+
+    fun topRatedParams(mediaType: MediaType) = ObservePagedDiscover.Params(
+      mediaType = mediaType,
+      pagingConfig = defaultPagingConfig,
+      category = DiscoverCategory.TopRated(TmdbMediaType.valueOf(mediaType.name)),
     )
 
     val nowPlayingParams by lazy {

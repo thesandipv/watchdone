@@ -41,4 +41,9 @@ class DiscoverLists @Inject constructor(
   fun pagedOnTVList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> {
     return onTV.flow.cachedIn(scope)
   }
+
+  val topRated: ObservePagedDiscover by lazy { observePagedDiscover.get() }
+  fun pagedTopRatedList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> {
+    return topRated.flow.cachedIn(scope)
+  }
 }
