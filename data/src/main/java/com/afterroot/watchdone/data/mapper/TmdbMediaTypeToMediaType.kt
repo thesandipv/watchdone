@@ -28,3 +28,12 @@ class TmdbMediaTypeToMediaType @Inject constructor() : Mapper<TmdbMediaType, Med
     TmdbMediaType.EPISODE -> MediaType.EPISODE
   }
 }
+
+class MediaTypeToTmdbMediaType @Inject constructor() : Mapper<MediaType, TmdbMediaType> {
+  override fun map(from: MediaType): TmdbMediaType = when (from) {
+    MediaType.MOVIE -> TmdbMediaType.MOVIE
+    MediaType.SHOW -> TmdbMediaType.SHOW
+    MediaType.SEASON -> TmdbMediaType.SEASON
+    MediaType.EPISODE -> TmdbMediaType.EPISODE
+  }
+}

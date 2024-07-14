@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2023 Sandip Vaghela
+ * Copyright (C) 2020-2024 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,60 +15,73 @@
 
 package com.afterroot.watchdone.discover
 
-import app.moviebase.tmdb.model.TmdbDiscover
+import app.moviebase.tmdb.discover.DiscoverCategory
+import app.moviebase.tmdb.discover.DiscoverFactory
 import app.tivi.data.db.DatabaseTransactionRunner
-import app.tivi.data.util.storeBuilder
 import app.tivi.util.Logger
 import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.data.daos.DiscoverDao
 import com.afterroot.watchdone.data.daos.MediaDao
 import com.afterroot.watchdone.data.daos.getIdOrSaveMedia
-import com.afterroot.watchdone.data.daos.updatePage
+import com.afterroot.watchdone.data.mapper.TmdbDiscoverCategoryToDiscoverCategory
 import com.afterroot.watchdone.data.model.DiscoverEntry
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.di.Tmdb
 import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
-import org.mobilenativefoundation.store.store5.Store
+import org.mobilenativefoundation.store.store5.StoreBuilder
 
-class DiscoverMovieStore @Inject constructor(
-  @Named("tmdbDiscoverMovieDataSource") dataSource: DiscoverDataSource,
+class DiscoverStore @Inject constructor(
+  @Tmdb dataSource: DiscoverDataSource,
   discoverDao: DiscoverDao,
   mediaDao: MediaDao,
-  discover: TmdbDiscover.Movie,
-  transactionRunner: DatabaseTransactionRunner,
   dispatchers: CoroutineDispatchers,
+  transactionRunner: DatabaseTransactionRunner,
+  categoryMapper: TmdbDiscoverCategoryToDiscoverCategory,
   logger: Logger,
-) : Store<Int, List<DiscoverEntry>> by storeBuilder(
-  fetcher = Fetcher.of { page: Int ->
-    dataSource(page, discover.buildParameters()).let { response ->
+) {
+  private val fetcher = Fetcher.of { key: DiscoverStoreKey ->
+    dataSource(
+      key.page,
+      key.mediaType,
+      DiscoverFactory.createByCategory(key.category),
+    ).let { response ->
+      logger.d { "DiscoverStore: Fetched for $key" }
       withContext(dispatchers.databaseWrite) {
         transactionRunner {
           response.map { media ->
             DiscoverEntry(
               mediaId = mediaDao.getIdOrSaveMedia(media),
-              page = page,
+              page = key.page,
               mediaType = media.mediaType ?: MediaType.MOVIE,
+              category = categoryMapper.map(key.category),
             )
           }
         }
       }
     }
-  },
-  sourceOfTruth = SourceOfTruth.of(
-    reader = { page ->
-      logger.d { "Reading from database:discover page:$page" }
-      discoverDao.entriesForPage(page, MediaType.MOVIE)
+  }
+
+  private val sot = SourceOfTruth.of<DiscoverStoreKey, List<DiscoverEntry>, List<DiscoverEntry>>(
+    reader = { key ->
+      discoverDao.entriesForPage(key.page, key.mediaType, categoryMapper.map(key.category))
     },
-    writer = { page, response ->
+    writer = { key, response ->
       transactionRunner {
-        logger.d { "Writing in database:discover page:$page" }
-        discoverDao.updatePage(page, response, MediaType.MOVIE)
+        discoverDao.updatePage(key.page, response, key.mediaType, categoryMapper.map(key.category))
       }
     },
-    delete = { discoverDao.deletePage(it, MediaType.MOVIE) },
+    delete = { discoverDao.deletePage(it.page, it.mediaType, categoryMapper.map(it.category)) },
     deleteAll = discoverDao::deleteAll,
-  ),
-).build()
+  )
+
+  fun build() = StoreBuilder.from(fetcher, sot).build()
+
+  data class DiscoverStoreKey(
+    val mediaType: MediaType,
+    val page: Int,
+    val category: DiscoverCategory,
+  )
+}

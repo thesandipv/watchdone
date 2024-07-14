@@ -116,13 +116,10 @@ class FirestoreRepository @Inject constructor(
     }
   }
 
-  private suspend fun getDocumentId(media: DBMedia, source: Source = Source.CACHE) =
-    getDocumentId(
-      media.id,
-      source,
-    )
+  private suspend fun getDocumentId(media: DBMedia, source: Source = Source.DEFAULT) =
+    getDocumentId(media.id, source)
 
-  private suspend fun getDocumentId(mediaId: Int, source: Source = Source.CACHE): String? {
+  private suspend fun getDocumentId(mediaId: Int, source: Source = Source.DEFAULT): String? {
     val qs = watchlistItemsRef.whereEqualTo(Field.ID, mediaId).get(source).await()
     return if (qs.documents.size > 0) qs.documents[0].id else null
   }

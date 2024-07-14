@@ -44,5 +44,22 @@ data class DiscoverEntry(
   @ColumnInfo(name = "page")
   override val page: Int,
   @ColumnInfo(name = "media_type")
-  val mediaType: MediaType,
-) : PaginatedEntry
+  override val mediaType: MediaType,
+  @ColumnInfo(name = "discover_category", defaultValue = "UNCATEGORIZED")
+  val category: DiscoverCategory,
+) : MediaPaginatedEntry
+
+enum class DiscoverCategory {
+  UNCATEGORIZED,
+  NOW_PLAYING,
+  UPCOMING,
+  POPULAR,
+  TOP_RATED,
+  AIRING_TODAY,
+  ON_DVD,
+  ON_TV,
+  ON_NETFLIX,
+  ON_AMAZON,
+  ON_DISNEY_PLUS,
+  ON_APPLE_TV,
+}

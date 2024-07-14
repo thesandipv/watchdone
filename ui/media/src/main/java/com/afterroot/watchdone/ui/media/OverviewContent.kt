@@ -88,8 +88,8 @@ fun OverviewContent(
   modifier: Modifier = Modifier,
   movie: Movie? = null,
   tv: TV? = null,
-  isInWatchlist: Boolean = false,
-  isWatched: Boolean = false,
+  isInWatchlist: State<Boolean> = State.loading(),
+  isWatched: State<Boolean> = State.loading(),
   watchProviders: State<WatchProviderResult> = State.loading(),
   onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
   onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
@@ -157,35 +157,37 @@ fun OverviewContent(
           )
         }
 
-        watchProviders.composeWhen(success = { providers ->
-          val providersForCountry = providers.getProvidersForCountry(
-            LocalSettings.current.country ?: "IN",
-          )
+        watchProviders.composeWhen(
+          success = { providers ->
+            val providersForCountry = providers.getProvidersForCountry(
+              LocalSettings.current.country ?: "IN",
+            )
 
-          WatchProviders(
-            modifier = Modifier.padding(horizontal = bodyMargin),
-            text = "Available On",
-            link = providersForCountry?.link,
-            providers = providersForCountry?.flatrate,
-            onClick = {
-              if (it != null) {
-                onWatchProvidersClick(it)
-              }
-            },
-          )
+            WatchProviders(
+              modifier = Modifier.padding(horizontal = bodyMargin),
+              text = "Available On",
+              link = providersForCountry?.link,
+              providers = providersForCountry?.flatrate,
+              onClick = {
+                if (it != null) {
+                  onWatchProvidersClick(it)
+                }
+              },
+            )
 
-          WatchProviders(
-            modifier = Modifier.padding(horizontal = bodyMargin),
-            text = "Available for Rent on",
-            link = providersForCountry?.link,
-            providers = providersForCountry?.rent,
-            onClick = {
-              if (it != null) {
-                onWatchProvidersClick(it)
-              }
-            },
-          )
-        })
+            WatchProviders(
+              modifier = Modifier.padding(horizontal = bodyMargin),
+              text = "Available for Rent on",
+              link = providersForCountry?.link,
+              providers = providersForCountry?.rent,
+              onClick = {
+                if (it != null) {
+                  onWatchProvidersClick(it)
+                }
+              },
+            )
+          },
+        )
       }
     }
 
@@ -313,8 +315,8 @@ fun OverviewText(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun WatchlistActions(
   modifier: Modifier = Modifier,
-  isInWatchlist: Boolean = false,
-  isWatched: Boolean = false,
+  isInWatchlist: State<Boolean> = State.loading(),
+  isWatched: State<Boolean> = State.loading(),
   onWatchlistAction: (checked: Boolean) -> Unit,
   onWatchedAction: (checked: Boolean) -> Unit,
 ) {
@@ -325,7 +327,11 @@ fun WatchlistActions(
   ) {
     TwoStateButton(
       modifier = Modifier.weight(1f),
-      checked = isInWatchlist,
+      checked = if (isInWatchlist is State.Success) {
+        isInWatchlist.data
+      } else {
+        false
+      },
       contentPadding = ButtonDefaults.ButtonWithIconContentPadding
         .copy(copyTop = false, copyBottom = false)
         .plus(PaddingValues(vertical = 4.dp)),
@@ -338,7 +344,11 @@ fun WatchlistActions(
 
     TwoStateOutlinedButton(
       modifier = Modifier.weight(1f),
-      checked = isWatched,
+      checked = if (isWatched is State.Success) {
+        isWatched.data
+      } else {
+        false
+      },
       contentPadding = ButtonDefaults.ButtonWithIconContentPadding
         .copy(copyTop = false, copyBottom = false)
         .plus(PaddingValues(vertical = 4.dp)),

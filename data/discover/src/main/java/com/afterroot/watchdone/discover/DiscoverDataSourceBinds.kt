@@ -15,24 +15,18 @@
 
 package com.afterroot.watchdone.discover
 
+import com.afterroot.watchdone.di.Tmdb
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DiscoverDataSourceBinds {
   @Binds
-  @Named("tmdbDiscoverMovieDataSource")
-  abstract fun bindDiscoverMovieDataSource(
-    tmdbDiscoverMovieDataSource: TmdbDiscoverMovieDataSource,
-  ): DiscoverDataSource
-
-  @Binds
-  @Named("tmdbDiscoverShowDataSource")
-  abstract fun bindDiscoverShowDataSource(
-    tmdbDiscoverShowDataSource: TmdbDiscoverShowDataSource,
+  @Tmdb
+  abstract fun bindDiscoverDataSource(
+    tmdbDiscoverDataSource: TmdbDiscoverDataSource,
   ): DiscoverDataSource
 }
