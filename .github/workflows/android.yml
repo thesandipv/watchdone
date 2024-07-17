@@ -25,7 +25,6 @@ env:
   TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
   FB_APP_ID: ${{ secrets.FB_APP_ID }}
 
-
 jobs:
   kotlin-code-style-check:
     name: Kotlin Code Style Check
@@ -72,8 +71,7 @@ jobs:
       - uses: act10ns/slack@v2
         with:
           status: starting
-          channel: '#watchdone'
-        if: always()
+        if: github.ref == 'refs/heads/main'
 
       - name: Check Out
         id: check-out
@@ -208,4 +206,3 @@ jobs:
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#watchdone'
