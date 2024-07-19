@@ -198,7 +198,7 @@ jobs:
         with:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           path: app/build/outputs/apk/release/app-release.apk
-          channel: watchdone
+          channel: builds
           filename: Watchdone-${{ steps.commithash.outputs.sha_short }}.apk
 
       - uses: act10ns/slack@v2
