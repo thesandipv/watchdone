@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2023 Sandip Vaghela
+ * Copyright (C) 2020-2024 Sandip Vaghela
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,8 +32,8 @@ abstract class RoomRecommendedDao : RecommendedDao, RoomPaginatedEntryDao<Recomm
   @Transaction
   @Query(
     """
-        SELECT * FROM recommended_entries 
-        WHERE page = :page AND rec_of = :recOf 
+        SELECT * FROM recommended_entries
+        WHERE page = :page AND rec_of = :recOf
         ORDER BY id ASC
         """,
   )
@@ -42,8 +42,8 @@ abstract class RoomRecommendedDao : RecommendedDao, RoomPaginatedEntryDao<Recomm
   @Transaction
   @Query(
     """
-        SELECT * FROM recommended_entries 
-        WHERE media_type = :mediaType AND rec_of = :recOf 
+        SELECT * FROM recommended_entries
+        WHERE media_type = :mediaType AND rec_of = :recOf
         ORDER BY page ASC, id ASC
         """,
   )
@@ -54,7 +54,7 @@ abstract class RoomRecommendedDao : RecommendedDao, RoomPaginatedEntryDao<Recomm
 
   @Query(
     """
-        DELETE FROM recommended_entries 
+        DELETE FROM recommended_entries
         WHERE page = :page AND media_type = :mediaType AND rec_of = :ofMedia
         """,
   )
@@ -68,7 +68,7 @@ abstract class RoomRecommendedDao : RecommendedDao, RoomPaginatedEntryDao<Recomm
 
   @Query(
     """
-        SELECT MAX(page) FROM recommended_entries 
+        SELECT MAX(page) FROM recommended_entries
         WHERE media_type = :mediaType AND rec_of = :ofMedia
         """,
   )
