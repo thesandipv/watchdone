@@ -122,6 +122,7 @@ dependencies {
   implementation(libs.firebase.ui.auth)
 
   implementation(libs.google.ossLic)
+  implementation(libs.google.material)
 
   implementation(libs.hilt.compose)
 
