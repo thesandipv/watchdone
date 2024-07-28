@@ -59,4 +59,5 @@ dependencies {
   implementation(libs.commonsCodec)
 
   api(libs.timber)
+  api(projects.utils)
 }

@@ -19,8 +19,6 @@ on:
       - 'CHANGES.md'
 
 env:
-  GHTOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GHUSERNAME: ${{ secrets.GHUSERNAME }}
   TMDB_API: ${{ secrets.TMDB_API }}
   TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
   FB_APP_ID: ${{ secrets.FB_APP_ID }}

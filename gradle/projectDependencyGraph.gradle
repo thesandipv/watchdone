@@ -1,7 +1,7 @@
 // From https://github.com/JakeWharton/SdkSearch/blob/master/gradle/projectDependencyGraph.gradle
 tasks.register('projectDependencyGraph') {
     doLast {
-        def dot = new File(rootProject.buildDir, 'reports/dependency-graph/project.dot')
+        def dot = new File(rootProject.getLayout().buildDirectory.get().asFile.path, 'reports/dependency-graph/project.dot')
         dot.parentFile.mkdirs()
         dot.delete()
 
