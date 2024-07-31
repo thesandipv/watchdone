@@ -39,7 +39,11 @@ android {
   defaultConfig {
     applicationId = "com.afterroot.watchdone"
     versionCode = rootProject.extra["versionCode"] as Int
-    versionName = rootProject.extra["versionName"].toString()
+    versionName = if (ci) {
+      "${rootProject.extra["versionName"]}-ci"
+    } else {
+      rootProject.extra["versionName"].toString()
+    }
 
     testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
 
