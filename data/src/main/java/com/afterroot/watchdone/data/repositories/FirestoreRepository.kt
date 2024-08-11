@@ -24,6 +24,7 @@ import com.afterroot.watchdone.utils.collectionWatchdone
 import com.afterroot.watchdone.utils.collectionWatchlistItems
 import com.afterroot.watchdone.utils.documentWatchlist
 import com.afterroot.watchdone.utils.resultFlow
+import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -122,6 +123,15 @@ class FirestoreRepository @Inject constructor(
   private suspend fun getDocumentId(mediaId: Int, source: Source = Source.DEFAULT): String? {
     val qs = watchlistItemsRef.whereEqualTo(Field.ID, mediaId).get(source).await()
     return if (qs.documents.size > 0) qs.documents[0].id else null
+  }
+
+  suspend fun getTotalCount() = resultFlow {
+    val result = watchlistItemsRef.count().get(AggregateSource.SERVER).await()
+    if (result != null) {
+      emit(State.Success(result.count))
+    } else {
+      emit(State.Failed("Error occurred"))
+    }
   }
 
   private fun DocumentReference.updateTotalItemsCounter(

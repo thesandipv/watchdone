@@ -40,11 +40,14 @@ import androidx.navigation.compose.rememberNavController
 import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.ui.common.compose.components.LocalLogger
+import com.afterroot.ui.common.compose.components.LocalUsingFirebaseEmulators
 import com.afterroot.ui.common.compose.components.LocalWindowSizeClass
 import com.afterroot.ui.common.compose.theme.Theme
 import com.afterroot.ui.common.compose.utils.darkScrim
 import com.afterroot.ui.common.compose.utils.lightScrim
 import com.afterroot.ui.common.compose.utils.shouldUseDarkTheme
+import com.afterroot.utils.extensions.getPrefs
+import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.Constants.RC_PERMISSION
 import com.afterroot.watchdone.data.model.UserData
 import com.afterroot.watchdone.data.repositories.ConfigRepository
@@ -162,6 +165,7 @@ class MainActivity : ComponentActivity() {
       CompositionLocalProvider(
         LocalLogger provides logger,
         LocalWindowSizeClass provides calculateWindowSizeClass(this),
+        LocalUsingFirebaseEmulators provides (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)),
       ) {
         Theme(settings = settings, darkTheme = darkTheme) {
           App(

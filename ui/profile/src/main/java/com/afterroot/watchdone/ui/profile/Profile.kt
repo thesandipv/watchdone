@@ -14,32 +14,63 @@
  */
 package com.afterroot.watchdone.ui.profile
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Logout
+import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.NavigationBarDefaults
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import app.tivi.api.UiMessage
+import app.tivi.common.compose.Layout
+import app.tivi.common.compose.bodyWidth
+import app.tivi.common.compose.fullSpanItem
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FABEdit
+import com.afterroot.ui.common.compose.components.Header
+import com.afterroot.ui.common.compose.components.PosterCard
+import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
+import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
@@ -98,14 +129,21 @@ internal fun Profile(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+  ExperimentalMaterial3Api::class,
+  ExperimentalMaterialApi::class,
+)
 @Composable
 internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
   val viewState by viewModel.state.collectAsState()
 
+  val watchlist = viewModel.watchlist.collectAsLazyPagingItems()
+
   Scaffold(
     modifier = Modifier.fillMaxSize(),
-    contentWindowInsets = WindowInsets.systemBars,
+    contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(
+      NavigationBarDefaults.windowInsets,
+    ),
     topBar = {
       CommonAppBar(
         withTitle = stringResource(id = R.string.title_profile),
@@ -113,7 +151,7 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
         actions = {
           IconButton(onClick = { actions(ProfileActions.SignOut) }) {
             Icon(
-              imageVector = Icons.Rounded.Logout,
+              imageVector = Icons.AutoMirrored.Rounded.Logout,
               contentDescription = stringResource(
                 id = R.string.action_sign_out,
               ),
@@ -124,18 +162,140 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
     },
     floatingActionButton = {
       FABEdit(
-        modifier = Modifier.offset(y = 24.dp), // TODO Find better solution
+        modifier = Modifier,
         onClick = {
           actions(ProfileActions.EditProfile)
         },
       )
     },
   ) { paddingValues ->
+
+    val refreshState = rememberPullRefreshState(
+      refreshing = watchlist.loadState.refresh == LoadState.Loading,
+      onRefresh = {
+        watchlist.refresh()
+      },
+    )
+
     Box(
       modifier = Modifier
         .padding(paddingValues)
+        .pullRefresh(state = refreshState)
         .fillMaxWidth(),
     ) {
+      if (watchlist.itemCount != 0) {
+        ProfileWatchlistSection(profileViewState = viewState, watchlist = watchlist)
+      }
+
+      PullRefreshIndicator(
+        refreshing = watchlist.loadState.refresh == LoadState.Loading,
+        state = refreshState,
+        modifier = Modifier
+          .align(Alignment.TopCenter),
+        scale = true,
+      )
+    }
+  }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ProfileWatchlistSection(
+  profileViewState: ProfileViewState,
+  watchlist: LazyPagingItems<Media>,
+  modifier: Modifier = Modifier,
+) {
+  val listState = rememberLazyGridState()
+
+  val bodyMargin = Layout.bodyMargin
+  val gutter = Layout.gutter
+
+  LazyVerticalGrid(
+    state = listState,
+    columns = GridCells.Fixed(Layout.profileGridColumns),
+    contentPadding = PaddingValues(horizontal = bodyMargin, vertical = gutter),
+    horizontalArrangement = Arrangement.spacedBy(gutter),
+    verticalArrangement = Arrangement.spacedBy(gutter),
+    modifier = Modifier
+      .bodyWidth()
+      .fillMaxHeight(),
+  ) {
+    fullSpanItem {
+      ProfileTitle(profileViewState)
+    }
+
+    fullSpanItem {
+      HorizontalDivider()
+    }
+
+    fullSpanItem {
+      Header(
+        title = "Watchlist",
+        spaceAround = 0.dp,
+        loading = watchlist.loadState.refresh == LoadState.Loading,
+      )
+    }
+
+    items(
+      count = watchlist.itemCount,
+      key = watchlist.itemKey { item ->
+        item.tmdbId ?: item.id
+      },
+    ) { index ->
+      watchlist[index]?.let { item ->
+        PosterCard(
+          media = item,
+          onClick = { },
+          modifier = Modifier
+            .animateItemPlacement()
+            // .fillParentMaxHeight()
+            .aspectRatio(2 / 3f),
+        )
+      }
+    }
+
+    if (watchlist.loadState.append == LoadState.Loading) {
+      fullSpanItem {
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        ) {
+          CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+      }
+    }
+  }
+}
+
+@Composable
+private fun ProfileTitle(
+  profileViewState: ProfileViewState,
+) {
+  if (profileViewState.user is State.Success) {
+    val user = profileViewState.user.data
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+      Column {
+        ProvideTextStyle(ubuntuTypography.bodyMedium) {
+          Text(user.name.toString())
+        }
+        ProvideTextStyle(
+          ubuntuTypography.bodyMedium.copy(
+            color = LocalContentColor.current.copy(alpha = 0.8f),
+          ),
+        ) {
+          Text(user.userName.toString())
+        }
+      }
+      if (profileViewState.wlCount is State.Success) {
+        ProvideTextStyle(ubuntuTypography.bodyMedium) {
+          val data = profileViewState.wlCount.data
+          Text("$data Items")
+        }
+      }
     }
   }
 }

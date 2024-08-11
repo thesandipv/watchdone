@@ -213,6 +213,8 @@ private fun NavGraphBuilder.addProfile(appState: AppState, rootScreen: RootScree
 
 private fun NavGraphBuilder.addEditProfile(appState: AppState, rootScreen: RootScreen) {
   composable(route = Screen.EditProfile.createRoute(rootScreen)) {
-    EditProfile()
+    EditProfile(onUpAction = {
+      appState.navController.navigateUp()
+    })
   }
 }
