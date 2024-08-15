@@ -200,7 +200,7 @@ androidx-test-core = "androidx.test:core-ktx:1.6.1"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.1"
 androidx-test-junitExt = "androidx.test.ext:junit:1.2.1"
 androidx-test-rules = "androidx.test:rules:1.6.1"
-androidx-test-runner = "androidx.test:runner:1.6.1"
+androidx-test-runner = "androidx.test:runner:1.6.2"
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-ads = { module = "com.google.firebase:firebase-ads", version.ref = "firebaseAds" }
