@@ -24,6 +24,7 @@ import com.afterroot.watchdone.utils.State
 data class ProfileViewState(
   override val message: UiMessage? = null,
   val user: State<LocalUser>? = null,
+  val wlCount: State<Long> = State.loading(),
 ) : ViewState() {
   companion object {
     val Empty = ProfileViewState()

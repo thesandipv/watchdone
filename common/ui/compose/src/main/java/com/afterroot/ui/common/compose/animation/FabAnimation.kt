@@ -36,18 +36,19 @@ fun AnimatedFab(
   ) -> Unit,
 ) {
   val animationTargetState = remember { mutableStateOf(FabState.Invisible) }
-  val transition = updateTransition(targetState = animationTargetState.value, label = "")
+  val transition = updateTransition(targetState = animationTargetState.value, label = "FAB")
 
   val alpha = transition.animateFloat(
     transitionSpec = { tween(durationMillis = ANIMATION_DURATION) },
-    label = "",
+    label = "FAB-ALPHA",
   ) {
     if (it == FabState.Invisible) 0f else 1f
   }
 
-  val scale = transition.animateFloat(transitionSpec = {
-    tween(durationMillis = ANIMATION_DURATION)
-  }, label = "") {
+  val scale = transition.animateFloat(
+    transitionSpec = { tween(durationMillis = ANIMATION_DURATION) },
+    label = "FAB-SCALE",
+  ) {
     if (it == FabState.Invisible) 0.5f else 1f
   }
 

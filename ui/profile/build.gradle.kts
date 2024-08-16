@@ -38,4 +38,7 @@ dependencies {
   implementation(libs.firebase.ui.auth)
 
   implementation(libs.bundles.coroutines)
+
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.firestore)
 }

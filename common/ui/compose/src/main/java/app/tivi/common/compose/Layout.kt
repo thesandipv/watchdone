@@ -53,6 +53,13 @@ object Layout {
       else -> 4
     }
 
+  val profileGridColumns: Int
+    @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
+      WindowWidthSizeClass.Compact -> 3
+      WindowWidthSizeClass.Medium -> 4
+      else -> 5
+    }
+
   val listColumns: Int
     @Composable get() = when (LocalWindowSizeClass.current.widthSizeClass) {
       WindowWidthSizeClass.Compact -> 1

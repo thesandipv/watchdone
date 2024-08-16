@@ -48,7 +48,7 @@ class WatchlistPagingSource(
   override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Media> {
     return try {
       val baseQuery = firestore.collectionWatchdone(
-        id = firebaseUtils.uid!!,
+        id = firebaseUtils.uid,
         settings.isUseProdDb,
       ).document(Collection.WATCHLIST).collection(Collection.ITEMS)
 

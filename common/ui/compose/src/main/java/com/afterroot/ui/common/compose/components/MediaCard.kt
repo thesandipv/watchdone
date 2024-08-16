@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.AutoSizedCircularProgressIndicator
@@ -174,11 +175,12 @@ fun Backdrop(
 fun Header(
   title: String,
   modifier: Modifier = Modifier,
+  spaceAround: Dp = 16.dp,
   loading: Boolean = false,
   content: @Composable RowScope.() -> Unit = {},
 ) {
   Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-    Spacer(Modifier.width(16.dp))
+    Spacer(Modifier.width(spaceAround))
 
     Text(
       text = title,
@@ -202,6 +204,6 @@ fun Header(
 
     content()
 
-    Spacer(Modifier.width(16.dp))
+    Spacer(Modifier.width(spaceAround))
   }
 }

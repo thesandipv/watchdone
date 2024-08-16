@@ -17,7 +17,10 @@ package com.afterroot.watchdone.ui.app
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +38,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
@@ -49,15 +53,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.afterroot.ui.common.compose.components.LocalUsingFirebaseEmulators
 import com.afterroot.ui.common.compose.navigation.RootScreen
+import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.afterroot.watchdone.resources.R as CommonR
@@ -113,21 +121,35 @@ fun App(
     snackbarHost = { SnackbarHost(snackbarHostState) },
     bottomBar = {
       val currentSelectedItem by appState.navController.currentScreenAsState()
-      HomeNavigationBar(
-        selectedRootScreen = currentSelectedItem,
-        onNavigationSelected = { selected ->
-          appState.navController.navigate(selected.route) {
-            launchSingleTop = true
-            restoreState = true
-
-            popUpTo(appState.navController.graph.findStartDestination().id) {
-              saveState = true
-            }
+      Column {
+        AnimatedVisibility(visible = LocalUsingFirebaseEmulators.current) {
+          ProvideTextStyle(
+            value = ubuntuTypography.bodySmall.copy(
+              textAlign = TextAlign.Center,
+            ),
+          ) {
+            Text(
+              text = "USING FIREBASE EMULATORS",
+              modifier = Modifier.fillMaxWidth().background(Color(0xFFFF6E40)),
+            )
           }
-        },
-        modifier = Modifier
-          .fillMaxWidth(),
-      )
+        }
+        HomeNavigationBar(
+          selectedRootScreen = currentSelectedItem,
+          onNavigationSelected = { selected ->
+            appState.navController.navigate(selected.route) {
+              launchSingleTop = true
+              restoreState = true
+
+              popUpTo(appState.navController.graph.findStartDestination().id) {
+                saveState = true
+              }
+            }
+          },
+          modifier = Modifier
+            .fillMaxWidth(),
+        )
+      }
     },
   ) { paddingValues ->
     Row(

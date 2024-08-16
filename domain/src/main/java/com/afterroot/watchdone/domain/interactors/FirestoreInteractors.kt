@@ -38,9 +38,11 @@ class WatchlistInteractor @Inject constructor(private val firestoreRepository: F
       Method.ADD -> {
         firestoreRepository.addToWatchlist(params.media)
       }
+
       Method.REMOVE -> {
         firestoreRepository.removeFromWatchlist(params.media)
       }
+
       Method.EXIST -> {
         firestoreRepository.isInWatchlist(params.id)
       }
@@ -67,6 +69,7 @@ class WatchStateInteractor @Inject constructor(private val firestoreRepository: 
       Method.MEDIA -> {
         firestoreRepository.setWatchStatus(params.id, params.watchState)
       }
+
       Method.EPISODE -> {
         firestoreRepository.setEpisodeWatchStatus(
           params.id,
@@ -93,5 +96,17 @@ class MediaInfoInteractor @Inject constructor(private val firestoreRepository: F
 
   override suspend fun doWork(params: Params): Flow<State<DBMedia>> {
     return firestoreRepository.getMediaInfo(params.id)
+  }
+}
+
+// TODO Add support for different watchlists, currently only default watchlist is supported
+class WatchlistCountInteractor @Inject constructor(
+  private val firestoreRepository: FirestoreRepository,
+) :
+  ResultInteractor<WatchlistCountInteractor.Params, Flow<State<Long>>>() {
+  data class Params(val watchlistId: Int)
+
+  override suspend fun doWork(params: Params): Flow<State<Long>> {
+    return firestoreRepository.getTotalCount()
   }
 }

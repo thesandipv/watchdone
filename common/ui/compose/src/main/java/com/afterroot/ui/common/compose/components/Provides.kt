@@ -37,3 +37,5 @@ val LocalLogger = staticCompositionLocalOf<Logger> {
 val LocalWindowSizeClass = staticCompositionLocalOf<WindowSizeClass> {
   error("WindowSizeClass is not initialized")
 }
+
+val LocalUsingFirebaseEmulators = compositionLocalOf { false }
