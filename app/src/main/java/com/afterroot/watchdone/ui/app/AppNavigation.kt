@@ -19,11 +19,15 @@ import android.view.View
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLinkRequest
@@ -48,6 +52,9 @@ import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile
 import com.afterroot.watchdone.ui.search.Search
 import com.afterroot.watchdone.watchlist.Watchlist
+
+typealias NavEnterTransition = AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition
+typealias NavExitTransition = AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition
 
 fun itemSelectedCallback(navController: NavHostController) = object : ItemSelectedCallback<Media> {
   override fun onClick(position: Int, view: View?, item: Media) {
@@ -74,6 +81,12 @@ fun AppNavigation(
     navController = appState.navController,
     startDestination = RootScreen.Watchlist.route,
     modifier = modifier,
+    enterTransition = slideInAndFade(
+      towards = AnimatedContentTransitionScope.SlideDirection.Up,
+      animationSpec = tween(500),
+      initialOffset = { 60 },
+    ),
+    exitTransition = { fadeOut(tween(500)) },
   ) {
     addWatchlistRoot(appState, onWatchProviderClick, settingsAction, shareToIG)
     addDiscoverRoot(appState)
@@ -109,9 +122,8 @@ private fun NavGraphBuilder.addWatchlist(
 ) {
   composable(
     route = Screen.Watchlist.createRoute(rootScreen),
-    enterTransition = startDestinationEnterTransition(),
-    exitTransition = startDestinationExitTransition(),
-    popEnterTransition = startDestinationPopEnterTransition(),
+    enterTransition = topDestinationEnterTransition(),
+    exitTransition = topDestinationExitTransition(),
   ) {
     Watchlist(
       viewModel = hiltViewModel(),
@@ -121,23 +133,6 @@ private fun NavGraphBuilder.addWatchlist(
   }
 }
 
-private fun startDestinationPopEnterTransition(): AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition? =
-  {
-    fadeIn(tween(400))
-  }
-
-private fun startDestinationExitTransition(): AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition? =
-  {
-    fadeOut(tween(400))
-  }
-
-private fun startDestinationEnterTransition(): AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition? =
-  {
-    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up, tween(400)) { offset ->
-      offset / 3
-    }
-  }
-
 private fun NavGraphBuilder.addMediaInfo(
   appState: AppState,
   rootScreen: RootScreen,
@@ -146,12 +141,6 @@ private fun NavGraphBuilder.addMediaInfo(
 ) {
   composable(
     route = Screen.MediaInfo.createRoute(rootScreen),
-    enterTransition = {
-      slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400))
-    },
-    popExitTransition = {
-      slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400))
-    },
     arguments = listOf(
       navArgument("type") {
         type = NavType.StringType
@@ -198,9 +187,8 @@ private fun NavGraphBuilder.addDiscoverRoot(appState: AppState) {
 private fun NavGraphBuilder.addDiscover(appState: AppState, rootScreen: RootScreen) {
   composable(
     route = Screen.Discover.createRoute(rootScreen),
-    enterTransition = startDestinationEnterTransition(),
-    exitTransition = startDestinationExitTransition(),
-    popEnterTransition = startDestinationPopEnterTransition(),
+    enterTransition = topDestinationEnterTransition(),
+    exitTransition = topDestinationExitTransition(),
   ) {
     Discover(
       discoverViewModel = hiltViewModel(),
@@ -221,9 +209,8 @@ private fun NavGraphBuilder.addSearchRoot(appState: AppState) {
 private fun NavGraphBuilder.addSearch(appState: AppState, rootScreen: RootScreen) {
   composable(
     route = Screen.Search.createRoute(rootScreen),
-    enterTransition = startDestinationEnterTransition(),
-    exitTransition = startDestinationExitTransition(),
-    popEnterTransition = startDestinationPopEnterTransition(),
+    enterTransition = topDestinationEnterTransition(),
+    exitTransition = topDestinationExitTransition(),
     deepLinks = listOf(
       navDeepLink {
         uriPattern = "${Constants.SCHEME_HTTPS}://${Constants.WATCHDONE_HOST}/search"
@@ -250,9 +237,8 @@ private fun NavGraphBuilder.addProfileRoot(appState: AppState) {
 private fun NavGraphBuilder.addProfile(appState: AppState, rootScreen: RootScreen) {
   composable(
     route = Screen.Profile.createRoute(rootScreen),
-    enterTransition = startDestinationEnterTransition(),
-    exitTransition = startDestinationExitTransition(),
-    popEnterTransition = startDestinationPopEnterTransition(),
+    enterTransition = topDestinationEnterTransition(),
+    exitTransition = topDestinationExitTransition(),
   ) {
     Profile {
       appState.navController.navigate(Screen.EditProfile.createRoute(rootScreen))
@@ -263,12 +249,6 @@ private fun NavGraphBuilder.addProfile(appState: AppState, rootScreen: RootScree
 private fun NavGraphBuilder.addEditProfile(appState: AppState, rootScreen: RootScreen) {
   composable(
     route = Screen.EditProfile.createRoute(rootScreen),
-    enterTransition = {
-      slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400))
-    },
-    popExitTransition = {
-      slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400))
-    },
   ) {
     EditProfile(
       onUpAction = {
@@ -276,4 +256,23 @@ private fun NavGraphBuilder.addEditProfile(appState: AppState, rootScreen: RootS
       },
     )
   }
+}
+
+private fun topDestinationExitTransition(): NavExitTransition = {
+  fadeOut(tween(500))
+}
+
+private fun topDestinationEnterTransition(): NavEnterTransition = slideInAndFade(
+  towards = AnimatedContentTransitionScope.SlideDirection.Up,
+  animationSpec = tween(500),
+  initialOffset = { 60 },
+)
+
+private fun slideInAndFade(
+  towards: AnimatedContentTransitionScope.SlideDirection,
+  animationSpec: FiniteAnimationSpec<IntOffset> =
+    spring(visibilityThreshold = IntOffset.VisibilityThreshold),
+  initialOffset: (offsetForFullSlide: Int) -> Int = { it },
+): NavEnterTransition = {
+  slideIntoContainer(towards, animationSpec, initialOffset) + fadeIn(tween(500))
 }

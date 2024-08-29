@@ -21,11 +21,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DashboardCustomize
@@ -44,6 +47,11 @@ import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -80,10 +88,7 @@ fun App(
 ) {
   val snackbarHostState = remember { SnackbarHostState() }
 
-  val isOffline by appState.isOffline.collectAsStateWithLifecycle(
-    // TODO https://issuetracker.google.com/issues/336842920#comment8
-    lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current,
-  )
+  val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
   // If user is not connected to the internet show a snack bar to inform them.
   val notConnectedMessage = "Not Connected to internet"
@@ -112,32 +117,30 @@ fun App(
   appState: AppState,
   snackbarHostState: SnackbarHostState,
   modifier: Modifier = Modifier,
+  windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
   settingsAction: () -> Unit = {},
   onWatchProviderClick: (link: String) -> Unit = { _ -> },
   shareToIG: ((mediaId: Int, poster: String) -> Unit)? = null,
 ) {
-  Scaffold(
-    modifier = modifier,
-    snackbarHost = { SnackbarHost(snackbarHostState) },
-    bottomBar = {
-      val currentSelectedItem by appState.navController.currentScreenAsState()
-      Column {
-        AnimatedVisibility(visible = LocalUsingFirebaseEmulators.current) {
-          ProvideTextStyle(
-            value = ubuntuTypography.bodySmall.copy(
-              textAlign = TextAlign.Center,
-            ),
-          ) {
-            Text(
-              text = "USING FIREBASE EMULATORS",
-              modifier = Modifier.fillMaxWidth().background(Color(0xFFFF6E40)),
+  val currentSelectedItem by appState.navController.currentScreenAsState()
+
+  WatchdoneNavigationSuiteScaffold(
+    windowAdaptiveInfo = windowAdaptiveInfo,
+    navigationSuiteItems = {
+      homeNavigationItems.forEach { navigationItem ->
+        item(
+          selected = navigationItem.screen == currentSelectedItem,
+          icon = {
+            HomeNavigationItemIcon(
+              item = navigationItem,
+              selected = navigationItem.screen == currentSelectedItem,
             )
-          }
-        }
-        HomeNavigationBar(
-          selectedRootScreen = currentSelectedItem,
-          onNavigationSelected = { selected ->
-            appState.navController.navigate(selected.route) {
+          },
+          label = {
+            Text(text = stringResource(id = navigationItem.labelResId))
+          },
+          onClick = {
+            appState.navController.navigate(navigationItem.screen.route) {
               launchSingleTop = true
               restoreState = true
 
@@ -146,27 +149,50 @@ fun App(
               }
             }
           },
-          modifier = Modifier
-            .fillMaxWidth(),
         )
       }
     },
-  ) { paddingValues ->
-    Row(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(paddingValues),
-    ) {
-      ModalBottomSheetLayout(bottomSheetNavigator = appState.bottomSheetNavigator) {
-        AppNavigation(
-          appState = appState,
-          modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-          onWatchProviderClick = onWatchProviderClick,
-          settingsAction = settingsAction,
-          shareToIG = shareToIG,
-        )
+  ) {
+    Scaffold(
+      modifier = modifier,
+      snackbarHost = { SnackbarHost(snackbarHostState) },
+      bottomBar = {
+        Column {
+          AnimatedVisibility(visible = LocalUsingFirebaseEmulators.current) {
+            ProvideTextStyle(
+              value = ubuntuTypography.bodySmall.copy(
+                textAlign = TextAlign.Center,
+              ),
+            ) {
+              Text(
+                text = "USING FIREBASE EMULATORS",
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .background(Color(0xFFFF6E40)),
+              )
+            }
+          }
+        }
+      },
+    ) { paddingValues ->
+      Column(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(paddingValues)
+          .consumeWindowInsets(paddingValues)
+          .windowInsetsPadding(WindowInsets.safeDrawing),
+      ) {
+        ModalBottomSheetLayout(bottomSheetNavigator = appState.bottomSheetNavigator) {
+          AppNavigation(
+            appState = appState,
+            modifier = Modifier
+              .weight(1f)
+              .fillMaxHeight(),
+            onWatchProviderClick = onWatchProviderClick,
+            settingsAction = settingsAction,
+            shareToIG = shareToIG,
+          )
+        }
       }
     }
   }
@@ -315,5 +341,23 @@ private fun HomeNavigationItemIcon(item: HomeNavigationItem, selected: Boolean) 
       painter = painter,
       contentDescription = stringResource(item.contentDescriptionResId),
     )
+  }
+}
+
+@Composable
+fun WatchdoneNavigationSuiteScaffold(
+  navigationSuiteItems: NavigationSuiteScope.() -> Unit,
+  modifier: Modifier = Modifier,
+  windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+  content: @Composable () -> Unit,
+) {
+  val layoutType = NavigationSuiteScaffoldDefaults
+    .calculateFromAdaptiveInfo(windowAdaptiveInfo)
+  NavigationSuiteScaffold(
+    navigationSuiteItems = navigationSuiteItems,
+    layoutType = layoutType,
+    modifier = modifier,
+  ) {
+    content()
   }
 }
