@@ -165,7 +165,8 @@ class MainActivity : ComponentActivity() {
       CompositionLocalProvider(
         LocalLogger provides logger,
         LocalWindowSizeClass provides calculateWindowSizeClass(this),
-        LocalUsingFirebaseEmulators provides (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)),
+        LocalUsingFirebaseEmulators provides
+          (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)),
       ) {
         Theme(settings = settings, darkTheme = darkTheme) {
           App(

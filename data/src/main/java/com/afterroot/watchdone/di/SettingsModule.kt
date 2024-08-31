@@ -30,9 +30,6 @@ import javax.inject.Singleton
 class SettingsModule {
   @Provides
   @Singleton
-  fun provideSettings(
-    @ApplicationContext context: Context,
-    gson: Gson,
-    logger: Logger,
-  ) = Settings(context, gson, logger)
+  fun provideSettings(@ApplicationContext context: Context, gson: Gson, logger: Logger) =
+    Settings(context, gson, logger)
 }

@@ -64,9 +64,11 @@ import app.tivi.api.UiMessage
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.bodyWidth
 import app.tivi.common.compose.fullSpanItem
+import app.tivi.util.Logger
 import com.afterroot.ui.common.compose.components.CommonAppBar
 import com.afterroot.ui.common.compose.components.FABEdit
 import com.afterroot.ui.common.compose.components.Header
+import com.afterroot.ui.common.compose.components.LocalLogger
 import com.afterroot.ui.common.compose.components.PosterCard
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
@@ -75,16 +77,16 @@ import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun Profile(onSignOut: () -> Unit = {}, onEditProfile: () -> Unit) {
-  Profile(viewModel = hiltViewModel(), onSignOut, onEditProfile)
+  Profile(viewModel = hiltViewModel(), onSignOut = onSignOut, onEditProfile = onEditProfile)
 }
 
 @Composable
 internal fun Profile(
   viewModel: ProfileViewModel,
+  logger: Logger = LocalLogger.current,
   onSignOut: () -> Unit = {},
   onEditProfile: () -> Unit,
 ) {
@@ -93,10 +95,10 @@ internal fun Profile(
   Profile(viewModel = viewModel) { action ->
     when (action) {
       ProfileActions.SignOut -> {
-        Timber.d("Profile: SignOut Start")
+        logger.d { "Profile: SignOut Start" }
         scope.launch {
           signOut(context).collect { signOutState ->
-            Timber.d("Profile: SignOutState: $signOutState")
+            logger.d { "Profile: SignOutState: $signOutState" }
             when (signOutState) {
               is State.Failed -> {
                 val showMessage = ProfileActions.ShowMessage(
@@ -269,9 +271,7 @@ fun ProfileWatchlistSection(
 }
 
 @Composable
-private fun ProfileTitle(
-  profileViewState: ProfileViewState,
-) {
+private fun ProfileTitle(profileViewState: ProfileViewState) {
   if (profileViewState.user is State.Success) {
     val user = profileViewState.user.data
     Row(

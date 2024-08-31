@@ -35,7 +35,9 @@ data class Media(
   @ColumnInfo(name = "poster_path") val posterPath: String? = null,
   @ColumnInfo(name = "media_type") val mediaType: MediaType? = null,
   @ColumnInfo(name = "rating") val rating: Float? = null,
-) : WDEntity, TmdbIdEntity, Watchable {
+) : WDEntity,
+  TmdbIdEntity,
+  Watchable {
   companion object {
     val EMPTY = Media()
   }

@@ -105,7 +105,9 @@ class ProfileViewModel @Inject constructor(
 
           is ProfileActions.ShowMessage -> showMessageAction(action)
           ProfileActions.Refresh -> refresh(true)
-          else -> logger.d { "collectAction: This action not handled by ProfileViewModel. Action: $action" }
+          else -> logger.d {
+            "collectAction: This action not handled by ProfileViewModel. Action: $action"
+          }
         }
       }
     }

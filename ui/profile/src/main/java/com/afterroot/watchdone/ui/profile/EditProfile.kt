@@ -74,10 +74,7 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 @Composable
-fun EditProfile(
-  onSignOut: () -> Unit = {},
-  onUpAction: () -> Unit = {},
-) {
+fun EditProfile(onSignOut: () -> Unit = {}, onUpAction: () -> Unit = {}) {
   EditProfile(viewModel = hiltViewModel(), onSignOut, onUpAction)
 }
 
@@ -130,10 +127,7 @@ internal fun EditProfile(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun EditProfile(
-  viewModel: ProfileViewModel,
-  actions: (ProfileActions) -> Unit,
-) {
+internal fun EditProfile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
   val viewState by viewModel.state.collectAsState()
   val logger = LocalLogger.current
   logger.d { "EditProfile: $viewState" }
@@ -312,9 +306,7 @@ fun UpdateProfilePrompt() {
 }
 
 @Composable
-fun DoWhenUserNameNotAvailable(
-  whenNotAvailable: () -> Unit,
-) {
+fun DoWhenUserNameNotAvailable(whenNotAvailable: () -> Unit) {
   UserProfile { profile ->
     if (profile.userName == null || !profile.isUserNameAvailable) {
       whenNotAvailable()

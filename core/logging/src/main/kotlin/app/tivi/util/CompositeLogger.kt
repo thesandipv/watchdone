@@ -3,13 +3,10 @@
 
 package app.tivi.util
 
-internal fun CompositeLogger(
-  vararg loggers: Logger?,
-): CompositeLogger = CompositeLogger(loggers = loggers.filterNotNull())
+internal fun CompositeLogger(vararg loggers: Logger?): CompositeLogger =
+  CompositeLogger(loggers = loggers.filterNotNull())
 
-internal class CompositeLogger(
-  private val loggers: Collection<Logger>,
-) : Logger {
+internal class CompositeLogger(private val loggers: Collection<Logger>) : Logger {
   override fun setUserId(id: String) {
     loggers.forEach { it.setUserId(id) }
   }

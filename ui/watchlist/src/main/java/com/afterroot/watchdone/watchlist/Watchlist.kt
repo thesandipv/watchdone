@@ -237,7 +237,10 @@ private fun Watchlist(
               WatchlistType.LIST -> Layout.listColumns
             },
           ),
-          contentPadding = paddingValues + PaddingValues(horizontal = bodyMargin, vertical = gutter),
+          contentPadding = paddingValues + PaddingValues(
+            horizontal = bodyMargin,
+            vertical = gutter,
+          ),
           horizontalArrangement = Arrangement.spacedBy(gutter),
           verticalArrangement = Arrangement.spacedBy(gutter),
           modifier = Modifier

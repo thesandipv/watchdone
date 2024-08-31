@@ -18,8 +18,4 @@ enum class Severity {
   Assert,
 }
 
-data class LogMessage(
-  val severity: Severity,
-  val message: String,
-  val throwable: Throwable?,
-)
+data class LogMessage(val severity: Severity, val message: String, val throwable: Throwable?)

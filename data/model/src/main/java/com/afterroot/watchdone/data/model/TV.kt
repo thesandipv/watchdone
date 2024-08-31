@@ -80,7 +80,9 @@ data class TV(
 
   // Additional Data
   override val isWatched: Boolean = false,
-) : WDEntity, TmdbIdEntity, Watchable {
+) : WDEntity,
+  TmdbIdEntity,
+  Watchable {
 
   val mediaType: MediaType
     get() = MediaType.SHOW
@@ -100,4 +102,6 @@ data class ShowNew(
   override val id: Long,
   override val tmdbId: Int?,
   override val isWatched: Boolean?,
-) : WDEntity, TmdbIdEntity, Watchable
+) : WDEntity,
+  TmdbIdEntity,
+  Watchable

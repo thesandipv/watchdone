@@ -5,6 +5,7 @@ package app.tivi.tmdb
 
 object TmdbImageSizes {
 
+  @Suppress("ktlint:standard:property-naming")
   const val baseImageUrl = "https://image.tmdb.org/t/p/"
 
   val posterSizes = listOf(

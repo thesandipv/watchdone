@@ -35,7 +35,4 @@ data class Episode(
   val isWatched: Boolean = false,
 )
 
-data class EpisodeNew(
-  val tmdb: TmdbEpisode,
-  val isWatched: Boolean = false,
-)
+data class EpisodeNew(val tmdb: TmdbEpisode, val isWatched: Boolean = false)

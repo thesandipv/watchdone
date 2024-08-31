@@ -96,13 +96,12 @@ fun navigationBarEnterAlwaysScrollBehavior(
   canScroll: () -> Boolean = { true },
   snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
   flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
-): TopAppBarScrollBehavior =
-  EnterAlwaysScrollBehavior(
-    state = state,
-    snapAnimationSpec = snapAnimationSpec,
-    flingAnimationSpec = flingAnimationSpec,
-    canScroll = canScroll,
-  )
+): TopAppBarScrollBehavior = EnterAlwaysScrollBehavior(
+  state = state,
+  snapAnimationSpec = snapAnimationSpec,
+  flingAnimationSpec = flingAnimationSpec,
+  canScroll = canScroll,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 private class EnterAlwaysScrollBehavior(

@@ -187,7 +187,8 @@ fun FilterChipGroup(
 }
 
 enum class SelectionType {
-  Single, Multiple
+  Single,
+  Multiple,
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

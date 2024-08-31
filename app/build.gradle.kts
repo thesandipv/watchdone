@@ -47,7 +47,8 @@ android {
 
     testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
 
-    manifestPlaceholders += mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
+    manifestPlaceholders +=
+      mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
 
     resourceConfigurations.addAll(listOf("en"))
   }
@@ -57,7 +58,8 @@ android {
   signingConfigs {
     create("release") {
       storeFile = rootProject.file("release/keystore.jks")
-      storePassword = keystoreProperties["storePassword"] as String? ?: System.getenv("SIGN_STORE_PW")
+      storePassword =
+        keystoreProperties["storePassword"] as String? ?: System.getenv("SIGN_STORE_PW")
       keyAlias = "watchdone"
       keyPassword = keystoreProperties["keyPassword"] as String? ?: System.getenv("SIGN_KEY_PW")
     }

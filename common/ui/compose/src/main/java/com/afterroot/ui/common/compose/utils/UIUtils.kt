@@ -37,9 +37,7 @@ fun CenteredRow(modifier: Modifier = Modifier, content: @Composable (RowScope) -
 val TopBarWindowInsets = WindowInsets(top = 0)
 
 @Composable
-fun shouldUseDarkTheme(
-  uiState: State<UserData>,
-): Boolean = when (uiState) {
+fun shouldUseDarkTheme(uiState: State<UserData>): Boolean = when (uiState) {
   is State.Loading -> isSystemInDarkTheme()
   is State.Success -> when (uiState.data.darkThemeConfig) {
     DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
@@ -51,9 +49,7 @@ fun shouldUseDarkTheme(
 }
 
 @Composable
-fun shouldDisableDynamicTheming(
-  uiState: State<UserData>,
-): Boolean = when (uiState) {
+fun shouldDisableDynamicTheming(uiState: State<UserData>): Boolean = when (uiState) {
   is State.Success -> !uiState.data.useDynamicColor
   else -> false
 }

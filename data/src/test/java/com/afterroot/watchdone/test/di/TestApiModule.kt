@@ -47,13 +47,11 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 object TestApiModule {
   @Provides
   @Singleton
-  fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-    return Retrofit.Builder()
-      .baseUrl(Constants.TMDB_BASE_URL)
-      .addConverterFactory(JacksonConverterFactory.create())
-      .client(okHttpClient)
-      .build()
-  }
+  fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+    .baseUrl(Constants.TMDB_BASE_URL)
+    .addConverterFactory(JacksonConverterFactory.create())
+    .client(okHttpClient)
+    .build()
 
   @Provides
   fun provideOkHttpClient(
@@ -80,9 +78,8 @@ object TestApiModule {
 
   @Provides
   @Singleton
-  fun provideTmdbApi(
-    okHttpClient: OkHttpClient,
-  ): TmdbApi = TmdbApi(BuildConfig.TMDB_API, okHttpClient)
+  fun provideTmdbApi(okHttpClient: OkHttpClient): TmdbApi =
+    TmdbApi(BuildConfig.TMDB_API, okHttpClient)
 }
 
 @Module
@@ -126,8 +123,7 @@ object RetrofitApisModule {
 
   @Provides
   @Singleton
-  fun provideDiscoverApi(retrofit: Retrofit): DiscoverApi =
-    retrofit.create(DiscoverApi::class.java)
+  fun provideDiscoverApi(retrofit: Retrofit): DiscoverApi = retrofit.create(DiscoverApi::class.java)
 
   @Provides
   @Singleton

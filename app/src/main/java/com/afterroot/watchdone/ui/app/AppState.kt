@@ -62,20 +62,18 @@ fun rememberAppState(
   windowSizeClass: WindowSizeClass,
   networkMonitor: NetworkMonitor,
   coroutineScope: CoroutineScope = rememberCoroutineScope(),
-): AppState {
-  return remember(
-    navController,
-    bottomSheetNavigator,
-    windowSizeClass,
-    networkMonitor,
-    coroutineScope,
-  ) {
-    AppState(
-      navController = navController,
-      bottomSheetNavigator = bottomSheetNavigator,
-      windowSizeClass = windowSizeClass,
-      networkMonitor = networkMonitor,
-      coroutineScope = coroutineScope,
-    )
-  }
+): AppState = remember(
+  navController,
+  bottomSheetNavigator,
+  windowSizeClass,
+  networkMonitor,
+  coroutineScope,
+) {
+  AppState(
+    navController = navController,
+    bottomSheetNavigator = bottomSheetNavigator,
+    windowSizeClass = windowSizeClass,
+    networkMonitor = networkMonitor,
+    coroutineScope = coroutineScope,
+  )
 }

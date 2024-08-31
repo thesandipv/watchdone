@@ -48,10 +48,7 @@ abstract class Interactor<in P, R> {
     loadingState.value = count.decrementAndGet()
   }
 
-  suspend operator fun invoke(
-    params: P,
-    timeout: Duration = DefaultTimeout,
-  ): Result<R> = try {
+  suspend operator fun invoke(params: P, timeout: Duration = DefaultTimeout): Result<R> = try {
     addLoader()
     runCatching {
       withTimeout(timeout) {
@@ -85,7 +82,8 @@ abstract class ResultInteractor<in P, R> {
 
 suspend inline fun <R> ResultInteractor<Unit, R>.executeSync(): R = executeSync(Unit)
 
-abstract class PagingInteractor<P : PagingInteractor.Parameters<T>, T : Any> : SubjectInteractor<P, PagingData<T>>() {
+abstract class PagingInteractor<P : PagingInteractor.Parameters<T>, T : Any> :
+  SubjectInteractor<P, PagingData<T>>() {
   interface Parameters<T : Any> {
     val pagingConfig: PagingConfig
   }

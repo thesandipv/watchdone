@@ -33,14 +33,12 @@ class ProfileRepository @Inject constructor(
   private val firebaseMessaging: FirebaseMessaging,
   private val dispatchers: CoroutineDispatchers,
 ) {
-  fun getProfile(
-    uid: String,
-    cached: Boolean = false,
-  ) = resultFlow(coroutineContext = dispatchers.io) {
-    val source = if (cached) Source.CACHE else Source.DEFAULT
-    val query = firestore.collectionUsers().whereEqualTo(Field.UID, uid).get(source)
-    emit(State.success(query.await().toNetworkUser()))
-  }
+  fun getProfile(uid: String, cached: Boolean = false) =
+    resultFlow(coroutineContext = dispatchers.io) {
+      val source = if (cached) Source.CACHE else Source.DEFAULT
+      val query = firestore.collectionUsers().whereEqualTo(Field.UID, uid).get(source)
+      emit(State.success(query.await().toNetworkUser()))
+    }
 
   fun setProfile(uid: String, localUser: LocalUser) = resultFlow(
     coroutineContext = dispatchers.io,
@@ -51,7 +49,5 @@ class ProfileRepository @Inject constructor(
     emit(State.success(true))
   }
 
-  private suspend fun getFCMToken(): String {
-    return firebaseMessaging.token.await()
-  }
+  private suspend fun getFCMToken(): String = firebaseMessaging.token.await()
 }

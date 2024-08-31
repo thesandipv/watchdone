@@ -71,8 +71,8 @@ private fun createInstagramShareIntent(
   return shareIntent
 }
 
-fun Intent.isResolvable(context: Context, flags: Long = 0): Boolean {
-  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+fun Intent.isResolvable(context: Context, flags: Long = 0): Boolean =
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     context.packageManager.resolveActivity(
       this,
       PackageManager.ResolveInfoFlags.of(flags),
@@ -81,14 +81,10 @@ fun Intent.isResolvable(context: Context, flags: Long = 0): Boolean {
     @Suppress("DEPRECATION")
     context.packageManager.resolveActivity(this, flags.toInt()) != null
   }
-}
 
 fun Int.toHex() = "#${Integer.toHexString(this)}"
 
-private fun createShareIntent(
-  context: Context,
-  intentExtras: Map<String, String?>,
-): Intent {
+private fun createShareIntent(context: Context, intentExtras: Map<String, String?>): Intent {
   val shareIntent = Intent(Intent.ACTION_SEND)
 
   val mediaId = intentExtras["mediaId"]

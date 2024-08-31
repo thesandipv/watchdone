@@ -58,9 +58,7 @@ class Query {
     return this
   }
 
-  fun validateForSearch(): Boolean {
-    return params[ParamNames.QUERY]?.isNotBlank() ?: false
-  }
+  fun validateForSearch(): Boolean = params[ParamNames.QUERY]?.isNotBlank() ?: false
 
   object ParamNames {
     const val ADULT = "include_adult"
@@ -72,7 +70,5 @@ class Query {
     const val YEAR = "year"
   }
 
-  override fun toString(): String {
-    return params.toString()
-  }
+  override fun toString(): String = params.toString()
 }

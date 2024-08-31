@@ -50,7 +50,5 @@ class TmdbMovieDetailToMedia @Inject constructor() : Mapper<TmdbMovieDetail, Med
 class TmdbMoviePageResultToMedias @Inject constructor(
   private val tmdbMovieToMedia: TmdbMovieToMedia,
 ) : Mapper<TmdbMoviePageResult, List<Media>> {
-  override fun map(from: TmdbMoviePageResult): List<Media> {
-    return from.results.map(tmdbMovieToMedia::map)
-  }
+  override fun map(from: TmdbMoviePageResult): List<Media> = from.results.map(tmdbMovieToMedia::map)
 }

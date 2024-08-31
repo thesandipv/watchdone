@@ -42,7 +42,4 @@ data class Season(
   var isWatched: Boolean = false,
 )
 
-data class SeasonNew(
-  val tmdb: TmdbSeasonDetail,
-  val isWatched: Boolean = false,
-)
+data class SeasonNew(val tmdb: TmdbSeasonDetail, val isWatched: Boolean = false)

@@ -50,12 +50,11 @@ object AppModules {
     firebaseUtils: FirebaseUtils,
     @VersionName version: String,
     @VersionCode versionCode: Int,
-  ): String =
-    getMailBodyForFeedback(
-      firebaseUtils,
-      version = version,
-      versionCode = versionCode,
-    )
+  ): String = getMailBodyForFeedback(
+    firebaseUtils,
+    version = version,
+    versionCode = versionCode,
+  )
 
   @Provides
   @Singleton
