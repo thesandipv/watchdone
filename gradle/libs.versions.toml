@@ -2,7 +2,7 @@
 agp = "8.6.0"
 androidTools = "31.6.0"
 accompanist = "0.34.0"
-activity = "1.9.1"
+activity = "1.9.2"
 ankoCommons = "0.10.8"
 appcompat = "1.7.0"
 ar-utils = "0.6.0" # AfterROOT Core
