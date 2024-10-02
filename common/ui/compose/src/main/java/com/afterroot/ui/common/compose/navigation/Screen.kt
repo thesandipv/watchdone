@@ -25,6 +25,7 @@ sealed class Screen(private val route: String, @StringRes val title: Int) {
   }
 
   data object Profile : Screen("profile", CommonR.string.title_profile)
+  data object TmdbProfile : Screen("profile/tmdb", CommonR.string.title_profile)
 
   data object EditProfile : Screen("editProfile", CommonR.string.title_edit_profile)
 }

@@ -57,6 +57,7 @@ object Constants {
   const val RC_STORAGE_ACCESS = 12
 
   const val SCHEME_HTTPS = "https"
+  val scheme_watchdone = if (BuildConfig.DEBUG) "watchdone-debug" else "watchdone"
   const val WATCHDONE_HOST = "watchdone.web.app"
   const val AFTERROOT_HOST = "afterroot.web.app"
 

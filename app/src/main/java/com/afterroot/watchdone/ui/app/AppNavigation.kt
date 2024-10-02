@@ -50,6 +50,7 @@ import com.afterroot.watchdone.ui.discover.Discover
 import com.afterroot.watchdone.ui.media.MediaInfo
 import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile
+import com.afterroot.watchdone.ui.profile.TmdbProfile
 import com.afterroot.watchdone.ui.search.Search
 import com.afterroot.watchdone.watchlist.Watchlist
 
@@ -230,6 +231,7 @@ private fun NavGraphBuilder.addProfileRoot(appState: AppState) {
     startDestination = Screen.Profile.createRoute(RootScreen.Profile),
   ) {
     addProfile(appState, RootScreen.Profile)
+    addTmdbProfile(appState, RootScreen.Profile)
     addEditProfile(appState, RootScreen.Profile)
   }
 }
@@ -243,6 +245,22 @@ private fun NavGraphBuilder.addProfile(appState: AppState, rootScreen: RootScree
     Profile {
       appState.navController.navigate(Screen.EditProfile.createRoute(rootScreen))
     }
+  }
+}
+
+private fun NavGraphBuilder.addTmdbProfile(appState: AppState, rootScreen: RootScreen) {
+  composable(
+    route = Screen.TmdbProfile.createRoute(rootScreen),
+    enterTransition = topDestinationEnterTransition(),
+    exitTransition = topDestinationExitTransition(),
+    deepLinks = listOf(
+      navDeepLink {
+        uriPattern =
+          "${Constants.scheme_watchdone}://${Constants.WATCHDONE_HOST}/tmdb/auth/success"
+      },
+    ),
+  ) {
+    TmdbProfile()
   }
 }
 

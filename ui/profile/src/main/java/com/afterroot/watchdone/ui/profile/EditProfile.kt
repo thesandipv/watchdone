@@ -327,6 +327,7 @@ fun UserProfile(
     }
 
     is State.Success -> {
+      @Suppress("UNCHECKED_CAST")
       val localUser = (profileState.value as State.Success<NetworkUser>).data.toLocalUser()
       content(localUser)
     }

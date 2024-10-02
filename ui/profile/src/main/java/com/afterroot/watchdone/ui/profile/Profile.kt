@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.ui.profile
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +34,7 @@ import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -54,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -70,9 +71,11 @@ import com.afterroot.ui.common.compose.components.FABEdit
 import com.afterroot.ui.common.compose.components.Header
 import com.afterroot.ui.common.compose.components.LocalLogger
 import com.afterroot.ui.common.compose.components.PosterCard
+import com.afterroot.ui.common.compose.theme.buttonShape
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.tmdb.auth.TmdbAuthLoginState
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.viewmodel.ProfileViewModel
@@ -173,8 +176,9 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
   ) { paddingValues ->
 
     val refreshState = rememberPullRefreshState(
-      refreshing = watchlist.loadState.refresh == LoadState.Loading,
+      refreshing = false,
       onRefresh = {
+        actions(ProfileActions.Refresh)
         watchlist.refresh()
       },
     )
@@ -185,9 +189,17 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
         .pullRefresh(state = refreshState)
         .fillMaxWidth(),
     ) {
-      if (watchlist.itemCount != 0) {
-        ProfileWatchlistSection(profileViewState = viewState, watchlist = watchlist)
-      }
+      val context = LocalContext.current
+      ProfileWatchlistSection(
+        profileViewState = viewState,
+        watchlist = watchlist,
+        onLoginAction = {
+          viewModel.startTmdbLoginFlow(context)
+        },
+        onLogoutAction = {
+          viewModel.logoutFromTmdb()
+        },
+      )
 
       PullRefreshIndicator(
         refreshing = watchlist.loadState.refresh == LoadState.Loading,
@@ -200,12 +212,13 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
   }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileWatchlistSection(
   profileViewState: ProfileViewState,
   watchlist: LazyPagingItems<Media>,
   modifier: Modifier = Modifier,
+  onLoginAction: () -> Unit,
+  onLogoutAction: () -> Unit,
 ) {
   val listState = rememberLazyGridState()
 
@@ -231,6 +244,55 @@ fun ProfileWatchlistSection(
     }
 
     fullSpanItem {
+      Column {
+        Header(
+          title = "TMDb Profile",
+          spaceAround = 0.dp,
+          loading = profileViewState.tmdbProfile is State.Loading,
+        ) {
+          if (profileViewState.isTmdbLoggedIn == TmdbAuthLoginState.LOGGED_IN) {
+            ButtonTmdbLogout(onClick = onLogoutAction)
+          } else {
+            ButtonTmdbLogin(onClick = onLoginAction)
+          }
+        }
+
+        if (profileViewState.isTmdbLoggedIn == TmdbAuthLoginState.LOGGED_IN) {
+          if (profileViewState.tmdbProfile is State.Success) {
+            profileViewState.tmdbProfile.data.name?.let {
+              ProvideTextStyle(ubuntuTypography.bodyMedium) {
+                Text(it)
+              }
+            }
+
+            ProvideTextStyle(
+              ubuntuTypography.bodyMedium
+                .copy(
+                  color = LocalContentColor.current.copy(alpha = 0.8f),
+                ),
+            ) {
+              Text(profileViewState.tmdbProfile.data.userName)
+            }
+          }
+          if (profileViewState.tmdbProfile is State.Failed) {
+            ProvideTextStyle(
+              ubuntuTypography.bodyMedium
+                .copy(
+                  color = LocalContentColor.current.copy(alpha = 0.8f),
+                ),
+            ) {
+              Text(profileViewState.tmdbProfile.message)
+            }
+          }
+        }
+      }
+    }
+
+    fullSpanItem {
+      HorizontalDivider()
+    }
+
+    fullSpanItem {
       Header(
         title = "Watchlist",
         spaceAround = 0.dp,
@@ -238,21 +300,23 @@ fun ProfileWatchlistSection(
       )
     }
 
-    items(
-      count = watchlist.itemCount,
-      key = watchlist.itemKey { item ->
-        item.tmdbId ?: item.id
-      },
-    ) { index ->
-      watchlist[index]?.let { item ->
-        PosterCard(
-          media = item,
-          onClick = { },
-          modifier = Modifier
-            .animateItemPlacement()
-            // .fillParentMaxHeight()
-            .aspectRatio(2 / 3f),
-        )
+    if (watchlist.itemCount != 0) {
+      items(
+        count = watchlist.itemCount,
+        key = watchlist.itemKey { item ->
+          item.tmdbId ?: item.id
+        },
+      ) { index ->
+        watchlist[index]?.let { item ->
+          PosterCard(
+            media = item,
+            onClick = { },
+            modifier = Modifier
+              .animateItem(fadeInSpec = null, fadeOutSpec = null)
+              // .fillParentMaxHeight()
+              .aspectRatio(2 / 3f),
+          )
+        }
       }
     }
 
@@ -297,5 +361,32 @@ private fun ProfileTitle(profileViewState: ProfileViewState) {
         }
       }
     }
+  }
+}
+
+@Preview
+@Composable
+fun PreviewProfileScreen() {
+  ButtonTmdbLogin {
+  }
+}
+
+@Composable
+fun ButtonTmdbLogin(modifier: Modifier = Modifier, onClick: () -> Unit) {
+  Button(
+    onClick = onClick,
+    shape = buttonShape,
+  ) {
+    Text("Login")
+  }
+}
+
+@Composable
+fun ButtonTmdbLogout(modifier: Modifier = Modifier, onClick: () -> Unit) {
+  Button(
+    onClick = onClick,
+    shape = buttonShape,
+  ) {
+    Text("Logout")
   }
 }

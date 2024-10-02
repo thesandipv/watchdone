@@ -48,7 +48,11 @@ android {
     testInstrumentationRunner = "com.afterroot.watchdone.core.testing.WatchdoneTestRunner"
 
     manifestPlaceholders +=
-      mapOf("hostName" to "afterroot.web.app", "pathPrefix" to "/apps/watchdone/launch")
+      mapOf(
+        "hostName" to "afterroot.web.app",
+        "pathPrefix" to "/apps/watchdone/launch",
+        "appAuthRedirectScheme" to "empty",
+      )
 
     resourceConfigurations.addAll(listOf("en"))
   }

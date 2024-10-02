@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import app.tivi.util.Logger
 import com.afterroot.watchdone.settings.Settings
 import com.google.gson.Gson
@@ -30,6 +31,10 @@ import javax.inject.Singleton
 class SettingsModule {
   @Provides
   @Singleton
-  fun provideSettings(@ApplicationContext context: Context, gson: Gson, logger: Logger) =
-    Settings(context, gson, logger)
+  fun provideSettings(
+    @ApplicationContext context: Context,
+    gson: Gson,
+    logger: Logger,
+    @Tmdb tmdbPrefs: SharedPreferences,
+  ) = Settings(context, gson, logger, tmdbPrefs)
 }
