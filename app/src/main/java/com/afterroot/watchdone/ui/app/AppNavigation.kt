@@ -33,6 +33,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,7 +51,7 @@ import com.afterroot.watchdone.ui.discover.Discover
 import com.afterroot.watchdone.ui.media.MediaInfo
 import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile
-import com.afterroot.watchdone.ui.profile.TmdbProfile
+import com.afterroot.watchdone.ui.profile.TmdbLogin
 import com.afterroot.watchdone.ui.search.Search
 import com.afterroot.watchdone.watchlist.Watchlist
 
@@ -255,12 +256,20 @@ private fun NavGraphBuilder.addTmdbProfile(appState: AppState, rootScreen: RootS
     exitTransition = topDestinationExitTransition(),
     deepLinks = listOf(
       navDeepLink {
-        uriPattern =
-          "${Constants.scheme_watchdone}://${Constants.WATCHDONE_HOST}/tmdb/auth/success"
+        uriPattern = Deeplink.authSuccess
       },
     ),
   ) {
-    TmdbProfile()
+    TmdbLogin {
+      appState.navController.navigate(
+        Screen.Profile.createRoute(rootScreen),
+        navOptions = NavOptions.Builder()
+          .setPopUpTo(
+            route = Screen.Profile.createRoute(rootScreen),
+            inclusive = true,
+          ).build(),
+      )
+    }
   }
 }
 

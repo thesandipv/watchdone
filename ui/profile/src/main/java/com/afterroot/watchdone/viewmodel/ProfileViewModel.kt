@@ -35,7 +35,6 @@ import com.afterroot.watchdone.data.tmdb.auth.TmdbAuthRepository
 import com.afterroot.watchdone.domain.interactors.GetProfile
 import com.afterroot.watchdone.domain.interactors.SetProfile
 import com.afterroot.watchdone.domain.interactors.TmdbGetAuthorizationUrl
-import com.afterroot.watchdone.domain.interactors.TmdbLogin
 import com.afterroot.watchdone.domain.interactors.TmdbLogout
 import com.afterroot.watchdone.domain.interactors.WatchlistCountInteractor
 import com.afterroot.watchdone.domain.observers.WatchlistPagingSource
@@ -68,7 +67,6 @@ class ProfileViewModel @Inject constructor(
   private val logger: Logger,
   private var firestore: FirebaseFirestore,
   private val watchlistCountInteractor: WatchlistCountInteractor,
-  private val tmdbLogin: TmdbLogin,
   private val tmdbLogout: TmdbLogout,
   private val tmdbGetAuthorizationUrl: TmdbGetAuthorizationUrl,
   tmdbAuthRepository: TmdbAuthRepository,
@@ -236,14 +234,6 @@ class ProfileViewModel @Inject constructor(
     viewModelScope.launch {
       tmdbGetAuthorizationUrl().onSuccess {
         context.browse(it)
-      }
-    }
-  }
-
-  fun loginTmdbAfterSuccessCallback() {
-    viewModelScope.launch {
-      settings.tmdbRequestToken?.let {
-        val tt = tmdbLogin(TmdbLogin.TmdbLoginParams(it))
       }
     }
   }

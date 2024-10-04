@@ -143,6 +143,10 @@ class Settings @Inject constructor(
       putString("key_tmdb_request_token", value)
     }
 
+  fun removeTmdbLoginRequestToken() = tmdbPrefs.edit(commit = true) {
+    remove("key_tmdb_request_token")
+  }
+
   var watchlistType: WatchlistType
     get() = WatchlistType.valueOf(
       getString("watchlist_type", WatchlistType.GRID.name) ?: WatchlistType.GRID.name,
