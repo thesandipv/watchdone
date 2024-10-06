@@ -29,7 +29,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material3.Button
@@ -79,6 +78,7 @@ import com.afterroot.ui.common.compose.theme.buttonShape
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
 import com.afterroot.ui.common.compose.utils.TopBarWindowInsets
 import com.afterroot.watchdone.data.model.Media
+import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.tmdb.auth.TmdbAuthLoginState
 import com.afterroot.watchdone.resources.R
 import com.afterroot.watchdone.utils.State
@@ -86,20 +86,30 @@ import com.afterroot.watchdone.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun Profile(onSignOut: () -> Unit = {}, onEditProfile: () -> Unit) {
-  Profile(viewModel = hiltViewModel(), onSignOut = onSignOut, onEditProfile = onEditProfile)
+fun Profile(
+  onSignOut: () -> Unit = {},
+  onEditProfile: () -> Unit,
+  onWatchlistItemClick: (mediaType: MediaType, id: Int) -> Unit,
+) {
+  Profile(
+    viewModel = hiltViewModel(),
+    onSignOut = onSignOut,
+    onEditProfile = onEditProfile,
+    onWatchlistItemClick = onWatchlistItemClick,
+  )
 }
 
 @Composable
 internal fun Profile(
   viewModel: ProfileViewModel,
   logger: Logger = LocalLogger.current,
+  onWatchlistItemClick: (mediaType: MediaType, id: Int) -> Unit,
   onSignOut: () -> Unit = {},
   onEditProfile: () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
-  Profile(viewModel = viewModel) { action ->
+  Profile(viewModel = viewModel, onWatchlistItemClick = onWatchlistItemClick) { action ->
     when (action) {
       ProfileActions.SignOut -> {
         logger.d { "Profile: SignOut Start" }
@@ -138,12 +148,13 @@ internal fun Profile(
   }
 }
 
-@OptIn(
-  ExperimentalMaterial3Api::class,
-  ExperimentalMaterialApi::class,
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
+internal fun Profile(
+  viewModel: ProfileViewModel,
+  onWatchlistItemClick: (mediaType: MediaType, id: Int) -> Unit,
+  actions: (ProfileActions) -> Unit,
+) {
   val viewState by viewModel.state.collectAsState()
 
   val watchlist = viewModel.watchlist.collectAsLazyPagingItems()
@@ -197,12 +208,13 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
         },
       ) {
         val context = LocalContext.current
-        ProfileWatchlistSection(
+        ProfileContent(
           profileViewState = viewState,
           watchlist = watchlist,
           modifier = Modifier
             .bodyWidth()
             .fillMaxHeight(),
+          onWatchlistItemClick = onWatchlistItemClick,
           onLoginAction = {
             viewModel.startTmdbLoginFlow(context)
           },
@@ -216,10 +228,11 @@ internal fun Profile(viewModel: ProfileViewModel, actions: (ProfileActions) -> U
 }
 
 @Composable
-fun ProfileWatchlistSection(
+private fun ProfileContent(
   profileViewState: ProfileViewState,
   watchlist: LazyPagingItems<Media>,
   modifier: Modifier = Modifier,
+  onWatchlistItemClick: (mediaType: MediaType, id: Int) -> Unit,
   onLoginAction: () -> Unit,
   onLogoutAction: () -> Unit,
 ) {
@@ -237,102 +250,27 @@ fun ProfileWatchlistSection(
     modifier = modifier,
   ) {
     fullSpanItem {
-      ProfileTitle(profileViewState)
+      WatchdoneProfileSection(profileViewState)
     }
 
     fullHorizontalDivider()
 
     fullSpanItem {
-      Column {
-        Header(
-          title = "TMDb Profile",
-          spaceAround = 0.dp,
-          loading = profileViewState.tmdbProfile is State.Loading,
-        ) {
-          if (profileViewState.isTmdbLoggedIn == TmdbAuthLoginState.LOGGED_IN) {
-            ButtonTmdbLogout(onClick = onLogoutAction)
-          } else {
-            ButtonTmdbLogin(onClick = onLoginAction)
-          }
-        }
-
-        if (profileViewState.isTmdbLoggedIn == TmdbAuthLoginState.LOGGED_IN) {
-          if (profileViewState.tmdbProfile is State.Success) {
-            profileViewState.tmdbProfile.data.name?.let {
-              ProvideTextStyle(ubuntuTypography.bodyMedium) {
-                Text(it)
-              }
-            }
-
-            ProvideTextStyle(
-              ubuntuTypography.bodyMedium
-                .copy(
-                  color = LocalContentColor.current.copy(alpha = 0.8f),
-                ),
-            ) {
-              Text(profileViewState.tmdbProfile.data.userName)
-            }
-          }
-          if (profileViewState.tmdbProfile is State.Failed) {
-            ProvideTextStyle(
-              ubuntuTypography.bodyMedium
-                .copy(
-                  color = LocalContentColor.current.copy(alpha = 0.8f),
-                ),
-            ) {
-              Text(profileViewState.tmdbProfile.message)
-            }
-          }
-        }
-      }
-    }
-
-    fullHorizontalDivider()
-
-    fullSpanItem {
-      Header(
-        title = "Watchlist",
-        spaceAround = 0.dp,
-        loading = watchlist.loadState.refresh == LoadState.Loading,
+      TmdbProfileSection(
+        profileViewState = profileViewState,
+        onLoginAction = onLoginAction,
+        onLogoutAction = onLogoutAction,
       )
     }
 
-    if (watchlist.itemCount != 0) {
-      items(
-        count = watchlist.itemCount,
-        key = watchlist.itemKey { item ->
-          item.tmdbId ?: item.id
-        },
-      ) { index ->
-        watchlist[index]?.let { item ->
-          PosterCard(
-            media = item,
-            onClick = { },
-            modifier = Modifier
-              .animateItem(fadeInSpec = null, fadeOutSpec = null)
-              // .fillParentMaxHeight()
-              .aspectRatio(2 / 3f),
-          )
-        }
-      }
-    }
+    fullHorizontalDivider()
 
-    if (watchlist.loadState.append == LoadState.Loading) {
-      fullSpanItem {
-        Box(
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp),
-        ) {
-          CircularProgressIndicator(Modifier.align(Alignment.Center))
-        }
-      }
-    }
+    watchlistSection(watchlist, onWatchlistItemClick)
   }
 }
 
 @Composable
-private fun ProfileTitle(profileViewState: ProfileViewState) {
+private fun WatchdoneProfileSection(profileViewState: ProfileViewState) {
   if (profileViewState.user is State.Success) {
     val user = profileViewState.user.data
     Row(
@@ -361,6 +299,105 @@ private fun ProfileTitle(profileViewState: ProfileViewState) {
   }
 }
 
+@Composable
+private fun TmdbProfileSection(
+  modifier: Modifier = Modifier,
+  profileViewState: ProfileViewState,
+  onLoginAction: () -> Unit,
+  onLogoutAction: () -> Unit,
+) {
+  Column(modifier = modifier) {
+    Header(
+      title = "TMDb Profile",
+      spaceAround = 0.dp,
+      loading = profileViewState.tmdbProfile is State.Loading,
+    ) {
+      if (profileViewState.isTmdbLoggedIn == TmdbAuthLoginState.LOGGED_IN) {
+        ButtonTmdbLogout(onClick = onLogoutAction)
+      } else {
+        ButtonTmdbLogin(onClick = onLoginAction)
+      }
+    }
+
+    if (profileViewState.isTmdbLoggedIn == TmdbAuthLoginState.LOGGED_IN) {
+      if (profileViewState.tmdbProfile is State.Success) {
+        profileViewState.tmdbProfile.data.name?.let {
+          ProvideTextStyle(ubuntuTypography.bodyMedium) {
+            Text(it)
+          }
+        }
+
+        ProvideTextStyle(
+          ubuntuTypography.bodyMedium
+            .copy(
+              color = LocalContentColor.current.copy(alpha = 0.8f),
+            ),
+        ) {
+          Text(profileViewState.tmdbProfile.data.userName)
+        }
+      }
+      if (profileViewState.tmdbProfile is State.Failed) {
+        ProvideTextStyle(
+          ubuntuTypography.bodyMedium
+            .copy(
+              color = LocalContentColor.current.copy(alpha = 0.8f),
+            ),
+        ) {
+          Text(profileViewState.tmdbProfile.message)
+        }
+      }
+    }
+  }
+}
+
+private fun LazyGridScope.watchlistSection(
+  watchlist: LazyPagingItems<Media>,
+  onWatchlistItemClick: (mediaType: MediaType, id: Int) -> Unit,
+) {
+  fullSpanItem {
+    Header(
+      title = "Watchlist",
+      spaceAround = 0.dp,
+      loading = watchlist.loadState.refresh == LoadState.Loading,
+    )
+  }
+
+  if (watchlist.itemCount != 0) {
+    items(
+      count = watchlist.itemCount,
+      key = watchlist.itemKey { item ->
+        item.tmdbId ?: item.id
+      },
+    ) { index ->
+      watchlist[index]?.let { item ->
+        PosterCard(
+          media = item,
+          onClick = {
+            if (item.mediaType != null) {
+              onWatchlistItemClick(item.mediaType!!, item.tmdbId ?: 0)
+            }
+          },
+          modifier = Modifier
+            .animateItem(fadeInSpec = null, fadeOutSpec = null)
+            .aspectRatio(2 / 3f),
+        )
+      }
+    }
+  }
+
+  if (watchlist.loadState.append == LoadState.Loading) {
+    fullSpanItem {
+      Box(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(24.dp),
+      ) {
+        CircularProgressIndicator(Modifier.align(Alignment.Center))
+      }
+    }
+  }
+}
+
 @Preview
 @Composable
 fun PreviewProfileScreen() {
@@ -369,7 +406,7 @@ fun PreviewProfileScreen() {
 }
 
 @Composable
-fun ButtonTmdbLogin(modifier: Modifier = Modifier, onClick: () -> Unit) {
+private fun ButtonTmdbLogin(modifier: Modifier = Modifier, onClick: () -> Unit) {
   Button(
     onClick = onClick,
     shape = buttonShape,
@@ -380,7 +417,7 @@ fun ButtonTmdbLogin(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun ButtonTmdbLogout(modifier: Modifier = Modifier, onClick: () -> Unit) {
+private fun ButtonTmdbLogout(modifier: Modifier = Modifier, onClick: () -> Unit) {
   Button(
     onClick = onClick,
     shape = buttonShape,

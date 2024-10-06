@@ -243,9 +243,14 @@ private fun NavGraphBuilder.addProfile(appState: AppState, rootScreen: RootScree
     enterTransition = topDestinationEnterTransition(),
     exitTransition = topDestinationExitTransition(),
   ) {
-    Profile {
-      appState.navController.navigate(Screen.EditProfile.createRoute(rootScreen))
-    }
+    Profile(
+      onEditProfile = {
+        appState.navController.navigate(Screen.EditProfile.createRoute(rootScreen))
+      },
+      onWatchlistItemClick = { mediaType, id ->
+        appState.navController.navigate(Deeplink.media(id, mediaType))
+      },
+    )
   }
 }
 

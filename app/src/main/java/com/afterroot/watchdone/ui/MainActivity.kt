@@ -62,7 +62,6 @@ import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.logFirstStart
 import com.afterroot.watchdone.utils.shareToInstagram
 import com.afterroot.watchdone.viewmodel.MainActivityViewModel
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -107,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
   private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
-  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterialNavigationApi::class)
+  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     val splashScreen = installSplashScreen()
     super.onCreate(savedInstanceState)
