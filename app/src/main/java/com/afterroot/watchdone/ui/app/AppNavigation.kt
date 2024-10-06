@@ -260,7 +260,7 @@ private fun NavGraphBuilder.addTmdbProfile(appState: AppState, rootScreen: RootS
       },
     ),
   ) {
-    TmdbLogin {
+    TmdbLogin { _ ->
       appState.navController.navigate(
         Screen.Profile.createRoute(rootScreen),
         navOptions = NavOptions.Builder()

@@ -151,9 +151,11 @@ internal fun EditProfile(viewModel: ProfileViewModel, actions: (ProfileActions) 
         withTitle = stringResource(id = R.string.title_edit_profile),
         windowInsets = TopBarWindowInsets,
         navigationIcon = {
-          IconButton(onClick = {
-            actions(ProfileActions.Up)
-          }) {
+          IconButton(
+            onClick = {
+              actions(ProfileActions.Up)
+            },
+          ) {
             Icon(
               imageVector = Icons.AutoMirrored.Outlined.NavigateBefore,
               contentDescription = "Up",
@@ -209,7 +211,7 @@ internal fun EditProfile(viewModel: ProfileViewModel, actions: (ProfileActions) 
               enteredState.value = enteredState.value.copy(userName = it.trim())
             },
             keyboardOptions = KeyboardOptions(
-              autoCorrect = false,
+              autoCorrectEnabled = false,
               imeAction = ImeAction.Done,
             ),
             validate = {

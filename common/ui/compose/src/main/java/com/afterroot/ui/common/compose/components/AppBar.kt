@@ -17,7 +17,7 @@ package com.afterroot.ui.common.compose.components
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,7 +58,7 @@ fun CommonAppBar(
 @Composable
 fun UpActionButton(onUpClick: () -> Unit) {
   IconButton(onClick = onUpClick) {
-    Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = "Back")
+    Icon(imageVector = Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
   }
 }
 
