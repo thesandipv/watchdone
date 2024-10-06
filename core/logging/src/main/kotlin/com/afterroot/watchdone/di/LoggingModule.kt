@@ -35,16 +35,12 @@ import javax.inject.Singleton
 object LoggingModule {
   @Provides
   @Singleton
-  fun provideLogger(
-    timberLogger: TimberLogger,
-    recordingLogger: RecordingLogger,
-  ): Logger = CompositeLogger(timberLogger, recordingLogger)
+  fun provideLogger(timberLogger: TimberLogger, recordingLogger: RecordingLogger): Logger =
+    CompositeLogger(timberLogger, recordingLogger)
 
   @Provides
   @Singleton
-  fun provideRecordingLogger(
-    applicationInfo: ApplicationInfo,
-  ): RecordingLogger = when {
+  fun provideRecordingLogger(applicationInfo: ApplicationInfo): RecordingLogger = when {
     applicationInfo.debugBuild -> RecordingLoggerImpl()
     else -> NoopRecordingLogger
   }

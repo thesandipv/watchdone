@@ -150,7 +150,13 @@ internal fun Discover(
         .pullRefresh(state = refreshState)
         .fillMaxWidth(),
     ) {
-      if ((state.mediaType == MediaType.MOVIE && popularItems.itemCount != 0 || state.mediaType == MediaType.SHOW && popularItems.itemCount != 0)) {
+      if ((
+        state.mediaType == MediaType.MOVIE &&
+          popularItems.itemCount != 0 ||
+          state.mediaType == MediaType.SHOW &&
+          popularItems.itemCount != 0
+        )
+      ) {
         LazyColumn(
           state = listState,
           contentPadding = paddingValues, // Padding to be handled by child

@@ -22,11 +22,8 @@ import com.afterroot.watchdone.data.model.PaginatedEntry
 interface PaginatedEntryDao<EC : PaginatedEntry, LI : EntryWithMedia<EC>> : EntryDao<EC, LI> {
   suspend fun deletePage(page: Int): Unit = TODO("Not Implemented")
   suspend fun deletePage(page: Int, mediaType: MediaType): Unit = TODO("Not Implemented")
-  suspend fun deletePage(
-    page: Int,
-    mediaType: MediaType,
-    ofMedia: Int,
-  ): Unit = TODO("Not Implemented")
+  suspend fun deletePage(page: Int, mediaType: MediaType, ofMedia: Int): Unit =
+    TODO("Not Implemented")
   suspend fun getLastPage(): Int? = TODO("Not Implemented")
   suspend fun getLastPage(mediaType: MediaType): Int? = TODO("Not Implemented")
   suspend fun getLastPage(mediaType: MediaType, ofMedia: Int): Int? = TODO("Not Implemented")

@@ -36,31 +36,29 @@ class TmdbDiscoverDataSource @Inject constructor(
     page: Int,
     mediaType: MediaType,
     tmdbDiscover: TmdbDiscover,
-  ): List<Media> {
-    return when (mediaType) {
-      MediaType.MOVIE -> {
-        val discover = tmdb.discover.discover(
-          page,
-          region = settings.country,
-          tmdbDiscover = tmdbDiscover,
-        ) as TmdbMoviePageResult
+  ): List<Media> = when (mediaType) {
+    MediaType.MOVIE -> {
+      val discover = tmdb.discover.discover(
+        page,
+        region = settings.country,
+        tmdbDiscover = tmdbDiscover,
+      ) as TmdbMoviePageResult
 
-        discover.results.map(tmdbMovieToMedia::map)
-      }
+      discover.results.map(tmdbMovieToMedia::map)
+    }
 
-      MediaType.SHOW -> {
-        val discover = tmdb.discover.discover(
-          page,
-          region = settings.country,
-          tmdbDiscover = tmdbDiscover,
-        ) as TmdbShowPageResult
+    MediaType.SHOW -> {
+      val discover = tmdb.discover.discover(
+        page,
+        region = settings.country,
+        tmdbDiscover = tmdbDiscover,
+      ) as TmdbShowPageResult
 
-        discover.results.map(tmdbShowToMedia::map)
-      }
+      discover.results.map(tmdbShowToMedia::map)
+    }
 
-      else -> {
-        emptyList()
-      }
+    else -> {
+      emptyList()
     }
   }
 }

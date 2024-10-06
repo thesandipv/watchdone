@@ -24,7 +24,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 enum class FabState {
-  Visible, Invisible
+  Visible,
+  Invisible,
 }
 
 @Composable

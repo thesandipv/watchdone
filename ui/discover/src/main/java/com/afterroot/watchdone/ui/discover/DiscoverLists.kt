@@ -24,26 +24,20 @@ import javax.inject.Provider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-class DiscoverLists @Inject constructor(
-  observePagedDiscover: Provider<ObservePagedDiscover>,
-) {
+class DiscoverLists @Inject constructor(observePagedDiscover: Provider<ObservePagedDiscover>) {
   val popular: ObservePagedDiscover by lazy { observePagedDiscover.get() }
-  fun pagedPopularList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> {
-    return popular.flow.cachedIn(scope)
-  }
+  fun pagedPopularList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> =
+    popular.flow.cachedIn(scope)
 
   val nowPlaying: ObservePagedDiscover by lazy { observePagedDiscover.get() }
-  fun pagedNowPlayingList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> {
-    return nowPlaying.flow.cachedIn(scope)
-  }
+  fun pagedNowPlayingList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> =
+    nowPlaying.flow.cachedIn(scope)
 
   val onTV: ObservePagedDiscover by lazy { observePagedDiscover.get() }
-  fun pagedOnTVList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> {
-    return onTV.flow.cachedIn(scope)
-  }
+  fun pagedOnTVList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> =
+    onTV.flow.cachedIn(scope)
 
   val topRated: ObservePagedDiscover by lazy { observePagedDiscover.get() }
-  fun pagedTopRatedList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> {
-    return topRated.flow.cachedIn(scope)
-  }
+  fun pagedTopRatedList(scope: CoroutineScope): Flow<PagingData<DiscoverEntryWithMedia>> =
+    topRated.flow.cachedIn(scope)
 }

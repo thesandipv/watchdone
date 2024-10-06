@@ -18,9 +18,8 @@ import kotlinx.coroutines.CancellationException
  * [fetch] for [LoadType.REFRESH] events.
  */
 @OptIn(ExperimentalPagingApi::class)
-internal class RefreshOnlyRemoteMediator<LI, ET>(
-  private val fetch: suspend () -> Unit,
-) : RemoteMediator<Int, LI>() where ET : PaginatedEntry, LI : EntryWithMedia<ET> {
+internal class RefreshOnlyRemoteMediator<LI, ET>(private val fetch: suspend () -> Unit) :
+  RemoteMediator<Int, LI>() where ET : PaginatedEntry, LI : EntryWithMedia<ET> {
   override suspend fun load(loadType: LoadType, state: PagingState<Int, LI>): MediatorResult {
     if (loadType == LoadType.PREPEND || loadType == LoadType.APPEND) {
       return MediatorResult.Success(endOfPaginationReached = true)

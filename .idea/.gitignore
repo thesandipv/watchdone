@@ -1,10 +1,14 @@
-# Default ignored files
+# Default ignored folders
 /shelf/
 /artifacts/
-/workspace.xml
-/deploymentTargetDropDown.xml
-/misc.xml
-/appInsightsSettings.xml
+
+# Default ignored files
 /androidTestResultsUserPreferences.xml
+/appInsightsSettings.xml
+/compiler.xml
+/deploymentTargetDropDown.xml
 /deploymentTargetSelector.xml
 /migrations.xml
+/misc.xml
+/runConfigurations.xml
+/workspace.xml

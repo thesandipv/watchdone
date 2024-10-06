@@ -42,8 +42,6 @@ object DaosModule {
   fun provideDiscoverDao(database: WatchdoneDatabase): DiscoverDao = database.discoverDao()
 
   @Provides
-  fun provideRecommendedDao(
-    database: WatchdoneDatabase,
-  ): RecommendedDao = database
+  fun provideRecommendedDao(database: WatchdoneDatabase): RecommendedDao = database
     .recommendedDao()
 }

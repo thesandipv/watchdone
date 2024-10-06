@@ -40,9 +40,8 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun provideStateMonitor(
-    connectivityManager: ConnectivityManager,
-  ) = NetworkStateMonitor(connectivityManager)
+  fun provideStateMonitor(connectivityManager: ConnectivityManager) =
+    NetworkStateMonitor(connectivityManager)
 }
 
 @Module

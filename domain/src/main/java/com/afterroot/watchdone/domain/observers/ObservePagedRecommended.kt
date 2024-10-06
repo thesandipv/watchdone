@@ -45,28 +45,26 @@ class ObservePagedRecommended @Inject constructor(
   @OptIn(ExperimentalPagingApi::class)
   override suspend fun createObservable(
     params: Params,
-  ): Flow<PagingData<RecommendedEntryWithMedia>> {
-    return Pager(
-      config = params.pagingConfig,
-      remoteMediator = PaginatedEntryRemoteMediator { page ->
-        try {
-          logger.d { "APPEND: Requesting Page: $page" }
-          updateRecommended(
-            UpdateRecommended.Params(params.mediaId, page, params.mediaType, true),
-          )
-        } catch (ce: CancellationException) {
-          throw ce
-        } catch (t: Throwable) {
-          logger.e(t) { "Error while fetching from RemoteMediator" }
-          throw t
-        }
-      },
-      pagingSourceFactory = {
-        recommendedDao.entriesPagingSource(
-          params.mediaId,
-          params.mediaType,
+  ): Flow<PagingData<RecommendedEntryWithMedia>> = Pager(
+    config = params.pagingConfig,
+    remoteMediator = PaginatedEntryRemoteMediator { page ->
+      try {
+        logger.d { "APPEND: Requesting Page: $page" }
+        updateRecommended(
+          UpdateRecommended.Params(params.mediaId, page, params.mediaType, true),
         )
-      },
-    ).flow
-  }
+      } catch (ce: CancellationException) {
+        throw ce
+      } catch (t: Throwable) {
+        logger.e(t) { "Error while fetching from RemoteMediator" }
+        throw t
+      }
+    },
+    pagingSourceFactory = {
+      recommendedDao.entriesPagingSource(
+        params.mediaId,
+        params.mediaType,
+      )
+    },
+  ).flow
 }

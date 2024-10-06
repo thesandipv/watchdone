@@ -16,7 +16,6 @@ package com.afterroot.watchdone.data.model
 
 import androidx.compose.runtime.Immutable
 import com.afterroot.data.model.UserProperties
-import com.afterroot.data.utils.valueOrBlank
 import java.io.Serializable
 
 /**
@@ -29,7 +28,7 @@ data class LocalUser(
   val uid: String? = null,
   val fcmId: String? = null,
   val userName: String? = null,
-  val isUserNameAvailable: Boolean = userName.valueOrBlank().isNotBlank(),
+  val isUserNameAvailable: Boolean = userName.orEmpty().isNotBlank(),
   val properties: UserProperties = UserProperties(),
 ) : Serializable {
   fun trim(): LocalUser = copy(name = name?.trim(), userName = userName?.trim())

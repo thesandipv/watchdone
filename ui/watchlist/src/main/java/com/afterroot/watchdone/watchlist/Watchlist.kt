@@ -14,7 +14,6 @@
  */
 package com.afterroot.watchdone.watchlist
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -237,7 +236,10 @@ private fun Watchlist(
               WatchlistType.LIST -> Layout.listColumns
             },
           ),
-          contentPadding = paddingValues + PaddingValues(horizontal = bodyMargin, vertical = gutter),
+          contentPadding = paddingValues + PaddingValues(
+            horizontal = bodyMargin,
+            vertical = gutter,
+          ),
           horizontalArrangement = Arrangement.spacedBy(gutter),
           verticalArrangement = Arrangement.spacedBy(gutter),
           modifier = Modifier
@@ -285,7 +287,6 @@ private fun Watchlist(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FiltersRow(
   modifier: Modifier = Modifier,
@@ -384,7 +385,6 @@ fun FiltersRow(
   }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LazyGridItemScope.WatchlistItem(
   item: Media,
@@ -401,7 +401,7 @@ private fun LazyGridItemScope.WatchlistItem(
             rating = item.rating,
             releaseDate = item.releaseDate,
             modifier = Modifier
-              .animateItemPlacement()
+              .animateItem()
               .fillMaxWidth(),
             isWatched = item.isWatched,
             mediaType = MediaType.MOVIE,
@@ -416,7 +416,7 @@ private fun LazyGridItemScope.WatchlistItem(
             rating = item.rating,
             releaseDate = item.releaseDate,
             modifier = Modifier
-              .animateItemPlacement()
+              .animateItem()
               .fillMaxWidth()
               .aspectRatio(2 / 3f),
             isWatched = item.isWatched,
@@ -436,7 +436,7 @@ private fun LazyGridItemScope.WatchlistItem(
             rating = item.rating,
             releaseDate = item.releaseDate,
             modifier = Modifier
-              .animateItemPlacement()
+              .animateItem()
               .fillMaxWidth(),
             isWatched = item.isWatched,
             mediaType = MediaType.SHOW,
@@ -451,7 +451,7 @@ private fun LazyGridItemScope.WatchlistItem(
             rating = item.rating,
             releaseDate = item.releaseDate,
             modifier = Modifier
-              .animateItemPlacement()
+              .animateItem()
               .fillMaxWidth()
               .aspectRatio(2 / 3f),
             isWatched = item.isWatched,

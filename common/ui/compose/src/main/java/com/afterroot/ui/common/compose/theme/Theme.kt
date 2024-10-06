@@ -77,6 +77,7 @@ fun Theme(settings: Settings, darkTheme: Boolean, content: @Composable () -> Uni
       onSurfaceVariant = Color(
         context.getMaterialColor(MaterialR.attr.colorOnSurfaceVariant),
       ),
+      surfaceTint = Color(context.getMaterialColor(MaterialR.attr.colorPrimary)),
       inverseSurface = Color(context.getMaterialColor(MaterialR.attr.colorSurfaceInverse)),
       inverseOnSurface = Color(
         context.getMaterialColor(MaterialR.attr.colorOnSurfaceInverse),
@@ -89,8 +90,14 @@ fun Theme(settings: Settings, darkTheme: Boolean, content: @Composable () -> Uni
       ),
       outline = Color(context.getMaterialColor(MaterialR.attr.colorOutline)),
       outlineVariant = Color(context.getMaterialColor(MaterialR.attr.colorOutlineVariant)),
-      surfaceTint = Color(context.getMaterialColor(MaterialR.attr.colorPrimary)),
       scrim = Color(red = 0, green = 0, blue = 0),
+      surfaceBright = Color.Unspecified,
+      surfaceDim = Color.Unspecified,
+      surfaceContainer = Color.Unspecified,
+      surfaceContainerHigh = Color.Unspecified,
+      surfaceContainerHighest = Color.Unspecified,
+      surfaceContainerLow = Color.Unspecified,
+      surfaceContainerLowest = Color.Unspecified,
     )
   }
 

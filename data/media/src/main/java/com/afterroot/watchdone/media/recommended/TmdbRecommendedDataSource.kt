@@ -28,8 +28,8 @@ class TmdbRecommendedDataSource @Inject constructor(
   private val movieMapper: TmdbMovieToMedia,
   private val showMapper: TmdbShowToMedia,
 ) : RecommendedDataSource {
-  override suspend fun invoke(mediaId: Int, mediaType: MediaType, page: Int): List<Media> {
-    return when (mediaType) {
+  override suspend fun invoke(mediaId: Int, mediaType: MediaType, page: Int): List<Media> =
+    when (mediaType) {
       MediaType.MOVIE -> {
         tmdb.movies.getRecommendations(mediaId, page).results.let { movieMapper.map(it) }
       }
@@ -40,5 +40,4 @@ class TmdbRecommendedDataSource @Inject constructor(
 
       else -> emptyList()
     }
-  }
 }

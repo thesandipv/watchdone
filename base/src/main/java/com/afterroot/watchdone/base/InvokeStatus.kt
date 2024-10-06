@@ -35,9 +35,7 @@ fun Flow<InvokeStatus>.watchStatus(
   scope: CoroutineScope,
   tag: String = "",
   onSuccess: () -> Unit = {},
-): Job {
-  return scope.launch { collectStatus(tag, onSuccess) }
-}
+): Job = scope.launch { collectStatus(tag, onSuccess) }
 
 /**
  * Collects [InvokeStatus]

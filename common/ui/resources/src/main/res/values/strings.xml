@@ -79,4 +79,8 @@
     <string name="watch_state_watched">Watched</string>
     <string name="watch_state_started">Started</string>
     <string name="watchlist_style">Watchlist Style</string>
+    <string name="host_afterroot">afterroot.web.app</string>
+    <string name="host_watchdone">watchdone.web.app</string>
+    <string name="scheme_watchdone">watchdone</string>
+    <string name="path_prefix_tmdb_auth_success">/tmdb/auth/success</string>
 </resources>

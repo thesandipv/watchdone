@@ -101,7 +101,7 @@ internal fun <EWM : EntryWithMedia<*>> PagingCarouselInt(
           media = item.media,
           onClick = { onItemClick(item.media, index) },
           modifier = Modifier
-            .animateItemPlacement()
+            .animateItem()
             .fillParentMaxHeight()
             .aspectRatio(2 / 3f),
         )

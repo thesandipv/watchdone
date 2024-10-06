@@ -64,13 +64,8 @@ val ubuntuTypography = Typography(
   labelSmall = typography.labelSmall.copy(fontFamily = ubuntuFamily),
 )
 
-fun googleFontFamily(
-  name: String,
-  weights: List<FontWeight>,
-): FontFamily {
-  return FontFamily(
-    weights.map {
-      Font(GoogleFont(name), fontProvider, it)
-    },
-  )
-}
+fun googleFontFamily(name: String, weights: List<FontWeight>): FontFamily = FontFamily(
+  weights.map {
+    Font(GoogleFont(name), fontProvider, it)
+  },
+)

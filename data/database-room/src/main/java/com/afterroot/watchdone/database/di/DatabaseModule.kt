@@ -40,7 +40,6 @@ object DatabaseModule {
 
   @Provides
   @Singleton
-  fun provideDatabaseTransactionRunner(
-    runner: RoomTransactionRunner,
-  ): DatabaseTransactionRunner = runner
+  fun provideDatabaseTransactionRunner(runner: RoomTransactionRunner): DatabaseTransactionRunner =
+    runner
 }

@@ -59,6 +59,8 @@ include(
   ":data:media",
   ":data:model",
   ":data:search",
+  ":data:tmdb-auth",
+  ":data:tmdb-account",
   ":domain",
   ":test-app",
   ":ui:discover",

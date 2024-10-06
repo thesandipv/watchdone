@@ -29,7 +29,5 @@ interface EntryWithMedia<ET : Entry> {
       return relations[0]
     }
 
-  fun generateStableId(): Long {
-    return Objects.hash(entry::class.java.name, entry.mediaId).toLong()
-  }
+  fun generateStableId(): Long = Objects.hash(entry::class.java.name, entry.mediaId).toLong()
 }
