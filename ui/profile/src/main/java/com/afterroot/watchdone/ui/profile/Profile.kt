@@ -271,28 +271,36 @@ private fun ProfileContent(
 
 @Composable
 private fun WatchdoneProfileSection(profileViewState: ProfileViewState) {
-  if (profileViewState.user is State.Success) {
-    val user = profileViewState.user.data
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-      Column {
-        ProvideTextStyle(ubuntuTypography.bodyMedium) {
-          Text(user.name.toString())
+  Column(modifier = Modifier.fillMaxWidth()) {
+    Header(
+      title = "WatchDone Profile",
+      spaceAround = 0.dp,
+      loading = profileViewState.user is State.Loading,
+    )
+    if (profileViewState.user is State.Success) {
+      val user = profileViewState.user.data
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+      ) {
+        Column {
+          ProvideTextStyle(ubuntuTypography.bodyMedium) {
+            Text(user.name.toString())
+          }
+          ProvideTextStyle(
+            ubuntuTypography.bodyMedium.copy(
+              color = LocalContentColor.current.copy(alpha = 0.8f),
+            ),
+          ) {
+            Text(user.userName.toString())
+          }
         }
-        ProvideTextStyle(
-          ubuntuTypography.bodyMedium.copy(
-            color = LocalContentColor.current.copy(alpha = 0.8f),
-          ),
-        ) {
-          Text(user.userName.toString())
-        }
-      }
-      if (profileViewState.wlCount is State.Success) {
-        ProvideTextStyle(ubuntuTypography.bodyMedium) {
-          val data = profileViewState.wlCount.data
-          Text("$data Items")
+        if (profileViewState.wlCount is State.Success) {
+          ProvideTextStyle(ubuntuTypography.bodyMedium) {
+            val data = profileViewState.wlCount.data
+            Text("$data Items")
+          }
         }
       }
     }
