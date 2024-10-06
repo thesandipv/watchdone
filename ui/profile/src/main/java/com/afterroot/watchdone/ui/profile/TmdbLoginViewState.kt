@@ -22,8 +22,8 @@ import com.afterroot.watchdone.data.tmdb.auth.TmdbAuthLoginState
 
 @Immutable
 data class TmdbLoginViewState(
-    override val message: UiMessage? = null,
-    val isTmdbLoggedIn: TmdbAuthLoginState = TmdbAuthLoginState.LOGGED_OUT,
+  override val message: UiMessage? = null,
+  val isTmdbLoggedIn: TmdbAuthLoginState = TmdbAuthLoginState.LOGGED_OUT,
 ) : ViewState() {
   companion object {
     val Empty = TmdbLoginViewState()
