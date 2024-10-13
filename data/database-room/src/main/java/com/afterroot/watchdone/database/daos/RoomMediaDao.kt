@@ -23,7 +23,9 @@ import com.afterroot.watchdone.data.model.Media
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class RoomMediaDao : MediaDao, RoomEntityDao<Media> {
+abstract class RoomMediaDao :
+  MediaDao,
+  RoomEntityDao<Media> {
 
   @Query("SELECT * FROM media WHERE id IN (:ids)")
   abstract override fun getMediaByIds(ids: List<Long>): Flow<List<Media>>

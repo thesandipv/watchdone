@@ -20,10 +20,7 @@ enum class WatchStateValues {
   STARTED,
 }
 
-data class Filters(
-  val watchState: WatchStateValues? = null,
-  val mediaType: MediaType? = null,
-) {
+data class Filters(val watchState: WatchStateValues? = null, val mediaType: MediaType? = null) {
   companion object {
     val EMPTY = Filters()
   }

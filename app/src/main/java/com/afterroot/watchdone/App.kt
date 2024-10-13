@@ -23,7 +23,9 @@ import dagger.hilt.android.HiltAndroidApp
 
 @Keep
 @HiltAndroidApp
-class App : Application(), ImageLoaderFactory {
+class App :
+  Application(),
+  ImageLoaderFactory {
   override fun onCreate() {
     DynamicColors.applyToActivitiesIfAvailable(this)
     super.onCreate()

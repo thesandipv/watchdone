@@ -18,6 +18,7 @@ package com.afterroot.watchdone.tmdb
 import app.moviebase.tmdb.Tmdb3
 import app.tivi.tmdb.TmdbOAuthInfo
 import com.afterroot.watchdone.base.BuildConfig
+import com.afterroot.watchdone.data.tmdb.auth.TmdbAuthRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,6 +51,7 @@ object TmdbModule {
   fun provideTmdb3(
     @TmdbOkHttpClient okHttpClient: OkHttpClient,
     tmdbOAuthInfo: TmdbOAuthInfo,
+    tmdbAuthRepository: TmdbAuthRepository,
   ): Tmdb3 = Tmdb3 {
     tmdbApiKey = tmdbOAuthInfo.apiKey
     maxRetriesOnException = 3
@@ -67,6 +69,12 @@ object TmdbModule {
             else -> false
           }
         }
+      }
+    }
+
+    userAuthentication {
+      loadSessionId {
+        tmdbAuthRepository.getAuthState()?.sessionId
       }
     }
   }

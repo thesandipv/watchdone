@@ -9,12 +9,9 @@ import androidx.room.withTransaction
 import com.afterroot.watchdone.database.WatchdoneDatabase
 import javax.inject.Inject
 
-class RoomTransactionRunner @Inject constructor(
-  private val db: WatchdoneDatabase,
-) : DatabaseTransactionRunner {
-  override suspend operator fun <T> invoke(block: suspend () -> T): T {
-    return db.withTransaction {
-      block()
-    }
+class RoomTransactionRunner @Inject constructor(private val db: WatchdoneDatabase) :
+  DatabaseTransactionRunner {
+  override suspend operator fun <T> invoke(block: suspend () -> T): T = db.withTransaction {
+    block()
   }
 }

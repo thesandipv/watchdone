@@ -49,14 +49,15 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="https" />
-                <data android:host="${hostName}" />
+                <data android:scheme="@string/scheme_watchdone" />
+                <data android:host="@string/host_watchdone" />
+                <data android:pathPrefix="@string/path_prefix_tmdb_auth_success" />
             </intent-filter>
         </activity>
 
@@ -75,7 +76,6 @@
             android:exported="true"
             android:theme="@style/MyTheme.Watchdone.Launch"
             tools:ignore="IntentFilterExportedReceiver">
-            <tools:validation testUrl="https://${hostName}${pathPrefix}" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -89,8 +89,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <data android:host="${hostName}" />
-                <data android:pathPrefix="/${pathPrefix}" />
+                <data android:host="@string/host_afterroot" />
+                <data android:pathPrefix="/apps/watchdone/launch" />
             </intent-filter>
 
             <meta-data

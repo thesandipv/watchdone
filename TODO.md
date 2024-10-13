@@ -10,8 +10,13 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 - [ ] Add - Login by TMDB and TMDB related features
   - [ ] Login to TMDB
 - [ ] Imp - Remove app compat lib usages
+- [ ] Add - Genre filters in Discover
+- [ ] Imp - Change method of storing watchlist data. Store only media ids and fetch and store other
+  data in room database.
 
 ### Upcoming
+
+### v0.1.0 (21-12-2023)
 
 - [X] Imp - Enable gradle configuration cache
 - [X] Imp - Migrate from `kapt` to `ksp`
@@ -20,7 +25,13 @@ Format is (Status) (Add|Fix|Imp(rove)) - (Description) ((addedIn|fixedIn|improve
 - [X] Add - Media Share action
 - [X] Add - Cast info Screen
 
+### v0.0.6 (08-12-2022)
+
+- [X] Imp - Paging in discover list
+
 ### v0.0.5 (20-11-2022)
+
+- [X] Add - renovate for dependency updates
 
 ### v0.0.4 (19-11-2022)
 

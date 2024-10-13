@@ -13,6 +13,8 @@ dependencies {
   api(libs.okhttp.okhttp)
   api(libs.okhttp.doh)
   api(projects.tmdbApi)
+  implementation(projects.core.logging)
+  implementation(projects.data.tmdbAuth)
 
   implementation(libs.ktor.core)
   implementation(libs.ktor.okhttp)

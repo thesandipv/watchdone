@@ -64,9 +64,10 @@ suspend fun Context.shareToInstagram(poster: String, mediaId: Int, settings: Set
 
     Palette.from(resource).generate { palette ->
       val map = mapOf(
-        "contentUrl" to HttpUrl.Builder().scheme(Constants.SCHEME_HTTPS).host(Constants.WATCHDONE_HOST)
-          .addPathSegment("movie").addPathSegment(mediaId.toString())
-          .build().toString(),
+        "contentUrl" to
+          HttpUrl.Builder().scheme(Constants.SCHEME_HTTPS).host(Constants.WATCHDONE_HOST)
+            .addPathSegment("movie").addPathSegment(mediaId.toString())
+            .build().toString(),
         "topBackgroundColor" to palette?.getVibrantColor(
           palette.getMutedColor(
             ContextCompat.getColor(

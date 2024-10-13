@@ -9,4 +9,6 @@ import com.afterroot.watchdone.data.compoundmodel.EntryWithMedia
 import com.afterroot.watchdone.data.daos.EntryDao
 import com.afterroot.watchdone.data.model.Entry
 
-interface RoomEntryDao<EC : Entry, LI : EntryWithMedia<EC>> : EntryDao<EC, LI>, RoomEntityDao<EC>
+interface RoomEntryDao<EC : Entry, LI : EntryWithMedia<EC>> :
+  EntryDao<EC, LI>,
+  RoomEntityDao<EC>

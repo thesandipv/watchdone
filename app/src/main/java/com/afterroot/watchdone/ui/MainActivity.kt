@@ -23,6 +23,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.material.navigation.rememberBottomSheetNavigator
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
@@ -61,8 +62,6 @@ import com.afterroot.watchdone.utils.State
 import com.afterroot.watchdone.utils.logFirstStart
 import com.afterroot.watchdone.utils.shareToInstagram
 import com.afterroot.watchdone.viewmodel.MainActivityViewModel
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -107,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
   private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
-  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterialNavigationApi::class)
+  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     val splashScreen = installSplashScreen()
     super.onCreate(savedInstanceState)
@@ -165,7 +164,8 @@ class MainActivity : ComponentActivity() {
       CompositionLocalProvider(
         LocalLogger provides logger,
         LocalWindowSizeClass provides calculateWindowSizeClass(this),
-        LocalUsingFirebaseEmulators provides (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)),
+        LocalUsingFirebaseEmulators provides
+          (BuildConfig.DEBUG && getPrefs().getBoolean("key_enable_emulator", false)),
       ) {
         Theme(settings = settings, darkTheme = darkTheme) {
           App(

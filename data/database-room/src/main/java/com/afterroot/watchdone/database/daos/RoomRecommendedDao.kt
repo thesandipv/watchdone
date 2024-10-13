@@ -27,7 +27,9 @@ import com.afterroot.watchdone.data.model.RecommendedEntry
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class RoomRecommendedDao : RecommendedDao, RoomPaginatedEntryDao<RecommendedEntry, RecommendedEntryWithMedia> {
+abstract class RoomRecommendedDao :
+  RecommendedDao,
+  RoomPaginatedEntryDao<RecommendedEntry, RecommendedEntryWithMedia> {
 
   @Transaction
   @Query(

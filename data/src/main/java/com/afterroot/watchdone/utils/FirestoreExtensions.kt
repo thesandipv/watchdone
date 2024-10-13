@@ -31,10 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun FirebaseFirestore.collectionWatchdone(
   id: String,
   isUseOnlyProdDB: Boolean,
-): CollectionReference {
-  return collection(Collection.USERS).document(id)
-    .collection(if (isUseOnlyProdDB) Collection.WATCHDONE_PROD else Collection.WATCHDONE_AUTO)
-}
+): CollectionReference = collection(Collection.USERS).document(id)
+  .collection(if (isUseOnlyProdDB) Collection.WATCHDONE_PROD else Collection.WATCHDONE_AUTO)
 
 fun CollectionReference.documentWatchlist(): DocumentReference = document(Collection.WATCHLIST)
 fun DocumentReference.collectionWatchlistItems(): CollectionReference = collection(Collection.ITEMS)

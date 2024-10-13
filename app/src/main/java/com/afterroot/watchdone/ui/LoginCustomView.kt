@@ -21,8 +21,11 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.afterroot.watchdone.R
 
-class LoginCustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-  LinearLayoutCompat(context, attrs, defStyleAttr) {
+class LoginCustomView @JvmOverloads constructor(
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0,
+) : LinearLayoutCompat(context, attrs, defStyleAttr) {
 
   private val customBack: AppCompatImageView
   private val unsplashAttribution: AppCompatTextView

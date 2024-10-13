@@ -17,9 +17,7 @@ package com.afterroot.watchdone.data.repositories
 import app.moviebase.tmdb.Tmdb3
 import javax.inject.Inject
 
-class ConfigRepository @Inject constructor(
-  private val tmdb: Tmdb3,
-) {
+class ConfigRepository @Inject constructor(private val tmdb: Tmdb3) {
   suspend fun getConfig() = tmdb.configuration.getApiConfiguration()
   suspend fun getCountries() = tmdb.configuration.getCountries()
 }

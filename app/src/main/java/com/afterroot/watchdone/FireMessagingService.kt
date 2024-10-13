@@ -44,8 +44,6 @@ import com.afterroot.watchdone.resources.R as CommonR
 @AndroidEntryPoint
 class FireMessagingService : FirebaseMessagingService() {
 
-  private val _tag = "FireMessagingService"
-
   @Inject lateinit var firebaseUtils: FirebaseUtils
 
   @Inject lateinit var firestore: FirebaseFirestore
@@ -61,11 +59,9 @@ class FireMessagingService : FirebaseMessagingService() {
   private fun updateToken(token: String) {
     try {
       if (firebaseUtils.isUserSignedIn) {
-        firebaseUtils.uid?.let {
-          firestore.collection(Collection.USERS)
-            .document(it)
-            .update(Field.FCM_ID, token)
-        }
+        firestore.collection(Collection.USERS)
+          .document(firebaseUtils.uid)
+          .update(Field.FCM_ID, token)
       }
     } catch (e: Exception) {
       e.printStackTrace()

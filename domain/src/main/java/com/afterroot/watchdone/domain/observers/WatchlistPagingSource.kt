@@ -41,12 +41,10 @@ class WatchlistPagingSource(
   private val firebaseUtils: FirebaseUtils,
   private val filters: Filters = Filters.EMPTY,
 ) : PagingSource<QuerySnapshot, Media>() {
-  override fun getRefreshKey(state: PagingState<QuerySnapshot, Media>): QuerySnapshot? {
-    return null
-  }
+  override fun getRefreshKey(state: PagingState<QuerySnapshot, Media>): QuerySnapshot? = null
 
-  override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Media> {
-    return try {
+  override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Media> =
+    try {
       val baseQuery = firestore.collectionWatchdone(
         id = firebaseUtils.uid,
         settings.isUseProdDb,
@@ -152,5 +150,4 @@ class WatchlistPagingSource(
       Timber.e(e, "load: ${e.message}")
       LoadResult.Error(e)
     }
-  }
 }

@@ -39,6 +39,5 @@ suspend fun MediaDao.getIdOrSaveMedia(media: Media): Long {
   }
 }
 
-suspend fun MediaDao.getMediaByIdOrThrow(id: Long): Media {
-  return getMediaWithId(id) ?: throw IllegalArgumentException("No media with id $id in database")
-}
+suspend fun MediaDao.getMediaByIdOrThrow(id: Long): Media =
+  getMediaWithId(id) ?: throw IllegalArgumentException("No media with id $id in database")

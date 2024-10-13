@@ -23,8 +23,9 @@ import com.afterroot.watchdone.utils.State
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-class WatchlistInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
-  ResultInteractor<WatchlistInteractor.Params, Flow<State<Boolean>>>() {
+class WatchlistInteractor @Inject constructor(
+  private val firestoreRepository: FirestoreRepository,
+) : ResultInteractor<WatchlistInteractor.Params, Flow<State<Boolean>>>() {
   data class Params(val id: Int, val media: DBMedia = DBMedia.Empty, val method: Method)
 
   enum class Method {
@@ -33,25 +34,24 @@ class WatchlistInteractor @Inject constructor(private val firestoreRepository: F
     EXIST,
   }
 
-  override suspend fun doWork(params: Params): Flow<State<Boolean>> {
-    return when (params.method) {
-      Method.ADD -> {
-        firestoreRepository.addToWatchlist(params.media)
-      }
+  override suspend fun doWork(params: Params): Flow<State<Boolean>> = when (params.method) {
+    Method.ADD -> {
+      firestoreRepository.addToWatchlist(params.media)
+    }
 
-      Method.REMOVE -> {
-        firestoreRepository.removeFromWatchlist(params.media)
-      }
+    Method.REMOVE -> {
+      firestoreRepository.removeFromWatchlist(params.media)
+    }
 
-      Method.EXIST -> {
-        firestoreRepository.isInWatchlist(params.id)
-      }
+    Method.EXIST -> {
+      firestoreRepository.isInWatchlist(params.id)
     }
   }
 }
 
-class WatchStateInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
-  ResultInteractor<WatchStateInteractor.Params, Flow<State<Boolean>>>() {
+class WatchStateInteractor @Inject constructor(
+  private val firestoreRepository: FirestoreRepository,
+) : ResultInteractor<WatchStateInteractor.Params, Flow<State<Boolean>>>() {
   data class Params(
     val id: Int,
     val watchState: Boolean,
@@ -64,19 +64,17 @@ class WatchStateInteractor @Inject constructor(private val firestoreRepository: 
     EPISODE,
   }
 
-  override suspend fun doWork(params: Params): Flow<State<Boolean>> {
-    return when (params.method) {
-      Method.MEDIA -> {
-        firestoreRepository.setWatchStatus(params.id, params.watchState)
-      }
+  override suspend fun doWork(params: Params): Flow<State<Boolean>> = when (params.method) {
+    Method.MEDIA -> {
+      firestoreRepository.setWatchStatus(params.id, params.watchState)
+    }
 
-      Method.EPISODE -> {
-        firestoreRepository.setEpisodeWatchStatus(
-          params.id,
-          params.episodeId,
-          params.watchState,
-        )
-      }
+    Method.EPISODE -> {
+      firestoreRepository.setEpisodeWatchStatus(
+        params.id,
+        params.episodeId,
+        params.watchState,
+      )
     }
   }
 }
@@ -85,28 +83,25 @@ class ObserveMediaInfo @Inject constructor(private val firestoreRepository: Fire
   SubjectInteractor<ObserveMediaInfo.Params, State<DBMedia>>() {
   data class Params(val id: Int)
 
-  override suspend fun createObservable(params: Params): Flow<State<DBMedia>> {
-    return firestoreRepository.getMediaInfo(params.id)
-  }
+  override suspend fun createObservable(params: Params): Flow<State<DBMedia>> =
+    firestoreRepository.getMediaInfo(params.id)
 }
 
-class MediaInfoInteractor @Inject constructor(private val firestoreRepository: FirestoreRepository) :
-  ResultInteractor<MediaInfoInteractor.Params, Flow<State<DBMedia>>>() {
+class MediaInfoInteractor @Inject constructor(
+  private val firestoreRepository: FirestoreRepository,
+) : ResultInteractor<MediaInfoInteractor.Params, Flow<State<DBMedia>>>() {
   data class Params(val id: Int)
 
-  override suspend fun doWork(params: Params): Flow<State<DBMedia>> {
-    return firestoreRepository.getMediaInfo(params.id)
-  }
+  override suspend fun doWork(params: Params): Flow<State<DBMedia>> =
+    firestoreRepository.getMediaInfo(params.id)
 }
 
 // TODO Add support for different watchlists, currently only default watchlist is supported
 class WatchlistCountInteractor @Inject constructor(
   private val firestoreRepository: FirestoreRepository,
-) :
-  ResultInteractor<WatchlistCountInteractor.Params, Flow<State<Long>>>() {
+) : ResultInteractor<WatchlistCountInteractor.Params, Flow<State<Long>>>() {
   data class Params(val watchlistId: Int)
 
-  override suspend fun doWork(params: Params): Flow<State<Long>> {
-    return firestoreRepository.getTotalCount()
-  }
+  override suspend fun doWork(params: Params): Flow<State<Long>> =
+    firestoreRepository.getTotalCount()
 }

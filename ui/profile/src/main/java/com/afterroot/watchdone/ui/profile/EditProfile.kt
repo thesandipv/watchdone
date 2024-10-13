@@ -74,10 +74,7 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 @Composable
-fun EditProfile(
-  onSignOut: () -> Unit = {},
-  onUpAction: () -> Unit = {},
-) {
+fun EditProfile(onSignOut: () -> Unit = {}, onUpAction: () -> Unit = {}) {
   EditProfile(viewModel = hiltViewModel(), onSignOut, onUpAction)
 }
 
@@ -130,10 +127,7 @@ internal fun EditProfile(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun EditProfile(
-  viewModel: ProfileViewModel,
-  actions: (ProfileActions) -> Unit,
-) {
+internal fun EditProfile(viewModel: ProfileViewModel, actions: (ProfileActions) -> Unit) {
   val viewState by viewModel.state.collectAsState()
   val logger = LocalLogger.current
   logger.d { "EditProfile: $viewState" }
@@ -157,9 +151,11 @@ internal fun EditProfile(
         withTitle = stringResource(id = R.string.title_edit_profile),
         windowInsets = TopBarWindowInsets,
         navigationIcon = {
-          IconButton(onClick = {
-            actions(ProfileActions.Up)
-          }) {
+          IconButton(
+            onClick = {
+              actions(ProfileActions.Up)
+            },
+          ) {
             Icon(
               imageVector = Icons.AutoMirrored.Outlined.NavigateBefore,
               contentDescription = "Up",
@@ -215,7 +211,7 @@ internal fun EditProfile(
               enteredState.value = enteredState.value.copy(userName = it.trim())
             },
             keyboardOptions = KeyboardOptions(
-              autoCorrect = false,
+              autoCorrectEnabled = false,
               imeAction = ImeAction.Done,
             ),
             validate = {
@@ -312,9 +308,7 @@ fun UpdateProfilePrompt() {
 }
 
 @Composable
-fun DoWhenUserNameNotAvailable(
-  whenNotAvailable: () -> Unit,
-) {
+fun DoWhenUserNameNotAvailable(whenNotAvailable: () -> Unit) {
   UserProfile { profile ->
     if (profile.userName == null || !profile.isUserNameAvailable) {
       whenNotAvailable()
@@ -335,6 +329,7 @@ fun UserProfile(
     }
 
     is State.Success -> {
+      @Suppress("UNCHECKED_CAST")
       val localUser = (profileState.value as State.Success<NetworkUser>).data.toLocalUser()
       content(localUser)
     }

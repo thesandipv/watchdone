@@ -99,6 +99,5 @@ suspend fun FirebaseFirestore.filterWatchlist(
   uid: String,
   isUseProdDb: Boolean,
   filter: Query.() -> Query,
-): QuerySnapshot {
-  return collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().filter().get().await()
-}
+): QuerySnapshot =
+  collectionWatchdone(uid, isUseProdDb).collectionWatchlistItems().filter().get().await()

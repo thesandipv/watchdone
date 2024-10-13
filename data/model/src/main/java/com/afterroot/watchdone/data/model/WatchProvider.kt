@@ -35,7 +35,4 @@ data class WatchProviders(
   val free: List<WatchProvider> = emptyList(),
 )
 
-data class WatchProviderResult(
-  val id: Int? = null,
-  val results: Map<String, WatchProviders>,
-)
+data class WatchProviderResult(val id: Int? = null, val results: Map<String, WatchProviders>)

@@ -56,9 +56,7 @@ class MyComposeView @JvmOverloads constructor(
     content.value?.invoke()
   }
 
-  override fun getAccessibilityClassName(): CharSequence {
-    return javaClass.name
-  }
+  override fun getAccessibilityClassName(): CharSequence = javaClass.name
 
   // Override addView until fixed https://issuetracker.google.com/issues/236561967
   override fun addView(child: View?) {

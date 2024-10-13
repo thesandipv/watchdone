@@ -15,6 +15,7 @@
 
 package com.afterroot.watchdone.ui.app
 
+import androidx.compose.material.navigation.BottomSheetNavigator
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -23,14 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import com.afterroot.watchdone.utils.NetworkMonitor
-import com.google.accompanist.navigation.material.BottomSheetNavigator
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Stable
 class AppState(
   val navController: NavHostController,
@@ -54,7 +52,6 @@ class AppState(
     )
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun rememberAppState(
   navController: NavHostController,
@@ -62,20 +59,18 @@ fun rememberAppState(
   windowSizeClass: WindowSizeClass,
   networkMonitor: NetworkMonitor,
   coroutineScope: CoroutineScope = rememberCoroutineScope(),
-): AppState {
-  return remember(
-    navController,
-    bottomSheetNavigator,
-    windowSizeClass,
-    networkMonitor,
-    coroutineScope,
-  ) {
-    AppState(
-      navController = navController,
-      bottomSheetNavigator = bottomSheetNavigator,
-      windowSizeClass = windowSizeClass,
-      networkMonitor = networkMonitor,
-      coroutineScope = coroutineScope,
-    )
-  }
+): AppState = remember(
+  navController,
+  bottomSheetNavigator,
+  windowSizeClass,
+  networkMonitor,
+  coroutineScope,
+) {
+  AppState(
+    navController = navController,
+    bottomSheetNavigator = bottomSheetNavigator,
+    windowSizeClass = windowSizeClass,
+    networkMonitor = networkMonitor,
+    coroutineScope = coroutineScope,
+  )
 }

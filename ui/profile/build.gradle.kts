@@ -28,6 +28,8 @@ android {
 dependencies {
   implementation(projects.data)
   implementation(projects.domain)
+  implementation(projects.data.tmdbAuth)
+  implementation(projects.data.tmdbAccount)
 
   implementation(libs.androidx.core)
   implementation(libs.androidx.lifecycle.viewmodel)

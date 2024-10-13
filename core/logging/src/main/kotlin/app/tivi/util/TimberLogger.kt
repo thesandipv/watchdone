@@ -63,12 +63,9 @@ private class WDDebugTree : Timber.DebugTree() {
   }
 }
 
-class CrashlyticsTree @Inject constructor(
-  private val firebaseCrashlytics: FirebaseCrashlytics,
-) : Timber.Tree() {
-  override fun isLoggable(tag: String?, priority: Int): Boolean {
-    return priority >= Log.INFO
-  }
+class CrashlyticsTree @Inject constructor(private val firebaseCrashlytics: FirebaseCrashlytics) :
+  Timber.Tree() {
+  override fun isLoggable(tag: String?, priority: Int): Boolean = priority >= Log.INFO
 
   override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
     firebaseCrashlytics.log(message)

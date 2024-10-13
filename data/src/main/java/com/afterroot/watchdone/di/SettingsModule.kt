@@ -15,6 +15,7 @@
 package com.afterroot.watchdone.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import app.tivi.util.Logger
 import com.afterroot.watchdone.settings.Settings
 import com.google.gson.Gson
@@ -34,5 +35,6 @@ class SettingsModule {
     @ApplicationContext context: Context,
     gson: Gson,
     logger: Logger,
-  ) = Settings(context, gson, logger)
+    @Tmdb tmdbPrefs: SharedPreferences,
+  ) = Settings(context, gson, logger, tmdbPrefs)
 }

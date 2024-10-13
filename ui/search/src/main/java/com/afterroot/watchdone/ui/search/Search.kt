@@ -135,6 +135,7 @@ internal fun Search(
 
   Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
     Column(modifier = Modifier.fillMaxWidth()) {
+      // TODO Migrate to new overload
       DockedSearchBar(
         query = searchText,
         onQueryChange = {
@@ -220,7 +221,7 @@ internal fun Search(
                     itemSelectedCallback.onClick(index, null, movie)
                   },
                   modifier = Modifier
-                    .animateItemPlacement()
+                    .animateItem()
                     .fillMaxWidth()
                     .aspectRatio(2 / 3f),
                 )
@@ -236,7 +237,7 @@ internal fun Search(
                     itemSelectedCallback.onClick(index, null, tv)
                   },
                   modifier = Modifier
-                    .animateItemPlacement()
+                    .animateItem()
                     .fillMaxWidth()
                     .aspectRatio(2 / 3f),
                 )

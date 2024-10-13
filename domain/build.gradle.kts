@@ -27,6 +27,7 @@ android {
 dependencies {
   implementation(projects.data)
   implementation(projects.data.databaseRoom)
+  implementation(projects.data.tmdbAuth)
   api(projects.data.media)
   api(projects.data.discover)
 
