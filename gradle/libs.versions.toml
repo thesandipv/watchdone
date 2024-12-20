@@ -253,7 +253,7 @@ accompanist-suc = { module = "com.google.accompanist:accompanist-systemuicontrol
 accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
 
 test-junit = { module = "junit:junit", version.ref = "junit" }
-test-mockk = "io.mockk:mockk:1.13.13"
+test-mockk = "io.mockk:mockk:1.13.14"
 test-robolectric = "org.robolectric:robolectric:4.14.1"
 
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
