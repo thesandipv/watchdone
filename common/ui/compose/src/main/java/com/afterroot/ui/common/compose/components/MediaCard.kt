@@ -47,11 +47,7 @@ import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV
 
 @Composable
-fun PosterCard(
-  media: Media,
-  modifier: Modifier = Modifier,
-  onClick: (() -> Unit)? = null,
-) {
+fun PosterCard(media: Media, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
   BasePosterCard(
     title = media.title,
     posterPath = media.posterPath,

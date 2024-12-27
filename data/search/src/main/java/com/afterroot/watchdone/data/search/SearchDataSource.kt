@@ -21,9 +21,5 @@ import com.afterroot.watchdone.data.model.MediaType
 interface SearchDataSource {
   suspend fun search(params: Params): List<Media>
 
-  data class Params(
-    val mediaType: MediaType,
-    val query: String,
-    val page: Int = 1,
-  )
+  data class Params(val mediaType: MediaType, val query: String, val page: Int = 1)
 }

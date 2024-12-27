@@ -32,10 +32,7 @@ import com.afterroot.watchdone.data.model.PaginatedEntry
 internal class PaginatedEntryRemoteMediator<LI, ET>(
   private val fetch: suspend (page: Int) -> Unit,
 ) : RemoteMediator<Int, LI>() where ET : PaginatedEntry, LI : EntryWithMedia<ET> {
-  override suspend fun load(
-    loadType: LoadType,
-    state: PagingState<Int, LI>,
-  ): MediatorResult {
+  override suspend fun load(loadType: LoadType, state: PagingState<Int, LI>): MediatorResult {
     val nextPage = when (loadType) {
       LoadType.REFRESH -> 1
       LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)

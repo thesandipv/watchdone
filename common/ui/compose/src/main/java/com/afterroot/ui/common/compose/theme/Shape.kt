@@ -29,3 +29,5 @@ val fabShape = RoundedCornerShape(16.dp)
 val bottomSheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
 
 val ListStyleWatchlistItemShape = RoundedCornerShape(16.dp)
+
+val buttonShape = RoundedCornerShape(16.dp)

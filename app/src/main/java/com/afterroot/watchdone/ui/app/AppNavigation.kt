@@ -33,6 +33,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,6 +51,7 @@ import com.afterroot.watchdone.ui.discover.Discover
 import com.afterroot.watchdone.ui.media.MediaInfo
 import com.afterroot.watchdone.ui.profile.EditProfile
 import com.afterroot.watchdone.ui.profile.Profile
+import com.afterroot.watchdone.ui.profile.TmdbLogin
 import com.afterroot.watchdone.ui.search.Search
 import com.afterroot.watchdone.watchlist.Watchlist
 
@@ -230,6 +232,7 @@ private fun NavGraphBuilder.addProfileRoot(appState: AppState) {
     startDestination = Screen.Profile.createRoute(RootScreen.Profile),
   ) {
     addProfile(appState, RootScreen.Profile)
+    addTmdbProfile(appState, RootScreen.Profile)
     addEditProfile(appState, RootScreen.Profile)
   }
 }
@@ -240,8 +243,37 @@ private fun NavGraphBuilder.addProfile(appState: AppState, rootScreen: RootScree
     enterTransition = topDestinationEnterTransition(),
     exitTransition = topDestinationExitTransition(),
   ) {
-    Profile {
-      appState.navController.navigate(Screen.EditProfile.createRoute(rootScreen))
+    Profile(
+      onEditProfile = {
+        appState.navController.navigate(Screen.EditProfile.createRoute(rootScreen))
+      },
+      onWatchlistItemClick = { mediaType, id ->
+        appState.navController.navigate(Deeplink.media(id, mediaType))
+      },
+    )
+  }
+}
+
+private fun NavGraphBuilder.addTmdbProfile(appState: AppState, rootScreen: RootScreen) {
+  composable(
+    route = Screen.TmdbProfile.createRoute(rootScreen),
+    enterTransition = topDestinationEnterTransition(),
+    exitTransition = topDestinationExitTransition(),
+    deepLinks = listOf(
+      navDeepLink {
+        uriPattern = Deeplink.authSuccess
+      },
+    ),
+  ) {
+    TmdbLogin { _ ->
+      appState.navController.navigate(
+        Screen.Profile.createRoute(rootScreen),
+        navOptions = NavOptions.Builder()
+          .setPopUpTo(
+            route = Screen.Profile.createRoute(rootScreen),
+            inclusive = true,
+          ).build(),
+      )
     }
   }
 }

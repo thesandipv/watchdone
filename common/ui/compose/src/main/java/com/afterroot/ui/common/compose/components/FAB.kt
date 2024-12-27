@@ -27,10 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FABAdd(
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit,
-) {
+fun FABAdd(modifier: Modifier = Modifier, onClick: () -> Unit) {
   CommonFAB(
     icon = Icons.Rounded.Add,
     modifier = modifier,
@@ -39,10 +36,7 @@ fun FABAdd(
 }
 
 @Composable
-fun FABDone(
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit,
-) {
+fun FABDone(modifier: Modifier = Modifier, onClick: () -> Unit) {
   CommonFAB(
     icon = Icons.Rounded.Done,
     modifier = modifier,
@@ -51,10 +45,7 @@ fun FABDone(
 }
 
 @Composable
-fun FABSave(
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit,
-) {
+fun FABSave(modifier: Modifier = Modifier, onClick: () -> Unit) {
   CommonFAB(
     icon = Icons.Rounded.Save,
     modifier = modifier,
@@ -63,10 +54,7 @@ fun FABSave(
 }
 
 @Composable
-fun FABEdit(
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit,
-) {
+fun FABEdit(modifier: Modifier = Modifier, onClick: () -> Unit) {
   CommonFAB(
     icon = Icons.Rounded.Edit,
     modifier = modifier,
@@ -75,11 +63,7 @@ fun FABEdit(
 }
 
 @Composable
-internal fun CommonFAB(
-  icon: ImageVector,
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit,
-) {
+internal fun CommonFAB(icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit) {
   FloatingActionButton(
     onClick = onClick,
     modifier = modifier,

@@ -24,7 +24,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class MediaDataSourceBinds {
   @Binds
-  abstract fun bindMediaDataSource(
-    tmdbMediaDataSource: TmdbMediaDataSource,
-  ): MediaDataSource
+  abstract fun bindMediaDataSource(tmdbMediaDataSource: TmdbMediaDataSource): MediaDataSource
 }

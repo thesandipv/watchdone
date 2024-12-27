@@ -46,10 +46,8 @@ class ObservePagedDiscover @Inject constructor(
   ) : Parameters<DiscoverEntryWithMedia>
 
   @OptIn(ExperimentalPagingApi::class)
-  override suspend fun createObservable(
-    params: Params,
-  ): Flow<PagingData<DiscoverEntryWithMedia>> {
-    return Pager(
+  override suspend fun createObservable(params: Params): Flow<PagingData<DiscoverEntryWithMedia>> =
+    Pager(
       config = params.pagingConfig,
       remoteMediator = PaginatedEntryRemoteMediator { page ->
         try {
@@ -66,5 +64,4 @@ class ObservePagedDiscover @Inject constructor(
         discoverDao.entriesPagingSource(params.mediaType, categoryMapper.map(params.category))
       },
     ).flow
-  }
 }

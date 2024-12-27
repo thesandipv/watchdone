@@ -21,7 +21,8 @@ import com.afterroot.watchdone.data.model.MediaType
 import com.afterroot.watchdone.data.model.PaginatedEntry
 import kotlinx.coroutines.flow.Flow
 
-interface ObservablePaginatedEntryDao<EC : PaginatedEntry, LI : EntryWithMedia<EC>> : PaginatedEntryDao<EC, LI> {
+interface ObservablePaginatedEntryDao<EC : PaginatedEntry, LI : EntryWithMedia<EC>> :
+  PaginatedEntryDao<EC, LI> {
   fun entriesForPage(page: Int): Flow<List<EC>>
   fun entriesObservable(count: Int, offset: Int): Flow<List<LI>>
   fun entriesPagingSource(mediaType: MediaType): PagingSource<Int, LI>

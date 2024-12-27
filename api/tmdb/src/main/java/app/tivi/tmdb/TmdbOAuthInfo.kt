@@ -3,6 +3,4 @@
 
 package app.tivi.tmdb
 
-data class TmdbOAuthInfo(
-  val apiKey: String,
-)
+data class TmdbOAuthInfo(val apiKey: String)

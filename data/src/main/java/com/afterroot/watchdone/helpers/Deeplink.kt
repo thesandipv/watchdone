@@ -35,4 +35,6 @@ object Deeplink {
     .addPathSegment("watchdone")
     .addPathSegment("launch")
     .build().toString()
+
+  val authSuccess = "${Constants.scheme_watchdone}://${Constants.WATCHDONE_HOST}/tmdb/auth/success"
 }

@@ -23,6 +23,7 @@ import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.base.WatchlistType
 import com.afterroot.watchdone.data.model.LocalUser
 import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.di.Tmdb
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -35,6 +36,7 @@ class Settings @Inject constructor(
   @ApplicationContext val context: Context,
   private val gson: Gson,
   private val logger: Logger,
+  @Tmdb private val tmdbPrefs: SharedPreferences,
 ) {
 
   init {
@@ -134,6 +136,16 @@ class Settings @Inject constructor(
   var country: String?
     get() = getString("key_country", null)
     set(value) = putString("key_country", value)
+
+  var tmdbRequestToken: String?
+    get() = tmdbPrefs.getString("key_tmdb_request_token", null)
+    set(value) = tmdbPrefs.edit(commit = true) {
+      putString("key_tmdb_request_token", value)
+    }
+
+  fun removeTmdbLoginRequestToken() = tmdbPrefs.edit(commit = true) {
+    remove("key_tmdb_request_token")
+  }
 
   var watchlistType: WatchlistType
     get() = WatchlistType.valueOf(

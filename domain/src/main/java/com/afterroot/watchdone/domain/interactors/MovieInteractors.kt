@@ -28,25 +28,22 @@ class ObserveMovieCredits @Inject constructor(private val movieRepository: Movie
   SubjectInteractor<ObserveMovieCredits.Params, State<TmdbCredits>>() {
   data class Params(val movieId: Int)
 
-  override suspend fun createObservable(params: Params): Flow<State<TmdbCredits>> {
-    return movieRepository.credits(params.movieId)
-  }
+  override suspend fun createObservable(params: Params): Flow<State<TmdbCredits>> =
+    movieRepository.credits(params.movieId)
 }
 
 class ObserveMovieInfo @Inject constructor(private val movieRepository: MovieRepository) :
   SubjectInteractor<ObserveMovieInfo.Params, State<Movie>>() {
   data class Params(val movieId: Int)
 
-  override suspend fun createObservable(params: Params): Flow<State<Movie>> {
-    return movieRepository.info(params.movieId)
-  }
+  override suspend fun createObservable(params: Params): Flow<State<Movie>> =
+    movieRepository.info(params.movieId)
 }
 
 class ObserveMovieWatchProviders @Inject constructor(private val movieRepository: MovieRepository) :
   SubjectInteractor<ObserveMovieWatchProviders.Params, State<WatchProviderResult>>() {
   data class Params(val id: Int)
 
-  override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> {
-    return movieRepository.watchProviders(params.id)
-  }
+  override suspend fun createObservable(params: Params): Flow<State<WatchProviderResult>> =
+    movieRepository.watchProviders(params.id)
 }

@@ -15,7 +15,6 @@
 package com.afterroot.watchdone.di
 
 import com.afterroot.data.utils.FirebaseUtils
-import com.afterroot.watchdone.base.CoroutineDispatchers
 import com.afterroot.watchdone.utils.getMailBodyForFeedback
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -25,20 +24,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModules {
-  @Singleton
-  @Provides
-  fun provideDispatchers() = CoroutineDispatchers(
-    default = Dispatchers.Default,
-    io = Dispatchers.IO,
-    main = Dispatchers.Main,
-    databaseWrite = Dispatchers.IO.limitedParallelism(1),
-    databaseRead = Dispatchers.IO.limitedParallelism(4),
-  )
 
   @Provides
   @Named("feedback_email")
@@ -50,12 +39,11 @@ object AppModules {
     firebaseUtils: FirebaseUtils,
     @VersionName version: String,
     @VersionCode versionCode: Int,
-  ): String =
-    getMailBodyForFeedback(
-      firebaseUtils,
-      version = version,
-      versionCode = versionCode,
-    )
+  ): String = getMailBodyForFeedback(
+    firebaseUtils,
+    version = version,
+    versionCode = versionCode,
+  )
 
   @Provides
   @Singleton

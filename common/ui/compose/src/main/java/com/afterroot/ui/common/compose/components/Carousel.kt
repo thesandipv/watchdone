@@ -92,7 +92,7 @@ internal fun CarouselInt(
         media = item,
         onClick = { onItemClick(item, index) },
         modifier = Modifier
-          .animateItemPlacement()
+          .animateItem()
           .fillParentMaxHeight()
           .aspectRatio(2 / 3f),
       )

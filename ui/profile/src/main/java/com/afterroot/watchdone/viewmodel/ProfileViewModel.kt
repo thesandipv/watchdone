@@ -14,20 +14,28 @@
  */
 package com.afterroot.watchdone.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import app.moviebase.tmdb.core.TmdbException
+import app.moviebase.tmdb.model.TmdbAccountDetails
 import app.tivi.api.UiMessage
 import app.tivi.api.UiMessageManager
+import app.tivi.domain.invoke
 import app.tivi.util.Logger
 import com.afterroot.data.utils.FirebaseUtils
 import com.afterroot.watchdone.data.mapper.toLocalUser
 import com.afterroot.watchdone.data.model.LocalUser
+import com.afterroot.watchdone.data.tmdb.account.TmdbAccountActions
+import com.afterroot.watchdone.data.tmdb.auth.TmdbAuthRepository
 import com.afterroot.watchdone.domain.interactors.GetProfile
 import com.afterroot.watchdone.domain.interactors.SetProfile
+import com.afterroot.watchdone.domain.interactors.TmdbGetAuthorizationUrl
+import com.afterroot.watchdone.domain.interactors.TmdbLogout
 import com.afterroot.watchdone.domain.interactors.WatchlistCountInteractor
 import com.afterroot.watchdone.domain.observers.WatchlistPagingSource
 import com.afterroot.watchdone.settings.Settings
@@ -47,6 +55,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.browse
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -58,19 +67,26 @@ class ProfileViewModel @Inject constructor(
   private val logger: Logger,
   private var firestore: FirebaseFirestore,
   private val watchlistCountInteractor: WatchlistCountInteractor,
+  private val tmdbLogout: TmdbLogout,
+  private val tmdbGetAuthorizationUrl: TmdbGetAuthorizationUrl,
+  tmdbAuthRepository: TmdbAuthRepository,
+  private val tmdbAccountActions: TmdbAccountActions,
 ) : ViewModel() {
 
   private val uiMessageManager = UiMessageManager()
 
   val profile = MutableStateFlow<State<LocalUser>>(State.loading())
+  private val tmdbProfile = MutableStateFlow<State<TmdbAccountDetails>>(State.loading())
   private val wlCount = MutableStateFlow<State<Long>>(State.loading())
 
   val state: StateFlow<ProfileViewState> = combine(
     uiMessageManager.message,
     profile,
     wlCount,
-  ) { msg, profile, wlCount ->
-    ProfileViewState(msg, profile, wlCount)
+    tmdbAuthRepository.state,
+    tmdbProfile,
+  ) { msg, profile, wlCount, tmdbLogin, tmdbProfile ->
+    ProfileViewState(msg, profile, wlCount, tmdbLogin, tmdbProfile)
   }.stateIn(
     scope = viewModelScope,
     started = SharingStarted.WhileSubscribed(5000),
@@ -105,7 +121,9 @@ class ProfileViewModel @Inject constructor(
 
           is ProfileActions.ShowMessage -> showMessageAction(action)
           ProfileActions.Refresh -> refresh(true)
-          else -> logger.d { "collectAction: This action not handled by ProfileViewModel. Action: $action" }
+          else -> logger.d {
+            "collectAction: This action not handled by ProfileViewModel. Action: $action"
+          }
         }
       }
     }
@@ -136,6 +154,16 @@ class ProfileViewModel @Inject constructor(
         }
       } else {
         profile.emit(State.failed("Not Signed In."))
+      }
+    }
+
+    viewModelScope.launch {
+      try {
+        tmdbAccountActions.getAccountDetails().also {
+          tmdbProfile.value = State.success(it)
+        }
+      } catch (e: TmdbException) {
+        tmdbProfile.value = State.failed(e.message.toString(), exception = e.cause)
       }
     }
   }
@@ -201,4 +229,18 @@ class ProfileViewModel @Inject constructor(
       firebaseUtils,
     )
   }.flow.cachedIn(viewModelScope)
+
+  fun startTmdbLoginFlow(context: Context) {
+    viewModelScope.launch {
+      tmdbGetAuthorizationUrl().onSuccess {
+        context.browse(it)
+      }
+    }
+  }
+
+  fun logoutFromTmdb() {
+    viewModelScope.launch {
+      tmdbLogout()
+    }
+  }
 }

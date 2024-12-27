@@ -24,17 +24,14 @@ data class TmdbImageUrlProvider(
   private val backdropSizes: List<String> = TmdbImageSizes.backdropSizes,
   private val logoSizes: List<String> = TmdbImageSizes.logoSizes,
 ) {
-  fun getPosterUrl(path: String, imageWidth: Int): String {
-    return "$baseImageUrl${selectSize(posterSizes, imageWidth)}$path"
-  }
+  fun getPosterUrl(path: String, imageWidth: Int): String =
+    "$baseImageUrl${selectSize(posterSizes, imageWidth)}$path"
 
-  fun getBackdropUrl(path: String, imageWidth: Int): String {
-    return "$baseImageUrl${selectSize(backdropSizes, imageWidth)}$path"
-  }
+  fun getBackdropUrl(path: String, imageWidth: Int): String =
+    "$baseImageUrl${selectSize(backdropSizes, imageWidth)}$path"
 
-  fun getLogoUrl(path: String, imageWidth: Int): String {
-    return "$baseImageUrl${selectSize(logoSizes, imageWidth)}$path"
-  }
+  fun getLogoUrl(path: String, imageWidth: Int): String =
+    "$baseImageUrl${selectSize(logoSizes, imageWidth)}$path"
 
   private fun selectSize(sizes: List<String>, imageWidth: Int): String {
     var previousSize: String? = null
@@ -64,7 +61,6 @@ data class TmdbImageUrlProvider(
     return previousSize ?: sizes.last()
   }
 
-  private fun extractWidthAsIntFrom(size: String): Int? {
-    return IMAGE_SIZE_PATTERN.matchEntire(size)?.groups?.get(1)?.value?.toInt()
-  }
+  private fun extractWidthAsIntFrom(size: String): Int? =
+    IMAGE_SIZE_PATTERN.matchEntire(size)?.groups?.get(1)?.value?.toInt()
 }

@@ -38,6 +38,7 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DashboardCustomize
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.navigation.ModalBottomSheetLayout
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -74,8 +75,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.afterroot.ui.common.compose.components.LocalUsingFirebaseEmulators
 import com.afterroot.ui.common.compose.navigation.RootScreen
 import com.afterroot.ui.common.compose.theme.ubuntuTypography
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.afterroot.watchdone.resources.R as CommonR
 
 @Composable
@@ -111,7 +110,6 @@ fun App(
   )
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun App(
   appState: AppState,

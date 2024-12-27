@@ -47,13 +47,9 @@ fun Context.hideKeyboard(view: View) {
   inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun Context.dp2px(dp: Int): Int {
-  return (dp * resources.displayMetrics.density + 0.5f).toInt()
-}
+fun Context.dp2px(dp: Int): Int = (dp * resources.displayMetrics.density + 0.5f).toInt()
 
-fun Context.px2dp(px: Int): Int {
-  return (px / resources.displayMetrics.density + 0.5f).toInt()
-}
+fun Context.px2dp(px: Int): Int = (px / resources.displayMetrics.density + 0.5f).toInt()
 
 @Suppress("DEPRECATION")
 fun Context.getScreenWidth(): Int {
@@ -91,10 +87,8 @@ fun <T> whenBuildIs(debug: T, release: T): T = if (BuildConfig.DEBUG) debug else
  * @since v0.0.4
  * @return either [debug] or [release] with provided type [T]
  */
-fun <T> whenBuildIs(
-  debug: () -> T,
-  release: () -> T,
-): T = whenBuildIs(debug.invoke(), release.invoke())
+fun <T> whenBuildIs(debug: () -> T, release: () -> T): T =
+  whenBuildIs(debug.invoke(), release.invoke())
 
 /**
  * Helper Function for invoking function only if build is Debug

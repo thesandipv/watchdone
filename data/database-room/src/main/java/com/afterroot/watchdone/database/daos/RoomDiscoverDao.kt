@@ -28,7 +28,9 @@ import com.afterroot.watchdone.data.model.MediaType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class RoomDiscoverDao : DiscoverDao, RoomPaginatedEntryDao<DiscoverEntry, DiscoverEntryWithMedia> {
+abstract class RoomDiscoverDao :
+  DiscoverDao,
+  RoomPaginatedEntryDao<DiscoverEntry, DiscoverEntryWithMedia> {
   @Transaction
   @Query("SELECT * FROM discover_entries WHERE page = :page ORDER BY id ASC")
   abstract override fun entriesForPage(page: Int): Flow<List<DiscoverEntry>>

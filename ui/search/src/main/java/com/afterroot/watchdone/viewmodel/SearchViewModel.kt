@@ -51,7 +51,7 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
   private val mediaType = MutableStateFlow(MediaType.MOVIE)
   private val searchQuery = MutableStateFlow(Query())
-  private val _query = MutableSharedFlow<Query>()
+  private val query = MutableSharedFlow<Query>()
   private val isRefresh = MutableStateFlow(false)
   private val isLoading = MutableStateFlow(false)
   private val isEmpty = MutableStateFlow(true)
@@ -105,7 +105,7 @@ class SearchViewModel @Inject constructor(
     logger.d { "init: Start" }
 
     viewModelScope.launch {
-      _query.debounce(500).collectLatest {
+      query.debounce(500).collectLatest {
         searchQuery.value = it
         isRefresh.value = true
       }
@@ -114,7 +114,7 @@ class SearchViewModel @Inject constructor(
 
   fun search(query: Query) {
     viewModelScope.launch {
-      _query.emit(query)
+      this@SearchViewModel.query.emit(query)
     }
   }
 

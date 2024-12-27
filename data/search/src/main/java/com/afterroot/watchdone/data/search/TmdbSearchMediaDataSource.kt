@@ -29,8 +29,8 @@ class TmdbSearchMediaDataSource @Inject constructor(
   private val tmdbShowPageResultToMedias: TmdbShowPageResultToMedias,
   private val logger: Logger,
 ) : SearchDataSource {
-  override suspend fun search(params: SearchDataSource.Params): List<Media> {
-    return when (params.mediaType) {
+  override suspend fun search(params: SearchDataSource.Params): List<Media> =
+    when (params.mediaType) {
       MediaType.MOVIE -> {
         logger.d { "Searching for: $params" }
         tmdbMoviePageResultToMedias.map(
@@ -47,5 +47,4 @@ class TmdbSearchMediaDataSource @Inject constructor(
 
       else -> throw IllegalArgumentException("${params.mediaType} not supported")
     }
-  }
 }

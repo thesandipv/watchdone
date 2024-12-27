@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.afterroot.data.utils.valueOrBlank
 
 /**
  * Chip of [String]
@@ -65,10 +64,10 @@ fun CommonFilterChip(
     modifier = modifier,
     selected = selected,
     onClick = {
-      onSelectionChanged(text.valueOrBlank(), !selected)
+      onSelectionChanged(text.orEmpty(), !selected)
     },
     label = {
-      Text(text = text.valueOrBlank())
+      Text(text = text.orEmpty())
     },
     leadingIcon = leadingIcon,
   )
@@ -85,7 +84,7 @@ fun AssistChip(
     modifier = modifier,
     onClick = onClick,
     label = {
-      Text(text = text.valueOrBlank())
+      Text(text = text.orEmpty())
     },
     leadingIcon = leadingIcon,
   )
@@ -187,10 +186,10 @@ fun FilterChipGroup(
 }
 
 enum class SelectionType {
-  Single, Multiple
+  Single,
+  Multiple,
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuggestionChipGroup(
   modifier: Modifier = Modifier,
@@ -217,7 +216,7 @@ fun SuggestionChipGroup(
           onClick?.invoke(index, it)
         },
         label = {
-          Text(text = it.valueOrBlank())
+          Text(text = it.orEmpty())
         },
         icon = {
           if (icons.isNotEmpty()) {
