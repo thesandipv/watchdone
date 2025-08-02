@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -51,7 +50,6 @@ import androidx.compose.ui.unit.dp
  * @param onSelectionChanged callback to be invoked when a chip is clicked.
  * The lambda carries out [String], of which state is changed.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonFilterChip(
   modifier: Modifier = Modifier,
@@ -101,7 +99,6 @@ fun AssistChip(
  * 1. selected - the [String] that state changed
  * 2. selectedChips - List of Selected [String] objects
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterChipGroup(
   modifier: Modifier = Modifier,
