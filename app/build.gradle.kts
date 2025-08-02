@@ -53,8 +53,10 @@ android {
         "pathPrefix" to "/apps/watchdone/launch",
         "appAuthRedirectScheme" to "empty",
       )
+  }
 
-    resourceConfigurations.addAll(listOf("en"))
+  androidResources {
+    localeFilters += listOf("en")
   }
 
   val keystoreProperties = readProperties(rootProject.file("keystore.properties"))
