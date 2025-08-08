@@ -1,9 +1,9 @@
 [versions]
+accompanist = "0.36.0"
+activity = "1.10.1"
 adaptiveNavigationSuite = "1.3.2"
 agp = "8.12.0"
 androidTools = "31.12.0"
-accompanist = "0.36.0"
-activity = "1.10.1"
 ankoCommons = "0.10.8"
 appcompat = "1.7.1"
 billing = "7.1.1"
@@ -16,14 +16,13 @@ composeBom = "2025.07.00"
 constraintLayout = "2.2.1"
 coreKtx = "1.16.0"
 coreSplash = "1.0.1"
-crshlyticsPlugin = "3.0.5"
+crshlyticsPlugin = "3.0.6"
 dagger = "2.57"
 emoji = "1.1.0"
 firebaseAds = "23.6.0"
-firebaseBom = "34.0.0"
+firebaseBom = "34.1.0"
 firebaseCore = "21.1.1"
 firebaseUi = "9.0.0"
-markdownRenderer = "0.35.0"
 fragmentKtx = "1.8.8"
 glide = "4.16.0"
 googleAds = "24.5.0"
@@ -40,12 +39,14 @@ ktor = "3.2.3"
 legacySupportV13 = "1.0.0"
 legacySupportV4 = "1.0.0"
 lifecycle = "2.9.2"
+markdownRenderer = "0.35.0"
+material-dialogs = "3.3.0"
 mockito-inline = "5.2.0"
 mockito-kotlin = "6.0.0"
 multidex = "2.0.1"
 navigation = "2.9.3"
 okhttp = "5.1.0"
-ossLicPlugin = "0.10.6"
+ossLicPlugin = "0.10.7"
 paging = "3.3.6"
 palette = "1.0.0"
 preference = "1.2.1"
@@ -92,7 +93,7 @@ jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotli
 jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.33.0" }
+maven-publish = { id = "com.vanniktech.maven.publish", version = "0.34.0" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
@@ -282,6 +283,8 @@ protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref 
 
 markdown-rednderer = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdownRenderer" }
 markdown-rednderer-android = { module = "com.mikepenz:multiplatform-markdown-renderer-android", version.ref = "markdownRenderer" }
+
+afollestad-materialdialogs-core = { module = "com.afollestad.material-dialogs:core", version.ref = "material-dialogs" }
 
 [bundles]
 firebase = [
