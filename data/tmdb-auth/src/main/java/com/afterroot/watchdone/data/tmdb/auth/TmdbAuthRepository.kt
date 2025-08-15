@@ -26,6 +26,7 @@ import com.afterroot.watchdone.utils.launchOrThrow
 import dagger.Lazy
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +36,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 
 @Singleton
 class TmdbAuthRepository @Inject constructor(

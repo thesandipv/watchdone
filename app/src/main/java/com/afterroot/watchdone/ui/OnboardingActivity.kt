@@ -28,7 +28,6 @@ import com.afterroot.watchdone.base.Constants
 import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -127,11 +126,7 @@ class OnboardingActivity : ComponentActivity() {
         .setAvailableProviders(
           listOf(
             AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build(),
-            AuthUI.IdpConfig.GoogleBuilder()
-              .setSignInOptions(
-                GoogleSignInOptions.Builder().requestProfile().requestEmail().requestId().build(),
-              )
-              .build(),
+            AuthUI.IdpConfig.GoogleBuilder().build(),
           ),
         ).build(),
     )

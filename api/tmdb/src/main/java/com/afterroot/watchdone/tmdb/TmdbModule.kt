@@ -54,7 +54,6 @@ object TmdbModule {
     tmdbAuthRepository: TmdbAuthRepository,
   ): Tmdb3 = Tmdb3 {
     tmdbApiKey = tmdbOAuthInfo.apiKey
-    maxRetriesOnException = 3
 
     httpClient(OkHttp) {
       engine {
