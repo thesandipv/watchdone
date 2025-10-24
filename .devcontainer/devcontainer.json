@@ -1,0 +1,20 @@
+{
+  "customizations": {
+    "codespaces": {
+      "repositories": {
+        "afterroot/ards": {
+          "permissions": "write-all"
+        },
+        "afterroot/build-logic": {
+          "permissions": "write-all"
+        },
+        "thesandipv/tmdb-kotlin": {
+          "permissions": "write-all"
+        },
+        "afterroot/utils": {
+          "permissions": "write-all"
+        }
+      }
+    }
+  }
+}
