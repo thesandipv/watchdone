@@ -3,14 +3,6 @@
   extends: ["config:recommended"],
   packageRules: [
     {
-      groupName: "Kotlin, Coroutines and KSP",
-      groupSlug: "kotlin",
-      matchPackageNames: [
-        "com.google.devtools.ksp{/,}**",
-        "org.jetbrains.kotlin{/,}**",
-      ],
-    },
-    {
       groupName: "all non-major dependencies",
       groupSlug: "all-minor-patch",
       enabled: false,
