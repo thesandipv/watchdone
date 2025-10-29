@@ -10,9 +10,6 @@
         },
         "thesandipv/tmdb-kotlin": {
           "permissions": "write-all"
-        },
-        "afterroot/utils": {
-          "permissions": "write-all"
         }
       }
     }
