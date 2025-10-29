@@ -1,0 +1,28 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  packageRules: [
+    {
+      groupName: "all non-major dependencies",
+      groupSlug: "all-minor-patch",
+      enabled: false,
+      matchPackageNames: ["*"],
+      matchUpdateTypes: ["minor", "patch"],
+    },
+    {
+      description: "Automatically merge minor and patch-level updates",
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      automerge: true,
+      automergeType: "pr",
+      platformAutomerge: true,
+    },
+    {
+      groupName: "Compose Dependencies",
+      matchPackageNames: ["/^androidx\\..*compose\\./"],
+    },
+    {
+      matchUpdateTypes: ["major"],
+      dependencyDashboardApproval: true,
+    },
+  ],
+}
