@@ -1,9 +1,6 @@
 [submodule "ards"]
 	path = ards
 	url = https://github.com/afterroot/ards.git
-[submodule "utils"]
-    path = "utils"
-	url = https://github.com/afterroot/utils.git
 [submodule "gradle/build-logic"]
 	path = gradle/build-logic
 	url = https://github.com/afterroot/build-logic.git
