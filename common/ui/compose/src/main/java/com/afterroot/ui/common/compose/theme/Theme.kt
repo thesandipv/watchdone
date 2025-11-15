@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat
 import com.afterroot.ui.common.compose.components.LocalSettings
 import com.afterroot.utils.getMaterialColor
 import com.afterroot.watchdone.settings.Settings
+import androidx.appcompat.R as AppCompatR
 import com.afterroot.watchdone.resources.R as CommonR
 import com.google.android.material.R as MaterialR
 
@@ -44,7 +45,7 @@ fun Theme(settings: Settings, darkTheme: Boolean, content: @Composable () -> Uni
 
   val contextColorScheme by lazy {
     ColorScheme(
-      primary = Color(context.getMaterialColor(MaterialR.attr.colorPrimary)),
+      primary = Color(context.getMaterialColor(AppCompatR.attr.colorPrimary)),
       onPrimary = Color(context.getMaterialColor(MaterialR.attr.colorOnPrimary)),
       primaryContainer = Color(
         context.getMaterialColor(MaterialR.attr.colorPrimaryContainer),
@@ -77,12 +78,12 @@ fun Theme(settings: Settings, darkTheme: Boolean, content: @Composable () -> Uni
       onSurfaceVariant = Color(
         context.getMaterialColor(MaterialR.attr.colorOnSurfaceVariant),
       ),
-      surfaceTint = Color(context.getMaterialColor(MaterialR.attr.colorPrimary)),
+      surfaceTint = Color(context.getMaterialColor(AppCompatR.attr.colorPrimary)),
       inverseSurface = Color(context.getMaterialColor(MaterialR.attr.colorSurfaceInverse)),
       inverseOnSurface = Color(
         context.getMaterialColor(MaterialR.attr.colorOnSurfaceInverse),
       ),
-      error = Color(context.getMaterialColor(MaterialR.attr.colorError)),
+      error = Color(context.getMaterialColor(AppCompatR.attr.colorError)),
       onError = Color(context.getMaterialColor(MaterialR.attr.colorOnError)),
       errorContainer = Color(context.getMaterialColor(MaterialR.attr.colorErrorContainer)),
       onErrorContainer = Color(
@@ -98,6 +99,18 @@ fun Theme(settings: Settings, darkTheme: Boolean, content: @Composable () -> Uni
       surfaceContainerHighest = Color.Unspecified,
       surfaceContainerLow = Color.Unspecified,
       surfaceContainerLowest = Color.Unspecified,
+      primaryFixed = Color.Unspecified,
+      primaryFixedDim = Color.Unspecified,
+      onPrimaryFixed = Color.Unspecified,
+      onPrimaryFixedVariant = Color.Unspecified,
+      secondaryFixed = Color.Unspecified,
+      secondaryFixedDim = Color.Unspecified,
+      onSecondaryFixed = Color.Unspecified,
+      onSecondaryFixedVariant = Color.Unspecified,
+      tertiaryFixed = Color.Unspecified,
+      tertiaryFixedDim = Color.Unspecified,
+      onTertiaryFixed = Color.Unspecified,
+      onTertiaryFixedVariant = Color.Unspecified
     )
   }
 

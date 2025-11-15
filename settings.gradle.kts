@@ -75,7 +75,7 @@ include(
 )
 
 project(":ards").projectDir = file("ards/lib") // AfterROOT Data Structure
-project(":utils").projectDir = file("utils/lib") // AfterROOT Utils
+project(":utils").projectDir = file("ards/utils/lib") // AfterROOT Utils
 project(":tmdb-api").projectDir = file("tmdb-kotlin/tmdb-api")
 
 fun readProperties(propertiesFile: File): Properties {
