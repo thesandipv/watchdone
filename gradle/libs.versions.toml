@@ -284,7 +284,7 @@ protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref 
 markdown-rednderer = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdownRenderer" }
 markdown-rednderer-android = { module = "com.mikepenz:multiplatform-markdown-renderer-android", version.ref = "markdownRenderer" }
 
-afollestad-materialdialogs-core = { module = "com.afollestad.material-dialogs:core", version.ref = "material-dialogs" }
+materialdialogs-core = { module = "com.afollestad.material-dialogs:core", version.ref = "material-dialogs" }
 
 [bundles]
 firebase = [
