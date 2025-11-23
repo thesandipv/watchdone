@@ -110,7 +110,7 @@ fun Theme(settings: Settings, darkTheme: Boolean, content: @Composable () -> Uni
       tertiaryFixed = Color.Unspecified,
       tertiaryFixedDim = Color.Unspecified,
       onTertiaryFixed = Color.Unspecified,
-      onTertiaryFixedVariant = Color.Unspecified
+      onTertiaryFixedVariant = Color.Unspecified,
     )
   }
 
