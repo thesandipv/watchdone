@@ -158,7 +158,7 @@ internal fun Discover(
               onMovieSelected = { onMovieChipSelected() },
               onShowSelected = { onShowChipSelected() },
               modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
-              currentMediaType = state.mediaType ?: MediaType.MOVIE,
+              currentMediaType = state.mediaType,
             )
           }
           if (state.mediaType == MediaType.MOVIE) {
