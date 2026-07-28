@@ -27,8 +27,6 @@ plugins {
   id(libs.plugins.cash.licensee.get().pluginId)
 }
 
-val ci by extra { System.getenv("CI") == "true" }
-
 android {
   namespace = "com.afterroot.watchdone"
 
@@ -37,7 +35,7 @@ android {
   defaultConfig {
     applicationId = "com.afterroot.watchdone"
     versionCode = rootProject.extra["versionCode"] as Int
-    versionName = if (ci) {
+    versionName = if (rootProject.extra["ci"] as Boolean) {
       "${rootProject.extra["versionName"]}-ci"
     } else {
       rootProject.extra["versionName"].toString()
@@ -117,7 +115,6 @@ licensee {
   bundleAndroidAsset = true
   androidAssetReportPath = "licences/licenses.json" // Override the default path.
 }
-
 
 dependencies {
   implementation(projects.api.tmdb)

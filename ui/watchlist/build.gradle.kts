@@ -29,6 +29,7 @@ dependencies {
   implementation(projects.domain)
   implementation(projects.ui.media)
 
+  implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.firestore)
 
   implementation(libs.androidx.fragment)

@@ -44,6 +44,7 @@ extra.set(
   libs.versions.minSdk.get().toInt() * 10000000 + major * 10000 + minor * 100 + patch,
 )
 extra.set("versionName", "$major.$minor.$patch")
+extra.set("ci", System.getenv("CI") == "true")
 
 println("- INFO: Build version code: ${extra["versionCode"]}")
 
