@@ -25,8 +25,7 @@ plugins {
   alias(libs.plugins.firebase.crashlytics)
   alias(libs.plugins.google.gms)
   alias(libs.plugins.google.ksp)
-
-  id(libs.plugins.google.ossLic.get().pluginId)
+  id(libs.plugins.cash.licensee.get().pluginId)
 }
 
 val ci by extra { System.getenv("CI") == "true" }
@@ -104,6 +103,23 @@ android {
     )
 }
 
+licensee {
+  allow("Apache-2.0")
+  allow("BSD-3-Clause")
+  allow("MIT")
+  allowUrl("https://developer.android.com/studio/terms.html")
+  allowUrl("https://github.com/afollestad/material-dialogs/blob/main/LICENSE.md")
+  allowUrl("https://developer.android.com/guide/playcore/license")
+  allowUrl("https://developer.android.com/google/play/integrity/overview#tos")
+  allowUrl("https://spdx.org/licenses/MIT.txt")
+  allowUrl("https://golang.org/LICENSE")
+  allowUrl("https://opensource.org/license/mit")
+
+  bundleAndroidAsset = true
+  androidAssetReportPath = "licences/licenses.json" // Override the default path.
+}
+
+
 dependencies {
   implementation(projects.api.tmdb)
   implementation(projects.core.logging)
@@ -133,7 +149,6 @@ dependencies {
   implementation(libs.firebase.messaging)
   implementation(libs.firebase.ui.auth)
 
-  implementation(libs.google.ossLic)
   implementation(libs.google.material)
 
   implementation(libs.hilt.compose)

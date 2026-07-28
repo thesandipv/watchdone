@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <application>
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:theme="@style/MyTheme.Watchdone.Main"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.afterroot.watchdone.ui.acknowledgements.AcknowledgementsActivity"
+            android:exported="false"
+            android:label="Licences"
+            android:theme="@style/MyTheme.Watchdone.Main" />
     </application>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
 </manifest>

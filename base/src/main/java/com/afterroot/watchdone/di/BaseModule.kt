@@ -14,6 +14,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.serialization.json.Json
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -32,4 +33,10 @@ object BaseModule {
   @Provides
   fun provideApplicationCoroutineScope(dispatchers: CoroutineDispatchers): CoroutineScope =
     CoroutineScope(dispatchers.main + SupervisorJob())
+
+  @Provides
+  @Singleton
+  fun provideJson(): Json = Json {
+    ignoreUnknownKeys = true
+  }
 }

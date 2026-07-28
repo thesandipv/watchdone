@@ -28,8 +28,8 @@ import com.afterroot.watchdone.data.repositories.ConfigRepository
 import com.afterroot.watchdone.database.dao.CountriesDao
 import com.afterroot.watchdone.di.VersionFormatted
 import com.afterroot.watchdone.settings.Settings
+import com.afterroot.watchdone.ui.acknowledgements.AcknowledgementsActivity
 import com.afterroot.watchdone.utils.State
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jakewharton.processphoenix.ProcessPhoenix
@@ -127,10 +127,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     findPreference<Preference>("oss_lic")?.setOnPreferenceClickListener {
-      OssLicensesMenuActivity.setActivityTitle(
-        getString(com.google.android.gms.oss.licenses.R.string.oss_license_title),
-      )
-      requireContext().startActivity<OssLicensesMenuActivity>()
+      requireContext().startActivity<AcknowledgementsActivity>()
       return@setOnPreferenceClickListener true
     }
 
