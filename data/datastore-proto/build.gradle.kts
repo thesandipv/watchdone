@@ -1,11 +1,6 @@
 plugins {
-  id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
+  id(afterroot.plugins.kotlin.jvm.get().pluginId)
   alias(libs.plugins.google.protobuf)
-}
-
-android {
-  namespace = "com.afterroot.watchdone.datastore.proto"
 }
 
 // Setup protobuf configuration, generating lite Java and Kotlin classes
@@ -16,7 +11,7 @@ protobuf {
   generateProtoTasks {
     all().forEach { task ->
       task.builtins {
-        register("java") {
+        named("java") {
           option("lite")
         }
         register("kotlin") {
@@ -24,14 +19,6 @@ protobuf {
         }
       }
     }
-  }
-}
-
-androidComponents.beforeVariants {
-  android.sourceSets.maybeCreate(it.name).apply {
-    val buildDir = layout.buildDirectory.get().asFile
-    java.srcDir(buildDir.resolve("generated/source/proto/${it.name}/java"))
-    kotlin.srcDir(buildDir.resolve("generated/source/proto/${it.name}/kotlin"))
   }
 }
 

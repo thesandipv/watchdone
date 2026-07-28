@@ -17,7 +17,6 @@ import com.afterroot.gradle.readProperties
 
 plugins {
   id(afterroot.plugins.android.application.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
@@ -140,7 +139,7 @@ dependencies {
   implementation(libs.androidx.palette)
   implementation(libs.bundles.lifecycle)
 
-  implementation(libs.coil)
+  implementation(libs.coil.core)
 
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.ads)

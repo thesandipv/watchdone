@@ -15,7 +15,6 @@
 
 plugins {
   id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)

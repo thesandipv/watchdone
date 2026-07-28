@@ -18,7 +18,6 @@ import com.afterroot.gradle.readProperties
 
 plugins {
   id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
@@ -104,7 +103,7 @@ dependencies {
   androidTestImplementation(libs.kotlinx.coroutines.test)
   androidTestImplementation(libs.test.junit)
 
-  implementation(libs.coil)
+  implementation(libs.coil.core)
 
   implementation(libs.kotlinx.datetime)
 }
