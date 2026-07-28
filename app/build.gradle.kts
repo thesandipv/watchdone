@@ -136,8 +136,6 @@ dependencies {
   implementation(libs.androidx.palette)
   implementation(libs.bundles.lifecycle)
 
-  implementation(libs.coil.core)
-
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.ads)
   implementation(libs.firebase.auth)

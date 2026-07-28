@@ -47,5 +47,4 @@ dependencies {
   implementation(libs.hilt.compose)
 
   implementation(libs.materialProgress)
-  implementation(libs.coil.core)
 }

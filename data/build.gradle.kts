@@ -103,7 +103,5 @@ dependencies {
   androidTestImplementation(libs.kotlinx.coroutines.test)
   androidTestImplementation(libs.test.junit)
 
-  implementation(libs.coil.core)
-
   implementation(libs.kotlinx.datetime)
 }

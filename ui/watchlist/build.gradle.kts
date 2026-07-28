@@ -37,6 +37,4 @@ dependencies {
   implementation(libs.bundles.lifecycle)
 
   implementation(libs.hilt.compose)
-
-  implementation(libs.coil.core)
 }

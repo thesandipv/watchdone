@@ -28,7 +28,8 @@ dependencies {
   api(projects.core.logging)
 
   implementation(libs.google.material)
-  implementation(libs.coil.core)
+  api(libs.coil.core)
+  api(libs.coil.compose)
 
   implementation(libs.androidx.lifecycle.runtime)
 }
