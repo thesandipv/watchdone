@@ -65,9 +65,9 @@ class ProfileViewModel @Inject constructor(
 
   private val uiMessageManager = UiMessageManager()
 
-  val profile = MutableStateFlow<State<LocalUser>>(State.loading())
-  private val tmdbProfile = MutableStateFlow<State<TmdbAccountDetails>>(State.loading())
-  private val wlCount = MutableStateFlow<State<Long>>(State.loading())
+  val profile = MutableStateFlow<State<LocalUser>>(State.Loading)
+  private val tmdbProfile = MutableStateFlow<State<TmdbAccountDetails>>(State.Loading)
+  private val wlCount = MutableStateFlow<State<Long>>(State.Loading)
 
   val state: StateFlow<ProfileViewState> = combine(
     uiMessageManager.message,
@@ -130,30 +130,30 @@ class ProfileViewModel @Inject constructor(
         logger.d { "getUserProfile: Getting Profile Info. Cached:$cached" }
         getProfile(firebaseUtils.uid, cached).distinctUntilChanged().map { networkState ->
           when (networkState) {
-            is State.Failed -> State.failed(
+            is State.Failed -> State.Failed(
               message = networkState.message,
               exception = networkState.exception,
             )
 
-            is State.Loading -> State.loading()
-            is State.Success -> State.success(networkState.data.toLocalUser())
+            is State.Loading -> State.Loading
+            is State.Success -> State.Success(networkState.data.toLocalUser())
           }
         }.collect { state ->
           profile.emit(state)
           logger.d { "getUserProfile: State: $state" }
         }
       } else {
-        profile.emit(State.failed("Not Signed In."))
+        profile.emit(State.Failed("Not Signed In."))
       }
     }
 
     viewModelScope.launch {
       try {
         tmdbAccountActions.getAccountDetails().also {
-          tmdbProfile.value = State.success(it)
+          tmdbProfile.value = State.Success(it)
         }
       } catch (e: TmdbException) {
-        tmdbProfile.value = State.failed(e.message.toString(), exception = e.cause)
+        tmdbProfile.value = State.Failed(e.message.toString(), exception = e.cause)
       }
     }
   }

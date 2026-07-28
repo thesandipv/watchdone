@@ -70,8 +70,8 @@ class MediaInfoViewModel @Inject constructor(
 
   val mediaType = MediaType.valueOf(_mediaType.value.uppercase())
 
-  private val isInWL: MutableStateFlow<State<Boolean>> = MutableStateFlow(State.loading())
-  private val isWatched: MutableStateFlow<State<Boolean>> = MutableStateFlow(State.loading())
+  private val isInWL: MutableStateFlow<State<Boolean>> = MutableStateFlow(State.Loading)
+  private val isWatched: MutableStateFlow<State<Boolean>> = MutableStateFlow(State.Loading)
   private val selectedSeason = MutableStateFlow(1)
   private val dbMedia = MutableStateFlow(DBMedia.Empty)
 
@@ -187,9 +187,9 @@ class MediaInfoViewModel @Inject constructor(
         ),
       ).collect { result ->
         result.whenSuccess {
-          isInWL.value = State.success(isAdd)
+          isInWL.value = State.Success(isAdd)
           if (!isAdd) { // Set watched to false when media removed from watchlist
-            isWatched.value = State.success(false)
+            isWatched.value = State.Success(false)
           }
         }
       }
@@ -239,7 +239,7 @@ class MediaInfoViewModel @Inject constructor(
       ).collectLatest { result ->
         result.whenSuccess {
           dbMedia.value = it
-          isWatched.value = State.success(it.isWatched)
+          isWatched.value = State.Success(it.isWatched)
         }
       }
     }

@@ -29,7 +29,7 @@ fun getMailBodyForFeedback(
 
 fun <T> resultFlow(value: T, coroutineContext: CoroutineContext = Dispatchers.IO) =
   resultFlow(coroutineContext = coroutineContext) {
-    emit(State.success(value))
+    emit(State.Success(value))
   }
 
 fun <T> resultFlow(
@@ -38,15 +38,15 @@ fun <T> resultFlow(
   executeBeforeResult: suspend () -> Unit,
 ) = resultFlow(coroutineContext = coroutineContext) {
   executeBeforeResult()
-  emit(State.success(result))
+  emit(State.Success(result))
 }
 
 fun <T> resultFlow(
   coroutineContext: CoroutineContext = Dispatchers.IO,
   block: suspend FlowCollector<State<T>>.() -> Unit,
 ) = flow {
-  emit(State.loading())
+  emit(State.Loading)
   block()
 }.catch { exception ->
-  emit(State.failed(exception.message.toString(), exception))
+  emit(State.Failed(exception.message.toString(), exception))
 }.flowOn(coroutineContext)

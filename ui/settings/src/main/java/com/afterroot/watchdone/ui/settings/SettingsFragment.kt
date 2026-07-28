@@ -67,7 +67,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
   private val settingsActivityViewModel: SettingsActivityViewModel by activityViewModels()
 
-  private var uiState: State<UserData> by mutableStateOf(State.loading())
+  private var uiState: State<UserData> by mutableStateOf(State.Loading)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -207,14 +207,14 @@ internal fun EditProfile(viewModel: ProfileViewModel, actions: (ProfileActions) 
             validate = {
               when {
                 it.length > Constants.USERNAME_LENGTH -> {
-                  State.failed("Username is too long.")
+                  State.Failed("Username is too long.")
                 }
 
                 it.contains(" ") -> {
-                  State.failed("Username cannot contain space.")
+                  State.Failed("Username cannot contain space.")
                 }
 
-                else -> State.success(true)
+                else -> State.Success(true)
               }
             },
             trailingIcon = {},
@@ -236,9 +236,9 @@ internal fun EditProfile(viewModel: ProfileViewModel, actions: (ProfileActions) 
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             validate = {
               if (it.length > Constants.NAME_LENGTH) {
-                State.failed("Name is too long.")
+                State.Failed("Name is too long.")
               } else {
-                State.success(true)
+                State.Success(true)
               }
             },
             onError = {
@@ -312,7 +312,7 @@ fun UserProfile(
   loadingContent: @Composable () -> Unit = {},
   content: @Composable (LocalUser) -> Unit = {},
 ) {
-  val profileState = profileViewModel.profile.collectAsState(State.loading())
+  val profileState = profileViewModel.profile.collectAsState(State.Loading)
   when (profileState.value) {
     is State.Loading -> {
       loadingContent()
@@ -333,9 +333,9 @@ fun UserProfile(
 }
 
 fun signOut(context: Context) = flow {
-  emit(State.loading())
+  emit(State.Loading)
   AuthUI.getInstance().signOut(context).await()
-  emit(State.success(true))
+  emit(State.Success(true))
 }.catch {
-  emit(State.failed(it.message.toString()))
+  emit(State.Failed(it.message.toString()))
 }.flowOn(Dispatchers.IO)

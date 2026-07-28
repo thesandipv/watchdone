@@ -16,7 +16,7 @@ import com.afterroot.watchdone.utils.State
 data class ProfileViewState(
   override val message: UiMessage? = null,
   val user: State<LocalUser>? = null,
-  val wlCount: State<Long> = State.loading(),
+  val wlCount: State<Long> = State.Loading,
   val isTmdbLoggedIn: TmdbAuthLoginState = TmdbAuthLoginState.LOGGED_OUT,
   val tmdbProfile: State<TmdbAccountDetails>? = null,
 ) : ViewState() {

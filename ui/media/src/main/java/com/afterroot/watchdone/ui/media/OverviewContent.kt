@@ -78,9 +78,9 @@ fun OverviewContent(
   modifier: Modifier = Modifier,
   movie: Movie? = null,
   tv: TV? = null,
-  isInWatchlist: State<Boolean> = State.loading(),
-  isWatched: State<Boolean> = State.loading(),
-  watchProviders: State<WatchProviderResult> = State.loading(),
+  isInWatchlist: State<Boolean> = State.Loading,
+  isWatched: State<Boolean> = State.Loading,
+  watchProviders: State<WatchProviderResult> = State.Loading,
   onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
   onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
   onWatchProvidersClick: (link: String) -> Unit = { _ -> },
@@ -305,8 +305,8 @@ fun OverviewText(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun WatchlistActions(
   modifier: Modifier = Modifier,
-  isInWatchlist: State<Boolean> = State.loading(),
-  isWatched: State<Boolean> = State.loading(),
+  isInWatchlist: State<Boolean> = State.Loading,
+  isWatched: State<Boolean> = State.Loading,
   onWatchlistAction: (checked: Boolean) -> Unit,
   onWatchedAction: (checked: Boolean) -> Unit,
 ) {

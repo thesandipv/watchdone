@@ -20,7 +20,7 @@ import com.afterroot.watchdone.utils.State
 
 @Immutable
 data class MediaInfoViewState(
-  val credits: State<TmdbCredits> = State.loading(),
+  val credits: State<TmdbCredits> = State.Loading,
   val empty: Boolean = true,
   val isLoading: Boolean = false,
   val mediaId: Int = 0,
@@ -28,13 +28,13 @@ data class MediaInfoViewState(
   val mediaType: MediaType? = MediaType.MOVIE,
   val movie: Movie = Movie.Empty,
   val refresh: Boolean = false,
-  val seasonInfo: State<Season> = State.loading(),
+  val seasonInfo: State<Season> = State.Loading,
   val selectedSeason: Int = 1,
   val tv: TV = TV.Empty,
-  val isInWatchlist: State<Boolean> = State.loading(),
-  val isWatched: State<Boolean> = State.loading(),
+  val isInWatchlist: State<Boolean> = State.Loading,
+  val isWatched: State<Boolean> = State.Loading,
   val genres: List<Genre> = emptyList(),
-  val watchProviders: State<WatchProviderResult> = State.loading(),
+  val watchProviders: State<WatchProviderResult> = State.Loading,
   override val message: UiMessage? = null,
 ) : ViewState() {
   companion object {
