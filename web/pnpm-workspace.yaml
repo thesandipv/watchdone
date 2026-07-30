@@ -1,0 +1,9 @@
+shellEmulator: true
+
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - chokidar@4.0.3
+
+allowBuilds:
+  "@tailwindcss/oxide": true
+  esbuild: true
