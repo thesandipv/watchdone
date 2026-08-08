@@ -43,8 +43,8 @@ data class TV(
   val name: String? = null,
   val networks: List<TmdbNetwork> = emptyList(),
   val nextEpisodeToAir: TmdbEpisode? = null,
-  val numberOfEpisodes: Int = 0,
-  val numberOfSeasons: Int = 0,
+  val numberOfEpisodes: Int? = 0,
+  val numberOfSeasons: Int? = 0,
   val originalLanguage: String? = null,
   val originalName: String? = null,
   val originCountry: List<String> = emptyList(),
@@ -56,8 +56,8 @@ data class TV(
   val status: TmdbShowStatus? = null,
   val tagline: String? = null,
   val type: TmdbShowType? = null,
-  val voteAverage: Float = 0f,
-  val voteCount: Int = 0,
+  val voteAverage: Float? = 0f,
+  val voteCount: Int? = 0,
 
   // Appendable responses
   val aggregateCredits: TmdbAggregateCredits? = null,

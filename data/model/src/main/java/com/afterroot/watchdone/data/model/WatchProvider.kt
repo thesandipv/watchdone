@@ -12,13 +12,13 @@ fun WatchProviderResult.getProvidersForCountry(country: String) = results.getOrD
 
 data class WatchProvider(
   val displayPriority: Int?,
-  val logoPath: String,
-  val providerId: Int,
-  val providerName: String,
+  val logoPath: String?,
+  val providerId: Int?,
+  val providerName: String?,
 )
 
 data class WatchProviders(
-  val link: String,
+  val link: String?,
   val flatrate: List<WatchProvider> = emptyList(),
   val buy: List<WatchProvider> = emptyList(),
   val rent: List<WatchProvider> = emptyList(),
