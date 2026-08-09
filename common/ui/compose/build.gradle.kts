@@ -30,6 +30,7 @@ dependencies {
   implementation(libs.google.material)
   api(libs.coil.core)
   api(libs.coil.compose)
+  api(libs.coil.network)
 
   implementation(libs.androidx.lifecycle.runtime)
 }

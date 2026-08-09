@@ -53,8 +53,9 @@ import androidx.compose.ui.unit.dp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.LocalLogoSize
 import com.afterroot.ui.common.compose.components.LocalSettings

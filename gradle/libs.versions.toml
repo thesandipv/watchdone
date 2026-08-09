@@ -119,7 +119,7 @@ store = "org.mobilenativefoundation.store:store5:5.0.0"
 
 coil-core = { module = "io.coil-kt.coil3:coil-core", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
-coil-network = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
 
