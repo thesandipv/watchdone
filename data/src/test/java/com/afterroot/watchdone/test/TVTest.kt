@@ -14,8 +14,7 @@
  */
 package com.afterroot.watchdone.test
 
-import com.afterroot.tmdbapi.repository.SearchRepository
-import com.afterroot.tmdbapi.repository.TVRepository
+import com.afterroot.watchdone.data.repositories.TVRepository
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
@@ -36,7 +35,7 @@ class TVTest : DataTest() {
   @Test
   fun `TV Working`() {
     launch {
-      Assert.assertEquals("Game of Thrones", tvRepository.getTVInfo(1399).name)
+      Assert.assertEquals("Game of Thrones", tvRepository.info(1399).name)
     }
   }
 

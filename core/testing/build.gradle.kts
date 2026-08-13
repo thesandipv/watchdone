@@ -21,9 +21,23 @@ dependencies {
   api(libs.hilt.testing)
   api(libs.kotlinx.coroutines.test)
   api(libs.test.junit)
+  api(libs.test.mockk)
   api(libs.test.robolectric)
 
   debugApi(libs.androidx.compose.ui.testManifest)
 
+  implementation(projects.api.tmdb)
+  implementation(projects.data)
   implementation(projects.data.model)
+
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.auth)
+  implementation(libs.firebase.config)
+  implementation(libs.firebase.crashlytics)
+  implementation(libs.firebase.firestore)
+  implementation(libs.firebase.messaging)
+
+  implementation(libs.ktor.core)
+  implementation(libs.ktor.mock)
+  implementation(libs.ktor.okhttp)
 }

@@ -14,12 +14,9 @@
  */
 package com.afterroot.watchdone.test
 
-import com.afterroot.tmdbapi.model.MovieAppendableResponses
-import com.afterroot.tmdbapi.repository.SearchRepository
 import com.afterroot.watchdone.data.repositories.MovieRepository
 import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.testing.HiltAndroidTest
-import info.movito.themoviedbapi.model.ArtworkType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

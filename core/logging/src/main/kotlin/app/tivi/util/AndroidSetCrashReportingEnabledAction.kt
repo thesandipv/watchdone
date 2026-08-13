@@ -12,6 +12,6 @@ class AndroidSetCrashReportingEnabledAction @Inject constructor(
   private val firebaseCrashlytics: FirebaseCrashlytics,
 ) : SetCrashReportingEnabledAction {
   override fun invoke(enabled: Boolean) {
-    firebaseCrashlytics.setCrashlyticsCollectionEnabled(enabled)
+    firebaseCrashlytics.isCrashlyticsCollectionEnabled = enabled
   }
 }

@@ -14,7 +14,7 @@
  */
 package com.afterroot.watchdone.test
 
-import com.afterroot.tmdbapi.repository.ConfigRepository
+import com.afterroot.watchdone.data.repositories.ConfigRepository
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.launch
