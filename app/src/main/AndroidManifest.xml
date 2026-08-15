@@ -93,14 +93,6 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <activity
-            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
-            android:theme="@style/MyTheme.Watchdone.ActionBar" />
-
-        <activity
-            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
-            android:theme="@style/MyTheme.Watchdone.ActionBar" />
-
         <provider
             android:name=".providers.MyFileProvider"
             android:authorities="${applicationId}.provider"

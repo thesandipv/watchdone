@@ -1,6 +1,5 @@
 plugins {
   id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
@@ -22,9 +21,15 @@ dependencies {
   api(libs.hilt.testing)
   api(libs.kotlinx.coroutines.test)
   api(libs.test.junit)
+  api(libs.test.mockk)
   api(libs.test.robolectric)
 
   debugApi(libs.androidx.compose.ui.testManifest)
 
+  implementation(projects.api.tmdb)
+  implementation(projects.data)
   implementation(projects.data.model)
+
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.auth)
 }

@@ -39,7 +39,7 @@ data class Movie(
   val releaseDate: LocalDate? = null,
   val revenue: Long = 0L,
   val runtime: Int? = null,
-  val status: TmdbMovieStatus = TmdbMovieStatus.PLANNED,
+  val status: TmdbMovieStatus? = null,
   val tagline: String? = null,
   val title: String? = null,
   val video: Boolean = false,

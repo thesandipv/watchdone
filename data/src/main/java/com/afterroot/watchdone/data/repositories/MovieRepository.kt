@@ -15,7 +15,7 @@ class MovieRepository @Inject constructor(
   private val tmdb: Tmdb3,
   private val watchProviderMapper: TmdbWatchProviderResultToWatchProviderResult,
 ) {
-  suspend fun credits(id: Int) = resultFlow(tmdb.movies.credits(id))
+  suspend fun credits(id: Int) = resultFlow(tmdb.movies.getCredits(id))
   suspend fun info(id: Int) = resultFlow(tmdb.movies.getDetails(id).toMovie())
   suspend fun recommended(id: Int, page: Int) = resultFlow(tmdb.movies.getRecommendations(id, page))
   suspend fun watchProviders(id: Int) = resultFlow(

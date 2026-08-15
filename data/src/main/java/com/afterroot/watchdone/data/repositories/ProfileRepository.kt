@@ -27,7 +27,7 @@ class ProfileRepository @Inject constructor(
     resultFlow(coroutineContext = dispatchers.io) {
       val source = if (cached) Source.CACHE else Source.DEFAULT
       val query = firestore.collectionUsers().whereEqualTo(Field.UID, uid).get(source)
-      emit(State.success(query.await().toNetworkUser()))
+      emit(State.Success(query.await().toNetworkUser()))
     }
 
   fun setProfile(uid: String, localUser: LocalUser) = resultFlow(
@@ -36,7 +36,7 @@ class ProfileRepository @Inject constructor(
     val userRef = firestore.collectionUsers().document(uid)
     val token = getFCMToken()
     userRef.set(localUser.copy(fcmId = token).toNetworkUser(), SetOptions.merge()).await()
-    emit(State.success(true))
+    emit(State.Success(true))
   }
 
   private suspend fun getFCMToken(): String = firebaseMessaging.token.await()

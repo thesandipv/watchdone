@@ -31,7 +31,7 @@ class FirestoreRepository @Inject constructor(
 
   val watchListRef by lazy {
     firestore.collectionWatchdone(
-      id = firebaseUtils.uid.toString(),
+      id = firebaseUtils.uid,
       isUseOnlyProdDB = settings.isUseProdDb,
     ).documentWatchlist()
   }
@@ -46,7 +46,7 @@ class FirestoreRepository @Inject constructor(
     }
     watchlistItemsRef.add(media).await()
     watchListRef.updateTotalItemsCounter(1)
-    emit(State.success(true))
+    emit(State.Success(true))
   }
 
   fun removeFromWatchlist(media: DBMedia) = resultFlow {
@@ -54,14 +54,14 @@ class FirestoreRepository @Inject constructor(
     if (documentId != null) {
       watchlistItemsRef.document(documentId).delete().await()
       watchListRef.updateTotalItemsCounter(-1)
-      emit(State.success(false))
+      emit(State.Success(false))
     } else {
-      emit(State.failed("Media not found"))
+      emit(State.Failed("Media not found"))
     }
   }
 
   fun isInWatchlist(mediaId: Int) = resultFlow {
-    emit(State.success(getDocumentId(mediaId) != null))
+    emit(State.Success(getDocumentId(mediaId) != null))
   }
 
   // WatchStatus should only be changed if media is present in watchlist
@@ -69,9 +69,9 @@ class FirestoreRepository @Inject constructor(
     val documentId = getDocumentId(mediaId)
     if (documentId != null) {
       watchlistItemsRef.document(documentId).update(Field.IS_WATCHED, isWatched).await()
-      emit(State.success(isWatched))
+      emit(State.Success(isWatched))
     } else {
-      emit(State.failed("Media not found"))
+      emit(State.Failed("Media not found"))
     }
   }
 
@@ -90,9 +90,9 @@ class FirestoreRepository @Inject constructor(
           FieldValue.arrayRemove(episodeId)
         },
       ).await()
-      emit(State.success(isWatched))
+      emit(State.Success(isWatched))
     } else {
-      emit(State.failed("Media not found"))
+      emit(State.Failed("Media not found"))
     }
   }
 
@@ -101,9 +101,9 @@ class FirestoreRepository @Inject constructor(
       watchlistItemsRef.document(it).get().await().toObject(DBMedia::class.java)
     }
     if (media != null) {
-      emit(State.success(media))
+      emit(State.Success(media))
     } else {
-      emit(State.failed("Media not found"))
+      emit(State.Failed("Media not found"))
     }
   }
 
@@ -112,10 +112,10 @@ class FirestoreRepository @Inject constructor(
 
   private suspend fun getDocumentId(mediaId: Int, source: Source = Source.DEFAULT): String? {
     val qs = watchlistItemsRef.whereEqualTo(Field.ID, mediaId).get(source).await()
-    return if (qs.documents.size > 0) qs.documents[0].id else null
+    return if (qs.documents.isNotEmpty()) qs.documents[0].id else null
   }
 
-  suspend fun getTotalCount() = resultFlow {
+  fun getTotalCount() = resultFlow {
     val result = watchlistItemsRef.count().get(AggregateSource.SERVER).await()
     if (result != null) {
       emit(State.Success(result.count))

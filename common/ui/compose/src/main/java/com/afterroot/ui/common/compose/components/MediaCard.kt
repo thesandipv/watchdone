@@ -40,8 +40,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.AutoSizedCircularProgressIndicator
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.afterroot.watchdone.data.model.Media
 import com.afterroot.watchdone.data.model.Movie
 import com.afterroot.watchdone.data.model.TV

@@ -119,7 +119,7 @@ fun <T : TmdbAnyPerson> PersonItem(
     ProvideTextStyle(value = ubuntuTypography.bodyMedium) {
       when (item) {
         is TmdbCast -> {
-          Text(text = item.character)
+          item.character?.let { Text(text = it) }
         }
 
         is TmdbCrew -> {
@@ -136,7 +136,7 @@ fun <T : TmdbAnyPerson> PersonItem(
         fontStyle = FontStyle.Italic,
       ),
     ) {
-      Text(text = item.name)
+      item.name?.let { Text(text = it) }
     }
   }
 }

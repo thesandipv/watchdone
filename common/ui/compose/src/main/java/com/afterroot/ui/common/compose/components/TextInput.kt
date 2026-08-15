@@ -143,7 +143,7 @@ fun OutlinedTextInput(
   keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
   keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
   keyboardActions: KeyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
-  validate: (String) -> State<Boolean> = { State.success(true) },
+  validate: (String) -> State<Boolean> = { State.Success(true) },
   onChange: (String) -> Unit,
   onError: (String) -> Unit = {},
 ) {

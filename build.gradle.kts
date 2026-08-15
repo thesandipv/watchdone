@@ -9,7 +9,6 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath(libs.google.pluginOssLic)
     classpath(libs.androidx.navigation.pluginSafeArgs)
   }
 }
@@ -18,6 +17,7 @@ plugins {
   id(afterroot.plugins.root.get().pluginId)
 
   alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.android.kotlin.multiplatform.library) apply false
   alias(libs.plugins.android.library) apply false
   alias(libs.plugins.android.lint) apply false
   alias(libs.plugins.android.test) apply false
@@ -31,6 +31,7 @@ plugins {
   alias(libs.plugins.jetbrains.kotlin.jvm) apply false
   alias(libs.plugins.jetbrains.kotlin.multiplatform) apply false
   alias(libs.plugins.jetbrains.kotlin.serialization) apply false
+  alias(libs.plugins.cash.licensee) apply false
   alias(libs.plugins.spotless)
 }
 
@@ -39,14 +40,14 @@ val versionProperties = readProperties(from = rootProject.file("version.properti
 val major = libs.versions.major.get().toInt()
 val minor = libs.versions.minor.get().toInt()
 val patch = versionProperties["patch"].toString().toInt()
-val versionCode: Int by extra {
-  libs.versions.minSdk.get().toInt() * 10000000 + major * 10000 +
-    minor * 100 +
-    patch
-}
-val versionName: String by extra { "$major.$minor.$patch" }
+extra.set(
+  "versionCode",
+  libs.versions.minSdk.get().toInt() * 10000000 + major * 10000 + minor * 100 + patch,
+)
+extra.set("versionName", "$major.$minor.$patch")
+extra.set("ci", System.getenv("CI") == "true")
 
-println("- INFO: Build version code: $versionCode")
+println("- INFO: Build version code: ${extra["versionCode"]}")
 
 subprojects {
   plugins.withId(rootProject.libs.plugins.google.hilt.get().pluginId) {

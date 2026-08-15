@@ -8,13 +8,13 @@ package com.afterroot.watchdone.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.toBitmap
 import com.afterroot.watchdone.BuildConfig
 import com.afterroot.watchdone.base.Constants
 import com.afterroot.watchdone.resources.R
@@ -37,17 +37,13 @@ suspend fun Context.shareToInstagram(poster: String, mediaId: Int, settings: Set
       val loader = ImageLoader(this@shareToInstagram)
       val request = ImageRequest.Builder(this@shareToInstagram)
         .data(settings.baseUrl + Constants.IG_SHARE_IMAGE_SIZE + poster)
-        .allowHardware(false)
         .build()
-      val result = loader.execute(request).drawable
-      val resource = (result as BitmapDrawable).bitmap
+      val result = loader.execute(request).image?.toBitmap()
 
-      val fos: FileOutputStream?
-
-      fos = FileOutputStream(file)
-      resource.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-      fos.flush()
-      fos.close()
+      val fos = FileOutputStream(file)
+      fos.use {
+        result?.compress(Bitmap.CompressFormat.JPEG, 100, it)
+      }
     }
 
     val resource = BitmapFactory.decodeFile("${this@shareToInstagram.cacheDir}/$mediaId.jpg")

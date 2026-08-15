@@ -26,7 +26,7 @@ class TVRepository @Inject constructor(
     tmdb.showEpisodes.getDetails(id, season, episode).toEpisode(),
   )
 
-  suspend fun credits(id: Int) = resultFlow(tmdb.show.credits(id))
+  suspend fun credits(id: Int) = resultFlow(tmdb.show.getCredits(id))
 
   suspend fun info(id: Int) = resultFlow(tmdb.show.getDetails(id).toTV())
 

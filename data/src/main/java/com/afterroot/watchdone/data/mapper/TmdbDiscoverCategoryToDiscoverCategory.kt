@@ -54,6 +54,22 @@ class TmdbDiscoverCategoryToDiscoverCategory @Inject constructor() :
           DiscoverCategory.UNCATEGORIZED
         }
       }
+
+      TmdbDiscoverCategory.CurrentlyAiring -> DiscoverCategory.CURRENTLY_AIRING
+      is TmdbDiscoverCategory.Genre -> DiscoverCategory.UNCATEGORIZED // TODO implement Discover Genre
+      is TmdbDiscoverCategory.Networks -> {
+        if (from.networks.items.contains(TmdbNetworkId.NETFLIX)) {
+          DiscoverCategory.ON_NETFLIX
+        } else if (from.networks.items.contains(TmdbNetworkId.AMAZON)) {
+          DiscoverCategory.ON_AMAZON
+        } else if (from.networks.items.contains(TmdbNetworkId.DISNEY_PLUS)) {
+          DiscoverCategory.ON_DISNEY_PLUS
+        } else if (from.networks.items.contains(TmdbNetworkId.APPLE_TV)) {
+          DiscoverCategory.ON_APPLE_TV
+        } else {
+          DiscoverCategory.UNCATEGORIZED
+        }
+      }
     }
   }
 }

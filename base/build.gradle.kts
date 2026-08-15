@@ -17,7 +17,6 @@ import com.afterroot.gradle.readProperties
 
 plugins {
   id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
 }
 
@@ -68,4 +67,5 @@ dependencies {
 
   api(libs.timber)
   api(projects.utils)
+  api(libs.kotlinx.serialization)
 }

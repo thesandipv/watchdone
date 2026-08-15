@@ -52,4 +52,5 @@ enum class DiscoverCategory {
   ON_AMAZON,
   ON_DISNEY_PLUS,
   ON_APPLE_TV,
+  CURRENTLY_AIRING,
 }

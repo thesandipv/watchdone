@@ -58,25 +58,19 @@ fun Seasons(
 
 @Composable
 fun SeasonsChips(tv: TV, onSeasonSelected: (Int) -> Unit) {
-  val seasonsList = tv.seasons?.mapIndexed { index, season ->
+  val seasonsList = tv.seasons.mapIndexed { index, season ->
     season.name ?: "Season ${index + 1}"
   }
 
   FilterChipGroup(
     horizontalPadding = 16.dp,
     chipSpacing = 8.dp,
-    list = seasonsList ?: manufactureSeasonList(tv.numberOfSeasons),
+    list = seasonsList,
     onSelectedChangedIndexed = { index, _, _ ->
       onSeasonSelected(index + 1)
     },
-    preSelectItem = seasonsList?.first(),
+    preSelectItem = seasonsList.first(),
   )
-}
-
-fun manufactureSeasonList(numberOfSeasons: Int): List<String> = mutableListOf<String>().apply {
-  repeat(numberOfSeasons) {
-    this.add(it, "Season ${it + 1}")
-  }
 }
 
 @Composable
@@ -119,12 +113,14 @@ fun SeasonsDetail(
             }
         }
       }
+
       is State.Failed -> {
         Text(
           text = "Error while loading",
           modifier = Modifier.padding(horizontal = bodyMargin, vertical = gutter),
         )
       }
+
       is State.Loading -> {
         EpisodeItemPlaceholder()
       }

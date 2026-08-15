@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">WatchDone</string>
     <string name="action_settings">Settings</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="action_view_in_imdb">View in IMDb</string>
@@ -72,7 +73,7 @@
     <string name="text_search_show">Shows</string>
     <string name="text_search_people">People</string>
     <string name="search_hint">Search Movies, TV Shows and People…</string>
-    <string name="media_info_rating_text">%.1f/10 (%d votes)</string>
+    <string name="media_info_rating_text">%1$.1f/10 (%2$d votes)</string>
     <string name="text_ascending">Ascending</string>
     <string name="text_descending">Descending</string>
     <string name="watch_state_pending">Pending</string>

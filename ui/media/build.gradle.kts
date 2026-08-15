@@ -15,7 +15,6 @@
 
 plugins {
   id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
@@ -41,12 +40,11 @@ dependencies {
   implementation(libs.bundles.lifecycle)
 
   implementation(libs.google.material)
-  implementation(libs.google.ads)
 
+  implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.firestore)
 
   implementation(libs.hilt.compose)
 
   implementation(libs.materialProgress)
-  implementation(libs.coil)
 }

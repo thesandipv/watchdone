@@ -53,8 +53,9 @@ import androidx.compose.ui.unit.dp
 import app.tivi.common.compose.Layout
 import app.tivi.common.compose.ui.copy
 import app.tivi.common.compose.ui.plus
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.afterroot.ui.common.compose.components.BasePosterCard
 import com.afterroot.ui.common.compose.components.LocalLogoSize
 import com.afterroot.ui.common.compose.components.LocalSettings
@@ -78,9 +79,9 @@ fun OverviewContent(
   modifier: Modifier = Modifier,
   movie: Movie? = null,
   tv: TV? = null,
-  isInWatchlist: State<Boolean> = State.loading(),
-  isWatched: State<Boolean> = State.loading(),
-  watchProviders: State<WatchProviderResult> = State.loading(),
+  isInWatchlist: State<Boolean> = State.Loading,
+  isWatched: State<Boolean> = State.Loading,
+  watchProviders: State<WatchProviderResult> = State.Loading,
   onWatchlistAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
   onWatchedAction: (checked: Boolean, media: DBMedia) -> Unit = { _, _ -> },
   onWatchProvidersClick: (link: String) -> Unit = { _ -> },
@@ -305,8 +306,8 @@ fun OverviewText(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun WatchlistActions(
   modifier: Modifier = Modifier,
-  isInWatchlist: State<Boolean> = State.loading(),
-  isWatched: State<Boolean> = State.loading(),
+  isInWatchlist: State<Boolean> = State.Loading,
+  isWatched: State<Boolean> = State.Loading,
   onWatchlistAction: (checked: Boolean) -> Unit,
   onWatchedAction: (checked: Boolean) -> Unit,
 ) {

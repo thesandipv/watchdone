@@ -14,11 +14,15 @@
  */
 package com.afterroot.watchdone.test
 
-import com.afterroot.tmdbapi.repository.SearchRepository
-import com.afterroot.tmdbapi.repository.TVRepository
+import com.afterroot.watchdone.data.model.MediaType
+import com.afterroot.watchdone.data.repositories.TVRepository
+import com.afterroot.watchdone.data.search.SearchDataSource
+import com.afterroot.watchdone.data.search.SearchRepository
+import com.afterroot.watchdone.utils.State
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -29,38 +33,42 @@ class TVTest : DataTest() {
 
   @Inject lateinit var tvRepository: TVRepository
 
-  @Inject lateinit var tvRepository2: com.afterroot.watchdone.data.repositories.TVRepository
-
   @Inject lateinit var searchRepository: SearchRepository
 
   @Test
   fun `TV Working`() {
     launch {
-      Assert.assertEquals("Game of Thrones", tvRepository.getTVInfo(1399).name)
+      val name = tvRepository.info(1399).first { it is State.Success }.successResult()?.name
+      Assert.assertEquals("Game of Thrones", name)
     }
   }
 
   @Test
   fun `search TV`() {
     launch {
-      val result = searchRepository.searchTv("Game of Thrones")
+      val result = searchRepository.search(
+        SearchDataSource.Params(
+          mediaType = MediaType.SHOW,
+          query = "Game of Thrones",
+        ),
+      )
       Assert.assertNotNull(result)
-      Assert.assertNotNull(result.results)
+      Assert.assertTrue(result.isNotEmpty())
     }
   }
 
   @Test
   fun `Get Season Info`() {
     launch {
-      val season1 = tvRepository.getSeason(1399, 1)
-      Assert.assertEquals("Season 1", season1.name)
+      val season1 = tvRepository.season(1399, 1).first { it is State.Success }.successResult()
+      Assert.assertEquals("Season 1", season1?.name)
     }
   }
 
   @Test
   fun `Get WatchProviders`() {
     launch {
-      val wp = tvRepository2.watchProviders(66788)
+      val wp = tvRepository.watchProviders(66788)
       wp.collectLatest {
         it.whenSuccess {
           println("Get WatchProviders: $wp")

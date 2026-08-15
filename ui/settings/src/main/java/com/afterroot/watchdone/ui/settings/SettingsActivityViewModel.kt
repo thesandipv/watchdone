@@ -26,10 +26,10 @@ class SettingsActivityViewModel @Inject constructor(
 ) : ViewModel() {
 
   val uiState: StateFlow<State<UserData>> = userDataRepository.userData.map {
-    State.success(it)
+    State.Success(it)
   }.stateIn(
     scope = viewModelScope,
-    initialValue = State.loading(),
+    initialValue = State.Loading,
     started = SharingStarted.WhileSubscribed(5_000),
   )
 

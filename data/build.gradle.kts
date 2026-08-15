@@ -18,7 +18,6 @@ import com.afterroot.gradle.readProperties
 
 plugins {
   id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.android.hilt.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
@@ -94,6 +93,7 @@ dependencies {
   testImplementation(libs.test.junit)
   testImplementation(libs.androidx.test.junitExt)
   testImplementation(libs.test.robolectric)
+  testImplementation(projects.core.testing)
 
   kspTest(libs.androidx.room.compiler)
 
@@ -103,8 +103,6 @@ dependencies {
   androidTestImplementation(libs.hilt.testing)
   androidTestImplementation(libs.kotlinx.coroutines.test)
   androidTestImplementation(libs.test.junit)
-
-  implementation(libs.coil)
 
   implementation(libs.kotlinx.datetime)
 }

@@ -6,8 +6,10 @@ package com.afterroot.watchdone
 
 import android.app.Application
 import androidx.annotation.Keep
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.SingletonImageLoader
+import coil3.request.crossfade
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 
@@ -15,13 +17,13 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class App :
   Application(),
-  ImageLoaderFactory {
+  SingletonImageLoader.Factory {
+
   override fun onCreate() {
     DynamicColors.applyToActivitiesIfAvailable(this)
     super.onCreate()
   }
 
-  override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this)
-    .crossfade(true)
-    .build()
+  override fun newImageLoader(context: PlatformContext): ImageLoader =
+    ImageLoader(context).newBuilder().crossfade(true).build()
 }

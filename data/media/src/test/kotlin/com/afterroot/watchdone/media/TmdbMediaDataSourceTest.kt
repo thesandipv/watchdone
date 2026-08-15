@@ -7,17 +7,18 @@ import com.afterroot.watchdone.data.model.MediaType
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlin.test.assertEquals
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class TmdbMediaDataSourceTest : AppTest() {
-  @Inject lateinit var tmdbMediaDataSource: TmdbMediaDataSource
+  @Inject
+  lateinit var tmdbMediaDataSource: TmdbMediaDataSource
 
   @Test
-  fun test_Movie_Response() = runTest {
+  fun test_Movie_Response() = runBlocking {
     val media = tmdbMediaDataSource.getMedia(
       Media(tmdbId = 550, mediaType = MediaType.MOVIE),
     )
@@ -28,7 +29,7 @@ class TmdbMediaDataSourceTest : AppTest() {
   }
 
   @Test
-  fun test_Series_Response() = runTest {
+  fun test_Series_Response() = runBlocking {
     val media = tmdbMediaDataSource.getMedia(
       Media(tmdbId = 1399, mediaType = MediaType.SHOW),
     )

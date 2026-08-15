@@ -15,7 +15,6 @@
 
 plugins {
   id(afterroot.plugins.android.library.get().pluginId)
-  id(afterroot.plugins.kotlin.android.get().pluginId)
   id(afterroot.plugins.android.compose.get().pluginId)
   id(afterroot.plugins.watchdone.android.common.get().pluginId)
 }
@@ -29,7 +28,9 @@ dependencies {
   api(projects.core.logging)
 
   implementation(libs.google.material)
-  implementation(libs.coil)
+  api(libs.coil.core)
+  api(libs.coil.compose)
+  api(libs.coil.network)
 
   implementation(libs.androidx.lifecycle.runtime)
 }
