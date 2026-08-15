@@ -32,12 +32,4 @@ dependencies {
 
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.auth)
-  implementation(libs.firebase.config)
-  implementation(libs.firebase.crashlytics)
-  implementation(libs.firebase.firestore)
-  implementation(libs.firebase.messaging)
-
-  implementation(libs.ktor.core)
-  implementation(libs.ktor.mock)
-  implementation(libs.ktor.okhttp)
 }

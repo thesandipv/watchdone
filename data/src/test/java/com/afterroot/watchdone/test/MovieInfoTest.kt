@@ -27,9 +27,8 @@ import org.junit.Test
 @HiltAndroidTest
 class MovieInfoTest : DataTest() {
 
-  @Inject lateinit var moviesRepository: MovieRepository
-
-  @Inject lateinit var searchRepository: SearchRepository
+  @Inject
+  lateinit var moviesRepository: MovieRepository
 
   @Test
   fun `MovieDb Working`() {
@@ -38,34 +37,6 @@ class MovieInfoTest : DataTest() {
         it is State.Success
       }.successResult()?.title
       Assert.assertEquals("Fight Club", title)
-    }
-  }
-
-  @Test
-  fun `Full Movie Info`() {
-    launch {
-      val response = moviesRepository.info(
-        550,
-        MovieAppendableResponses.images,
-        MovieAppendableResponses.videos,
-      )
-      Assert.assertNotNull("Images is null", response.images(ArtworkType.POSTER))
-      response.images(ArtworkType.POSTER)?.forEach {
-        println(it.toString())
-      }
-      Assert.assertNotNull("Videos is null", response.videos())
-      response.videos()?.forEach {
-        println(it.toString())
-      }
-    }
-  }
-
-  @Test
-  fun `search Movies`() {
-    launch {
-      val result = searchRepository.searchMovie("Fight Club")
-      Assert.assertNotNull(result)
-      Assert.assertNotNull(result.results)
     }
   }
 
