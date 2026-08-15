@@ -56,7 +56,7 @@ class TmdbDiscoverCategoryToDiscoverCategory @Inject constructor() :
       }
 
       TmdbDiscoverCategory.CurrentlyAiring -> DiscoverCategory.CURRENTLY_AIRING
-      is TmdbDiscoverCategory.Genre -> DiscoverCategory.UNCATEGORIZED //TODO implement Discover Genre
+      is TmdbDiscoverCategory.Genre -> DiscoverCategory.UNCATEGORIZED // TODO implement Discover Genre
       is TmdbDiscoverCategory.Networks -> {
         if (from.networks.items.contains(TmdbNetworkId.NETFLIX)) {
           DiscoverCategory.ON_NETFLIX
